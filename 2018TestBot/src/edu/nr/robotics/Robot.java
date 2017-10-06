@@ -1,6 +1,8 @@
 
 package edu.nr.robotics;
 
+import edu.nr.lib.commandbased.CancelAllCommand;
+import edu.nr.lib.commandbased.NRSubsystem;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -16,6 +18,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
+	
+	private static Robot singleton;
+	
+	public synchronized static Robot getInstance() {
+		return singleton;
+	}
 
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
@@ -26,7 +34,25 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+		
+		singleton = this;
+		OI.init();
+		
+		AutoChooserInit();
+		SmartDashboardInit();
 
+	}
+
+	private void SmartDashboardInit() {
+			
+		
+		
+	}
+
+	private void AutoChooserInit() {
+		
+		
+		
 	}
 
 	/**
@@ -36,7 +62,11 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-
+		
+		for(NRSubsystem subsystem : NRSubsystem.subsystems) {
+			subsystem.disable();
+		}
+		
 	}
 
 	@Override
@@ -81,6 +111,8 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
+		
+		new CancelAllCommand().start();
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
