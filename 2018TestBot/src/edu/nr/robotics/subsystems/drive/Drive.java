@@ -1,11 +1,14 @@
 package edu.nr.robotics.subsystems.drive;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon.TalonControlMode;
 
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.sensorhistory.TalonEncoder;
+import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSybsystems;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
@@ -41,7 +44,38 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		
 		if(EnabledSybsystems.DRIVE_ENABLED) {
 			
+			leftDrive = new CANTalon(RobotMap.DRIVE_LEFT);
+			rightDrive = new CANTalon(RobotMap.DRIVE_RIGHT);
 			
+			if (EnabledSybsystems.DUMB_DRIVE_ENABLED) {
+				leftDrive.changeControlMode(TalonControlMode.PercentVbus);
+				rightDrive.changeControlMode(TalonControlMode.PercentVbus);
+			} else {
+				leftDrive.changeControlMode(TalonControlMode.Speed);
+				rightDrive.changeControlMode(TalonControlMode.Speed);
+			}
+			leftDrive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+			leftDrive.setF(F_LEFT);
+			leftDrive.setP(P_LEFT);
+			leftDrive.setI(I_LEFT);
+			leftDrive.setD(D_LEFT);
+			leftDrive.enableBrakeMode(true);
+			leftDrive.setEncPosition(0);
+			leftDrive.reverseSensor(false);
+			leftDrive.enable();
+			
+			leftEncoder = new TalonEncoder(leftDrive);
+			
+			leftDriveFollow = new CANTalon(RobotMap.DRIVE_LEFT_FOLLOW);
+			rightDriveFollow = new CANTalon(RobotMap.DRIVE_RIGHT_FOLLOW);
+			
+			leftDriveFollow.changeControlMode(TalonControlMode.Follower);
+			leftDriveFollow.set(leftDrive.getDeviceID());
+			leftDriveFollow.enableBrakeMode(true);
+			
+			rightDriveFollow.changeControlMode(TalonControlMode.Follower);
+			rightDriveFollow.set(rightDrive.getDeviceID());
+			rightDriveFollow.enableBrakeMode(true);
 			
 		}
 		
