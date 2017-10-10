@@ -34,7 +34,7 @@ public class EfficientCANTalon extends CANTalon {
     }
     
     /**
-     * Createws new EfficientCANTalon
+     * Creates new EfficientCANTalon
      * @param deviceNumber
      */
     public EfficientCANTalon(int deviceNumber) {

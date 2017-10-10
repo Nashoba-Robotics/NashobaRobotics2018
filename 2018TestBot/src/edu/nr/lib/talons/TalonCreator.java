@@ -72,7 +72,7 @@ public class TalonCreator {
      * Creates a follower CANTalon with the default (out of the box) configuration
      * @param id
      * @param master_id
-     * @return slave CANTalon
+     * @return follower CANTalon
      */
     public static CANTalon createFollowerTalon(int id, int master_id) {
         final CANTalon talon = createTalon(id, slaveConfiguration);
