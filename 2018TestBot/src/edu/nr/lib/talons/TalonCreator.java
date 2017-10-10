@@ -64,17 +64,17 @@ public class TalonCreator {
 	 * @param id
 	 * @return create CANTalon
 	 */
-    public static CANTalon createDefaultTalon(int id) {
+    public static CANTalon createMasterTalon(int id) {
         return createTalon(id, defaultConfiguration);
     }
     
     /**
-     * Creates a slave CANTalon with the default (out of the box) configuration
+     * Creates a follower CANTalon with the default (out of the box) configuration
      * @param id
      * @param master_id
      * @return slave CANTalon
      */
-    public static CANTalon createPermanentSlaveTalon(int id, int master_id) {
+    public static CANTalon createFollowerTalon(int id, int master_id) {
         final CANTalon talon = createTalon(id, slaveConfiguration);
         talon.changeControlMode(TalonControlMode.Follower);
         talon.set(master_id);
