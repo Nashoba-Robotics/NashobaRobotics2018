@@ -80,6 +80,19 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		}
 		
 	}
+	
+	public static Drive getInstance() {
+		if(singleton == null)
+			init();
+		return singleton;
+	}
+	
+	public synchronized static void init() {
+		if(singleton == null) {
+			singleton = new Drive();
+			singleton.setJoystickCommand(new DriveJoystickCommand());
+		}
+	}
 
 	public void setPIDSourceType(PIDSourceType pidSource) {
 		
