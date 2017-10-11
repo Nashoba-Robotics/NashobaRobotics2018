@@ -44,6 +44,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		
 		if(EnabledSybsystems.DRIVE_ENABLED) {
 			
+			/** 
+			 * Make sure to create talons with TalonCreator now
+			 */
 			leftDrive = new CANTalon(RobotMap.DRIVE_LEFT);
 			rightDrive = new CANTalon(RobotMap.DRIVE_RIGHT);
 			
