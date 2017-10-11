@@ -5,6 +5,7 @@ import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 
 import edu.nr.lib.commandbased.NRSubsystem;
+import edu.nr.lib.driving.DriveTypeCalculations;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.sensorhistory.TalonEncoder;
@@ -80,6 +81,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			rightDriveFollow.set(rightDrive.getDeviceID());
 			rightDriveFollow.enableBrakeMode(true);
 			
+			CheesyDriveCalculationConstants.createDriveTypeCalculations();
+		
 		}
 		
 	}
@@ -97,6 +100,20 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		}
 	}
 
+	/**
+	 * Uses 254's CheesyDrive to drive
+	 * 
+	 * @param move 
+	 * 				The speed, from -1 to 1 (inclusive), that the robot should go
+	 *             	at. 1 is max forward, 0 is stopped, -1 is max backward
+	 * @param turn 
+	 * 				The speed, from -1 to 1 (inclusive), that the robot should
+	 *            	turn at. 1 is max right, 0 is stopped, -1 is max left
+	 */
+	public void cheesyDrive(double move, double turn) {
+		
+	}
+	
 	public void setPIDSourceType(PIDSourceType pidSource) {
 		
 	}
