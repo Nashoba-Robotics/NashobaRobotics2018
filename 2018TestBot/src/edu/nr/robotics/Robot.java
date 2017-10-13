@@ -3,6 +3,7 @@ package edu.nr.robotics;
 
 import edu.nr.lib.commandbased.CancelAllCommand;
 import edu.nr.lib.commandbased.NRSubsystem;
+import edu.nr.robotics.subsystems.drive.Drive;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -40,16 +41,18 @@ public class Robot extends IterativeRobot {
 		
 		AutoChooserInit();
 		SmartDashboardInit();
+		
+		//Drive.init();
 
 	}
 
-	private void SmartDashboardInit() {
+	public void SmartDashboardInit() {
 			
 		
 		
 	}
 
-	private void AutoChooserInit() {
+	public void AutoChooserInit() {
 		
 		
 		

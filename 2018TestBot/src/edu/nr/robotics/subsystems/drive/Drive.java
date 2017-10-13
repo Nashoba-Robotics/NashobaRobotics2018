@@ -3,6 +3,7 @@ package edu.nr.robotics.subsystems.drive;
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
+import com.kauailabs.sf2.units.Unit;
 
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.driving.DriveTypeCalculations;
@@ -22,12 +23,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSource {
 	
-	private static Drive singleton;
+private static Drive singleton;
 	
-	public static final double WHEEL_DIAMETER_INCHES = 3.75; //not correct TODO: get actual value from thing
+	public static final Distance WHEEL_DIAMETER = new Distance(3.5, Distance.Unit.INCH); //not correct TODO: get actual value from thing
 	public static final Distance WHEEL_BASE = new Distance(27, Distance.Unit.INCH); //TODO: find for real
 	
-	public static final Speed MAX_SPEED = new Speed(0, Distance.Unit.FOOT, Time.Unit.SECOND); //TODO: Find for real
+	public static final Speed MAX_SPEED = new Speed(13.33, Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND); //TODO: Find for real
 	public static final Acceleration MAX_ACC = new Acceleration(0, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	public static final Jerk MAX_JERK = new Jerk(0, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND);
 	
@@ -37,7 +38,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static boolean isQuickTurn = false; 
 	
 	private CANTalon leftDrive, rightDrive, rightDriveFollow, leftDriveFollow;
-	private TalonEncoder leftEncoder, RightEncoder;
+	private TalonEncoder leftEncoder, rightEncoder;
 	
 	//The speed in RPM that the motors are supposed to be running at... they get set later
 	private Speed leftMotorSetpoint = Speed.ZERO;
@@ -75,6 +76,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			leftDrive = TalonCreator.createMasterTalon(RobotMap.DRIVE_LEFT);
 			rightDrive = TalonCreator.createMasterTalon(RobotMap.DRIVE_RIGHT);
 			
+			leftDriveFollow = TalonCreator.createFollowerTalon(RobotMap.DRIVE_LEFT_FOLLOW, leftDrive.getDeviceID());
+			rightDriveFollow = TalonCreator.createFollowerTalon(RobotMap.DRIVE_RIGHT_FOLLOW, rightDrive.getDeviceID());
+			
 			if (EnabledSybsystems.DUMB_DRIVE_ENABLED) {
 				leftDrive.changeControlMode(TalonControlMode.PercentVbus);
 				rightDrive.changeControlMode(TalonControlMode.PercentVbus);
@@ -82,6 +86,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 				leftDrive.changeControlMode(TalonControlMode.Speed);
 				rightDrive.changeControlMode(TalonControlMode.Speed);
 			}
+			
 			leftDrive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 			leftDrive.setF(F_LEFT);
 			leftDrive.setP(P_LEFT);
@@ -91,18 +96,26 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			leftDrive.setEncPosition(0);
 			leftDrive.reverseSensor(false);
 			leftDrive.enable();
+			leftDrive.configEncoderCodesPerRev(TICKS_PER_REV_TEST);
 			
+			rightDrive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+			rightDrive.setF(F_RIGHT);
+			rightDrive.setP(P_RIGHT);
+			rightDrive.setI(I_RIGHT);
+			rightDrive.setD(D_RIGHT);
+			rightDrive.enableBrakeMode(true);
+			rightDrive.setEncPosition(0);
+			rightDrive.reverseSensor(false);
+			rightDrive.enable();
+			rightDrive.configEncoderCodesPerRev(TICKS_PER_REV_TEST);
+
+			rightEncoder = new TalonEncoder(rightDrive);
 			leftEncoder = new TalonEncoder(leftDrive);
 			
-			leftDriveFollow = new CANTalon(RobotMap.DRIVE_LEFT_FOLLOW);
-			rightDriveFollow = new CANTalon(RobotMap.DRIVE_RIGHT_FOLLOW);
-			
 			leftDriveFollow.changeControlMode(TalonControlMode.Follower);
-			leftDriveFollow.set(leftDrive.getDeviceID());
 			leftDriveFollow.enableBrakeMode(true);
 			
 			rightDriveFollow.changeControlMode(TalonControlMode.Follower);
-			rightDriveFollow.set(rightDrive.getDeviceID());
 			rightDriveFollow.enableBrakeMode(true);
 			
 			CheesyDriveCalculationConstants.createDriveTypeCalculations();
