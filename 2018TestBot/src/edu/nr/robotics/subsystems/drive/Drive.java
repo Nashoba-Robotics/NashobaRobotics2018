@@ -8,6 +8,12 @@ import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.sensorhistory.TalonEncoder;
+import edu.nr.lib.talons.TalonCreator;
+import edu.nr.lib.units.Acceleration;
+import edu.nr.lib.units.Distance;
+import edu.nr.lib.units.Jerk;
+import edu.nr.lib.units.Speed;
+import edu.nr.lib.units.Time;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSybsystems;
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -17,7 +23,11 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	private static Drive singleton;
 	
 	public static final int WHEEL_DIAMETER_INCHES = 1; //not correct TODO: get actual value from thing
-	public static final double MAX_SPEED = 0; //TODO: Find for real
+	public static final Distance WHEEL_BASE = new Distance(0, Distance.Unit.INCH); //TODO: find for real
+	
+	public static final Speed MAX_SPEED = new Speed(0, Distance.Unit.FOOT, Time.Unit.SECOND); //TODO: Find for real
+	public static final Acceleration MAX_ACC = new Acceleration(0, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
+	public static final Jerk MAX_JERK = new Jerk(0, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND);
 	
 	private CANTalon leftDrive, rightDrive, rightDriveFollow, leftDriveFollow;
 	private TalonEncoder leftEncoder, RightEncoder;
@@ -40,6 +50,10 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		tankDrive, arcadeDrive
 	}
 	
+	public Speed currentMaxSpeed() {
+		return MAX_SPEED;
+	}
+	
 	private Drive() {
 		
 		if(EnabledSybsystems.DRIVE_ENABLED) {
@@ -47,8 +61,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			/** 
 			 * Make sure to create talons with TalonCreator now
 			 */
-			leftDrive = new CANTalon(RobotMap.DRIVE_LEFT);
-			rightDrive = new CANTalon(RobotMap.DRIVE_RIGHT);
+			leftDrive = TalonCreator.createMasterTalon(RobotMap.DRIVE_LEFT);
+			rightDrive = TalonCreator.createMasterTalon(RobotMap.DRIVE_RIGHT);
 			
 			if (EnabledSybsystems.DUMB_DRIVE_ENABLED) {
 				leftDrive.changeControlMode(TalonControlMode.PercentVbus);
@@ -94,6 +108,16 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		if(singleton == null) {
 			singleton = new Drive();
 			singleton.setJoystickCommand(new DriveJoystickCommand());
+		}
+	}
+	
+	public void setMotorSpeedInPercent(double left, double right) {
+		setMotorSpeed(currentMaxSpeed().mul(left), currentMaxSpeed().mul(right));
+	}
+	
+	public void setMotorSpeed(Speed left, Speed right) {
+		if (leftDrive != null && rightDrive != null) {
+			
 		}
 	}
 

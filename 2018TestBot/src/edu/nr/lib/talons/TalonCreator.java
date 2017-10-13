@@ -88,7 +88,7 @@ public class TalonCreator {
      * @return new CANTalon
      */
     public static CANTalon createTalon(int id, Configuration config) {
-        CANTalon talon = new EfficientCANTalon(id, config.CONTROL_FRAME_PERIOD_MS);
+        EfficientCANTalon talon = new EfficientCANTalon(id, config.CONTROL_FRAME_PERIOD_MS);
         talon.changeControlMode(CANTalon.TalonControlMode.Voltage);
         talon.changeMotionControlFramePeriod(config.MOTION_CONTROL_FRAME_PERIOD_MS);
         talon.clearIAccum();
