@@ -35,9 +35,19 @@ public class DriveJoystickCommand extends JoystickCommand {
 					gyroCorrection.clearInitialValue();
 				}
 				Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier());
+		
 		case tankDrive:
+			double left = OI.getInstance().getTankLeftValue();
+			double right = OI.getInstance().getTankRightValue();
 			
-		case cheesyDrive:
+			left = (Math.abs(left) + Math.abs(right)) / 2 * Math.signum(left);
+			right = (Math.abs(left) + Math.abs(right)) / 2 * Math.signum(right);
+			
+			right = NRMath.powWithSign(right, 3);
+			left = NRMath.powWithSign(left, 3);
+			Drive.getInstance().tankDrive(OI.getInstance().getDriveSpeedMultiplier() * left, -OI.getInstance().getDriveSpeedMultiplier() * right);
+			
+		case cheesyDrive: //TODO: Find out what to do for cheesy drive
 			
 			break;
 		}
@@ -45,10 +55,12 @@ public class DriveJoystickCommand extends JoystickCommand {
 
 	@Override
 	public boolean shouldSwitchToJoystick() {
-		if(OI.driveMode == Drive.DriveMode.arcadeDrive) {
+		if(OI.getInstance().DriveMode.getSelected() == Drive.DriveMode.arcadeDrive) {
 			return OI.getInstance().getArcadeMoveValue() != 0 || OI.getInstance().getArcadeTurnValue() != 0;
-		} else {
+		} else if (OI.getInstance().DriveMode.getSelected() == Drive.DriveMode.tankDrive) {
 			return OI.getInstance().getTankLeftValue() != 0 || OI.getInstance().getTankRightValue() != 0;
+		} else {
+			return (Boolean) null; //TODO: Find out what to do for cheesydrive
 		}
 	}
 

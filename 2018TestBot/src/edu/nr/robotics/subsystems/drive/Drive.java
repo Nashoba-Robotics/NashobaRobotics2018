@@ -30,8 +30,15 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final Acceleration MAX_ACC = new Acceleration(0, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	public static final Jerk MAX_JERK = new Jerk(0, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND);
 	
+	public static final double MAX_DRIVE_CURRENT = 25; //in amps, maximum current to prevent the main breaker from cutting power
+	public static final double ABOVE_MAX_CURRENT_DRIVE_PERCENT = 0.4; //if the max current is reached, it will run at this percent voltage instead
+	
 	private CANTalon leftDrive, rightDrive, rightDriveFollow, leftDriveFollow;
 	private TalonEncoder leftEncoder, RightEncoder;
+	
+	//The speed in RPM that the motors are supposed to be running at... they get set later
+	private Speed leftMotorSetpoint = Speed.ZERO;
+	private Speed rightMotorSetpoint = Speed.ZERO;
 	
 	//TODO: get FPID values
 	public static final double F_RIGHT = 1;
@@ -133,7 +140,41 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public void setMotorSpeed(Speed left, Speed right) {
 		if (leftDrive != null && rightDrive != null) {
 			
+			if (getLeftCurrent() > MAX_DRIVE_CURRENT || getRightCurrent() > MAX_DRIVE_CURRENT) {
+				leftMotorSetpoint = new Speed(currentMaxSpeed().get(Distance.Unit.FOOT, Time.Unit.SECOND) * ABOVE_MAX_CURRENT_DRIVE_PERCENT, Distance.Unit.FOOT, Time.Unit.SECOND);
+				rightMotorSetpoint = new Speed(currentMaxSpeed().get(Distance.Unit.FOOT, Time.Unit.SECOND) * -ABOVE_MAX_CURRENT_DRIVE_PERCENT, Distance.Unit.FOOT, Time.Unit.SECOND);
+			}
+			else {
+				leftMotorSetpoint = left;
+				rightMotorSetpoint = right.negate();
+			}
+			if (leftDrive.getControlMode() == TalonControlMode.PercentVbus) {
+				leftDrive.set(leftMotorSetpoint.div(currentMaxSpeed()));
+			} else {
+				leftDrive.set(leftMotorSetpoint.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE));
+			}
+			if (rightDrive.getControlMode() == TalonControlMode.PercentVbus) {
+				rightDrive.set(rightMotorSetpoint.div(currentMaxSpeed()));
+			} else {
+				rightDrive.set(rightMotorSetpoint.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE));
+			}
 		}
+	}
+	
+	
+	
+	public double getRightCurrent() {
+		if (rightDrive != null) {
+			return rightDrive.getOutputCurrent();
+		}
+		return 0;
+	}
+	
+	public double getLeftCurrent() {
+		if (leftDrive != null) {
+			return leftDrive.getOutputCurrent();
+		}
+		return 0;
 	}
 
 	/**
