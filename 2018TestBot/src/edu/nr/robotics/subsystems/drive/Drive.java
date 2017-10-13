@@ -33,6 +33,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final double MAX_DRIVE_CURRENT = 25; //in amps, maximum current to prevent the main breaker from cutting power
 	public static final double ABOVE_MAX_CURRENT_DRIVE_PERCENT = 0.4; //if the max current is reached, it will run at this percent voltage instead
 	
+	public static boolean isQuickTurn = false; 
+	
 	private CANTalon leftDrive, rightDrive, rightDriveFollow, leftDriveFollow;
 	private TalonEncoder leftEncoder, RightEncoder;
 	
@@ -116,8 +118,24 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 	
 	public void tankDrive(double left, double right) {
-		setMotorSpeedInPercent(left, right);
+		setMotorSpeedInPercent(left, right);	
+	}
+	
+	/**
+	 * Uses 254's CheesyDrive to drive
+	 * 
+	 * @param move 
+	 * 				The speed, from -1 to 1 (inclusive), that the robot should go
+	 *             	at. 1 is max forward, 0 is stopped, -1 is max backward
+	 * @param turn 
+	 * 				The speed, from -1 to 1 (inclusive), that the robot should
+	 *            	turn at. 1 is max right, 0 is stopped, -1 is max left
+	 */
+	public void cheesyDrive(double move, double turn) {
+		double[] cheesyMotorPercents = new double[2];
+		cheesyMotorPercents = DriveTypeCalculations.cheesyDrive(move, turn, isQuickTurn, false);
 		
+		tankDrive(cheesyMotorPercents[0], cheesyMotorPercents[1]);
 	}
 	
 	public static Drive getInstance() {
@@ -175,20 +193,6 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			return leftDrive.getOutputCurrent();
 		}
 		return 0;
-	}
-
-	/**
-	 * Uses 254's CheesyDrive to drive
-	 * 
-	 * @param move 
-	 * 				The speed, from -1 to 1 (inclusive), that the robot should go
-	 *             	at. 1 is max forward, 0 is stopped, -1 is max backward
-	 * @param turn 
-	 * 				The speed, from -1 to 1 (inclusive), that the robot should
-	 *            	turn at. 1 is max right, 0 is stopped, -1 is max left
-	 */
-	public void cheesyDrive(double move, double turn) {
-		
 	}
 	
 	public void setPIDSourceType(PIDSourceType pidSource) {

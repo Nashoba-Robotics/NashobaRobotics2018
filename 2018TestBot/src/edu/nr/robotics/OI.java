@@ -2,7 +2,9 @@ package edu.nr.robotics;
 
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.robotics.subsystems.drive.Drive;
+import edu.nr.robotics.subsystems.drive.QuickTurnCommand;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,6 +20,9 @@ public class OI implements SmartDashboardSource {
 	private static final double JOYSTICK_DEAD_ZONE = 0.15;
 	private static final int JOYSTICK_LEFT = 0;
 	private static final int JOYSTICK_RIGHT = 1;
+	
+	private static final int CHEESY_TRIGGER_BUTTON_NUMBER = 1; //TODO: check
+	
 	public static final double DRIVE_SPEED_MULTIPLIER = 1;
 	
 	private final Joystick stickLeft;
@@ -44,6 +49,7 @@ public class OI implements SmartDashboardSource {
 	}
 
 	private void initDriveRight() {
+		new JoystickButton(stickRight, CHEESY_TRIGGER_BUTTON_NUMBER).whileHeld(new QuickTurnCommand());
 	}
 
 	private void initDriveLeft() {	
