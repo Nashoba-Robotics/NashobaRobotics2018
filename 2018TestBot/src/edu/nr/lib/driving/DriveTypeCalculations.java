@@ -4,10 +4,35 @@ import edu.nr.lib.NRMath;
 
 public class DriveTypeCalculations {
 	
-	public DriveTypeCalculations(double highTurnNonLinearity, double lowTurnNonLinearity, double highNegIntertiaScalar,
+	private static double highTurnNonLinearity;
+	private static double lowTurnNonLinearity;
+	private static double highNegInertiaScalar;
+	private static double lowNegInertiaThreshold;
+	private static double lowNegInertiaTurnScalar;
+	private static double lowNegInertiaCloseScalar;
+	private static double lowNegInertiaFarScalar;
+	private static double highSensitivity;
+	private static double lowSensitivity;
+	private static double quickStopDeadband;
+	private static double quickStopWeight;
+	private static double quickStopScalar;
+	
+	
+	public DriveTypeCalculations(double highTurnNonLinearity, double lowTurnNonLinearity, double highNegInertiaScalar,
 			double lowNegInertiaThreshold, double lowNegInertiaTurnScalar, double lowNegInertiaCloseScalar, double lowNegInertiaFarScalar,
 			double highSensitivity, double lowSensitivity, double quickStopDeadband, double quickStopWeight, double quickStopScalar) {
-			//Create doubles above and assign them here
+			
+			DriveTypeCalculations.highTurnNonLinearity = highTurnNonLinearity;
+			DriveTypeCalculations.lowTurnNonLinearity = lowTurnNonLinearity;
+			DriveTypeCalculations.highNegInertiaScalar = highNegInertiaScalar;
+			DriveTypeCalculations.lowNegInertiaTurnScalar = lowNegInertiaTurnScalar;
+			DriveTypeCalculations.lowNegInertiaCloseScalar = lowNegInertiaThreshold;
+			DriveTypeCalculations.lowNegInertiaFarScalar = lowNegInertiaFarScalar;
+			DriveTypeCalculations.highSensitivity = highSensitivity;
+			DriveTypeCalculations.lowSensitivity = lowSensitivity;
+			DriveTypeCalculations.quickStopDeadband = quickStopDeadband;
+			DriveTypeCalculations.quickStopWeight = quickStopWeight;
+			DriveTypeCalculations.quickStopScalar = quickStopScalar;
 	}
 	
 	/**
@@ -24,16 +49,111 @@ public class DriveTypeCalculations {
 	 * @return
 	 * 				Array of doubles with left motor percent followed by the right motor percent
 	 */
-	public double[] cheesyDrive(double moveRaw, double turnRaw, boolean isQuickTurn, boolean isHighGear) {
+	public static double[] cheesyDrive(double moveRaw, double turnRaw, boolean isQuickTurn, boolean isHighGear) {
 		
 		double oldTurn = 0;
 		double quickStopAccumulator = 0;
 		double negInertiaAccumulator = 0;
 		
-		double leftMotorPercent = 0, rightMotorPercent = 0;
 		double move = NRMath.limit(moveRaw);
 		double turn = NRMath.limit(turnRaw);
 		
+		double negInertia = turn - oldTurn;
+        oldTurn = turn;
+        
+        double turnNonLinearity;
+        if (isHighGear) {
+            turnNonLinearity = highTurnNonLinearity;
+            final double denominator = Math.sin(Math.PI / 2.0 * turnNonLinearity);
+            // Apply a sin function that's scaled to make it feel better.
+            turn = Math.sin(Math.PI / 2.0 * turnNonLinearity * turn) / denominator;
+            turn = Math.sin(Math.PI / 2.0 * turnNonLinearity * turn) / denominator;
+        } else {
+            turnNonLinearity = lowTurnNonLinearity;
+            final double denominator = Math.sin(Math.PI / 2.0 * turnNonLinearity);
+            // Apply a sin function that's scaled to make it feel better.
+            turn = Math.sin(Math.PI / 2.0 * turnNonLinearity * turn) / denominator;
+            turn = Math.sin(Math.PI / 2.0 * turnNonLinearity * turn) / denominator;
+            turn = Math.sin(Math.PI / 2.0 * turnNonLinearity * turn) / denominator;
+        }
+        
+        double leftMotorPercent, rightMotorPercent, overPower;
+        double sensitivity;
+
+        double angularPower;
+        double linearPower;
+		
+        // Negative inertia!
+        double negInertiaScalar;
+        if (isHighGear) {
+            negInertiaScalar = highNegInertiaScalar;
+            sensitivity = highSensitivity;
+        } else {
+            if (turn * negInertia > 0) {
+                // If we are moving away from 0.0, aka, trying to get more wheel.
+                negInertiaScalar = lowNegInertiaTurnScalar;
+            } else {
+                // Otherwise, we are attempting to go back to 0.0.
+                if (Math.abs(turn) > lowNegInertiaThreshold) {
+                    negInertiaScalar = lowNegInertiaFarScalar;
+                } else {
+                    negInertiaScalar = lowNegInertiaCloseScalar;
+                }
+            }
+            sensitivity = lowSensitivity;
+        }
+        double negInertiaPower = negInertia * negInertiaScalar;
+        negInertiaAccumulator += negInertiaPower;
+
+        turn = turn + negInertiaAccumulator;
+        if (negInertiaAccumulator > 1) {
+            negInertiaAccumulator -= 1;
+        } else if (negInertiaAccumulator < -1) {
+            negInertiaAccumulator += 1;
+        } else {
+            negInertiaAccumulator = 0;
+        }
+        linearPower = move;
+        
+        // Quickturn!
+        if (isQuickTurn) {
+            if (Math.abs(linearPower) < quickStopDeadband) {
+                double alpha = quickStopWeight;
+                quickStopAccumulator = (1 - alpha) * quickStopAccumulator
+                        + alpha * NRMath.limit(turn, 1.0) * quickStopScalar;
+            }
+            overPower = 1.0;
+            angularPower = turn;
+        } else {
+            overPower = 0.0;
+            angularPower = Math.abs(move) * turn * sensitivity - quickStopAccumulator;
+            if (quickStopAccumulator > 1) {
+                quickStopAccumulator -= 1;
+            } else if (quickStopAccumulator < -1) {
+                quickStopAccumulator += 1;
+            } else {
+                quickStopAccumulator = 0.0;
+            }
+        }
+        
+        rightMotorPercent = leftMotorPercent = linearPower;
+        leftMotorPercent += angularPower;
+        rightMotorPercent -= angularPower;
+        
+        if (leftMotorPercent > 1.0) {
+            rightMotorPercent -= overPower * (leftMotorPercent - 1.0);
+            leftMotorPercent = 1.0;
+        } else if (rightMotorPercent > 1.0) {
+            leftMotorPercent -= overPower * (rightMotorPercent - 1.0);
+            rightMotorPercent = 1.0;
+        } else if (leftMotorPercent < -1.0) {
+            rightMotorPercent += overPower * (-1.0 - leftMotorPercent);
+            leftMotorPercent = -1.0;
+        } else if (rightMotorPercent < -1.0) {
+            leftMotorPercent += overPower * (-1.0 - rightMotorPercent);
+            rightMotorPercent = -1.0;
+        }
+        
 		return new double[] {leftMotorPercent, rightMotorPercent};
 	}
 	
