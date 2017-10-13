@@ -1,8 +1,11 @@
 package edu.nr.robotics;
 
 import edu.nr.lib.interfaces.SmartDashboardSource;
+import edu.nr.robotics.subsystems.drive.Drive;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -15,16 +18,17 @@ public class OI implements SmartDashboardSource {
 	private static final double JOYSTICK_DEAD_ZONE = 0.15;
 	private static final int JOYSTICK_LEFT = 0;
 	private static final int JOYSTICK_RIGHT = 1;
+	public static final double DRIVE_SPEED_MULTIPLIER = 1;
 	
 	private final Joystick stickLeft;
 	private final Joystick stickRight;
 	
-	@Override
+	public SendableChooser<Drive.DriveMode> DriveMode = new SendableChooser<>();
+	
 	public void smartDashboardInfo() {
-		// TODO Auto-generated method stub
 		
 	}
-	
+		
 	private OI() {
 		
 		stickLeft = new Joystick(JOYSTICK_LEFT);
@@ -32,6 +36,8 @@ public class OI implements SmartDashboardSource {
 		
 		initDriveLeft();
 		initDriveRight();
+		
+		driveModeChooserInit();
 		
 		SmartDashboardSource.sources.add(this);
 		
@@ -43,9 +49,21 @@ public class OI implements SmartDashboardSource {
 	private void initDriveLeft() {	
 	}
 	
+	private void driveModeChooserInit() {
+		DriveMode.addDefault("Arcade Drive", Drive.DriveMode.arcadeDrive);
+		DriveMode.addObject("Tank Drive", Drive.DriveMode.tankDrive);
+		DriveMode.addObject("Cheesy Drive", Drive.DriveMode.cheesyDrive);
+		
+		SmartDashboard.putData("Drive Mode", DriveMode);
+	}
+	
 	public static OI getInstance() {
 		init();
 		return singleton;
+	}
+	
+	public double getDriveSpeedMultiplier() {
+		return DRIVE_SPEED_MULTIPLIER;
 	}
 	
 	public static void init() {

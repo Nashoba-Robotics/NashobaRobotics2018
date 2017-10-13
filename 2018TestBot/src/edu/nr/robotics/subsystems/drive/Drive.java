@@ -47,8 +47,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final int TICKS_PER_REV_2017 = 2048; // For 2017 Robot
 	public static final int TICKS_PER_REV_TEST = 256; // For Test Bot
 	
-	public static enum DriveMode {
-		tankDrive, arcadeDrive
+	public enum DriveMode {
+		tankDrive, arcadeDrive, cheesyDrive
 	}
 	
 	public Speed currentMaxSpeed() {
@@ -98,6 +98,18 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			CheesyDriveCalculationConstants.createDriveTypeCalculations();
 		
 		}
+		
+	}
+	
+	public void arcadeDrive(double move, double turn) {
+		double[] motorPercents = new double[2];
+		motorPercents[] = DriveTypeCalculations.arcadeDrive(move, turn).clone();
+
+		tankDrive(, );
+	}
+	
+	public void tankDrive(double left, double right) {
+		setMotorSpeedInPercent(left, right);
 		
 	}
 	

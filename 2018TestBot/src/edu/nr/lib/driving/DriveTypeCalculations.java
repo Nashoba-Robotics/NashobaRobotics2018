@@ -50,7 +50,7 @@ public class DriveTypeCalculations {
 	 * @return 
 	 * 			Array of doubles of left motor percent followed by right motor percent
 	 */
-	public double[] arcadeDrive(double moveRaw, double turnRaw) {
+	public static double[] arcadeDrive(double moveRaw, double turnRaw) {
 		double move = NRMath.limit(moveRaw);
 		double turn = NRMath.limit(turnRaw);
 		double leftMotorPercent, rightMotorPercent;
