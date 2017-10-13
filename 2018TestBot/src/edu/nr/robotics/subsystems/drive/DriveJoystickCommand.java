@@ -21,39 +21,25 @@ public class DriveJoystickCommand extends JoystickCommand {
 
 	@Override
 	public void onExecute() {
-		if (SmartDashboard.getData(OI.getInstance().DriveMode) == Drive.DriveMode.arcadeDrive) {
+		switch (OI.getInstance().DriveMode.getSelected()) {
+		case arcadeDrive:
+				double moveValue = OI.getInstance().getArcadeMoveValue();
+				double rotateValue = OI.getInstance().getArcadeTurnValue();
+				
+				moveValue = NRMath.powWithSign(moveValue, 3);
+				rotateValue = NRMath.powWithSign(rotateValue, 3);
+				
+				if (Math.abs(rotateValue) < 0.05 && Math.abs(moveValue) > 0.1) {
+					rotateValue = gyroCorrection.getTurnValue(0.04);
+				} else {
+					gyroCorrection.clearInitialValue();
+				}
+				Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier());
+		case tankDrive:
 			
-			//Get the joystick values
-			double moveValue = OI.getInstance().getArcadeMoveValue();
-			double rotateValue = OI.getInstance().getArcadeTurnValue();
-						
-			//Square the inputs (while preserving the sign) to increase fine control while permitting full power
-			moveValue = NRMath.powWithSign(moveValue,3);
-			rotateValue = NRMath.powWithSign(rotateValue,3);
+		case cheesyDrive:
 			
-			//Make the gyro guide us when we're going straight, 
-			//otherwise reset the gyroscrope and use the joystick turn value
-			if (Math.abs(rotateValue) < 0.05 && Math.abs(moveValue) > .1) {
-				rotateValue = gyroCorrection.getTurnValue(0.04);
-			} else {
-				gyroCorrection.clearInitialValue();
-			}
-			Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier());
-		} else {
-			// Get values of the joysticks
-			double left = OI.getInstance().getTankLeftValue();
-			double right = OI.getInstance().getTankRightValue();
-			// Do the math for turning
-			if (Math.abs(left - right) < .25) {
-				left = (Math.abs(left) + Math.abs(right)) / 2 * Math.signum(left);
-				right = (Math.abs(left) + Math.abs(right)) / 2 * Math.signum(right);
-			}
-			// Cube the inputs (while preserving the sign) to increase fine
-			// control while permitting full power
-			right = NRMath.powWithSign(right, 3);
-			left = NRMath.powWithSign(left, 3);
-			Drive.getInstance().tankDrive(OI.getInstance().getDriveSpeedMultiplier() * left,
-					-OI.getInstance().getDriveSpeedMultiplier() * right);
+			break;
 		}
 	}
 

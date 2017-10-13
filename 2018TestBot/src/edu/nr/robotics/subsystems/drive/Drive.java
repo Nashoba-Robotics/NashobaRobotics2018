@@ -103,9 +103,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	public void arcadeDrive(double move, double turn) {
 		double[] motorPercents = new double[2];
-		motorPercents[] = DriveTypeCalculations.arcadeDrive(move, turn).clone();
+		motorPercents = DriveTypeCalculations.arcadeDrive(move, turn);
 
-		tankDrive(, );
+		tankDrive(motorPercents[0], motorPercents[1]);
 	}
 	
 	public void tankDrive(double left, double right) {
