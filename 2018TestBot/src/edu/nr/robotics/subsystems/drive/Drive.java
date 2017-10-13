@@ -18,13 +18,14 @@ import edu.nr.lib.units.Time;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSybsystems;
 import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSource {
 	
 	private static Drive singleton;
 	
-	public static final int WHEEL_DIAMETER_INCHES = 1; //not correct TODO: get actual value from thing
-	public static final Distance WHEEL_BASE = new Distance(0, Distance.Unit.INCH); //TODO: find for real
+	public static final double WHEEL_DIAMETER_INCHES = 3.75; //not correct TODO: get actual value from thing
+	public static final Distance WHEEL_BASE = new Distance(27, Distance.Unit.INCH); //TODO: find for real
 	
 	public static final Speed MAX_SPEED = new Speed(0, Distance.Unit.FOOT, Time.Unit.SECOND); //TODO: Find for real
 	public static final Acceleration MAX_ACC = new Acceleration(0, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
@@ -210,12 +211,29 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public double pidGetRight() {
 		return 0;
 	}
+	
+	public Speed getLeftSpeed() {
+		if (leftDrive != null)
+			return new Speed(leftDrive.getSpeed(), Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE);
+		return Speed.ZERO;
+	}
+	
+	public Speed getRightSpeed() {
+		if(rightDrive != null)
+			return new Speed(leftDrive.getSpeed(), Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE);
+		return Speed.ZERO;
+	}
 
 	public void pidWrite(double outputLeft, double outputRight) {
 		
 	}
 
 	public void smartDashboardInfo() {
+		SmartDashboard.putNumber("Drive Left Current", leftDrive.getOutputCurrent());
+		SmartDashboard.putNumber("Drive Right Current", rightDrive.getOutputCurrent());
+		
+		SmartDashboard.putString("Drive Left Speed vs Set Speed: ", getLeftSpeed().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+		SmartDashboard.putString("Drive Right Speed vs Set Speed: ", getRightSpeed().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 		
 	}
 

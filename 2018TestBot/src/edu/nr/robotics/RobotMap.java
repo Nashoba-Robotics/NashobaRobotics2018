@@ -8,7 +8,6 @@ package edu.nr.robotics;
  */
 public class RobotMap {
 	
-	//TODO: get actual
 	public static final int DRIVE_LEFT = 1;
 	public static final int DRIVE_RIGHT = 2;
 	public static final int DRIVE_RIGHT_FOLLOW = 3;
