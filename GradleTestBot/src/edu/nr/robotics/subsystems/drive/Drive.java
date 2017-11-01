@@ -11,6 +11,8 @@ import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.TalonCreator;
 import edu.nr.lib.units.Acceleration;
+import edu.nr.lib.units.Angle;
+import edu.nr.lib.units.AngularSpeed;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Distance.Unit;
 import edu.nr.lib.units.Jerk;
@@ -28,9 +30,15 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final double WHEEL_DIAMETER_INCHES = 3.5;
 	public static final Distance WHEEL_BASE = new Distance(27, Distance.Unit.INCH); //TODO: find for real
 	
-	public static final Speed MAX_SPEED = new Speed(13.33, Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND); //TODO: Find for real
+	public static final Speed MAX_SPEED_LEFT = new Speed(12.087, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_RIGHT = new Speed(12.079, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Acceleration MAX_ACC = new Acceleration(0, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	public static final Jerk MAX_JERK = new Jerk(0, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND);
+	
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.1081; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.1067; //This is 0 to 1 number
+	public static final Speed LEFT_VEL_OFFSET = new Speed(1.462, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed RIGHT_VEL_OFFSET = new Speed(1.440, Distance.Unit.FOOT, Time.Unit.SECOND);
 	
 	public static final double MAX_DRIVE_CURRENT = 25; //in amps, maximum current to prevent the main breaker from cutting power
 	public static final double ABOVE_MAX_CURRENT_DRIVE_PERCENT = 0.4; //if the max current is reached, it will run at this percent voltage instead
@@ -45,12 +53,12 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	private Speed rightMotorSetpoint = Speed.ZERO;
 	
 	//TODO: get FPID values
-	public static final double F_RIGHT = 1;
+	public static final double F_RIGHT = (1 - MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023 / new AngularSpeed(MAX_SPEED_RIGHT.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_NATIVE_UNITS, Time.Unit.HUNDRED_MILLISECOND);
 	public static final double P_RIGHT = 0;
 	public static final double I_RIGHT = 0;
 	public static final double D_RIGHT = 0;
 	
-	public static final double F_LEFT = 1;
+	public static final double F_LEFT = (1 - MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023 / new AngularSpeed(MAX_SPEED_LEFT.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_NATIVE_UNITS, Time.Unit.HUNDRED_MILLISECOND);
 	public static final double P_LEFT = 0;
 	public static final double I_LEFT = 0;
 	public static final double D_LEFT = 0;
@@ -62,8 +70,12 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		tankDrive, arcadeDrive, cheesyDrive
 	}
 	
-	public Speed currentMaxSpeed() {
-		return MAX_SPEED;
+	public Speed currentMaxSpeedLeft() {
+		return MAX_SPEED_LEFT;
+	}
+	
+	public Speed currentMaxSpeedRight() {
+		return MAX_SPEED_RIGHT;
 	}
 	
 	private Drive() {
@@ -73,6 +85,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			/** 
 			 * Make sure to create talons with TalonCreator now
 			 */
+			
+			
 			
 			leftDrive = TalonCreator.createMasterTalon(RobotMap.DRIVE_LEFT);
 			rightDrive = TalonCreator.createMasterTalon(RobotMap.DRIVE_RIGHT);
@@ -189,29 +203,33 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 	
 	public void setMotorSpeedInPercent(double left, double right) {
-		setMotorSpeed(currentMaxSpeed().mul(left), currentMaxSpeed().mul(right));
+		setMotorSpeed(currentMaxSpeedLeft().mul(left), currentMaxSpeedRight().mul(right));
 	}
 	
 	public void setMotorSpeed(Speed left, Speed right) {
 		if (leftDrive != null && rightDrive != null) {
 			
 			if (getLeftCurrent() > MAX_DRIVE_CURRENT || getRightCurrent() > MAX_DRIVE_CURRENT) {
-				leftMotorSetpoint = new Speed(currentMaxSpeed().get(Distance.Unit.FOOT, Time.Unit.SECOND) * ABOVE_MAX_CURRENT_DRIVE_PERCENT, Distance.Unit.FOOT, Time.Unit.SECOND);
-				rightMotorSetpoint = new Speed(currentMaxSpeed().get(Distance.Unit.FOOT, Time.Unit.SECOND) * -ABOVE_MAX_CURRENT_DRIVE_PERCENT, Distance.Unit.FOOT, Time.Unit.SECOND);
+				leftMotorSetpoint = new Speed(currentMaxSpeedLeft().get(Distance.Unit.FOOT, Time.Unit.SECOND) * ABOVE_MAX_CURRENT_DRIVE_PERCENT, Distance.Unit.FOOT, Time.Unit.SECOND);
+				rightMotorSetpoint = new Speed(currentMaxSpeedRight().get(Distance.Unit.FOOT, Time.Unit.SECOND) * -ABOVE_MAX_CURRENT_DRIVE_PERCENT, Distance.Unit.FOOT, Time.Unit.SECOND);
 			}
 			else {
 				leftMotorSetpoint = left;
 				rightMotorSetpoint = right.negate();
 			}
+			
+			Speed leftAdjusted = leftMotorSetpoint.add(LEFT_VEL_OFFSET);
+			Speed rightAdjusted = rightMotorSetpoint.add(RIGHT_VEL_OFFSET);
+			
 			if (leftDrive.getControlMode() == TalonControlMode.PercentVbus) {
-				leftDrive.set(leftMotorSetpoint.div(currentMaxSpeed()));
+				leftDrive.set(leftAdjusted.div(currentMaxSpeedLeft()));
 			} else {
-				leftDrive.set(leftMotorSetpoint.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE));
+				leftDrive.set(leftAdjusted.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE));
 			}
 			if (rightDrive.getControlMode() == TalonControlMode.PercentVbus) {
-				rightDrive.set(rightMotorSetpoint.div(currentMaxSpeed()));
+				rightDrive.set(rightAdjusted.div(currentMaxSpeedRight()));
 			} else {
-				rightDrive.set(rightMotorSetpoint.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE));
+				rightDrive.set(rightAdjusted.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE));
 			}
 		}
 	}
