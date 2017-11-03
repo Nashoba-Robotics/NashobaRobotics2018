@@ -7,6 +7,7 @@ import edu.nr.lib.interfaces.Periodic;
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveForwardCommand;
+import edu.nr.robotics.subsystems.drive.EnableOneDMotionProfile;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -50,6 +51,7 @@ public class Robot extends IterativeRobot {
 
 	public void SmartDashboardInit() {
 		SmartDashboard.putData("Drive Forward", new DriveForwardCommand());
+		SmartDashboard.putData("Motion Profile", new EnableOneDMotionProfile());
 	}
 
 	public void AutoChooserInit() {

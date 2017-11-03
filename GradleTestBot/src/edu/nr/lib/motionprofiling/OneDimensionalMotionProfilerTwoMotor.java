@@ -143,6 +143,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	 * Reset the profiler and start it running
 	 */
 	public void enable() {
+		//System.out.println("enabled");
 		reset();
 		enabled = true;
 	}
