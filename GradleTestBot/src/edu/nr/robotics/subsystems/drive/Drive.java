@@ -46,7 +46,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.07394;
 	
 	
-	public static final double MAX_DRIVE_CURRENT = 25; //in amps, maximum current to prevent the main breaker from cutting power
+	public static final double MAX_DRIVE_CURRENT = 25; //in amps, maximum current while driving normally
 	public static final double ABOVE_MAX_CURRENT_DRIVE_PERCENT = 0.4; //if the max current is reached, it will run at this percent voltage instead
 	
 	public static boolean isQuickTurn = false; 
@@ -59,11 +59,11 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	private Speed rightMotorSetpoint = Speed.ZERO;
 	
 	//TODO: get FPID values 
-	public static final double P_RIGHT = 0;
+	public static final double P_RIGHT = 1.5;
 	public static final double I_RIGHT = 0;
 	public static final double D_RIGHT = 0;
 	
-	public static final double P_LEFT = 0;
+	public static final double P_LEFT = 1.5;
 	public static final double I_LEFT = 0;
 	public static final double D_LEFT = 0;
 	
@@ -114,7 +114,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			rightDrive.configEncoderCodesPerRev(TICKS_PER_REV_TEST);
 			rightDrive.enableBrakeMode(true);
 			rightDrive.setEncPosition(0);
-			rightDrive.reverseSensor(true);
+			rightDrive.reverseSensor(false);
 			rightDrive.enable();
 
 			rightEncoder = new TalonEncoder(rightDrive);
@@ -138,6 +138,21 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		
 			SmartDashboard.putNumber("Drive Percent", 0);
 			SmartDashboard.putNumber("Distance to Profile in Feet", 0);
+			
+			SmartDashboard.putNumber("Left P Value: ", P_LEFT);
+			SmartDashboard.putNumber("Left I Value: ", I_LEFT);
+			SmartDashboard.putNumber("Left D Value: ", D_LEFT);
+			
+			SmartDashboard.putNumber("Right P Value: ", P_RIGHT);
+			SmartDashboard.putNumber("Right I Value: ", I_RIGHT);
+			SmartDashboard.putNumber("Right D Value: ", D_RIGHT);
+		
+			SmartDashboard.putNumber("kP Value: ", kP);
+			SmartDashboard.putNumber("kD Value: ", kD);
+			SmartDashboard.putNumber("kP_theta Value: ", kP_theta);
+		
+			SmartDashboard.putNumber("Left F", leftDrive.getF());
+			SmartDashboard.putNumber("Right F", rightDrive.getF());
 		}
 		
 	}
@@ -224,17 +239,19 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public void setMotorSpeed(Speed left, Speed right) {
 		if (leftDrive != null && rightDrive != null) {
 			
+			
 			if (getLeftCurrent() > MAX_DRIVE_CURRENT || getRightCurrent() > MAX_DRIVE_CURRENT) {
 				leftMotorSetpoint = new Speed(currentMaxSpeedLeft().get(Distance.Unit.FOOT, Time.Unit.SECOND) * ABOVE_MAX_CURRENT_DRIVE_PERCENT, Distance.Unit.FOOT, Time.Unit.SECOND);
 				rightMotorSetpoint = new Speed(currentMaxSpeedRight().get(Distance.Unit.FOOT, Time.Unit.SECOND) * -ABOVE_MAX_CURRENT_DRIVE_PERCENT, Distance.Unit.FOOT, Time.Unit.SECOND);
 			}
+			
 			else {
 				leftMotorSetpoint = left;
 				rightMotorSetpoint = right.negate();
 			}
 			
-			leftDrive.setF(((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / (new AngularSpeed(leftMotorSetpoint.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_NATIVE_UNITS, Time.Unit.HUNDRED_MILLISECOND) / 4));
-			rightDrive.setF(((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND) - MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / (new AngularSpeed(rightMotorSetpoint.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_NATIVE_UNITS, Time.Unit.HUNDRED_MILLISECOND) / 4));
+			leftDrive.setF(((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / (new AngularSpeed(leftMotorSetpoint.abs().get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_NATIVE_UNITS, Time.Unit.HUNDRED_MILLISECOND) / 4));
+			rightDrive.setF(((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / (new AngularSpeed(rightMotorSetpoint.abs().get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_NATIVE_UNITS, Time.Unit.HUNDRED_MILLISECOND) / 4));
 			
 			
 			if (leftDrive.getControlMode() == TalonControlMode.PercentVbus) {
@@ -302,7 +319,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	public Speed getRightSpeed() {
 		if(rightDrive != null)
-			return new Speed(leftDrive.getSpeed(), Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE);
+			return new Speed(rightDrive.getSpeed(), Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE);
 		return Speed.ZERO;
 	}
 
@@ -317,27 +334,10 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		SmartDashboard.putNumber("Drive Right Current", rightDrive.getOutputCurrent());
 		
 		SmartDashboard.putString("Drive Left Speed vs Set Speed: ", getLeftSpeed().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
-		SmartDashboard.putString("Drive Right Speed vs Set Speed: ", getRightSpeed().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + -rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+		SmartDashboard.putString("Drive Right Speed vs Set Speed: ", -getRightSpeed().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + -rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 		
 		SmartDashboard.putNumber("Drive Left Voltage", leftDrive.getOutputVoltage());
 		SmartDashboard.putNumber("Drive Right Voltage", rightDrive.getOutputVoltage());
-		
-	//martDashboard.putNumber("Left F Value: ", F_LEFT);
-		SmartDashboard.putNumber("Left P Value: ", P_LEFT);
-		SmartDashboard.putNumber("Left I Value: ", I_LEFT);
-		SmartDashboard.putNumber("Left D Value: ", D_LEFT);
-		
-		//SmartDashboard.putNumber("Right F Value: ", F_RIGHT);
-		SmartDashboard.putNumber("Right P Value: ", P_RIGHT);
-		SmartDashboard.putNumber("Right I Value: ", I_RIGHT);
-		SmartDashboard.putNumber("Right D Value: ", D_RIGHT);
-	
-		SmartDashboard.putNumber("kP Value: ", kP);
-		SmartDashboard.putNumber("kD Value: ", kD);
-		SmartDashboard.putNumber("kP_theta Value: ", kP_theta);
-	
-		SmartDashboard.putNumber("Left F", leftDrive.getF());
-		SmartDashboard.putNumber("Right F", rightDrive.getF());
 	}
 
 	public void periodic() {

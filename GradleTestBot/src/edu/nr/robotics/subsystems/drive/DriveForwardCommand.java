@@ -2,6 +2,7 @@ package edu.nr.robotics.subsystems.drive;
 
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.units.Distance;
+import edu.nr.lib.units.Speed;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveForwardCommand extends NRCommand {
@@ -25,9 +26,13 @@ public class DriveForwardCommand extends NRCommand {
 	}
 	
 	@Override
+	public void onEnd() {
+		Drive.getInstance().setMotorSpeed(Speed.ZERO, Speed.ZERO);
+	}
+	
+	@Override
 	protected boolean isFinishedNR() {
-		System.out.println(Drive.getInstance().getRightDistance().sub(startPosition));
-		return (Drive.getInstance().getRightDistance().sub(startPosition)).greaterThan(new Distance(SmartDashboard.getNumber("Distance to Profile in Feet", 0), Distance.Unit.FOOT));
+		return (Drive.getInstance().getRightDistance().sub(startPosition)).abs().greaterThan(new Distance(SmartDashboard.getNumber("Distance to Profile in Feet", 0), Distance.Unit.FOOT));
 			
 		
 	}
