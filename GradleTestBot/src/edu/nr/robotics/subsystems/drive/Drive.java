@@ -46,8 +46,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.07394;
 	
 	
-	public static final double MAX_DRIVE_CURRENT = 25; //in amps, maximum current while driving normally
-	public static final double ABOVE_MAX_CURRENT_DRIVE_PERCENT = 0.4; //if the max current is reached, it will run at this percent voltage instead
+	public static final double MAX_DRIVE_CURRENT = 35; //in amps, maximum current while driving normally
+	public static final double ABOVE_MAX_CURRENT_DRIVE_PERCENT = 1.0; //if the max current is reached, it will run at this percent voltage instead
 	
 	public static boolean isQuickTurn = false; 
 	
@@ -59,22 +59,22 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	private Speed rightMotorSetpoint = Speed.ZERO;
 	
 	//TODO: get FPID values 
-	public static final double P_RIGHT = 1.5;
+	public static final double P_RIGHT = 2.0;
 	public static final double I_RIGHT = 0;
-	public static final double D_RIGHT = 0;
+	public static final double D_RIGHT = 0.2;
 	
-	public static final double P_LEFT = 1.5;
+	public static final double P_LEFT = 2.0;
 	public static final double I_LEFT = 0;
-	public static final double D_LEFT = 0;
+	public static final double D_LEFT = 0.2;
 	
 	public static final int TICKS_PER_REV_2017 = 2048; // For 2017 Robot
 	public static final int TICKS_PER_REV_TEST = 256; // For Test Bot
 	
 	PIDSourceType type = PIDSourceType.kRate;
 	
-	public static final double kP = 0;
-	public static final double kD = 0;
-	public static final double kP_theta = 0;
+	public static double kP = 0;
+	public static double kD = 0;
+	public static double kP_theta = 5;
 	
 	private OneDimensionalMotionProfilerTwoMotor oneDProfiler;
 	private TwoDimensionalMotionProfilerPathfinder twoDProfiler;
@@ -176,7 +176,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public void arcadeDrive(double move, double turn) {
 		double[] motorPercents = new double[2];
 		motorPercents = DriveTypeCalculations.arcadeDrive(move, turn);
-
+		
 		tankDrive(motorPercents[0], motorPercents[1]);
 	}
 	
@@ -239,7 +239,6 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public void setMotorSpeed(Speed left, Speed right) {
 		if (leftDrive != null && rightDrive != null) {
 			
-			
 			if (getLeftCurrent() > MAX_DRIVE_CURRENT || getRightCurrent() > MAX_DRIVE_CURRENT) {
 				leftMotorSetpoint = new Speed(currentMaxSpeedLeft().get(Distance.Unit.FOOT, Time.Unit.SECOND) * ABOVE_MAX_CURRENT_DRIVE_PERCENT, Distance.Unit.FOOT, Time.Unit.SECOND);
 				rightMotorSetpoint = new Speed(currentMaxSpeedRight().get(Distance.Unit.FOOT, Time.Unit.SECOND) * -ABOVE_MAX_CURRENT_DRIVE_PERCENT, Distance.Unit.FOOT, Time.Unit.SECOND);
@@ -250,9 +249,17 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 				rightMotorSetpoint = right.negate();
 			}
 			
+			
 			leftDrive.setF(((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / (new AngularSpeed(leftMotorSetpoint.abs().get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_NATIVE_UNITS, Time.Unit.HUNDRED_MILLISECOND) / 4));
 			rightDrive.setF(((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / (new AngularSpeed(rightMotorSetpoint.abs().get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_NATIVE_UNITS, Time.Unit.HUNDRED_MILLISECOND) / 4));
 			
+			if (OI.getInstance().isJoystickNonZero()) {
+				leftDrive.setP(0);
+				leftDrive.setI(0);
+				leftDrive.setD(0);
+			} else {
+				
+			}
 			
 			if (leftDrive.getControlMode() == TalonControlMode.PercentVbus) {
 				leftDrive.set(leftMotorSetpoint.div(currentMaxSpeedLeft()));
@@ -271,14 +278,14 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	public double getRightCurrent() {
 		if (rightDrive != null) {
-			return rightDrive.getOutputCurrent();
+			return Math.abs(rightDrive.getOutputCurrent());
 		}
 		return 0;
 	}
 	
 	public double getLeftCurrent() {
 		if (leftDrive != null) {
-			return leftDrive.getOutputCurrent();
+			return Math.abs(leftDrive.getOutputCurrent());
 		}
 		return 0;
 	}
@@ -296,7 +303,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	@Override
 	public double pidGetLeft() {
 		if (type == PIDSourceType.kRate) {
-			return -leftDrive.getSpeed() / 60;
+			return leftDrive.getSpeed() / 60;
 		} else {
 			return leftDrive.getPosition();
 		}
@@ -307,7 +314,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		if (type == PIDSourceType.kRate) {
 			return -rightDrive.getSpeed() / 60;
 		} else {
-			return rightDrive.getPosition();
+			return -rightDrive.getPosition();
 		}
 	}
 	
@@ -350,6 +357,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		rightDrive.setI(SmartDashboard.getNumber("Right I Value: ", I_RIGHT));
 		rightDrive.setD(SmartDashboard.getNumber("Right D Value: ", D_LEFT));
 		
+		kP = SmartDashboard.getNumber("kP Value: ", kP);
+		kD = SmartDashboard.getNumber("kD Value: ", kD);
+		kP_theta = SmartDashboard.getNumber("kP_theta Value: ", kP_theta);
 	}
 
 	public void disable() {
