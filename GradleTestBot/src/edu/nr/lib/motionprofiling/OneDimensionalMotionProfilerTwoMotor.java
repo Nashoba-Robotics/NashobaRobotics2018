@@ -24,7 +24,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	private DoublePIDOutput out;
 	private DoublePIDSource source;
 	
-	private double ka, kp, kd, kv, kp_theta;
+	private double ka, kp, ki, kd, kv, kp_theta;
 	private double errorLastLeft;
 	private double errorLastRight;
 	
@@ -36,7 +36,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	GyroCorrection gyroCorrection;
 
 		
-	public OneDimensionalMotionProfilerTwoMotor(DoublePIDOutput out, DoublePIDSource source, double kv, double ka, double kp, double kd, double kp_theta, long period) {
+	public OneDimensionalMotionProfilerTwoMotor(DoublePIDOutput out, DoublePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, long period) {
 		this.out = out;
 		this.source = source;
 		this.period = period;
@@ -45,6 +45,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		this.source.setPIDSourceType(PIDSourceType.kDisplacement);
 		this.ka = ka;
 		this.kp = kp;
+		this.ki = ki;
 		this.kd = kd;
 		this.kv = kv;
 		this.kp_theta = kp_theta;
@@ -55,8 +56,8 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		timer.schedule(this, 0, this.period);
 	}
 	
-	public OneDimensionalMotionProfilerTwoMotor(DoublePIDOutput out, DoublePIDSource source, double kv, double ka, double kp, double kd, double kp_theta) {
-		this(out, source, kv, ka, kp, kd, kp_theta, defaultPeriod);
+	public OneDimensionalMotionProfilerTwoMotor(DoublePIDOutput out, DoublePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta) {
+		this(out, source, kv, ka, kp, ki, kd, kp_theta, defaultPeriod);
 	}
 	
 	double timeOfVChange = 0;
@@ -78,7 +79,8 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 			
 			double errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;
-			double prelimOutputLeft = velocityGoal * kv + accelGoal * ka + errorLeft * kp + errorDerivLeft * kd;
+			double errorIntegralLeft = (errorLeft - errorLastLeft) * dt / 2;
+			double prelimOutputLeft = velocityGoal * kv + accelGoal * ka + errorLeft * kp + errorIntegralLeft * ki + errorDerivLeft * kd;
 			errorLastLeft = errorLeft;
 			
 			double outputLeft = 0;

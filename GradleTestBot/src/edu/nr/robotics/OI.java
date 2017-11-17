@@ -2,7 +2,8 @@ package edu.nr.robotics;
 
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.robotics.subsystems.drive.Drive;
-import edu.nr.robotics.subsystems.drive.QuickTurnCommand;
+import edu.nr.robotics.subsystems.drive.QuickTurnStartCommand;
+import edu.nr.robotics.subsystems.drive.QuickTurnStopCommand;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
@@ -17,7 +18,7 @@ public class OI implements SmartDashboardSource {
 	
 	private static OI singleton;
 	
-	private static final double JOYSTICK_DEAD_ZONE = 0.15;
+	private static final double JOYSTICK_DEAD_ZONE = 0.25;
 	private static final int JOYSTICK_LEFT = 0;
 	private static final int JOYSTICK_RIGHT = 1;
 	
@@ -49,7 +50,8 @@ public class OI implements SmartDashboardSource {
 	}
 
 	private void initDriveRight() {
-		new JoystickButton(stickRight, CHEESY_TRIGGER_BUTTON_NUMBER).whileHeld(new QuickTurnCommand());
+		new JoystickButton(stickRight, CHEESY_TRIGGER_BUTTON_NUMBER).whenPressed(new QuickTurnStartCommand());
+		new JoystickButton(stickRight, CHEESY_TRIGGER_BUTTON_NUMBER).whenReleased(new QuickTurnStopCommand());
 	}
 
 	private void initDriveLeft() {	
@@ -107,6 +109,6 @@ public class OI implements SmartDashboardSource {
 	}
 	
 	public boolean isJoystickNonZero() {
-		return ((Math.abs(stickRight.getX()) < JOYSTICK_DEAD_ZONE) || (Math.abs(stickLeft.getX()) < JOYSTICK_DEAD_ZONE) || (Math.abs(stickRight.getY()) < JOYSTICK_DEAD_ZONE) || (Math.abs(stickLeft.getY()) < JOYSTICK_DEAD_ZONE));
+		return ((Math.abs(stickRight.getX()) > JOYSTICK_DEAD_ZONE) || (Math.abs(stickLeft.getX()) > JOYSTICK_DEAD_ZONE) || (Math.abs(stickRight.getY()) > JOYSTICK_DEAD_ZONE) || (Math.abs(stickLeft.getY()) > JOYSTICK_DEAD_ZONE));
 	}
 }

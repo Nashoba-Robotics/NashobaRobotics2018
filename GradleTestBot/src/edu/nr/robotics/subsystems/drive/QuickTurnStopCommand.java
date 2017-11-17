@@ -2,9 +2,9 @@ package edu.nr.robotics.subsystems.drive;
 
 import edu.nr.lib.commandbased.NRCommand;
 
-public class QuickTurnCommand extends NRCommand {
-	
-	public QuickTurnCommand() {
+public class QuickTurnStopCommand extends NRCommand {
+
+	public QuickTurnStopCommand() {
 		
 	}
 	
@@ -12,10 +12,4 @@ public class QuickTurnCommand extends NRCommand {
 	public void onStart() {
 		Drive.isQuickTurn = true;
 	}
-	
-	@Override
-	public void onEnd() {
-		Drive.isQuickTurn = false;
-	}
-	
 }

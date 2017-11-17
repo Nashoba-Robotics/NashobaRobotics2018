@@ -56,7 +56,7 @@ public class DriveTypeCalculations {
 		double negInertiaAccumulator = 0;
 		
 		double move = NRMath.limit(moveRaw);
-		double turn = NRMath.limit(turnRaw);
+		double turn = -NRMath.limit(turnRaw);
 		
 		double negInertia = turn - oldTurn;
         oldTurn = turn;
