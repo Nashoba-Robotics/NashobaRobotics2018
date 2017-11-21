@@ -20,7 +20,7 @@ public class EnableOneDMotionProfile extends NRCommand {
 	
 	@Override
 	public void onStart() {
-		Drive.getInstance().enableOneDProfiler(new Distance(SmartDashboard.getNumber("Distance to Profile in Feet", 0), Distance.Unit.FOOT));
+		Drive.getInstance().enableOneDProfiler(Drive.xProfile);
 		initialLeftPosition = Drive.getInstance().getLeftDistance();
 		initialRightPosition = Drive.getInstance().getRightDistance();
 	}

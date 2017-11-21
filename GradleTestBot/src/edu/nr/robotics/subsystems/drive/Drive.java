@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import jaci.pathfinder.Waypoint;
 
 public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSource {
 	
@@ -36,8 +37,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final double WHEEL_DIAMETER_INCHES = 3.5;
 	public static final Distance WHEEL_BASE = new Distance(27, Distance.Unit.INCH); //TODO: find for real
 	
-	public static final Speed MAX_SPEED_LEFT = new Speed(12.698, Distance.Unit.FOOT, Time.Unit.SECOND);
-	public static final Speed MAX_SPEED_RIGHT = new Speed(12.698, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED = new Speed(12.698, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Acceleration MAX_ACC = new Acceleration(31.53, Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND);
 	public static final Jerk MAX_JERK = new Jerk(0, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND);
 	
@@ -76,11 +76,22 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	PIDSourceType type = PIDSourceType.kRate;
 	
-	public static double kA = 1 / MAX_ACC.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND);
-	public static double kP = 0;
-	public static double kI = 0;
-	public static double kD = 0;
-	public static double kP_theta = 0;
+	public static double kAOneD = 0;
+	public static double kPOneD = 0;
+	public static double kIOneD = 0;
+	public static double kDOneD = 0;
+	public static double kP_thetaOneD = 500;
+	
+	public static double kATwoD = 0;
+	public static double kPTwoD = 0;
+	public static double kITwoD = 0;
+	public static double kDTwoD = 0;
+	public static double kP_thetaTwoD = 0;
+	
+	public static Distance xProfile;
+	public static Distance yProfile;
+	public static Angle endAngle;
+	public static double drivePercent = 0;
 	
 	private OneDimensionalMotionProfilerTwoMotor oneDProfiler;
 	private TwoDimensionalMotionProfilerPathfinder twoDProfiler;
@@ -143,7 +154,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			CheesyDriveCalculationConstants.createDriveTypeCalculations();
 		
 			SmartDashboard.putNumber("Drive Percent", 0);
-			SmartDashboard.putNumber("Distance to Profile in Feet", 0);
+			SmartDashboard.putNumber("X Profile Feet", 0);
+			SmartDashboard.putNumber("Y Profile Feet", 0);
+			SmartDashboard.putNumber("End Degree", 0);
 			
 			SmartDashboard.putNumber("Left P Value: ", P_LEFT);
 			SmartDashboard.putNumber("Left I Value: ", I_LEFT);
@@ -153,11 +166,17 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			SmartDashboard.putNumber("Right I Value: ", I_RIGHT);
 			SmartDashboard.putNumber("Right D Value: ", D_RIGHT);
 		
-			SmartDashboard.putNumber("kA Value: ", kA);
-			SmartDashboard.putNumber("kP Value: ", kP);
-			SmartDashboard.putNumber("kI Value: ", kI);
-			SmartDashboard.putNumber("kD Value: ", kD);
-			SmartDashboard.putNumber("kP_theta Value: ", kP_theta);
+			SmartDashboard.putNumber("kAOneD Value: ", kAOneD);
+			SmartDashboard.putNumber("kPOneD Value: ", kPOneD);
+			SmartDashboard.putNumber("kIOneD Value: ", kIOneD);
+			SmartDashboard.putNumber("kDOneD Value: ", kDOneD);
+			SmartDashboard.putNumber("kP_thetaOneD Value: ", kP_thetaOneD);
+			
+			SmartDashboard.putNumber("kATwoD Value: ", kATwoD);
+			SmartDashboard.putNumber("kPTwoD Value: ", kPTwoD);
+			SmartDashboard.putNumber("kITwoD Value: ", kITwoD);
+			SmartDashboard.putNumber("kDTwoD Value: ", kDTwoD);
+			SmartDashboard.putNumber("kP_thetaTwoD Value: ", kP_thetaTwoD);
 		
 			SmartDashboard.putNumber("Left F", leftDrive.getF());
 			SmartDashboard.putNumber("Right F", rightDrive.getF());
@@ -165,20 +184,13 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		
 	}
 	
-	/**
-	 * 
-	 * @return in RPS
-	 */
-	public double currentMaxSpeedAve() {
-		return (MAX_SPEED_LEFT.add(MAX_SPEED_RIGHT)).mul(0.5).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND);
+	
+	public void smartDashboardInit() {
+		
 	}
 	
-	public Speed currentMaxSpeedLeft() {
-		return MAX_SPEED_LEFT;
-	}
-	
-	public Speed currentMaxSpeedRight() {
-		return MAX_SPEED_RIGHT;
+	public Speed currentMaxSpeed() {
+		return MAX_SPEED;
 	}
 	
 	public void arcadeDrive(double move, double turn) {
@@ -241,7 +253,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 	
 	public void setMotorSpeedInPercent(double left, double right) {
-		setMotorSpeed(currentMaxSpeedLeft().mul(left), currentMaxSpeedRight().mul(right));
+		setMotorSpeed(currentMaxSpeed().mul(left), currentMaxSpeed().mul(right));
 	}
 	
 	public void setMotorSpeed(Speed left, Speed right) {
@@ -257,8 +269,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			}
 			
 			if (ampTimerStarted && (Timer.getFPGATimestamp() - ampTimerStart) >= MAX_CURRENT_PERIOD) {
-				leftMotorSetpoint = currentMaxSpeedLeft().mul(ABOVE_MAX_CURRENT_DRIVE_PERCENT);
-				rightMotorSetpoint = currentMaxSpeedRight().negate().mul(ABOVE_MAX_CURRENT_DRIVE_PERCENT);
+				leftMotorSetpoint = currentMaxSpeed().mul(ABOVE_MAX_CURRENT_DRIVE_PERCENT);
+				rightMotorSetpoint = currentMaxSpeed().negate().mul(ABOVE_MAX_CURRENT_DRIVE_PERCENT);
 			} else {
 				leftMotorSetpoint = left;
 				rightMotorSetpoint = right.negate();
@@ -268,12 +280,12 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			rightDrive.setF(((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / (new AngularSpeed(rightMotorSetpoint.abs().get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_NATIVE_UNITS, Time.Unit.HUNDRED_MILLISECOND) / 4));
 			
 			if (leftDrive.getControlMode() == TalonControlMode.PercentVbus) {
-				leftDrive.set(leftMotorSetpoint.div(currentMaxSpeedLeft()));
+				leftDrive.set(leftMotorSetpoint.div(currentMaxSpeed()));
 			} else {
 				leftDrive.set(leftMotorSetpoint.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE));
 			}
 			if (rightDrive.getControlMode() == TalonControlMode.PercentVbus) {
-				rightDrive.set(rightMotorSetpoint.div(currentMaxSpeedRight()));
+				rightDrive.set(rightMotorSetpoint.div(currentMaxSpeed()));
 			} else {
 				rightDrive.set(rightMotorSetpoint.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE));
 			}
@@ -351,9 +363,6 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		
 		SmartDashboard.putNumber("Drive Left Voltage", leftDrive.getOutputVoltage());
 		SmartDashboard.putNumber("Drive Right Voltage", rightDrive.getOutputVoltage());
-	}
-
-	public void periodic() {
 		
 		leftDrive.setP(SmartDashboard.getNumber("Left P Value: ", P_LEFT));
 		leftDrive.setI(SmartDashboard.getNumber("Left I Value: ", I_LEFT));
@@ -363,11 +372,25 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		rightDrive.setI(SmartDashboard.getNumber("Right I Value: ", I_RIGHT));
 		rightDrive.setD(SmartDashboard.getNumber("Right D Value: ", D_LEFT));
 		
-		kA = SmartDashboard.getNumber("kA Value: ", kA);
-		kP = SmartDashboard.getNumber("kP Value: ", kP);
-		kI = SmartDashboard.getNumber("kI Valu: ", kI);
-		kD = SmartDashboard.getNumber("kD Value: ", kD);
-		kP_theta = SmartDashboard.getNumber("kP_theta Value: ", kP_theta);
+		kAOneD = SmartDashboard.getNumber("kAOneD Value: ", kAOneD);
+		kPOneD = SmartDashboard.getNumber("kPOneD Value: ", kPOneD);
+		kIOneD = SmartDashboard.getNumber("kIOneD Valu: ", kIOneD);
+		kDOneD = SmartDashboard.getNumber("kDOneD Value: ", kDOneD);
+		kP_thetaOneD = SmartDashboard.getNumber("kP_thetaOneD Value: ", kP_thetaOneD);
+		
+		kATwoD = SmartDashboard.getNumber("kATwoD Value: ", kATwoD);
+		kPTwoD = SmartDashboard.getNumber("kPTwoD Value: ", kPTwoD);
+		kITwoD = SmartDashboard.getNumber("kITwoD Value: ", kITwoD);
+		kDTwoD = SmartDashboard.getNumber("kDTwoD Value: ", kDTwoD);
+		kP_thetaTwoD = SmartDashboard.getNumber("kP_thetaTwoD Value: ", kP_thetaTwoD);
+		
+		xProfile = new Distance(SmartDashboard.getNumber("X Profile Feet", 0), Distance.Unit.FOOT);
+		yProfile = new Distance(SmartDashboard.getNumber("Y Profile Feet", 0), Distance.Unit.FOOT);
+		endAngle = new Angle(SmartDashboard.getNumber("End Degree", 0), Angle.Unit.DEGREE);
+		drivePercent = SmartDashboard.getNumber("Drive Percent", 0);
+	}
+
+	public void periodic() {
 	}
 
 	public void disable() {
@@ -378,17 +401,31 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		}
 	}
 	
-	public void enableOneDProfiler(Distance distance) {
-		oneDProfiler = new OneDimensionalMotionProfilerTwoMotor(this, this, 1 / currentMaxSpeedAve(), kA, kP, kI, kD, kP_theta);
-		oneDProfiler.setTrajectory(new OneDimensionalTrajectorySimple(distance.get(Distance.Unit.DRIVE_ROTATION), 
-				currentMaxSpeedAve(),
-				currentMaxSpeedAve() * SmartDashboard.getNumber("Drive Percent", 0), 
-				MAX_ACC.mul(SmartDashboard.getNumber("Drive Percent", 0)).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND)));
+	public void enableOneDProfiler(Distance dist) {
+		oneDProfiler = new OneDimensionalMotionProfilerTwoMotor(this, this, 1 / MAX_SPEED.get(Distance.Unit.FOOT, Time.Unit.SECOND), kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
+		oneDProfiler.setTrajectory(new OneDimensionalTrajectorySimple(dist.get(Distance.Unit.FOOT), 
+				MAX_SPEED.get(Distance.Unit.FOOT, Time.Unit.SECOND),
+				MAX_SPEED.get(Distance.Unit.FOOT, Time.Unit.SECOND) * drivePercent, 
+				MAX_ACC.mul(drivePercent).get(Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND)));
 		oneDProfiler.enable();
 	}
 
-	public void enableTwoDProfiler() {
+	public void enableTwoDProfiler(Distance xDist, Distance yDist, Angle endAng) {
+		twoDProfiler = new TwoDimensionalMotionProfilerPathfinder(this, this, 1 / MAX_SPEED.get(Distance.Unit.FOOT, Time.Unit.SECOND), kATwoD, kPTwoD, kITwoD, kDTwoD, kP_thetaTwoD,
+				MAX_SPEED.get(Distance.Unit.FOOT, Time.Unit.SECOND) * drivePercent, 
+				MAX_ACC.get(Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND) * drivePercent,
+				MAX_JERK.get(Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND) * drivePercent, 
+				TICKS_PER_REV_TEST, WHEEL_DIAMETER_INCHES / 12, WHEEL_BASE.get(Distance.Unit.FOOT), 
+				//TODO: Check to see if we should or shouldn't negate the path
+				false);
 		
+		Waypoint[] points = new Waypoint[] {
+			new Waypoint(0, 0, 0),
+			new Waypoint(xDist.get(Distance.Unit.FOOT), yDist.get(Distance.Unit.FOOT), endAng.get(Angle.Unit.DEGREE))
+		};
+		
+		twoDProfiler.setTrajectory(points);
+		twoDProfiler.enable();
 	}
 
 	public void disableOneDProfiler() {
@@ -396,6 +433,6 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 	
 	public void disableTwoDProfiler() {
-		//twoDProfiler.disable();
+		twoDProfiler.disable();
 	}
 }

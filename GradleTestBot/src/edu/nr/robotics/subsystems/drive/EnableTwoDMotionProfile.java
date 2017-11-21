@@ -11,7 +11,7 @@ public class EnableTwoDMotionProfile extends NRCommand {
 	
 	@Override
 	public void onStart() {
-		Drive.getInstance().enableTwoDProfiler();
+		Drive.getInstance().enableTwoDProfiler(Drive.xProfile, Drive.yProfile, Drive.endAngle);
 	}
 	
 	@Override
@@ -19,6 +19,11 @@ public class EnableTwoDMotionProfile extends NRCommand {
 		//System.out.println("2D Profiler enabled: " + Drive.getInstance().isTwoDProfilerEnabled());
 	}
 
+	@Override
+	public void onEnd() {
+		Drive.getInstance().disableTwoDProfiler();
+	}
+	
 	@Override
 	public boolean isFinishedNR() {
 		return false;
