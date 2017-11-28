@@ -21,6 +21,7 @@ public class EnableOneDMotionProfile extends NRCommand {
 	@Override
 	public void onStart() {
 		Drive.getInstance().enableOneDProfiler(Drive.xProfile);
+		System.out.println(Drive.xProfile.get(Distance.Unit.FOOT));
 		initialLeftPosition = Drive.getInstance().getLeftDistance();
 		initialRightPosition = Drive.getInstance().getRightDistance();
 	}

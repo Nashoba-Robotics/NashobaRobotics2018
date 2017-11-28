@@ -59,7 +59,6 @@ public class Robot extends IterativeRobot {
 	public void AutoChooserInit() {
 		
 		
-		
 	}
 
 	/**

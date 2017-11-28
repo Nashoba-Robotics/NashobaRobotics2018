@@ -108,8 +108,6 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 			//	System.out.println("Enabled!");
 				//double prelimOutputLeft = 0;
 				//double prelimOutputRight = 0;
-				
-				//source.pidGetLeft();
 				//source.pidGetRight();
 
 				if (!this.negate) {
@@ -131,7 +129,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 				
 				double outputLeft = prelimOutputLeft + headingAdjustment;
 				double outputRight = prelimOutputRight + headingAdjustment;
-				
+								
 				out.pidWrite(outputLeft, outputRight);
 				
 				SmartDashboard.putNumber("Output Left", outputLeft);

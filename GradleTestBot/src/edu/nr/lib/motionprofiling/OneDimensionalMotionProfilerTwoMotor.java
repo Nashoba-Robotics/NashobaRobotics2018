@@ -6,6 +6,7 @@ import java.util.TimerTask;
 import edu.nr.lib.GyroCorrection;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
+import edu.nr.robotics.subsystems.drive.Drive;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -123,8 +124,12 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 			out.pidWrite(outputLeft, outputRight);
 			
 			source.setPIDSourceType(PIDSourceType.kRate);
-			SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + outputLeft * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()));
-			SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + outputRight * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()));
+			//SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + outputLeft * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()) + ":" + Drive.getInstance().leftMotorSetpoint);
+			//SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + outputRight * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()) + ":" + Drive.getInstance().rightMotorSetpoint);
+			//SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + outputLeft * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()));
+			//SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + outputRight * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()));
+			SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + velocityGoal);
+			SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + velocityGoal);
 			source.setPIDSourceType(PIDSourceType.kDisplacement);
 			SmartDashboard.putString("Motion Profiler X Left", source.pidGetLeft() + ":" + (positionGoal + initialPositionLeft) + ":" + errorLeft);
 			SmartDashboard.putString("Motion Profiler X Right", source.pidGetRight() + ":" + (positionGoal + initialPositionRight) + ":" + errorRight);
