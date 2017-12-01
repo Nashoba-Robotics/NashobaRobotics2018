@@ -4,6 +4,7 @@ import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 
+import edu.nr.lib.NavX;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.driving.DriveTypeCalculations;
 import edu.nr.lib.interfaces.DoublePIDOutput;
@@ -25,8 +26,10 @@ import edu.nr.robotics.OI;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import jaci.pathfinder.Waypoint;
 
@@ -40,6 +43,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final Speed MAX_SPEED = new Speed(12.698, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Acceleration MAX_ACC = new Acceleration(31.53, Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND);
 	public static final Jerk MAX_JERK = new Jerk(813, Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND);
+	
+	public static final double ACCEL_PERCENT = 0.5;
 	
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0924; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0567; //This is 0 to 1 number
@@ -76,13 +81,15 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	PIDSourceType type = PIDSourceType.kRate;
 	
-	public static double kVOneD = 0.07226;//1 / MAX_SPEED.get(Distance.Unit.FOOT, Time.Unit.SECOND);
+	//public static double kVOneD = 0.07226;
+	public static double kVOneD = 1 / MAX_SPEED.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND);
 	public static double kAOneD = 0.0018;
-	public static double kPOneD = 0;
+	public static double kPOneD = 0;//0.01
 	public static double kIOneD = 0;
 	public static double kDOneD = 0;
-	public static double kP_thetaOneD = 500;
+	public static double kP_thetaOneD = 0;
 	
+	public static double kVTwoD = 1 / MAX_SPEED.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND);;
 	public static double kATwoD = 0;
 	public static double kPTwoD = 0;
 	public static double kITwoD = 0;
@@ -175,6 +182,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			SmartDashboard.putNumber("kDOneD Value: ", kDOneD);
 			SmartDashboard.putNumber("kP_thetaOneD Value: ", kP_thetaOneD);
 			
+			SmartDashboard.putNumber("kVTwoD Value: ", kVTwoD);
 			SmartDashboard.putNumber("kATwoD Value: ", kATwoD);
 			SmartDashboard.putNumber("kPTwoD Value: ", kPTwoD);
 			SmartDashboard.putNumber("kITwoD Value: ", kITwoD);
@@ -183,6 +191,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		
 			SmartDashboard.putNumber("Left F", leftDrive.getF());
 			SmartDashboard.putNumber("Right F", rightDrive.getF());
+			
 		}
 		
 	}
@@ -367,6 +376,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		SmartDashboard.putNumber("Drive Left Voltage", leftDrive.getOutputVoltage());
 		SmartDashboard.putNumber("Drive Right Voltage", rightDrive.getOutputVoltage());
 		
+		SmartDashboard.putNumber("NavX Yaw", NavX.getInstance().getYaw().get(Angle.Unit.DEGREE));
+		
 		leftDrive.setP(SmartDashboard.getNumber("Left P Value: ", P_LEFT));
 		leftDrive.setI(SmartDashboard.getNumber("Left I Value: ", I_LEFT));
 		leftDrive.setD(SmartDashboard.getNumber("Left D Value: ", D_LEFT));
@@ -382,6 +393,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		kDOneD = SmartDashboard.getNumber("kDOneD Value: ", kDOneD);
 		kP_thetaOneD = SmartDashboard.getNumber("kP_thetaOneD Value: ", kP_thetaOneD);
 		
+		kVTwoD = SmartDashboard.getNumber("kVTwoD Value: ", kVTwoD);
 		kATwoD = SmartDashboard.getNumber("kATwoD Value: ", kATwoD);
 		kPTwoD = SmartDashboard.getNumber("kPTwoD Value: ", kPTwoD);
 		kITwoD = SmartDashboard.getNumber("kITwoD Value: ", kITwoD);
@@ -410,22 +422,24 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		oneDProfiler.setTrajectory(new OneDimensionalTrajectorySimple(dist.get(Distance.Unit.FOOT), 
 				MAX_SPEED.get(Distance.Unit.FOOT, Time.Unit.SECOND),
 				MAX_SPEED.get(Distance.Unit.FOOT, Time.Unit.SECOND) * drivePercent, 
-				MAX_ACC.mul(drivePercent).get(Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND)));
+				MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND)));
 		oneDProfiler.enable();
 	}
 
 	public void enableTwoDProfiler(Distance xDist, Distance yDist, Angle endAng) {
-		twoDProfiler = new TwoDimensionalMotionProfilerPathfinder(this, this, 1 / MAX_SPEED.get(Distance.Unit.FOOT, Time.Unit.SECOND), kATwoD, kPTwoD, kITwoD, kDTwoD, kP_thetaTwoD,
-				MAX_SPEED.get(Distance.Unit.FOOT, Time.Unit.SECOND) * drivePercent, 
-				MAX_ACC.get(Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND) * drivePercent,
-				MAX_JERK.get(Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND) * drivePercent, 
-				TICKS_PER_REV_TEST, WHEEL_DIAMETER_INCHES / 12, WHEEL_BASE.get(Distance.Unit.FOOT), 
-				//TODO: Check to see if we should or shouldn't negate the path
-				true);
+		twoDProfiler = new TwoDimensionalMotionProfilerPathfinder(this, this, kVTwoD, kATwoD, kPTwoD, kITwoD, kDTwoD, kP_thetaTwoD,
+				//MAX_SPEED.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND) * drivePercent,
+				MAX_SPEED.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND) * 0.5, 
+
+				MAX_ACC.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND) * ACCEL_PERCENT,
+				MAX_JERK.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND) * ACCEL_PERCENT, 
+				TICKS_PER_REV_TEST, WHEEL_DIAMETER_INCHES / 12, WHEEL_BASE.get(Distance.Unit.DRIVE_ROTATION), 
+				false);
 		
 		Waypoint[] points = new Waypoint[] {
 			new Waypoint(0, 0, 0),
-			new Waypoint(xDist.get(Distance.Unit.FOOT), yDist.get(Distance.Unit.FOOT), endAng.get(Angle.Unit.RADIAN))
+			//new Waypoint(0.25, 0, 0),
+			new Waypoint(xDist.get(Distance.Unit.DRIVE_ROTATION), yDist.get(Distance.Unit.DRIVE_ROTATION), endAng.get(Angle.Unit.RADIAN))
 		};
 		
 		twoDProfiler.setTrajectory(points);

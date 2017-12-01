@@ -37,7 +37,7 @@ public class NavX implements Periodic {
             /* Communicate w/navX MXP via the MXP SPI Bus.                                     */
             /* Alternatively:  I2C.Port.kMXP, SPI.Port.kMXP or SerialPort.Port.kUSB     */
             /* See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details. */
-            ahrs = new AHRS(I2C.Port.kOnboard); 
+            ahrs = new AHRS(I2C.Port.kMXP); 
             navXSensor navx_sensor = new navXSensor(ahrs, "Drivetrain Orientation");
             orientation_history = new OrientationHistory(navx_sensor,
         		ahrs.getRequestedUpdateRate() * 10);

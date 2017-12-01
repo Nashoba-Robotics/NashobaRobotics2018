@@ -103,19 +103,16 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 			double prelimOutputLeft;
 			
 			if(enabled) {
+				double deltaT = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - lastTime;
+				
 				lastTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-
-			//	System.out.println("Enabled!");
-				//double prelimOutputLeft = 0;
-				//double prelimOutputRight = 0;
-				//source.pidGetRight();
-
+			
 				if (!this.negate) {
-					prelimOutputLeft = left.calculate((source.pidGetLeft() - initialPositionLeft)/(1 / (wheelDiameter * Math.PI * .0254)) /*Rotations per meter*/);
-					prelimOutputRight = -right.calculate(-(source.pidGetRight() - initialPositionRight) / (1 / (wheelDiameter * Math.PI * .0254)) /*Rotations per meter*/);
+					prelimOutputLeft = left.calculate((source.pidGetLeft() - initialPositionLeft));
+					prelimOutputRight = right.calculate((source.pidGetRight() - initialPositionRight));
 				} else {
-					prelimOutputRight = -left.calculate(-(source.pidGetLeft() - initialPositionLeft)/(1 / (wheelDiameter * Math.PI * .0254)) /*Rotations per meter*/);
-					prelimOutputLeft = right.calculate((source.pidGetRight() - initialPositionRight) / (1 / (wheelDiameter * Math.PI * .0254)) /*Rotations per meter*/);
+					prelimOutputRight = -left.calculate(-(source.pidGetLeft() - initialPositionLeft));
+					prelimOutputLeft = -right.calculate(-(source.pidGetRight() - initialPositionRight));
 				}
 				
 				double currentHeading = -NavX.getInstance().getYaw().get(Angle.Unit.DEGREE);
@@ -125,7 +122,6 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 				double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - currentHeading);
 				
 				double headingAdjustment = -kp_theta * angleDifference;
-				//double headingAdjustment = 0;
 				
 				double outputLeft = prelimOutputLeft + headingAdjustment;
 				double outputRight = prelimOutputRight + headingAdjustment;
@@ -141,23 +137,9 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 				
 				if(spot > 0) {
 					SmartDashboard.putString("Motion Profiler Angle", Pathfinder.boundHalfDegrees(currentHeading)+ " : " + Pathfinder.boundHalfDegrees(desiredHeading) + " : " + Pathfinder.boundHalfDegrees(Pathfinder.r2d(modifier.getLeftTrajectory().get(spot).heading)));
-					SmartDashboard.putString("Motion Profiler X Left String",(source.pidGetLeft() - initialPositionLeft) / ((1 / (wheelDiameter * Math.PI * .0254)) /*Rotations per meter*/) + " : " + modifier.getLeftTrajectory().get(spot).position);
-					SmartDashboard.putString("Motion Profiler X Right String", -(source.pidGetRight() - initialPositionRight) / (1 / (wheelDiameter * Math.PI * .0254)) /*Rotations per meter*/ + " : " + modifier.getRightTrajectory().get(spot).position);
+					SmartDashboard.putString("Motion Profiler X Left String",(source.pidGetLeft() - initialPositionLeft) + " : " + modifier.getLeftTrajectory().get(spot).position);
+					SmartDashboard.putString("Motion Profiler X Right String", (source.pidGetRight() - initialPositionRight) + " : " + modifier.getRightTrajectory().get(spot).position);
 				}
-				
-				
-				/*
-				if(place < modifier.getLeftTrajectory().length()) {
-					SmartDashboard.putString("Motion Profiler X Left String",(source.pidGetLeft() - initialPositionLeft) / 3.581 + " : " + modifier.getLeftTrajectory().get(place).x);
-					SmartDashboard.putString("Motion Profiler X Right String", -(source.pidGetRight() - initialPositionRight) / 3.581 + " : " + modifier.getRightTrajectory().get(place).position);
-					//SmartDashboard.putString("Motion Profiler Right Position Testing", source.pidGetRight() + ":" + initialPositionRight);
-					//SmartDashboard.putString("Motion Profiler Right Position Testing Part 2", (source.pidGetRight()) / 3.581 + ":" + (initialPositionRight) / 3.581);
-				}
-				*/
-				
-				double deltaT = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - lastTime;
-				
-				//System.out.println("Time since last update: " + deltaT);
 	
 				SmartDashboard.putNumber("Delta T", deltaT);
 			}
