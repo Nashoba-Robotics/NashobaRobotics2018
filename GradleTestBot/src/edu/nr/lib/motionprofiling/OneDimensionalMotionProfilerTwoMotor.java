@@ -17,7 +17,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	
 	//In milliseconds
 	private final long period;
-	private static final long defaultPeriod = 5; //200 Hz 
+	private static final long defaultPeriod = 10; //200 Hz 
 	
 	private double prevTime;
 	private double startTime;
@@ -55,7 +55,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		this.initialPositionRight = source.pidGetRight();
 		this.gyroCorrection = new GyroCorrection();
 		reset();
-		timer.schedule(this, 0, this.period);
+		timer.scheduleAtFixedRate(this, 0, this.period);
 	}
 	
 	public OneDimensionalMotionProfilerTwoMotor(DoublePIDOutput out, DoublePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta) {
@@ -69,7 +69,8 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	public void run() {
 		if(enabled) {
 			double dt = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - prevTime;
-			
+			prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+			System.out.println(dt*1000);
 			double currentTimeSinceStart = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime;
 
 			double velocityGoal = trajectory.getGoalVelocity(currentTimeSinceStart);
@@ -77,7 +78,6 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 			double accelGoal = trajectory.getGoalAccel(currentTimeSinceStart);
 			
 			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
-			System.out.println(gyroCorrection.getAngleError().get(Angle.Unit.DEGREE));
 			//double headingAdjustment = 0;
 			
 			double errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
@@ -122,22 +122,20 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 					outputRight = -Math.max(-prelimOutputRight, -headingAdjustment);
 				}
 			}
-
+			
 			out.pidWrite(outputLeft, outputRight);
 			
-			source.setPIDSourceType(PIDSourceType.kRate);
+			//source.setPIDSourceType(PIDSourceType.kRate);
 			//SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + outputLeft * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()) + ":" + Drive.getInstance().leftMotorSetpoint);
 			//SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + outputRight * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()) + ":" + Drive.getInstance().rightMotorSetpoint);
 			//SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + outputLeft * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()));
 			//SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + outputRight * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()));
-			SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + velocityGoal);
-			SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + velocityGoal);
-			source.setPIDSourceType(PIDSourceType.kDisplacement);
-			SmartDashboard.putString("Motion Profiler X Left", source.pidGetLeft() + ":" + (positionGoal + initialPositionLeft) + ":" + errorLeft);
-			SmartDashboard.putString("Motion Profiler X Right", source.pidGetRight() + ":" + (positionGoal + initialPositionRight) + ":" + errorRight);
+			//SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + velocityGoal);
+			//SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + velocityGoal);
+			//source.setPIDSourceType(PIDSourceType.kDisplacement);
+			//SmartDashboard.putString("Motion Profiler X Left", source.pidGetLeft() + ":" + (positionGoal + initialPositionLeft) + ":" + errorLeft);
+			//SmartDashboard.putString("Motion Profiler X Right", source.pidGetRight() + ":" + (positionGoal + initialPositionRight) + ":" + errorRight);
 		}
-		
-		prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 	}
 		
 	/**

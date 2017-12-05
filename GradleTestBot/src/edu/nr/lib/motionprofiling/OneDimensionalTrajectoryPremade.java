@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class OneDimensionalTrajectoryPremade implements OneDimensionalTrajectory {
 
-	//The values in the position, velocity, and acceleration lists
-	//are offset by the period.
+	// The values in the position, velocity, and acceleration lists
+	// are offset by the period.
 	// That is, the first value in the list is at time 0,
 	// the second value in the list is at time $period,
 	// the third value in the list is at time 2*$period,
