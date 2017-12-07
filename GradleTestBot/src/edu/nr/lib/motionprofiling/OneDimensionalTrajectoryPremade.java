@@ -15,10 +15,7 @@ public class OneDimensionalTrajectoryPremade implements OneDimensionalTrajectory
 	private final ArrayList<Double> velocityList;
 	private final ArrayList<Double> accelerationList;
 	
-	private final double maxPossibleVelocity;
-	
-	public OneDimensionalTrajectoryPremade(double maxPossibleVelocity, ArrayList<Double> positionList, ArrayList<Double> velocityList, ArrayList<Double> accelerationList, double period) {
-		this.maxPossibleVelocity = maxPossibleVelocity;
+	public OneDimensionalTrajectoryPremade(ArrayList<Double> positionList, ArrayList<Double> velocityList, ArrayList<Double> accelerationList, double period) {
 		this.positionList = positionList;
 		this.velocityList = velocityList;
 		this.accelerationList = accelerationList;
@@ -47,11 +44,6 @@ public class OneDimensionalTrajectoryPremade implements OneDimensionalTrajectory
 			return getEndAcceleration();
 		}
 		return accelerationList.get((int) (time/period));
-	}
-
-	@Override
-	public double getMaxPossibleVelocity() {
-		return maxPossibleVelocity;
 	}
 
 	@Override
