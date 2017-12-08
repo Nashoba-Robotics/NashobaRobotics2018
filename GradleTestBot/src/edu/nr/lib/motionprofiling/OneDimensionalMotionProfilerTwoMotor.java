@@ -42,7 +42,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		this.out = out;
 		this.source = source;
 		this.period = period;
-		this.trajectory = new OneDimensionalTrajectorySimple(0,1,1,1);
+		this.trajectory = new OneDimensionalTrajectorySimple(0,1,1);
 		timer = new Timer();
 		this.source.setPIDSourceType(PIDSourceType.kDisplacement);
 		this.ka = ka;
