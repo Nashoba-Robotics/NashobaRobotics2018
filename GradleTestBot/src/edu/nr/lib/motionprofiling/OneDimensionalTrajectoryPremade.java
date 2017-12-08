@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class OneDimensionalTrajectoryPremade implements OneDimensionalTrajectory {
 
-	//The values in the position, velocity, and acceleration lists
-	//are offset by the period.
+	// The values in the position, velocity, and acceleration lists
+	// are offset by the period.
 	// That is, the first value in the list is at time 0,
 	// the second value in the list is at time $period,
 	// the third value in the list is at time 2*$period,
@@ -15,10 +15,7 @@ public class OneDimensionalTrajectoryPremade implements OneDimensionalTrajectory
 	private final ArrayList<Double> velocityList;
 	private final ArrayList<Double> accelerationList;
 	
-	private final double maxPossibleVelocity;
-	
-	public OneDimensionalTrajectoryPremade(double maxPossibleVelocity, ArrayList<Double> positionList, ArrayList<Double> velocityList, ArrayList<Double> accelerationList, double period) {
-		this.maxPossibleVelocity = maxPossibleVelocity;
+	public OneDimensionalTrajectoryPremade(ArrayList<Double> positionList, ArrayList<Double> velocityList, ArrayList<Double> accelerationList, double period) {
 		this.positionList = positionList;
 		this.velocityList = velocityList;
 		this.accelerationList = accelerationList;
@@ -47,11 +44,6 @@ public class OneDimensionalTrajectoryPremade implements OneDimensionalTrajectory
 			return getEndAcceleration();
 		}
 		return accelerationList.get((int) (time/period));
-	}
-
-	@Override
-	public double getMaxPossibleVelocity() {
-		return maxPossibleVelocity;
 	}
 
 	@Override

@@ -32,14 +32,14 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 	
 	private double ka, kp, ki, kd, kv, kp_theta;
 	
-	private double initialPositionLeft;
-	private double initialPositionRight;
+	public static double initialPositionLeft;
+	public static double initialPositionRight;
 	
 	private boolean negate;
 	
 	private Trajectory trajectory;
 	private Trajectory.Config trajectoryConfig;
-	private TankModifier modifier;
+	public static TankModifier modifier;
 	
 	GyroCorrection gyroCorrection;
 	
@@ -54,6 +54,13 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 
 	double timeSinceStart = 0;
 	double lastTime = 0;
+	
+	public static double outputLeft = 0;
+	public static double outputRight = 0;
+	
+	public static int index = 0;
+	public static double currentHeading = 0;
+	public static double desiredHeading = 0;
 		
 	public TwoDimensionalMotionProfilerPathfinder(DoublePIDOutput out, DoublePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, double max_velocity, double max_acceleration, double max_jerk, int encoderTicksPerRevolution, double wheelDiameter, double wheelBase, long period, boolean negate) {
 		this.out = out;
@@ -107,6 +114,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 				double deltaT = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - lastTime;
 				
 				lastTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+				System.out.println(deltaT*1000);
 			
 				if (!this.negate) {
 					prelimOutputLeft = left.calculate((source.pidGetLeft() - initialPositionLeft));
@@ -116,33 +124,22 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 					prelimOutputLeft = -right.calculate(-(source.pidGetRight() - initialPositionRight));
 				}
 				
-				double currentHeading = -Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE);
+				currentHeading = -Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE);
 				//double currentHeading = -gyroCorrection.getAngleErrorDegrees();
-				double desiredHeading = Pathfinder.r2d(left.getHeading());
+				desiredHeading = Pathfinder.r2d(left.getHeading());
 				
 				double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - currentHeading);
 				
 				double headingAdjustment = -kp_theta * angleDifference;
 				
-				double outputLeft = prelimOutputLeft + headingAdjustment;
-				double outputRight = prelimOutputRight + headingAdjustment;
+				outputLeft = prelimOutputLeft + headingAdjustment;
+				outputRight = prelimOutputRight + headingAdjustment;
 								
 				out.pidWrite(outputLeft, outputRight);
 				
-				SmartDashboard.putNumber("Output Left", outputLeft);
-				SmartDashboard.putNumber("Output Right", outputRight);
-				
 				int place = (int)((edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - timeSinceStart) * 1000 / this.period);
 				
-				int spot = Math.min(place, modifier.getLeftTrajectory().length() - 1);
-				
-				if(spot > 0) {
-					SmartDashboard.putString("Motion Profiler Angle", Pathfinder.boundHalfDegrees(currentHeading)+ " : " + Pathfinder.boundHalfDegrees(desiredHeading) + " : " + Pathfinder.boundHalfDegrees(Pathfinder.r2d(modifier.getLeftTrajectory().get(spot).heading)));
-					SmartDashboard.putString("Motion Profiler X Left String",(source.pidGetLeft() - initialPositionLeft) + " : " + modifier.getLeftTrajectory().get(spot).position);
-					SmartDashboard.putString("Motion Profiler X Right String", (source.pidGetRight() - initialPositionRight) + " : " + modifier.getRightTrajectory().get(spot).position);
-				}
-	
-				SmartDashboard.putNumber("Delta T", deltaT);
+				index = Math.min(place, modifier.getLeftTrajectory().length() - 1);
 			}
 	}
 		
@@ -236,5 +233,12 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 	public void setKP_theta(double kp_theta) {
 		this.kp_theta = kp_theta;
 	}
+	
+	//SmartDashboard.putNumber("Output Left", outputLeft);
+	//SmartDashboard.putNumber("Output Right", outputRight);
+	//index > 0
+	//SmartDashboard.putString("Motion Profiler Angle", Pathfinder.boundHalfDegrees(currentHeading)+ " : " + Pathfinder.boundHalfDegrees(desiredHeading) + " : " + Pathfinder.boundHalfDegrees(Pathfinder.r2d(modifier.getLeftTrajectory().get(spot).heading)));
+	//SmartDashboard.putString("Motion Profiler X Left String",(source.pidGetLeft() - initialPositionLeft) + " : " + modifier.getLeftTrajectory().get(spot).position);
+	//SmartDashboard.putString("Motion Profiler X Right String", (source.pidGetRight() - initialPositionRight) + " : " + modifier.getRightTrajectory().get(spot).position);
 	
 }

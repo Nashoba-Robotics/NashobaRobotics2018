@@ -2,7 +2,6 @@ package edu.nr.lib.motionprofiling;
 
 public class OneDimensionalTrajectorySimple implements OneDimensionalTrajectory {
 	
-	double maxPossibleVelocity;
 	double maxUsedVelocity;
 	double maxUsedAccel;
 	
@@ -16,17 +15,15 @@ public class OneDimensionalTrajectorySimple implements OneDimensionalTrajectory 
 	
 	boolean triangleShaped;
 		
-	public OneDimensionalTrajectorySimple(double goalPositionDelta, double maxPossibleVelocity, double maxUsedVelocity, double maxUsedAccel) {
+	public OneDimensionalTrajectorySimple(double goalPositionDelta, double maxUsedVelocity, double maxUsedAccel) {
 		this.endPosition = goalPositionDelta;
 		this.startPosition = 0;
 		if(goalPositionDelta < 0) {
 			maxUsedVelocity *= -1;
-			maxPossibleVelocity *= -1;
 			maxUsedAccel *= -1; 
 		}
 		
 		this.maxUsedVelocity = maxUsedVelocity;
-		this.maxPossibleVelocity = maxPossibleVelocity;
 		this.maxUsedAccel = maxUsedAccel; 
 		
 		timeAccelPlus = timeAccelMinus = maxUsedVelocity / maxUsedAccel;
@@ -120,17 +117,9 @@ public class OneDimensionalTrajectorySimple implements OneDimensionalTrajectory 
 		return 0;
 	}
 	
+	@Override
 	public double getMaxUsedVelocity() {
 		return maxUsedVelocity;
-	}
-
-	public double getMaxAccel() {
-		return maxUsedAccel;
-	}
-
-	@Override
-	public double getMaxPossibleVelocity() {
-		return maxPossibleVelocity;
 	}
 
 	@Override

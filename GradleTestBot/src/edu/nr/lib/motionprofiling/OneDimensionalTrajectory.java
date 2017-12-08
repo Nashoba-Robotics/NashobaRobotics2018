@@ -9,8 +9,6 @@ public interface OneDimensionalTrajectory {
 	public double getGoalAccel(double time);
 	
 	public double getGoalHeading(double time);
-
-	public double getMaxPossibleVelocity();
 	
 	public double getMaxUsedVelocity();
 
