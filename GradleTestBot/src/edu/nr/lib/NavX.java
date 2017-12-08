@@ -17,8 +17,6 @@ public class NavX implements Periodic {
     OrientationHistory orientation_history;
     
     double last_write_timestamp = 0;
-
-
 	
 	public static NavX getInstance() {
 		init();

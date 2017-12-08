@@ -109,4 +109,8 @@ public class NRMath {
 		return new Distance(Math.max(a.getDefault(), b.getDefault()),
 				Distance.Unit.defaultUnit);
 	}
+	
+	public static double round(double value, double decimals) {
+		return Math.round(value * Math.pow(10.0, decimals)) / Math.pow(10.0, decimals);
+	}
 }

@@ -6,6 +6,7 @@ import java.util.TimerTask;
 
 import edu.nr.lib.GyroCorrection;
 import edu.nr.lib.NavX;
+import edu.nr.lib.Pigeon;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.units.Angle;
@@ -115,7 +116,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 					prelimOutputLeft = -right.calculate(-(source.pidGetRight() - initialPositionRight));
 				}
 				
-				double currentHeading = -NavX.getInstance().getYaw().get(Angle.Unit.DEGREE);
+				double currentHeading = -Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE);
 				//double currentHeading = -gyroCorrection.getAngleErrorDegrees();
 				double desiredHeading = Pathfinder.r2d(left.getHeading());
 				
@@ -183,7 +184,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 		gyroCorrection.clearInitialValue();
 		timeSinceStart = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 		lastTime = timeSinceStart;
-		NavX.getInstance().reset();
+		Pigeon.getInstance().reset();
 	}
 	
 	/**

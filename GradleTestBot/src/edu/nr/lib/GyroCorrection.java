@@ -10,23 +10,21 @@ public class GyroCorrection
 	
 	private Angle initialAngle;
 	Angle goalAngle;
-	NavX navx;
+	Pigeon pigeon;
 	
-	public GyroCorrection(Angle angle, NavX navx) {
-		if(navx == null) {
-			navx = NavX.getInstance();
-		}
-		this.navx = navx;
+	public GyroCorrection(Angle angle, Pigeon pigeon) {
+		pigeon = Pigeon.getInstance();
+		this.pigeon = pigeon;
 		goalAngle = angle;
-		initialAngle = navx.getYaw();
+		initialAngle = pigeon.getYaw();
 	}
 	
 	public GyroCorrection(Angle angle) {
-		this(angle, NavX.getInstance());
+		this(angle, Pigeon.getInstance());
 	}
 	
-	public GyroCorrection(NavX navx) {
-		this(Angle.ZERO, navx);
+	public GyroCorrection(Pigeon pigeon) {
+		this(Angle.ZERO, pigeon);
 	}
 	
 	public GyroCorrection() {
@@ -53,7 +51,7 @@ public class GyroCorrection
 		}
 		
 		double turn = getAngleError().get(Angle.Unit.DEGREE) * kP_theta;
-    	if(turn<0)
+    	if(turn < 0)
     		turn = Math.max(-MAX_ANGLE_CORRECTION_SPEED, turn);
     	else
     		turn = Math.min(MAX_ANGLE_CORRECTION_SPEED, turn);
@@ -80,7 +78,7 @@ public class GyroCorrection
 			reset();
 			initialized = true;
 		}
-		Angle currentAngle = navx.getYaw();
+		Angle currentAngle = pigeon.getYaw();
 				
 		//Error is just based off initial angle
     	return currentAngle.sub(initialAngle).add(goalAngle);
@@ -92,7 +90,7 @@ public class GyroCorrection
 	 */
 	public void reset()
 	{
-		initialAngle = navx.getYaw();
+		initialAngle = pigeon.getYaw();
 	}		
 	/**
 	 * Causes the initial angle value to be reset the next time getTurnValue() is called. Use this in the end() and interrupted()
