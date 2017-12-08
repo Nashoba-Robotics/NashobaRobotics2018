@@ -5,6 +5,7 @@ import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 
 import edu.nr.lib.NavX;
+import edu.nr.lib.Pigeon;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.driving.DriveTypeCalculations;
 import edu.nr.lib.interfaces.DoublePIDOutput;
@@ -376,7 +377,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		SmartDashboard.putNumber("Drive Left Voltage", leftDrive.getOutputVoltage());
 		SmartDashboard.putNumber("Drive Right Voltage", rightDrive.getOutputVoltage());
 		
-		SmartDashboard.putNumber("NavX Yaw", NavX.getInstance().getYaw().get(Angle.Unit.DEGREE));
+		SmartDashboard.putNumber("Pigeon Yaw", Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE));
 		
 		leftDrive.setP(SmartDashboard.getNumber("Left P Value: ", P_LEFT));
 		leftDrive.setI(SmartDashboard.getNumber("Left I Value: ", I_LEFT));
@@ -420,7 +421,6 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public void enableOneDProfiler(Distance dist) {
 		oneDProfiler = new OneDimensionalMotionProfilerTwoMotor(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
 		oneDProfiler.setTrajectory(new OneDimensionalTrajectorySimple(dist.get(Distance.Unit.FOOT), 
-				MAX_SPEED.get(Distance.Unit.FOOT, Time.Unit.SECOND),
 				MAX_SPEED.get(Distance.Unit.FOOT, Time.Unit.SECOND) * drivePercent, 
 				MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND)));
 		oneDProfiler.enable();
@@ -428,11 +428,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 
 	public void enableTwoDProfiler(Distance xDist, Distance yDist, Angle endAng) {
 		twoDProfiler = new TwoDimensionalMotionProfilerPathfinder(this, this, kVTwoD, kATwoD, kPTwoD, kITwoD, kDTwoD, kP_thetaTwoD,
-				//MAX_SPEED.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND) * drivePercent,
-				MAX_SPEED.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND) * 0.5, 
-
-				MAX_ACC.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND) * ACCEL_PERCENT,
-				MAX_JERK.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND) * ACCEL_PERCENT, 
+				MAX_SPEED.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND) * drivePercent, 
+				MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND),
+				MAX_JERK.mul(ACCEL_PERCENT).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND) * ACCEL_PERCENT, 
 				TICKS_PER_REV_TEST, WHEEL_DIAMETER_INCHES / 12, WHEEL_BASE.get(Distance.Unit.DRIVE_ROTATION), 
 				false);
 		
