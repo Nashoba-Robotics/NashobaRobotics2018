@@ -32,27 +32,31 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 		calcTimes();
 	}
 
+	/**
+	 * Calculates times of timeRamp, timeAccel, and timeCruise
+	 */
 	private void calcTimes() {
 		timeRamp = derivRampFunc(accelMax);
 		double dVr = rampFunc(timeRamp);
 		timeAccel = (velMax - (2 * dVr)) / accelMax;
-		timeCruise = endPosition - (2 * (dVr * timeAccel - (0.5 * timeAccel * (velMax - 2 * dVr)))) - (2 * integRampFunc(0, timeRamp)) - (2 * (integXYRefRampFunc(0, timeRamp) + timeRamp * (velMax - dVr)));
+		timeCruise = (endPosition - 2 * integRampFunc(0, timeRamp) - 2 * timeAccel * dVr - timeAccel * (velMax - 2 * dVr) - 2 * timeRamp * (velMax - dVr) - 2 * integXYRefRampFunc(0, timeRamp)) / velMax;
+		totalTime = 4 * timeRamp + 2 * timeAccel + timeCruise;
 	}
 	
 	public double rampFunc(double time) {
-		return 0;
+		return Math.pow(time, 2);
 	}
 	
 	public double xyRefRampFunc(double time) {
-		return 0;
+		return -rampFunc(timeRamp - time) + rampFunc(timeRamp);
 	}
 	
 	public double integRampFunc(double time1, double time2) {
-		return 0;
+		return 1 / 3 * Math.pow(time2, 3) - 1 /3 * Math.pow(time1, 3);
 	}
 	
 	public double integXYRefRampFunc(double time1, double time2) {
-		return 0;
+		return rampFunc(timeRamp) * (time2 - time1) - (1 / 3 * Math.pow(timeRamp - time2, 3) - 1 / 3 * Math.pow(timeRamp - time1, 3));
 	}
 	
 	/**
@@ -61,11 +65,11 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	 * @return time when derivative equals acceleration
 	 */
 	public double derivRampFunc(double accel) {
-		return 0;
+		return 0.5 * accel; //accel = 2 * time since velocity = x^2;
 	}
 	
 	public double derivXYRefRampFunc(double accel) {
-		return 0;
+		return timeRamp - (accel / 2); //accel = 2(timeRamp - time)
 	}
 	
 	public double getGoalVelocity(double time) {
@@ -80,7 +84,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 		} else if (time < 3 * timeRamp + timeAccel + timeCruise) {
 			return xyRefRampFunc((timeCruise + 3 * timeRamp + timeAccel) - time) + (accelMax * timeAccel) + rampFunc(timeRamp);
 		} else if (time < 3 * timeRamp + 2 * timeAccel + timeCruise) {
-			return -accelMax * (time - 3 * timeRamp - timeAccel - timeCruise) + rampFunc(timeRamp);
+			return -accelMax * (time - 3 * timeRamp - timeAccel - timeCruise) + rampFunc(timeRamp) + (accelMax * timeAccel);
 		} else if (time < 4 * timeRamp + 2 * timeAccel + timeCruise) {
 			return rampFunc(timeRamp * 4 + timeAccel * 2 + timeCruise - time);
 		} else {
