@@ -1,5 +1,7 @@
 package edu.nr.lib.motionprofiling;
 
+import java.util.ArrayList;
+
 public class OneDimensionalTrajectorySimple implements OneDimensionalTrajectory {
 	
 	double maxUsedVelocity;
@@ -137,5 +139,31 @@ public class OneDimensionalTrajectorySimple implements OneDimensionalTrajectory 
 		return 0;
 	}
 
+	@Override
+	public ArrayList<Double> loadPosPoints(double period) {
+		ArrayList<Double> posPoints = new ArrayList<Double>();
+		for (int time = 0; time < totalTime; time += period) {
+			posPoints.add(getGoalPosition(time));
+		}
+		return posPoints;
+	}
 	
+	@Override
+	public ArrayList<Double> loadVelPoints(double period) {
+		ArrayList<Double> velPoints = new ArrayList<Double>();
+		for (int time = 0; time < totalTime; time += period) {
+			velPoints.add(getGoalVelocity(time));
+		}
+		return velPoints;
+	}
+	
+	@Override
+	public ArrayList<Double> loadAccelPoints(double period) {
+		ArrayList<Double> accelPoints = new ArrayList<Double>();
+		for (int time = 0; time < totalTime; time += period) {
+			accelPoints.add(getGoalVelocity(time));
+		}
+		return accelPoints;
+	}
+
 }

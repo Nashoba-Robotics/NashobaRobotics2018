@@ -377,7 +377,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		SmartDashboard.putNumber("Drive Left Voltage", leftDrive.getOutputVoltage());
 		SmartDashboard.putNumber("Drive Right Voltage", rightDrive.getOutputVoltage());
 		
-		SmartDashboard.putNumber("Pigeon Yaw", Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE));
+		SmartDashboard.putNumber("Gyro Yaw", Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE));
 		
 		leftDrive.setP(SmartDashboard.getNumber("Left P Value: ", P_LEFT));
 		leftDrive.setI(SmartDashboard.getNumber("Left I Value: ", I_LEFT));
