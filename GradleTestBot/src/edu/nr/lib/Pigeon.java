@@ -35,7 +35,7 @@ public class Pigeon implements Periodic {
 	}
 	
 	public Pigeon() {
-		talonID = 0;
+		talonID = 3;
 		talon = new CANTalon(talonID);
 		pigeon = new PigeonImu(talon);
 		
