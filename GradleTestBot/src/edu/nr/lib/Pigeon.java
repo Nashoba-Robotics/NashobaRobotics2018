@@ -14,7 +14,7 @@ public class Pigeon implements Periodic {
 	
 	private PigeonImu pigeon;
 	private CANTalon talon;
-	private int talonID;
+	private int talonID = 3;
 	
 	private double[] yawPitchRoll;
 	
@@ -35,7 +35,6 @@ public class Pigeon implements Periodic {
 	}
 	
 	public Pigeon() {
-		talonID = 0;
 		talon = new CANTalon(talonID);
 		pigeon = new PigeonImu(talon);
 		

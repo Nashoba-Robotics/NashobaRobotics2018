@@ -1,5 +1,7 @@
 package edu.nr.lib.motionprofiling;
 
+import java.util.ArrayList;
+
 public interface OneDimensionalTrajectory {
 
 	public double getGoalVelocity(double time);
@@ -15,4 +17,11 @@ public interface OneDimensionalTrajectory {
 	public double getMaxUsedAccel();
 
 	public double getEndPosition();
+
+	public ArrayList<Double> loadPosPoints(double period);
+
+	public ArrayList<Double> loadVelPoints(double period);
+
+	public ArrayList<Double> loadAccelPoints(double period);
+
 }

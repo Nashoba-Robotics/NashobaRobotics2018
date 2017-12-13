@@ -1,17 +1,19 @@
 package edu.nr.lib.motionprofiling;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import edu.nr.lib.GyroCorrection;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
+import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.lib.units.Angle;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements OneDimensionalMotionProfiler  {
+public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements OneDimensionalMotionProfiler, SmartDashboardSource {
 
 	private final Timer timer;
 	
@@ -36,6 +38,10 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	private OneDimensionalTrajectory trajectory;
 	
 	GyroCorrection gyroCorrection;
+	
+	private ArrayList<Double> posPoints;
+	private ArrayList<Double> velPoints;
+	private ArrayList<Double> accelPoints;
 
 		
 	public OneDimensionalMotionProfilerTwoMotor(DoublePIDOutput out, DoublePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, long period) {
@@ -152,6 +158,11 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	public void enable() {
 		//System.out.println("enabled");
 		reset();
+		if (trajectory instanceof OneDimensionalTrajectoryRamped) {
+			posPoints = trajectory.loadPosPoints(period);
+			velPoints = trajectory.loadVelPoints(period);
+			accelPoints = trajectory.loadAccelPoints(period);
+		}
 		enabled = true;
 	}
 	
@@ -207,5 +218,10 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 
 	public void setKP_theta(double kp_theta) {
 		this.kp_theta = kp_theta;
+	}
+
+	@Override
+	public void smartDashboardInfo() {
+		
 	}
 }
