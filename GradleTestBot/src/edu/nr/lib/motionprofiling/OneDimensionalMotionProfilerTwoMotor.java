@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import edu.nr.lib.GyroCorrection;
+import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.interfaces.SmartDashboardSource;

@@ -4,10 +4,12 @@ import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 
-import edu.nr.lib.NavX;
-import edu.nr.lib.Pigeon;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.driving.DriveTypeCalculations;
+import edu.nr.lib.gyro.Gyro;
+import edu.nr.lib.gyro.NavX;
+import edu.nr.lib.gyro.Pigeon;
+import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotor;
@@ -377,7 +379,11 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		SmartDashboard.putNumber("Drive Left Voltage", leftDrive.getOutputVoltage());
 		SmartDashboard.putNumber("Drive Right Voltage", rightDrive.getOutputVoltage());
 		
-		SmartDashboard.putNumber("Gyro Yaw", Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE));
+		if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
+			SmartDashboard.putNumber("Gyro Yaw", NavX.getInstance().getYaw().get(Angle.Unit.DEGREE));
+		} else {
+			SmartDashboard.putNumber("Gyro Yaw", Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE));
+		}
 		
 		leftDrive.setP(SmartDashboard.getNumber("Left P Value: ", P_LEFT));
 		leftDrive.setI(SmartDashboard.getNumber("Left I Value: ", I_LEFT));
