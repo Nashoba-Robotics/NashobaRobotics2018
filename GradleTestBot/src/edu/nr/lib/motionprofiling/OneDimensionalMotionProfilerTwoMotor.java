@@ -74,14 +74,24 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	
 	@Override
 	public void run() {
-		if(enabled) {
+		if(enabled && posPoints.size() > 0 && velPoints.size() > 0 && accelPoints.size() > 0) {
 			double dt = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - prevTime;
 			prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 			//System.out.println(dt * 1000);
 			
-			double positionGoal = posPoints.get(loopIteration);
-			double velocityGoal = velPoints.get(loopIteration);
-			double accelGoal = accelPoints.get(loopIteration);
+			double positionGoal;
+			double velocityGoal;
+			double accelGoal;
+
+			if (loopIteration < posPoints.size()) {
+				positionGoal = posPoints.get(loopIteration);
+				velocityGoal = velPoints.get(loopIteration);
+				accelGoal = accelPoints.get(loopIteration);
+			} else {
+				positionGoal = posPoints.get(posPoints.size() - 1);
+				velocityGoal = 0;
+				accelGoal = 0;
+			}
 			
 			/*
 			double currentTimeSinceStart = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime;
@@ -138,6 +148,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 			
 			out.pidWrite(outputLeft, outputRight);
 			
+			loopIteration++;
 		}
 	}
 		
@@ -156,6 +167,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		//System.out.println("enabled");
 		reset();
 		posPoints = trajectory.loadPosPoints(period);
+		System.out.println(posPoints.size());
 		velPoints = trajectory.loadVelPoints(period);
 		accelPoints = trajectory.loadAccelPoints(period);
 		enabled = true;

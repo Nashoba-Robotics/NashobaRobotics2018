@@ -427,16 +427,16 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public void enableOneDProfiler(Distance dist) {
 		oneDProfiler = new OneDimensionalMotionProfilerTwoMotor(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
 		oneDProfiler.setTrajectory(new OneDimensionalTrajectorySimple(dist.get(Distance.Unit.FOOT), 
-				MAX_SPEED.get(Distance.Unit.FOOT, Time.Unit.SECOND) * drivePercent, 
+				MAX_SPEED.mul(drivePercent).get(Distance.Unit.FOOT, Time.Unit.SECOND), 
 				MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND)));
 		oneDProfiler.enable();
 	}
 
 	public void enableTwoDProfiler(Distance xDist, Distance yDist, Angle endAng) {
 		twoDProfiler = new TwoDimensionalMotionProfilerPathfinder(this, this, kVTwoD, kATwoD, kPTwoD, kITwoD, kDTwoD, kP_thetaTwoD,
-				MAX_SPEED.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND) * drivePercent, 
+				MAX_SPEED.mul(drivePercent).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND), 
 				MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND),
-				MAX_JERK.mul(ACCEL_PERCENT).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND) * ACCEL_PERCENT, 
+				MAX_JERK.mul(ACCEL_PERCENT).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND), 
 				TICKS_PER_REV_TEST, WHEEL_DIAMETER_INCHES / 12, WHEEL_BASE.get(Distance.Unit.DRIVE_ROTATION), 
 				false);
 		

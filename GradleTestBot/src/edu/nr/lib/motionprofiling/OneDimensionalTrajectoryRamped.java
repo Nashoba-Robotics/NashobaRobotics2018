@@ -7,6 +7,8 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	double velMax;
 	double accelMax;
 	
+	double velMaxUsed;
+	
 	double totalTime;
 	double timeRamp;
 	double timeAccel;
@@ -14,6 +16,10 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	
 	double endPosition;
 	double startPosition;
+	
+	ArrayList<Double> posPoints;
+	ArrayList<Double> velPoints;
+	ArrayList<Double> accelPoints;
 	
 	double direction;
 	
@@ -31,6 +37,10 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 		this.velMax = velMax;
 		this.accelMax = accelMax;
 		
+		posPoints = new ArrayList<Double>();
+		velPoints = new ArrayList<Double>();
+		accelPoints = new ArrayList<Double>();
+		
 		calcTimes();
 	}
 
@@ -38,10 +48,15 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	 * Calculates times of timeRamp, timeAccel, and timeCruise
 	 */
 	private void calcTimes() {
+		velMaxUsed = velMax;
 		timeRamp = flipDerivRampFunc(accelMax);
 		double dVr = rampFunc(timeRamp);
-		timeAccel = (velMax - (2 * dVr)) / accelMax;
-		timeCruise = (endPosition - 2 * integRampFunc(0, timeRamp) - 2 * timeAccel * dVr - timeAccel * (velMax - 2 * dVr) - 2 * timeRamp * (velMax - dVr) - 2 * integXYRefRampFunc(0, timeRamp)) / velMax;
+		timeAccel = (velMaxUsed - (2 * dVr)) / accelMax;
+		timeCruise = (endPosition - 2 * integRampFunc(0, timeRamp) - 2 * timeAccel * dVr - timeAccel * (velMaxUsed - 2 * dVr) - 2 * timeRamp * (velMaxUsed - dVr) - 2 * integXYRefRampFunc(0, timeRamp)) / velMaxUsed;
+		if (timeCruise < 0) {
+			
+		}
+		
 		totalTime = 4 * timeRamp + 2 * timeAccel + timeCruise;
 	}
 	
@@ -152,27 +167,27 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 
 	@Override
 	public ArrayList<Double> loadPosPoints(double period) {
-		ArrayList<Double> posPoints = new ArrayList<Double>();
-		for (int time = 0; time < totalTime; time += period) {
-			posPoints.add(getGoalPosition(time));
+		posPoints.clear();
+		for (int time = 0; time < Math.round(totalTime * 1000); time += period) {
+			posPoints.add(getGoalPosition(time / 1000.0));
 		}
 		return posPoints;
 	}
 	
 	@Override
 	public ArrayList<Double> loadVelPoints(double period) {
-		ArrayList<Double> velPoints = new ArrayList<Double>();
-		for (int time = 0; time < totalTime; time += period) {
-			velPoints.add(getGoalVelocity(time));
+		velPoints.clear();
+		for (int time = 0; time < Math.round(totalTime * 1000); time += period) {
+			velPoints.add(getGoalVelocity(time / 1000.0));
 		}
 		return velPoints;
 	}
 	
 	@Override
 	public ArrayList<Double> loadAccelPoints(double period) {
-		ArrayList<Double> accelPoints = new ArrayList<Double>();
-		for (int time = 0; time < totalTime; time += period) {
-			accelPoints.add(getGoalVelocity(time));
+		accelPoints.clear();
+		for (int time = 0; time < Math.round(totalTime * 1000); time += period) {
+			accelPoints.add(getGoalAccel(time / 1000.0));
 		}
 		return accelPoints;
 	}

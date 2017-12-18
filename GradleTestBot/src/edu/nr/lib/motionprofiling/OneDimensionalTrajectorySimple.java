@@ -15,9 +15,18 @@ public class OneDimensionalTrajectorySimple implements OneDimensionalTrajectory 
 	double endPosition;
 	double startPosition;
 	
+	ArrayList<Double> posPoints;
+	ArrayList<Double> velPoints;
+	ArrayList<Double> accelPoints;
+	
 	boolean triangleShaped;
 		
 	public OneDimensionalTrajectorySimple(double goalPositionDelta, double maxUsedVelocity, double maxUsedAccel) {
+		
+		posPoints = new ArrayList<Double>();
+		velPoints = new ArrayList<Double>();
+		accelPoints = new ArrayList<Double>();
+		
 		this.endPosition = goalPositionDelta;
 		this.startPosition = 0;
 		if(goalPositionDelta < 0) {
@@ -39,7 +48,7 @@ public class OneDimensionalTrajectorySimple implements OneDimensionalTrajectory 
 			timeAtCruise = cruiseDistance / maxUsedVelocity;
 		}
 		
-		System.out.println("Triangle shaped: " + triangleShaped);
+		//System.out.println("Triangle shaped: " + triangleShaped);
 		
 		totalTime = timeAccelMinus + timeAtCruise + timeAccelMinus;
 	}
@@ -141,27 +150,27 @@ public class OneDimensionalTrajectorySimple implements OneDimensionalTrajectory 
 
 	@Override
 	public ArrayList<Double> loadPosPoints(double period) {
-		ArrayList<Double> posPoints = new ArrayList<Double>();
-		for (int time = 0; time < totalTime; time += period) {
-			posPoints.add(getGoalPosition(time));
+		posPoints.clear();
+		for (int time = 0; time < Math.round(totalTime * 1000); time += period) {
+			posPoints.add(getGoalPosition(time / 1000.0));
 		}
 		return posPoints;
 	}
 	
 	@Override
 	public ArrayList<Double> loadVelPoints(double period) {
-		ArrayList<Double> velPoints = new ArrayList<Double>();
-		for (int time = 0; time < totalTime; time += period) {
-			velPoints.add(getGoalVelocity(time));
+		velPoints.clear();
+		for (int time = 0; time < Math.round(totalTime * 1000); time += period) {
+			velPoints.add(getGoalVelocity(time / 1000.0));
 		}
 		return velPoints;
 	}
 	
 	@Override
 	public ArrayList<Double> loadAccelPoints(double period) {
-		ArrayList<Double> accelPoints = new ArrayList<Double>();
-		for (int time = 0; time < totalTime; time += period) {
-			accelPoints.add(getGoalVelocity(time));
+		accelPoints.clear();
+		for (int time = 0; time < Math.round(totalTime * 1000); time += period) {
+			accelPoints.add(getGoalAccel(time / 1000.0));
 		}
 		return accelPoints;
 	}

@@ -1,5 +1,6 @@
 package edu.nr.lib;
 
+import edu.nr.lib.gyro.Pigeon;
 import edu.nr.lib.units.Angle;
 
 public class GyroCorrection
