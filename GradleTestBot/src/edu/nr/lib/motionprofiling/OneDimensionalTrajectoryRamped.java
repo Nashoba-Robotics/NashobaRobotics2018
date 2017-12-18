@@ -2,12 +2,15 @@ package edu.nr.lib.motionprofiling;
 
 import java.util.ArrayList;
 
+import edu.nr.lib.NRMath;
+
 public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory {
 	
 	double velMax;
 	double accelMax;
 	
 	double velMaxUsed;
+	double accelMaxUsed;
 	
 	double totalTime;
 	double timeRamp;
@@ -16,6 +19,8 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	
 	double endPosition;
 	double startPosition;
+	
+	double pow = 4.0;
 	
 	ArrayList<Double> posPoints;
 	ArrayList<Double> velPoints;
@@ -49,19 +54,29 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	 */
 	private void calcTimes() {
 		velMaxUsed = velMax;
+		accelMaxUsed = accelMax;
 		timeRamp = flipDerivRampFunc(accelMax);
 		double dVr = rampFunc(timeRamp);
 		timeAccel = (velMaxUsed - (2 * dVr)) / accelMax;
 		timeCruise = (endPosition - 2 * integRampFunc(0, timeRamp) - 2 * timeAccel * dVr - timeAccel * (velMaxUsed - 2 * dVr) - 2 * timeRamp * (velMaxUsed - dVr) - 2 * integXYRefRampFunc(0, timeRamp)) / velMaxUsed;
 		if (timeCruise < 0) {
-			
+			timeAccel = NRMath.quadratic(accelMax, 2 * timeRamp * accelMax + 2 * rampFunc(timeRamp), 
+					2 * integRampFunc(0, timeRamp) + 2 * integXYRefRampFunc(0, timeRamp) + 2 * timeRamp * rampFunc(timeRamp) - endPosition, true);
+			timeCruise = 0;
+			velMaxUsed = 2 * rampFunc(timeRamp) + timeAccel * accelMax;
+		}
+		if (timeAccel < 0) {
+			timeRamp = Math.pow(endPosition / 4, 1 / (pow + 1));
+			timeAccel = 0;
+			velMaxUsed = 2 * rampFunc(timeRamp);
+			accelMaxUsed = derivRampFunc(timeRamp);
 		}
 		
 		totalTime = 4 * timeRamp + 2 * timeAccel + timeCruise;
 	}
 	
 	public double rampFunc(double time) {
-		return Math.pow(time, 4.0);
+		return Math.pow(time, pow);
 	}
 	
 	public double xyRefRampFunc(double time) {
@@ -69,11 +84,11 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	}
 	
 	public double integRampFunc(double time1, double time2) {
-		return 1.0 / 5.0 * Math.pow(time2, 5.0) - 1.0 / 5.0 * Math.pow(time1, 5.0);
+		return 1.0 / (pow + 1) * Math.pow(time2, pow + 1) - 1.0 / (pow + 1) * Math.pow(time1, pow + 1);
 	}
 	
 	public double integXYRefRampFunc(double time1, double time2) {
-		return rampFunc(timeRamp) * (time2 - time1) - (1.0 / 5.0 * Math.pow(timeRamp - time2, 5.0) - 1.0 / 5.0 * Math.pow(timeRamp - time1, 5.0));
+		return rampFunc(timeRamp) * (time2 - time1) - (1.0 / (pow + 1) * Math.pow(timeRamp - time1, pow + 1) - 1.0 / (pow + 1) * Math.pow(timeRamp - time2, pow + 1));
 	}
 	
 	/**
@@ -82,7 +97,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	 * @return accel at specific time
 	 */
 	public double derivRampFunc(double time) {
-		return 4.0 * Math.pow(time, 3.0);
+		return pow * Math.pow(time, pow - 1);
 		
 	}
 	
@@ -92,7 +107,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	 * @return time when derivative equals acceleration
 	 */
 	public double flipDerivRampFunc(double accel) {
-		return Math.pow(accel / 4.0, 1.0 / 3.0); //accel = 2 * time since velocity = x^2;
+		return Math.pow(accel / pow, 1.0 / (pow - 1));
 	}
 	
 	/**
@@ -101,22 +116,22 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	 * @return accel at specific time
 	 */
 	public double derivXYRefRampFunc(double time) {
-		return (4 * Math.pow(timeRamp - time, 3));
+		return (pow * Math.pow(timeRamp - time, pow - 1));
 	}
 	
 	public double getGoalVelocity(double time) {
 		if (time < timeRamp) {
 			return rampFunc(time);
 		} else if (time < timeRamp + timeAccel) {
-			return rampFunc(timeRamp) + accelMax * (time - timeRamp);
+			return rampFunc(timeRamp) + accelMaxUsed * (time - timeRamp);
 		} else if (time < 2 * timeRamp + timeAccel) {
-			return rampFunc(timeRamp) + (accelMax * timeAccel) + xyRefRampFunc(time - timeAccel - timeRamp);
+			return rampFunc(timeRamp) + (accelMaxUsed * timeAccel) + xyRefRampFunc(time - timeAccel - timeRamp);
 		} else if (time < 2 * timeRamp + timeAccel + timeCruise) {
-			return velMax;
+			return velMaxUsed;
 		} else if (time < 3 * timeRamp + timeAccel + timeCruise) {
-			return xyRefRampFunc((timeCruise + 3 * timeRamp + timeAccel) - time) + (accelMax * timeAccel) + rampFunc(timeRamp);
+			return xyRefRampFunc((timeCruise + 3 * timeRamp + timeAccel) - time) + (accelMaxUsed * timeAccel) + rampFunc(timeRamp);
 		} else if (time < 3 * timeRamp + 2 * timeAccel + timeCruise) {
-			return -accelMax * (time - 3 * timeRamp - timeAccel - timeCruise) + rampFunc(timeRamp) + (accelMax * timeAccel);
+			return -accelMaxUsed * (time - 3 * timeRamp - timeAccel - timeCruise) + rampFunc(timeRamp) + (accelMaxUsed * timeAccel);
 		} else if (time < 4 * timeRamp + 2 * timeAccel + timeCruise) {
 			return rampFunc(timeRamp * 4 + timeAccel * 2 + timeCruise - time);
 		} else {
@@ -128,18 +143,17 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 		if (time < timeRamp) {
 			return integRampFunc(0, time);
 		} else if (time < timeRamp + timeAccel) {
-			return integRampFunc(0, timeRamp) + 
-					rampFunc(timeRamp) * (time - timeRamp) + 0.5 * (time-timeRamp) * ((rampFunc(timeRamp) + accelMax * (time - timeRamp)) - rampFunc(timeRamp));
+			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (time - timeRamp) + 0.5 * (time - timeRamp) * ((rampFunc(timeRamp) + accelMaxUsed * (time - timeRamp)) - rampFunc(timeRamp));
 		} else if (time < 2 * timeRamp + timeAccel) {
-			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMax * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, time - timeAccel - timeRamp) + (velMax - xyRefRampFunc(timeRamp))*(time - timeAccel - timeRamp);
+			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, time - timeAccel - timeRamp) + (rampFunc(timeRamp) + timeAccel * accelMaxUsed)*(time - timeAccel - timeRamp);
 		} else if (time < 2 * timeRamp + timeAccel + timeCruise) {
-			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMax * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, timeRamp) + (velMax - xyRefRampFunc(timeRamp))*(timeRamp) + velMax*(time - (2 * timeRamp + timeAccel));
+			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, timeRamp) + (velMaxUsed - xyRefRampFunc(timeRamp))*(timeRamp) + velMaxUsed*(time - (2 * timeRamp + timeAccel));
 		} else if (time < 3 * timeRamp + timeAccel + timeCruise) {
-			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMax * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, timeRamp) + (velMax - xyRefRampFunc(timeRamp))*(timeRamp) + velMax*(timeCruise) + integXYRefRampFunc(0, timeRamp) - integXYRefRampFunc(0, (3 * timeRamp) + timeCruise + timeAccel - time) + (velMax - xyRefRampFunc(timeRamp))*(time - timeCruise - (2 * timeRamp) - timeAccel);
+			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, timeRamp) + (velMaxUsed - xyRefRampFunc(timeRamp))*(timeRamp) + velMaxUsed*(timeCruise) + integXYRefRampFunc(0, timeRamp) - integXYRefRampFunc(0, (3 * timeRamp) + timeCruise + timeAccel - time) + (velMaxUsed - xyRefRampFunc(timeRamp))*(time - timeCruise - (2 * timeRamp) - timeAccel);
 		} else if (time < 3 * timeRamp + 2 * timeAccel + timeCruise) {
-			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMax * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, timeRamp) + (velMax - xyRefRampFunc(timeRamp))*(timeRamp) + velMax*(timeCruise) + integXYRefRampFunc(0, timeRamp) + (velMax - xyRefRampFunc(timeRamp))*(timeRamp) + rampFunc(timeRamp)*(time - (3 * timeRamp) - timeAccel - timeCruise) - 0.5 * (((3 * timeRamp) + (2 * timeAccel) + timeCruise - time)*((-accelMax * (time - 3 * timeRamp - timeAccel - timeCruise)) + (accelMax * timeAccel))) + 0.5*(timeAccel)*(velMax - (2 * rampFunc(timeRamp)));
+			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, timeRamp) + (velMaxUsed - xyRefRampFunc(timeRamp))*(timeRamp) + velMaxUsed*(timeCruise) + integXYRefRampFunc(0, timeRamp) + (velMaxUsed - xyRefRampFunc(timeRamp))*(timeRamp) + rampFunc(timeRamp)*(time - (3 * timeRamp) - timeAccel - timeCruise) - 0.5 * (((3 * timeRamp) + (2 * timeAccel) + timeCruise - time)*((-accelMaxUsed * (time - 3 * timeRamp - timeAccel - timeCruise)) + (accelMaxUsed * timeAccel))) + 0.5*(timeAccel)*(velMaxUsed - (2 * rampFunc(timeRamp)));
 		} else if (time < 4 * timeRamp + 2 * timeAccel + timeCruise) {
-			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMax * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, timeRamp) + (velMax - xyRefRampFunc(timeRamp))*(timeRamp) + velMax*(timeCruise) + integXYRefRampFunc(0, timeRamp) + (velMax - xyRefRampFunc(timeRamp))*(timeRamp) + rampFunc(timeRamp)*(timeAccel) + 0.5*(timeAccel)*(velMax - (2 * rampFunc(timeRamp))) + integRampFunc(0, timeRamp) - integRampFunc(0, ((4 * timeRamp) + (2*timeAccel) + timeCruise - time));
+			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, timeRamp) + (velMaxUsed - xyRefRampFunc(timeRamp))*(timeRamp) + velMaxUsed*(timeCruise) + integXYRefRampFunc(0, timeRamp) + (velMaxUsed - xyRefRampFunc(timeRamp))*(timeRamp) + rampFunc(timeRamp)*(timeAccel) + 0.5*(timeAccel)*(velMaxUsed - (2 * rampFunc(timeRamp))) + integRampFunc(0, timeRamp) - integRampFunc(0, ((4 * timeRamp) + (2*timeAccel) + timeCruise - time));
 		} else {
 			return endPosition;
 		}
@@ -149,7 +163,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 		if (time < timeRamp) {
 			return derivRampFunc(time);
 		} else if (time < timeRamp + timeAccel) {
-			return accelMax;
+			return accelMaxUsed;
 		} else if (time < (2 * timeRamp) + timeAccel) {
 			return derivXYRefRampFunc(time - (timeAccel + timeRamp));
 		} else if (time < (2 * timeRamp) + timeAccel + timeCruise) {
@@ -157,7 +171,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 		} else if (time < (3 * timeRamp) + timeAccel + timeCruise) {
 			return -derivXYRefRampFunc(((3 * timeRamp) + timeAccel + timeCruise) - time);
 		} else if (time < (3 * timeRamp) + (2 * timeAccel) + timeCruise) {
-			return -accelMax;
+			return -accelMaxUsed;
 		} else if (time < 4 * timeRamp + 2 * timeAccel + timeCruise) {
 			return -derivRampFunc(((timeRamp * 4) + (timeAccel * 2) + timeCruise) - time);
 		} else {
