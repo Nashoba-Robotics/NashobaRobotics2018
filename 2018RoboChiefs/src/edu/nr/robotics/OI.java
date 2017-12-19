@@ -1,6 +1,7 @@
 package edu.nr.robotics;
 
 import edu.nr.lib.interfaces.SmartDashboardSource;
+import edu.nr.robotics.subsystems.drive.Drive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 
@@ -26,6 +27,117 @@ public class OI implements SmartDashboardSource {
 	private static final int STICK_RIGHT = 1;
 	private static final int STICK_OPERATOR_LEFT = 2;
 	private static final int STICK_OPERATOR_RIGHT = 3;
+	
+	public static final Drive.DriveMode driveMode = Drive.DriveMode.arcadeDrive;
+	
+	private OI() {		
+		driveLeft = new Joystick(STICK_LEFT);
+		driveRight = new Joystick(STICK_RIGHT);
+		
+		operatorLeft = new Joystick(STICK_OPERATOR_LEFT);
+		operatorRight = new Joystick(STICK_OPERATOR_RIGHT);
+
+		initDriveLeft();
+		initDriveRight();
+		
+		initOperatorLeft();
+		initOperatorRight();
+		
+		SmartDashboardSource.sources.add(this);
+	}
+	
+	public void initDriveLeft() {
+		
+	}
+	
+	public void initDriveRight() {
+		
+	}
+	
+	public void initOperatorLeft() {
+		
+	}
+	
+	public void initOperatorRight() {
+		
+	}
+	
+	public static OI getInstance() {
+		init();
+		return singleton;
+	}
+	
+	public static void init() {
+		if (singleton == null) {
+			singleton = new OI();
+		}
+	}
+	
+	public double getArcadeMoveValue() {
+		return snapDriveJoysticks(driveLeft.getY()) * (driveLeft.getRawButton(DRIVE_REVERSE_BUTTON_NUMBER) ? 1 : -1);
+	}
+
+	public double getArcadeTurnValue() {
+		return -snapDriveJoysticks(driveRight.getX()) * getTurnAdjust();
+	}
+
+	public double getTankLeftValue() {
+		return snapDriveJoysticks(driveLeft.getY());
+	}
+
+	public double getTankRightValue() {
+		return snapDriveJoysticks(driveRight.getY());
+	}
+
+	public double getDriveLeftXValue() {
+		return snapDriveJoysticks(driveLeft.getX());
+	}
+
+	public double getDriveLeftYValue() {
+		return snapDriveJoysticks(driveLeft.getY());
+	}
+	
+	public double getDriveRightXValue() {
+		return snapDriveJoysticks(driveRight.getX());
+	}
+
+	public double getDriveRightYValue() {
+		return snapDriveJoysticks(driveRight.getY());
+	}
+	
+	public double getDriveSpeedMultiplier() {
+		return driveSpeedMultiplier;
+	}
+	
+	public double getRawMove() {
+		return driveLeft.getY();
+	}
+	
+	public double getRawTurn() {
+		return driveRight.getX();
+	}
+	
+	private double getTurnAdjust() {
+		return driveRight.getRawButton(2) ? 0.5 : 1;
+	}
+	
+	@Override
+	public void smartDashboardInfo() {
+		//driveSpeedMultiplier = SmartDashboard.getNumber("Speed Multiplier", 1);
+	}
+	
+	public boolean isTankNonZero() {
+		return getTankLeftValue() != 0 || getTankRightValue() != 0;
+	}
+	
+	public boolean isArcadeNonZero() {
+		return getArcadeMoveValue() != 0 || getArcadeTurnValue() != 0;
+	}
+	
+	public boolean isDriveNonZero() {
+		return getDriveLeftXValue() != 0 || getDriveRightXValue() != 0 || getDriveLeftYValue() != 0 || getDriveRightYValue() != 0;
+	}
+
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
 	//// joystick.
