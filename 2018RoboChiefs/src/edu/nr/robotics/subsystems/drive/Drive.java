@@ -16,6 +16,7 @@ import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.TalonCreator;
 import edu.nr.lib.units.Acceleration;
 import edu.nr.lib.units.Angle;
+import edu.nr.lib.units.AngularSpeed;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Jerk;
 import edu.nr.lib.units.Speed;
@@ -61,6 +62,14 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static double ampTimerStart = Timer.getFPGATimestamp();
 	public static boolean ampTimerStarted = false;
 	public static final double MAX_CURRENT_PERIOD = 0.5;
+	
+	//TODO: Find slope of voltage vs velocity
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0;
+	
+	//TODO: Find offset of voltage vs velocity graph
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0; //This is 0 to 1 number
 	
 	private Speed leftMotorSetpoint = Speed.ZERO;
 	private Speed rightMotorSetpoint = Speed.ZERO;
@@ -227,6 +236,10 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 				leftMotorSetpoint = left;
 				rightMotorSetpoint = right.negate();
 			}
+			
+			leftTalon.setF(((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / (new AngularSpeed(leftMotorSetpoint.abs().get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_NATIVE_UNITS, Time.Unit.HUNDRED_MILLISECOND) / 4));
+			rightTalon.setF(((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / (new AngularSpeed(rightMotorSetpoint.abs().get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_NATIVE_UNITS, Time.Unit.HUNDRED_MILLISECOND) / 4));
+			
 			if (leftTalon.getControlMode() == TalonControlMode.PercentVbus) {
 				leftTalon.set(leftMotorSetpoint.div(currentMaxSpeed()));
 			} else {
