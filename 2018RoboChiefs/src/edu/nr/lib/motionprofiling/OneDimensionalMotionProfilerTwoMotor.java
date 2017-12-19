@@ -1,16 +1,16 @@
 package edu.nr.lib.motionprofiling;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import edu.nr.lib.GyroCorrection;
+import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
-import edu.nr.lib.units.Angle;
+import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements OneDimensionalMotionProfiler  {
+public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements OneDimensionalMotionProfiler, SmartDashboardSource {
 
 	private final Timer timer;
 	
@@ -35,8 +35,13 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	private OneDimensionalTrajectory trajectory;
 	
 	GyroCorrection gyroCorrection;
+	
+	private ArrayList<Double> posPoints;
+	private ArrayList<Double> velPoints;
+	private ArrayList<Double> accelPoints;
 
-		
+	private int loopIteration;
+	
 	public OneDimensionalMotionProfilerTwoMotor(DoublePIDOutput out, DoublePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, long period) {
 		this.out = out;
 		this.source = source;
@@ -53,6 +58,9 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		this.initialPositionLeft = source.pidGetLeft();
 		this.initialPositionRight = source.pidGetRight();
 		this.gyroCorrection = new GyroCorrection();
+		this.posPoints = new ArrayList<Double>();
+		this.velPoints = new ArrayList<Double>();
+		this.accelPoints = new ArrayList<Double>();
 		reset();
 		timer.scheduleAtFixedRate(this, 0, this.period);
 	}
@@ -66,18 +74,34 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	
 	@Override
 	public void run() {
-		if(enabled) {
+		if(enabled && posPoints.size() > 0 && velPoints.size() > 0 && accelPoints.size() > 0) {
 			double dt = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - prevTime;
 			prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-			System.out.println(dt*1000);
+			//System.out.println(dt * 1000);
+			
+			double positionGoal;
+			double velocityGoal;
+			double accelGoal;
+
+			if (loopIteration < posPoints.size()) {
+				positionGoal = posPoints.get(loopIteration);
+				velocityGoal = velPoints.get(loopIteration);
+				accelGoal = accelPoints.get(loopIteration);
+			} else {
+				positionGoal = posPoints.get(posPoints.size() - 1);
+				velocityGoal = 0;
+				accelGoal = 0;
+			}
+			
+			/*
 			double currentTimeSinceStart = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime;
 
 			double velocityGoal = trajectory.getGoalVelocity(currentTimeSinceStart);
 			double positionGoal = trajectory.getGoalPosition(currentTimeSinceStart);
 			double accelGoal = trajectory.getGoalAccel(currentTimeSinceStart);
+			*/
 			
 			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
-			//double headingAdjustment = 0;
 			
 			double errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;
@@ -124,16 +148,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 			
 			out.pidWrite(outputLeft, outputRight);
 			
-			//source.setPIDSourceType(PIDSourceType.kRate);
-			//SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + outputLeft * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()) + ":" + Drive.getInstance().leftMotorSetpoint);
-			//SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + outputRight * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()) + ":" + Drive.getInstance().rightMotorSetpoint);
-			//SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + outputLeft * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()));
-			//SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + outputRight * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()));
-			//SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + velocityGoal);
-			//SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + velocityGoal);
-			//source.setPIDSourceType(PIDSourceType.kDisplacement);
-			//SmartDashboard.putString("Motion Profiler X Left", source.pidGetLeft() + ":" + (positionGoal + initialPositionLeft) + ":" + errorLeft);
-			//SmartDashboard.putString("Motion Profiler X Right", source.pidGetRight() + ":" + (positionGoal + initialPositionRight) + ":" + errorRight);
+			loopIteration++;
 		}
 	}
 		
@@ -151,6 +166,10 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	public void enable() {
 		//System.out.println("enabled");
 		reset();
+		posPoints = trajectory.loadPosPoints(period);
+		System.out.println(posPoints.size());
+		velPoints = trajectory.loadVelPoints(period);
+		accelPoints = trajectory.loadAccelPoints(period);
 		enabled = true;
 	}
 	
@@ -168,6 +187,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		initialPositionRight = source.pidGetRight();
 		source.setPIDSourceType(type);
 		gyroCorrection.clearInitialValue();
+		loopIteration = 0;
 	}
 	
 	/**
@@ -206,5 +226,19 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 
 	public void setKP_theta(double kp_theta) {
 		this.kp_theta = kp_theta;
+	}
+
+	@Override
+	public void smartDashboardInfo() {
+		//source.setPIDSourceType(PIDSourceType.kRate);
+		//SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + outputLeft * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()) + ":" + Drive.getInstance().leftMotorSetpoint);
+		//SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + outputRight * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()) + ":" + Drive.getInstance().rightMotorSetpoint);
+		//SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + outputLeft * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()));
+		//SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + outputRight * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()));
+		//SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + velocityGoal);
+		//SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + velocityGoal);
+		//source.setPIDSourceType(PIDSourceType.kDisplacement);
+		//SmartDashboard.putString("Motion Profiler X Left", source.pidGetLeft() + ":" + (positionGoal + initialPositionLeft) + ":" + errorLeft);
+		//SmartDashboard.putString("Motion Profiler X Right", source.pidGetRight() + ":" + (positionGoal + initialPositionRight) + ":" + errorRight);
 	}
 }

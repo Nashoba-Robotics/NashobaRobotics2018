@@ -7,6 +7,10 @@ package edu.nr.robotics;
  * floating around.
  */
 public class RobotMap {
+	public static final int TEMP_LEFT_TALON = 0;
+	public static final int TEMP_RIGHT_TALON = 1;
+	public static final int DRIVE_RIGHT = 2;
+	public static final int DRIVE_LEFT = 3;
 	// For example to map the left and right motors, you could define the
 	// following variables to use with your drivetrain subsystem.
 	// public static int leftMotor = 1;

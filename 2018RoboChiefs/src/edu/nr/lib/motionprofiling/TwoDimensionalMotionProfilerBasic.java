@@ -3,7 +3,7 @@ package edu.nr.lib.motionprofiling;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import edu.nr.lib.GyroCorrection;
+import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;

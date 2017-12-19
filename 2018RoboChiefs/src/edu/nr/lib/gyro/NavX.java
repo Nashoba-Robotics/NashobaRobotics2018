@@ -1,4 +1,4 @@
-package edu.nr.lib;
+package edu.nr.lib.gyro;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.kauailabs.sf2.frc.navXSensor;
@@ -10,7 +10,7 @@ import edu.nr.lib.units.Time;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
 
-public class NavX implements Periodic {
+public class NavX extends Gyro implements Periodic {
 	
 	private static NavX singleton;
 	
