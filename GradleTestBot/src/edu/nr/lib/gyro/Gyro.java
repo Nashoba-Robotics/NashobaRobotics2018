@@ -9,7 +9,7 @@ public abstract class Gyro {
 	}
 	
 	//This is the one line where gyro type can be chosen
-	public static ChosenGyro chosenGyro = ChosenGyro.Pigeon;
+	public static ChosenGyro chosenGyro = ChosenGyro.NavX;
 	
 	public abstract Angle getYaw();
 	public abstract void reset();
