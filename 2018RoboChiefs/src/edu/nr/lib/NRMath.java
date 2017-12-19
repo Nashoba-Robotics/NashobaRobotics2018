@@ -113,4 +113,13 @@ public class NRMath {
 	public static double round(double value, double decimals) {
 		return Math.round(value * Math.pow(10.0, decimals)) / Math.pow(10.0, decimals);
 	}
+
+	public static double quadratic(double a, double b, double c, boolean higher) {
+		double quadPos = (-b + Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
+		double quadNeg = (-b - Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
+		if (higher) {
+			return quadPos;
+		}
+		return quadNeg;
+	}
 }

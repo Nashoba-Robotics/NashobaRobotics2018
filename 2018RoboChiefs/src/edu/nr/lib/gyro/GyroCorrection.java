@@ -1,6 +1,6 @@
-package edu.nr.lib;
+package edu.nr.lib.gyro;
 
-import edu.nr.lib.gyro.Pigeon;
+import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.units.Angle;
 
 public class GyroCorrection
@@ -11,21 +11,16 @@ public class GyroCorrection
 	
 	private Angle initialAngle;
 	Angle goalAngle;
-	Pigeon pigeon;
-	
-	public GyroCorrection(Angle angle, Pigeon pigeon) {
-		pigeon = Pigeon.getInstance();
-		this.pigeon = pigeon;
-		goalAngle = angle;
-		initialAngle = pigeon.getYaw();
-	}
+	Gyro gyro;
 	
 	public GyroCorrection(Angle angle) {
-		this(angle, Pigeon.getInstance());
-	}
-	
-	public GyroCorrection(Pigeon pigeon) {
-		this(Angle.ZERO, pigeon);
+		if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
+			this.gyro = NavX.getInstance();
+		} else {
+			this.gyro = Pigeon.getInstance();
+		}
+		goalAngle = angle;
+		initialAngle = gyro.getYaw();
 	}
 	
 	public GyroCorrection() {
@@ -79,7 +74,7 @@ public class GyroCorrection
 			reset();
 			initialized = true;
 		}
-		Angle currentAngle = pigeon.getYaw();
+		Angle currentAngle = gyro.getYaw();
 				
 		//Error is just based off initial angle
     	return currentAngle.sub(initialAngle).add(goalAngle);
@@ -91,7 +86,7 @@ public class GyroCorrection
 	 */
 	public void reset()
 	{
-		initialAngle = pigeon.getYaw();
+		initialAngle = gyro.getYaw();
 	}		
 	/**
 	 * Causes the initial angle value to be reset the next time getTurnValue() is called. Use this in the end() and interrupted()

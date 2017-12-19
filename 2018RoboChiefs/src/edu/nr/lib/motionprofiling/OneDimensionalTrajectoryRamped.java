@@ -1,9 +1,16 @@
 package edu.nr.lib.motionprofiling;
 
+import java.util.ArrayList;
+
+import edu.nr.lib.NRMath;
+
 public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory {
 	
 	double velMax;
 	double accelMax;
+	
+	double velMaxUsed;
+	double accelMaxUsed;
 	
 	double totalTime;
 	double timeRamp;
@@ -12,42 +19,86 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	
 	double endPosition;
 	double startPosition;
-		
+	
+	double pow = 4.0;
+	
+	ArrayList<Double> posPoints;
+	ArrayList<Double> velPoints;
+	ArrayList<Double> accelPoints;
+	
+	double direction;
+	
+	/**
+	 * 
+	 * @param goalPositionDelta The goal position that can be either positive or negative
+	 * @param velMax The max velocity (always positive)
+	 * @param accelMax The max acceleration (always positive)
+	 */
 	public OneDimensionalTrajectoryRamped(double goalPositionDelta, double velMax, double accelMax) {
-		this.endPosition = goalPositionDelta;
+		this.endPosition = Math.abs(goalPositionDelta);
 		this.startPosition = 0;
-		if(goalPositionDelta < 0) {
-			velMax *= -1;
-			accelMax *= -1; 
-		}
+		this.direction = Math.signum(goalPositionDelta);
 		
 		this.velMax = velMax;
 		this.accelMax = accelMax;
 		
+		posPoints = new ArrayList<Double>();
+		velPoints = new ArrayList<Double>();
+		accelPoints = new ArrayList<Double>();
+		
 		calcTimes();
 	}
 
+	/**
+	 * Calculates times of timeRamp, timeAccel, and timeCruise
+	 */
 	private void calcTimes() {
-		timeRamp = derivRampFunc(Math.abs(accelMax));
+		velMaxUsed = velMax;
+		accelMaxUsed = accelMax;
+		timeRamp = flipDerivRampFunc(accelMax);
 		double dVr = rampFunc(timeRamp);
-		timeAccel = (velMax - (2 * dVr)) / accelMax;
-		timeCruise = Math.abs(endPosition - (2 * (dVr * timeAccel - (0.5 * timeAccel * (Math.abs(velMax) - 2 * dVr)))) - (2 * integRampFunc(0, timeRamp)) - (2 * (integXYRefRampFunc(0, timeRamp) + timeRamp * (Math.abs(velMax) - dVr))));
+		timeAccel = (velMaxUsed - (2 * dVr)) / accelMax;
+		timeCruise = (endPosition - 2 * integRampFunc(0, timeRamp) - 2 * timeAccel * dVr - timeAccel * (velMaxUsed - 2 * dVr) - 2 * timeRamp * (velMaxUsed - dVr) - 2 * integXYRefRampFunc(0, timeRamp)) / velMaxUsed;
+		if (timeCruise < 0) {
+			timeAccel = NRMath.quadratic(accelMax, 2 * timeRamp * accelMax + 2 * rampFunc(timeRamp), 
+					2 * integRampFunc(0, timeRamp) + 2 * integXYRefRampFunc(0, timeRamp) + 2 * timeRamp * rampFunc(timeRamp) - endPosition, true);
+			timeCruise = 0;
+			velMaxUsed = 2 * rampFunc(timeRamp) + timeAccel * accelMax;
+		}
+		if (timeAccel < 0) {
+			timeRamp = Math.pow(endPosition / 4, 1 / (pow + 1));
+			timeAccel = 0;
+			velMaxUsed = 2 * rampFunc(timeRamp);
+			accelMaxUsed = derivRampFunc(timeRamp);
+		}
+		
+		totalTime = 4 * timeRamp + 2 * timeAccel + timeCruise;
 	}
 	
 	public double rampFunc(double time) {
-		return 0;
+		return Math.pow(time, pow);
 	}
 	
 	public double xyRefRampFunc(double time) {
-		return 0;
+		return -rampFunc(timeRamp - time) + rampFunc(timeRamp);
 	}
 	
 	public double integRampFunc(double time1, double time2) {
-		return 0;
+		return 1.0 / (pow + 1) * Math.pow(time2, pow + 1) - 1.0 / (pow + 1) * Math.pow(time1, pow + 1);
 	}
 	
 	public double integXYRefRampFunc(double time1, double time2) {
-		return 0;
+		return rampFunc(timeRamp) * (time2 - time1) - (1.0 / (pow + 1) * Math.pow(timeRamp - time1, pow + 1) - 1.0 / (pow + 1) * Math.pow(timeRamp - time2, pow + 1));
+	}
+	
+	/**
+	 * 
+	 * @param time
+	 * @return accel at specific time
+	 */
+	public double derivRampFunc(double time) {
+		return pow * Math.pow(time, pow - 1);
+		
 	}
 	
 	/**
@@ -55,23 +106,32 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	 * @param accel
 	 * @return time when derivative equals acceleration
 	 */
-	public double derivRampFunc(double accel) {
-		return 0;
+	public double flipDerivRampFunc(double accel) {
+		return Math.pow(accel / pow, 1.0 / (pow - 1));
+	}
+	
+	/**
+	 * 
+	 * @param time
+	 * @return accel at specific time
+	 */
+	public double derivXYRefRampFunc(double time) {
+		return (pow * Math.pow(timeRamp - time, pow - 1));
 	}
 	
 	public double getGoalVelocity(double time) {
 		if (time < timeRamp) {
 			return rampFunc(time);
 		} else if (time < timeRamp + timeAccel) {
-			return rampFunc(timeRamp) + accelMax * (time - timeRamp);
+			return rampFunc(timeRamp) + accelMaxUsed * (time - timeRamp);
 		} else if (time < 2 * timeRamp + timeAccel) {
-			return rampFunc(timeRamp) + (accelMax * timeAccel) + xyRefRampFunc(time - timeAccel - timeRamp);
+			return rampFunc(timeRamp) + (accelMaxUsed * timeAccel) + xyRefRampFunc(time - timeAccel - timeRamp);
 		} else if (time < 2 * timeRamp + timeAccel + timeCruise) {
-			return velMax;
+			return velMaxUsed;
 		} else if (time < 3 * timeRamp + timeAccel + timeCruise) {
-			return  xyRefRampFunc((timeCruise + 3 * timeRamp + timeAccel) - time) + (accelMax * timeAccel) + rampFunc(timeRamp);
+			return xyRefRampFunc((timeCruise + 3 * timeRamp + timeAccel) - time) + (accelMaxUsed * timeAccel) + rampFunc(timeRamp);
 		} else if (time < 3 * timeRamp + 2 * timeAccel + timeCruise) {
-			return -accelMax * (time - 3 * timeRamp - timeAccel - timeCruise) + rampFunc(timeRamp);
+			return -accelMaxUsed * (time - 3 * timeRamp - timeAccel - timeCruise) + rampFunc(timeRamp) + (accelMaxUsed * timeAccel);
 		} else if (time < 4 * timeRamp + 2 * timeAccel + timeCruise) {
 			return rampFunc(timeRamp * 4 + timeAccel * 2 + timeCruise - time);
 		} else {
@@ -80,13 +140,72 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	}
 	
 	public double getGoalPosition(double time) {	
-		return 0;
+		if (time < timeRamp) {
+			return integRampFunc(0, time);
+		} else if (time < timeRamp + timeAccel) {
+			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (time - timeRamp) + 0.5 * (time - timeRamp) * ((rampFunc(timeRamp) + accelMaxUsed * (time - timeRamp)) - rampFunc(timeRamp));
+		} else if (time < 2 * timeRamp + timeAccel) {
+			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, time - timeAccel - timeRamp) + (rampFunc(timeRamp) + timeAccel * accelMaxUsed)*(time - timeAccel - timeRamp);
+		} else if (time < 2 * timeRamp + timeAccel + timeCruise) {
+			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, timeRamp) + (velMaxUsed - xyRefRampFunc(timeRamp))*(timeRamp) + velMaxUsed*(time - (2 * timeRamp + timeAccel));
+		} else if (time < 3 * timeRamp + timeAccel + timeCruise) {
+			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, timeRamp) + (velMaxUsed - xyRefRampFunc(timeRamp))*(timeRamp) + velMaxUsed*(timeCruise) + integXYRefRampFunc(0, timeRamp) - integXYRefRampFunc(0, (3 * timeRamp) + timeCruise + timeAccel - time) + (velMaxUsed - xyRefRampFunc(timeRamp))*(time - timeCruise - (2 * timeRamp) - timeAccel);
+		} else if (time < 3 * timeRamp + 2 * timeAccel + timeCruise) {
+			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, timeRamp) + (velMaxUsed - xyRefRampFunc(timeRamp))*(timeRamp) + velMaxUsed*(timeCruise) + integXYRefRampFunc(0, timeRamp) + (velMaxUsed - xyRefRampFunc(timeRamp))*(timeRamp) + rampFunc(timeRamp)*(time - (3 * timeRamp) - timeAccel - timeCruise) - 0.5 * (((3 * timeRamp) + (2 * timeAccel) + timeCruise - time)*((-accelMaxUsed * (time - 3 * timeRamp - timeAccel - timeCruise)) + (accelMaxUsed * timeAccel))) + 0.5*(timeAccel)*(velMaxUsed - (2 * rampFunc(timeRamp)));
+		} else if (time < 4 * timeRamp + 2 * timeAccel + timeCruise) {
+			return integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel) + 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp)) + integXYRefRampFunc(0, timeRamp) + (velMaxUsed - xyRefRampFunc(timeRamp))*(timeRamp) + velMaxUsed*(timeCruise) + integXYRefRampFunc(0, timeRamp) + (velMaxUsed - xyRefRampFunc(timeRamp))*(timeRamp) + rampFunc(timeRamp)*(timeAccel) + 0.5*(timeAccel)*(velMaxUsed - (2 * rampFunc(timeRamp))) + integRampFunc(0, timeRamp) - integRampFunc(0, ((4 * timeRamp) + (2*timeAccel) + timeCruise - time));
+		} else {
+			return endPosition;
+		}
 	}
 
 	public double getGoalAccel(double time) {
-		return 0;
+		if (time < timeRamp) {
+			return derivRampFunc(time);
+		} else if (time < timeRamp + timeAccel) {
+			return accelMaxUsed;
+		} else if (time < (2 * timeRamp) + timeAccel) {
+			return derivXYRefRampFunc(time - (timeAccel + timeRamp));
+		} else if (time < (2 * timeRamp) + timeAccel + timeCruise) {
+			return 0;
+		} else if (time < (3 * timeRamp) + timeAccel + timeCruise) {
+			return -derivXYRefRampFunc(((3 * timeRamp) + timeAccel + timeCruise) - time);
+		} else if (time < (3 * timeRamp) + (2 * timeAccel) + timeCruise) {
+			return -accelMaxUsed;
+		} else if (time < 4 * timeRamp + 2 * timeAccel + timeCruise) {
+			return -derivRampFunc(((timeRamp * 4) + (timeAccel * 2) + timeCruise) - time);
+		} else {
+			return 0;
+		}
 	}
 
+	@Override
+	public ArrayList<Double> loadPosPoints(double period) {
+		posPoints.clear();
+		for (int time = 0; time < Math.round(totalTime * 1000); time += period) {
+			posPoints.add(getGoalPosition(time / 1000.0));
+		}
+		return posPoints;
+	}
+	
+	@Override
+	public ArrayList<Double> loadVelPoints(double period) {
+		velPoints.clear();
+		for (int time = 0; time < Math.round(totalTime * 1000); time += period) {
+			velPoints.add(getGoalVelocity(time / 1000.0));
+		}
+		return velPoints;
+	}
+	
+	@Override
+	public ArrayList<Double> loadAccelPoints(double period) {
+		accelPoints.clear();
+		for (int time = 0; time < Math.round(totalTime * 1000); time += period) {
+			accelPoints.add(getGoalAccel(time / 1000.0));
+		}
+		return accelPoints;
+	}
+	
 	@Override
 	public double getMaxUsedAccel() {
 		return accelMax;
@@ -106,6 +225,5 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	public double getMaxUsedVelocity() {
 		return velMax;
 	}
-
 	
 }

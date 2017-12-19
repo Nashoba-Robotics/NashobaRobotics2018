@@ -4,9 +4,11 @@ import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import edu.nr.lib.GyroCorrection;
-import edu.nr.lib.NavX;
-import edu.nr.lib.Pigeon;
+import edu.nr.lib.gyro.Gyro;
+import edu.nr.lib.gyro.GyroCorrection;
+import edu.nr.lib.gyro.NavX;
+import edu.nr.lib.gyro.Pigeon;
+import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.units.Angle;
@@ -124,7 +126,11 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 					prelimOutputLeft = -right.calculate(-(source.pidGetRight() - initialPositionRight));
 				}
 				
-				currentHeading = -Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE);
+				if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
+					currentHeading = -NavX.getInstance().getYaw().get(Angle.Unit.DEGREE);
+				} else {
+					currentHeading = -Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE);
+				}
 				//double currentHeading = -gyroCorrection.getAngleErrorDegrees();
 				desiredHeading = Pathfinder.r2d(left.getHeading());
 				
@@ -181,7 +187,11 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 		gyroCorrection.clearInitialValue();
 		timeSinceStart = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 		lastTime = timeSinceStart;
-		Pigeon.getInstance().reset();
+		if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
+			NavX.getInstance().reset();
+		} else {
+			Pigeon.getInstance().reset();
+		}
 	}
 	
 	/**

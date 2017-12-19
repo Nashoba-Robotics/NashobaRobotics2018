@@ -1,12 +1,31 @@
 package edu.nr.robotics;
 
+import edu.nr.lib.interfaces.SmartDashboardSource;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
-public class OI {
+public class OI implements SmartDashboardSource {
+	
+	private static final double JOYSTICK_DEAD_ZONE = 0.15;
+	
+	private double driveSpeedMultiplier = 1;
+	
+	private static OI singleton;
+
+	private final Joystick driveLeft;
+	private final Joystick driveRight;
+	
+	private final Joystick operatorLeft;
+	private final Joystick operatorRight;
+	
+	private static final int STICK_LEFT = 0;
+	private static final int STICK_RIGHT = 1;
+	private static final int STICK_OPERATOR_LEFT = 2;
+	private static final int STICK_OPERATOR_RIGHT = 3;
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
 	//// joystick.
