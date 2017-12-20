@@ -40,9 +40,9 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	
 	GyroCorrection gyroCorrection;
 	
-	private ArrayList<Double> posPoints;
-	private ArrayList<Double> velPoints;
-	private ArrayList<Double> accelPoints;
+	public static ArrayList<Double> posPoints;
+	public static ArrayList<Double> velPoints;
+	public static ArrayList<Double> accelPoints;
 	
 	public static double positionGoal;
 	public static double velocityGoal;
@@ -73,9 +73,9 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		initialPositionLeft = source.pidGetLeft();
 		initialPositionRight = source.pidGetRight();
 		this.gyroCorrection = new GyroCorrection();
-		this.posPoints = new ArrayList<Double>();
-		this.velPoints = new ArrayList<Double>();
-		this.accelPoints = new ArrayList<Double>();
+		posPoints = new ArrayList<Double>();
+		velPoints = new ArrayList<Double>();
+		accelPoints = new ArrayList<Double>();
 		reset();
 		timer.scheduleAtFixedRate(this, 0, this.period);
 	}
@@ -114,7 +114,8 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 			
 			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
 			
-			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
+			source.setPIDSourceType(PIDSourceType.kDisplacement);
+			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;
 			double errorIntegralLeft = (errorLeft - errorLastLeft) * dt / 2;
 			double prelimOutputLeft = velocityGoal * kv + accelGoal * ka + errorLeft * kp + errorIntegralLeft * ki + errorDerivLeft * kd;
@@ -136,6 +137,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 				}
 			}
 			
+			source.setPIDSourceType(PIDSourceType.kDisplacement);
 			errorRight = positionGoal - source.pidGetRight() + initialPositionRight;			
 			double errorDerivRight = (errorRight - errorLastRight) / dt;
 			double prelimOutputRight = velocityGoal * kv + accelGoal * ka + errorRight * kp + errorDerivRight * kd;
@@ -178,7 +180,6 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		//System.out.println("enabled");
 		reset();
 		posPoints = trajectory.loadPosPoints(period);
-		System.out.println(posPoints.size());
 		velPoints = trajectory.loadVelPoints(period);
 		accelPoints = trajectory.loadAccelPoints(period);
 		enabled = true;
@@ -205,8 +206,8 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	 * Sets the trajectory for the profiler
 	 * @param trajectory
 	 */
-	public void setTrajectory(OneDimensionalTrajectory trajectory) {
-		this.trajectory = trajectory;
+	public void setTrajectory(OneDimensionalTrajectory traj) {
+		trajectory = traj;
 	}
 
 	@Override

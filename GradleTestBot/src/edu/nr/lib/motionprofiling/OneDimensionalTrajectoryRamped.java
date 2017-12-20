@@ -43,6 +43,10 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 		this.velMax = velMax;
 		this.accelMax = accelMax;
 		
+		System.out.println(goalPositionDelta);
+		System.out.println(velMax);
+		System.out.println(accelMax);
+		
 		posPoints = new ArrayList<Double>();
 		velPoints = new ArrayList<Double>();
 		accelPoints = new ArrayList<Double>();

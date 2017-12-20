@@ -49,7 +49,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final Jerk MAX_JERK = new Jerk(813, Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND);
 	
 	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(0.1, Distance.Unit.INCH);
-	public static final Time PROFILE_TIME_THRESHOLD = new Time(0.1, Time.Unit.SECOND);
+	public static final Time PROFILE_TIME_THRESHOLD = new Time(0.25, Time.Unit.SECOND);
 	
 	public static final double ACCEL_PERCENT = 0.5;
 	
@@ -454,9 +454,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	public void enableOneDProfiler(Distance dist) {
 		oneDProfiler = new OneDimensionalMotionProfilerTwoMotor(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
-		oneDProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(dist.get(Distance.Unit.FOOT), 
-				MAX_SPEED.mul(drivePercent).get(Distance.Unit.FOOT, Time.Unit.SECOND), 
-				MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND)));
+		oneDProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(dist.get(Distance.Unit.DRIVE_ROTATION), 
+				MAX_SPEED.mul(drivePercent).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND), 
+				MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND)));
 		oneDProfiler.enable();
 	}
 

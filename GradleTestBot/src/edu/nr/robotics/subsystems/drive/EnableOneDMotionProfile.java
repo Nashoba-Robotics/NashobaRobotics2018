@@ -14,6 +14,8 @@ public class EnableOneDMotionProfile extends NRCommand {
 	Distance tempLeftPosition = Distance.ZERO;
 	Distance tempRightPosition = Distance.ZERO;
 	
+	private final Distance END_THRESHOLD = new Distance(2, Distance.Unit.DRIVE_ROTATION);
+	
 	public EnableOneDMotionProfile() {
 		super(Drive.getInstance());
 	}
@@ -32,8 +34,8 @@ public class EnableOneDMotionProfile extends NRCommand {
 		SmartDashboard.putString("Motion Profiler V Left", Drive.getInstance().pidGetLeft() + ":" + OneDimensionalMotionProfilerTwoMotor.velocityGoal);
 		SmartDashboard.putString("Motion Profiler V Right", Drive.getInstance().pidGetRight() + ":" + OneDimensionalMotionProfilerTwoMotor.velocityGoal);
 		Drive.getInstance().setPIDSourceType(PIDSourceType.kDisplacement);
-		SmartDashboard.putString("Motion Profiler X Left", Drive.getInstance().pidGetLeft() + ":" + (OneDimensionalMotionProfilerTwoMotor.positionGoal + OneDimensionalMotionProfilerTwoMotor.initialPositionLeft) + ":" + OneDimensionalMotionProfilerTwoMotor.errorLeft);
-		SmartDashboard.putString("Motion Profiler X Right", Drive.getInstance().pidGetRight() + ":" + (OneDimensionalMotionProfilerTwoMotor.positionGoal + OneDimensionalMotionProfilerTwoMotor.initialPositionRight) + ":" + OneDimensionalMotionProfilerTwoMotor.errorRight);
+		SmartDashboard.putString("Motion Profiler X Left", new Distance(Drive.getInstance().pidGetLeft(), Distance.Unit.DRIVE_ROTATION).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerTwoMotor.positionGoal + OneDimensionalMotionProfilerTwoMotor.initialPositionLeft, Distance.Unit.DRIVE_ROTATION).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerTwoMotor.errorLeft, Distance.Unit.DRIVE_ROTATION).get(Distance.Unit.INCH));
+		SmartDashboard.putString("Motion Profiler X Right", new Distance(Drive.getInstance().pidGetRight(), Distance.Unit.DRIVE_ROTATION).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerTwoMotor.positionGoal + OneDimensionalMotionProfilerTwoMotor.initialPositionRight, Distance.Unit.DRIVE_ROTATION).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerTwoMotor.errorRight, Distance.Unit.DRIVE_ROTATION).get(Distance.Unit.INCH));
 	}
 
 	@Override
@@ -43,20 +45,17 @@ public class EnableOneDMotionProfile extends NRCommand {
 	
 	@Override
 	public boolean isFinishedNR() {
-		
-		System.out.println((Drive.getInstance().getLeftDistance().sub(new Distance(OneDimensionalMotionProfilerTwoMotor.initialPositionLeft, Distance.Unit.DRIVE_ROTATION).add(Drive.getInstance().getLeftDistance()))).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD));
-		
+				
 		boolean finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftDistance())).abs()
-				.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-				&& (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getLeftDistance())).abs()
-				.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-				&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightDistance())).abs()
-				.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-				&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getRightDistance())).abs()
-				.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-		//Left off working below
-		//		&& (OneDimensionalMotionProfilerTwoMotor.positionGoal.sub(new Distance(OneDimensionalMotionProfilerTwoMotor.initialPositionLeft, Distance.Unit.DRIVE_ROTATION).add(Drive.getInstance().getLeftDistance()))).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD);
-		
+			.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+			&& (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getLeftDistance())).abs()
+			.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+			&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightDistance())).abs()
+			.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+			&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getRightDistance())).abs()
+			.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+			&& Math.abs(((Math.abs(Drive.getInstance().getLeftDistance().get(Distance.Unit.DRIVE_ROTATION) - OneDimensionalMotionProfilerTwoMotor.initialPositionLeft)) - Math.abs(OneDimensionalMotionProfilerTwoMotor.posPoints.get(OneDimensionalMotionProfilerTwoMotor.posPoints.size() - 1)))) < END_THRESHOLD.get(Distance.Unit.DRIVE_ROTATION);
+			
 		return finished;
 	}
 
