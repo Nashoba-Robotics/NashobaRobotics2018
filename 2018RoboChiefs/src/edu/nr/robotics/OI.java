@@ -4,6 +4,7 @@ import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -12,6 +13,10 @@ import edu.wpi.first.wpilibj.buttons.Button;
 public class OI implements SmartDashboardSource {
 	
 	private static final double JOYSTICK_DEAD_ZONE = 0.15;
+	
+	private static final int CANCEL_ALL_BUTTON_NUMBER = -1;
+	
+	private static final int DRIVE_REVERSE_BUTTON_NUMBER = -1;
 	
 	private double driveSpeedMultiplier = 1;
 	
@@ -22,6 +27,8 @@ public class OI implements SmartDashboardSource {
 	
 	private final Joystick operatorLeft;
 	private final Joystick operatorRight;
+	
+	private JoystickButton dumbDriveSwitch;
 	
 	private static final int STICK_LEFT = 0;
 	private static final int STICK_RIGHT = 1;
@@ -109,6 +116,18 @@ public class OI implements SmartDashboardSource {
 		return driveSpeedMultiplier;
 	}
 	
+	private static double snapDriveJoysticks(double value) {
+		if (Math.abs(value) < JOYSTICK_DEAD_ZONE) {
+			value = 0;
+		} else if (value > 0) {
+			value -= JOYSTICK_DEAD_ZONE;
+		} else {
+			value += JOYSTICK_DEAD_ZONE;
+		}
+		value /= 1 - JOYSTICK_DEAD_ZONE;
+		return value;
+	}
+	
 	public double getRawMove() {
 		return driveLeft.getY();
 	}
@@ -136,6 +155,10 @@ public class OI implements SmartDashboardSource {
 	
 	public boolean isDriveNonZero() {
 		return getDriveLeftXValue() != 0 || getDriveRightXValue() != 0 || getDriveLeftYValue() != 0 || getDriveRightYValue() != 0;
+	}
+	
+	public boolean shouldDumbDrive() {
+		return dumbDriveSwitch.get();
 	}
 
 	//// CREATING BUTTONS
