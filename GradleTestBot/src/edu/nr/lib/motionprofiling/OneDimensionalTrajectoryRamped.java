@@ -64,7 +64,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 		double dVr = rampFunc(timeRamp);
 		timeAccel = (velMaxUsed - (2 * dVr)) / accelMax;
 		timeCruise = (endPosition - 2 * integRampFunc(0, timeRamp) - 2 * timeAccel * dVr - timeAccel * (velMaxUsed - 2 * dVr) - 2 * timeRamp * (velMaxUsed - dVr) - 2 * integXYRefRampFunc(0, timeRamp)) / velMaxUsed;
-		if (timeCruise < 0) {
+		if (timeCruise <= 0 || timeAccel <= 0) {
 			timeAccel = NRMath.quadratic(accelMax, 2 * timeRamp * accelMax + 2 * rampFunc(timeRamp), 
 					2 * integRampFunc(0, timeRamp) + 2 * integXYRefRampFunc(0, timeRamp) + 2 * timeRamp * rampFunc(timeRamp) - endPosition, true);
 			timeCruise = 0;
