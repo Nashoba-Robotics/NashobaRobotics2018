@@ -46,7 +46,7 @@ public class GyroCorrection
 			initialized = true;
 		}
 		
-		double turn = getAngleError().get(Angle.Unit.DEGREE) * kP_theta;
+		double turn = -getAngleError().get(Angle.Unit.DEGREE) * kP_theta;
     	if(turn < 0)
     		turn = Math.max(-MAX_ANGLE_CORRECTION_SPEED, turn);
     	else

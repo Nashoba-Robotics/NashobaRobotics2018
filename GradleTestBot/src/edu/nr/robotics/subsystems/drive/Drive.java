@@ -4,17 +4,17 @@ import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 
+import edu.nr.lib.GyroCorrection;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.driving.DriveTypeCalculations;
 import edu.nr.lib.gyro.Gyro;
+import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.gyro.NavX;
 import edu.nr.lib.gyro.Pigeon;
-import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotor;
 import edu.nr.lib.motionprofiling.OneDimensionalTrajectoryRamped;
-import edu.nr.lib.motionprofiling.OneDimensionalTrajectorySimple;
 import edu.nr.lib.motionprofiling.TwoDimensionalMotionProfilerPathfinder;
 import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.TalonCreator;
@@ -30,10 +30,8 @@ import edu.nr.robotics.OI;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.wpi.first.wpilibj.PIDSourceType;
-import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import jaci.pathfinder.Waypoint;
 
@@ -64,8 +62,6 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	public static final double MAX_DRIVE_CURRENT = 25; //in amps, maximum current while driving normally
 	public static final double ABOVE_MAX_CURRENT_DRIVE_PERCENT = 0.8; //if the max current is reached, it will run at this percent voltage instead
-	
-	public static boolean isQuickTurn = false; 
 	
 	private CANTalon leftDrive, rightDrive, rightDriveFollow, leftDriveFollow;
 	private TalonEncoder leftEncoder, rightEncoder;
@@ -253,7 +249,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	 */
 	public void cheesyDrive(double move, double turn) {
 		double[] cheesyMotorPercents = new double[2];
-		cheesyMotorPercents = DriveTypeCalculations.cheesyDrive(move, turn, isQuickTurn, false);
+		cheesyMotorPercents = DriveTypeCalculations.cheesyDrive(move, turn, false, false);
 		
 		tankDrive(cheesyMotorPercents[0], cheesyMotorPercents[1]);
 	}

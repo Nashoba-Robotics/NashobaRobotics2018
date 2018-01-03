@@ -1,6 +1,7 @@
 package edu.nr.robotics.subsystems.drive;
 
 import edu.nr.lib.gyro.GyroCorrection;
+import edu.nr.lib.units.Angle;
 import edu.nr.lib.NRMath;
 import edu.nr.lib.commandbased.JoystickCommand;
 import edu.nr.robotics.OI;
@@ -29,8 +30,10 @@ public class DriveJoystickCommand extends JoystickCommand {
 			moveValue = NRMath.powWithSign(moveValue, 3);
 			rotateValue = NRMath.powWithSign(rotateValue, 3);
 			
+			System.out.println(gyroCorrection.getAngleError().get(Angle.Unit.DEGREE));
+			
 			if (Math.abs(rotateValue) < 0.05 && Math.abs(moveValue) > 0.1) {
-				rotateValue = gyroCorrection.getTurnValue(0.04);
+				rotateValue = gyroCorrection.getTurnValue(Drive.getInstance().kP_thetaOneD);
 			} else {
 				gyroCorrection.clearInitialValue();
 			}
