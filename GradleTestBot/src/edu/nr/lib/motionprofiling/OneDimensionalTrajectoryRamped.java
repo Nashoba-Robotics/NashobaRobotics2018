@@ -21,7 +21,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	double startPosition;
 	
 	double pow = 2;
-	double timeMult = 11;
+	double timeMult = 11; //Number tested for increases ramp rate
 	
 	ArrayList<Double> posPoints;
 	ArrayList<Double> velPoints;
