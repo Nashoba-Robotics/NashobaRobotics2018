@@ -13,6 +13,7 @@ import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotor;
+import edu.nr.lib.motionprofiling.OneDimensionalTrajectoryRamped;
 import edu.nr.lib.motionprofiling.OneDimensionalTrajectorySimple;
 import edu.nr.lib.motionprofiling.TwoDimensionalMotionProfilerPathfinder;
 import edu.nr.lib.sensorhistory.TalonEncoder;
@@ -46,6 +47,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final Speed MAX_SPEED = new Speed(12.698, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Acceleration MAX_ACC = new Acceleration(31.53, Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND);
 	public static final Jerk MAX_JERK = new Jerk(813, Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND);
+	
+	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(0.1, Distance.Unit.INCH);
+	public static final Time PROFILE_TIME_THRESHOLD = new Time(0.25, Time.Unit.SECOND);
 	
 	public static final double ACCEL_PERCENT = 0.5;
 	
@@ -86,7 +90,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	//public static double kVOneD = 0.07226;
 	public static double kVOneD = 1 / MAX_SPEED.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND);
-	public static double kAOneD = 0.0018;
+	public static double kAOneD = 0.01;
 	public static double kPOneD = 0;//0.01
 	public static double kIOneD = 0;
 	public static double kDOneD = 0;
@@ -222,10 +226,10 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public Distance getLeftDistance() {
 		if(leftDrive != null) {
 		return new Distance(leftDrive.getPosition(), Unit.DRIVE_ROTATION);
-		}
-		
-		else
+		}		
+		else {
 			return Distance.ZERO;
+		}
 	}
 	
 	public Distance getRightDistance() {
@@ -307,7 +311,31 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		}
 	}
 	
-	
+	/**
+	 * Gets the historical position of the left talon
+	 * 
+	 * @param deltaTime
+	 *            How long ago to look
+	 * @return current position of talon
+	 */
+	public Distance getHistoricalLeftPosition(Time deltaTime) {
+		if (leftEncoder != null)
+			return new Distance(leftEncoder.getPosition(deltaTime), Distance.Unit.DRIVE_ROTATION);
+		return Distance.ZERO;
+	}
+
+	/**
+	 * Gets the historical position of the right talon
+	 * 
+	 * @param deltaTime
+	 *            How long ago to look
+	 * @return current position of the talon
+	 */
+	public Distance getHistoricalRightPosition(Time deltaTime) {
+		if (rightEncoder != null)
+			return new Distance(rightEncoder.getPosition(deltaTime), Distance.Unit.DRIVE_ROTATION);
+		return Distance.ZERO;
+	}
 	
 	public double getRightCurrent() {
 		if (rightDrive != null) {
@@ -426,9 +454,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	public void enableOneDProfiler(Distance dist) {
 		oneDProfiler = new OneDimensionalMotionProfilerTwoMotor(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
-		oneDProfiler.setTrajectory(new OneDimensionalTrajectorySimple(dist.get(Distance.Unit.FOOT), 
-				MAX_SPEED.mul(drivePercent).get(Distance.Unit.FOOT, Time.Unit.SECOND), 
-				MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND)));
+		oneDProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(dist.get(Distance.Unit.DRIVE_ROTATION), 
+				MAX_SPEED.mul(drivePercent).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND), 
+				MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND)));
 		oneDProfiler.enable();
 	}
 

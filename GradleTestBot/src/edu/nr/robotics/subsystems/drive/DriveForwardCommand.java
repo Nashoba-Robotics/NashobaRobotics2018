@@ -3,6 +3,7 @@ package edu.nr.robotics.subsystems.drive;
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Speed;
+import edu.nr.lib.units.Time;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveForwardCommand extends NRCommand {
@@ -23,6 +24,11 @@ public class DriveForwardCommand extends NRCommand {
 		
 		startPosition = Drive.getInstance().getRightDistance();
 		
+	}
+	
+	@Override
+	public void onExecute() {
+		System.out.println(Drive.getInstance().getLeftSpeed().get(Distance.Unit.FOOT, Time.Unit.SECOND));
 	}
 	
 	@Override
