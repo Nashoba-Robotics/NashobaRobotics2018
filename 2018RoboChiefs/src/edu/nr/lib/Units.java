@@ -40,5 +40,8 @@ public class Units {
 	 */
 	public static final double HUNDRED_MS_PER_MIN = HUNDRED_MS_PER_SECOND * SECONDS_PER_MINUTE;
 
-
+	/**
+	 * The number of native units per tick
+	 */
+	public static final double NATIVE_UNITS_PER_TICK = 4;
 }

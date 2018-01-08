@@ -9,14 +9,15 @@ public class Angle {
 	private Unit type;
 	
 	public enum Unit implements GenericUnit {
-		DEGREE, ROTATION, RADIAN, MAGNETIC_ENCODER_NATIVE_UNITS;
+		DEGREE, ROTATION, RADIAN, MAGNETIC_ENCODER_NATIVE_UNITS, MAGNETIC_ENCODER_TICKS;
 		
 		public static final Unit defaultUnit = DEGREE;
 		
 		private static final double ROTATIONS_PER_DEGREE = 1/360.0;
 		private static final double MAGNETIC_ENCODER_NATIVE_UNITS_PER_ROTATION = Units.MAGNETIC_NATIVE_UNITS_PER_REV;
 		private static final double MAGNETIC_ENCODER_NATIVE_UNITS_PER_DEGREE = MAGNETIC_ENCODER_NATIVE_UNITS_PER_ROTATION * ROTATIONS_PER_DEGREE; 
-		private static final double RADIANS_PER_DEGREE = 2*Math.PI / 360.0;
+		private static final double RADIANS_PER_DEGREE = 2 * Math.PI / 360.0;
+		private static final double MAGNETIC_ENCODER_TICKS_PER_DEGREE = MAGNETIC_ENCODER_NATIVE_UNITS_PER_ROTATION * ROTATIONS_PER_DEGREE / Units.NATIVE_UNITS_PER_TICK;
 				
 		public double convertToDefault(double val) {
 			if(this == Unit.DEGREE) {
@@ -30,6 +31,9 @@ public class Angle {
 			}
 			if(this == MAGNETIC_ENCODER_NATIVE_UNITS) {
 				return val / MAGNETIC_ENCODER_NATIVE_UNITS_PER_DEGREE;
+			}
+			if(this == Unit.MAGNETIC_ENCODER_TICKS) {
+				return val / MAGNETIC_ENCODER_TICKS_PER_DEGREE;
 			}
 			return 0;
 		}
@@ -46,6 +50,9 @@ public class Angle {
 			}
 			if(this == MAGNETIC_ENCODER_NATIVE_UNITS) {
 				return val * MAGNETIC_ENCODER_NATIVE_UNITS_PER_DEGREE;
+			}
+			if(this == MAGNETIC_ENCODER_TICKS) {
+				return val * MAGNETIC_ENCODER_TICKS_PER_DEGREE;
 			}
 			return 0;
 		}

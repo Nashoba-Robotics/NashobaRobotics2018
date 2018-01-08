@@ -1,10 +1,11 @@
 package edu.nr.lib.gyro;
 
 import com.kauailabs.sf2.orientation.OrientationHistory;
-import com.ctre.CANTalon;
-import com.ctre.PigeonImu;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.nr.lib.interfaces.Periodic;
+import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Time;
 
@@ -12,8 +13,8 @@ public class Pigeon extends Gyro implements Periodic {
 
 	private static Pigeon singleton;
 	
-	private PigeonImu pigeon;
-	private CANTalon talon;
+	private PigeonIMU pigeon;
+	private TalonSRX talon;
 	private int talonID = 3;
 	
 	private double[] yawPitchRoll;
@@ -35,8 +36,7 @@ public class Pigeon extends Gyro implements Periodic {
 	}
 	
 	public Pigeon() {
-		talon = new CANTalon(talonID);
-		pigeon = new PigeonImu(talon);
+		pigeon = CTRECreator.createPigeon(talonID);
 		
 		yawPitchRoll = new double[3];
 		
@@ -56,7 +56,7 @@ public class Pigeon extends Gyro implements Periodic {
 	
 	@Override
 	public Angle getYaw() {
-		pigeon.GetYawPitchRoll(yawPitchRoll);
+		pigeon.getYawPitchRoll(yawPitchRoll);
 		return new Angle(yawPitchRoll[0], Angle.Unit.DEGREE);
 	}
 	
@@ -66,7 +66,7 @@ public class Pigeon extends Gyro implements Periodic {
 
 	@Override
 	public void reset() {
-		pigeon.SetYaw(0);
+		pigeon.setYaw(0, 0);
 	}
 	
 }
