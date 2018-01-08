@@ -40,6 +40,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	private static Drive singleton;
 	
 	public static final double WHEEL_DIAMETER_INCHES = 3.5;
+	public static final Distance WHEEL_DIAMETER = new Distance(WHEEL_DIAMETER_INCHES, Distance.Unit.INCH);
 	public static final Distance WHEEL_BASE = new Distance(27, Distance.Unit.INCH); //TODO: find for real
 	
 	public static final Speed MAX_SPEED = new Speed(12.698, Distance.Unit.FOOT, Time.Unit.SECOND);
@@ -91,14 +92,14 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final NeutralMode NEUTRAL_MODE = NeutralMode.Brake;
 	
 	//public static double kVOneD = 0.07226;
-	public static double kVOneD = 1 / MAX_SPEED.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND);
+	public static double kVOneD = 1 / MAX_SPEED.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
 	public static double kAOneD = 0.01;
 	public static double kPOneD = 0;//0.01
 	public static double kIOneD = 0;
 	public static double kDOneD = 0;
 	public static double kP_thetaOneD = 0;
 	
-	public static double kVTwoD = 1 / MAX_SPEED.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND);;
+	public static double kVTwoD = 1 / MAX_SPEED.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
 	public static double kATwoD = 0;
 	public static double kPTwoD = 0;
 	public static double kITwoD = 0;
@@ -154,11 +155,11 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
 			if (EnabledSubsystems.DUMB_DRIVE_ENABLED) {
-				leftDrive.changeControlMode(ControlMode.PercentOutput);
-				rightDrive.changeControlMode(ControlMode.PercentOutput);
+				leftDrive.set(ControlMode.PercentOutput, 0);
+				rightDrive.set(ControlMode.PercentOutput, 0);
 			} else {
-				leftDrive.changeControlMode(ControlMode.Velocity);
-				rightDrive.changeControlMode(ControlMode.Velocity);
+				leftDrive.set(ControlMode.Velocity, 0);
+				rightDrive.set(ControlMode.Velocity, 0);
 			}
 			
 			CheesyDriveCalculationConstants.createDriveTypeCalculations();
@@ -196,9 +197,6 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		SmartDashboard.putNumber("kITwoD Value: ", kITwoD);
 		SmartDashboard.putNumber("kDTwoD Value: ", kDTwoD);
 		SmartDashboard.putNumber("kP_thetaTwoD Value: ", kP_thetaTwoD);
-	
-		SmartDashboard.putNumber("Left F", leftDrive.getF());
-		SmartDashboard.putNumber("Right F", rightDrive.getF());
 	}
 	
 	public Speed currentMaxSpeed() {
@@ -273,35 +271,21 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public void setMotorSpeed(Speed left, Speed right) {
 		if (leftDrive != null && rightDrive != null) {
 			
-			if ((getLeftCurrent() > MAX_DRIVE_CURRENT || getRightCurrent() > MAX_DRIVE_CURRENT) && Math.abs(OI.getInstance().getArcadeMoveValue()) < ABOVE_MAX_CURRENT_DRIVE_PERCENT) { 
-				if (!ampTimerStarted) {
-					ampTimerStart = Timer.getFPGATimestamp();
-					ampTimerStarted = true;
-				}
-			} else {
-				ampTimerStarted = false;
-			}
+			leftMotorSetpoint = left;
+			rightMotorSetpoint = right.negate();
 			
-			if (ampTimerStarted && (Timer.getFPGATimestamp() - ampTimerStart) >= MAX_CURRENT_PERIOD) {
-				leftMotorSetpoint = currentMaxSpeed().mul(ABOVE_MAX_CURRENT_DRIVE_PERCENT);
-				rightMotorSetpoint = currentMaxSpeed().negate().mul(ABOVE_MAX_CURRENT_DRIVE_PERCENT);
-			} else {
-				leftMotorSetpoint = left;
-				rightMotorSetpoint = right.negate();
-			}
-			
-			leftDrive.config_kF(SLOT_0, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / (new AngularSpeed(leftMotorSetpoint.abs().get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_NATIVE_UNITS, Time.Unit.HUNDRED_MILLISECOND) / 4), NO_TIMEOUT);
-			rightDrive.config_kF(SLOT_0, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / (new AngularSpeed(rightMotorSetpoint.abs().get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_NATIVE_UNITS, Time.Unit.HUNDRED_MILLISECOND) / 4), NO_TIMEOUT);
+			leftDrive.config_kF(SLOT_0, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / (new AngularSpeed(leftMotorSetpoint.abs().get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_TICKS, Time.Unit.HUNDRED_MILLISECOND)), NO_TIMEOUT);
+			rightDrive.config_kF(SLOT_0, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / (new AngularSpeed(rightMotorSetpoint.abs().get(Distance.Unit.DRIVE_ROTATION, Time.Unit.HUNDRED_MILLISECOND), Angle.Unit.ROTATION, Time.Unit.HUNDRED_MILLISECOND).get(Angle.Unit.MAGNETIC_ENCODER_TICKS, Time.Unit.HUNDRED_MILLISECOND)), NO_TIMEOUT);
 			
 			if (leftDrive.getControlMode() == ControlMode.PercentOutput) {
-				leftDrive.set(leftMotorSetpoint.div(currentMaxSpeed()));
+				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.div(currentMaxSpeed()));
 			} else {
-				leftDrive.set(leftMotorSetpoint.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE));
+				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
 			}
 			if (rightDrive.getControlMode() == ControlMode.PercentOutput) {
-				rightDrive.set(rightMotorSetpoint.div(currentMaxSpeed()));
+				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.div(currentMaxSpeed()));
 			} else {
-				rightDrive.set(rightMotorSetpoint.get(Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE));
+				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
 			}
 		}
 	}
@@ -359,18 +343,18 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	@Override
 	public double pidGetLeft() {
 		if (type == PIDSourceType.kRate) {
-			return leftDrive.getSpeed() / 60;
+			return leftDrive.getSelectedSensorVelocity(PID_TYPE);
 		} else {
-			return leftDrive.getPosition();
+			return leftDrive.getSelectedSensorPosition(PID_TYPE);
 		}
 	}
 
 	@Override
 	public double pidGetRight() {
 		if (type == PIDSourceType.kRate) {
-			return -rightDrive.getSpeed() / 60;
+			return -rightDrive.getSelectedSensorVelocity(PID_TYPE);
 		} else {
-			return -rightDrive.getPosition();
+			return -rightDrive.getSelectedSensorPosition(PID_TYPE);
 		}
 	}
 	
@@ -449,24 +433,24 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	public void enableOneDProfiler(Distance dist) {
 		oneDProfiler = new OneDimensionalMotionProfilerTwoMotor(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
-		oneDProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(dist.get(Distance.Unit.DRIVE_ROTATION), 
-				MAX_SPEED.mul(drivePercent).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND), 
-				MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND)));
+		oneDProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(dist.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
+				MAX_SPEED.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), 
+				MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
 		oneDProfiler.enable();
 	}
 
 	public void enableTwoDProfiler(Distance xDist, Distance yDist, Angle endAng) {
 		twoDProfiler = new TwoDimensionalMotionProfilerPathfinder(this, this, kVTwoD, kATwoD, kPTwoD, kITwoD, kDTwoD, kP_thetaTwoD,
-				MAX_SPEED.mul(drivePercent).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND), 
-				MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND),
-				MAX_JERK.mul(ACCEL_PERCENT).get(Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND), 
-				TICKS_PER_REV_TEST, WHEEL_DIAMETER_INCHES / 12, WHEEL_BASE.get(Distance.Unit.DRIVE_ROTATION), 
+				MAX_SPEED.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), 
+				MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
+				MAX_JERK.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), 
+				TICKS_PER_REV_TEST, WHEEL_DIAMETER.get(Distance.Unit.MAGNETIC_ENCODER_TICK), WHEEL_BASE.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
 				false);
 		
 		Waypoint[] points = new Waypoint[] {
 			new Waypoint(0, 0, 0),
 			//new Waypoint(0.25, 0, 0),
-			new Waypoint(xDist.get(Distance.Unit.DRIVE_ROTATION), yDist.get(Distance.Unit.DRIVE_ROTATION), endAng.get(Angle.Unit.RADIAN))
+			new Waypoint(xDist.get(Distance.Unit.MAGNETIC_ENCODER_TICK), yDist.get(Distance.Unit.MAGNETIC_ENCODER_TICK), endAng.get(Angle.Unit.RADIAN))
 		};
 		
 		twoDProfiler.setTrajectory(points);
