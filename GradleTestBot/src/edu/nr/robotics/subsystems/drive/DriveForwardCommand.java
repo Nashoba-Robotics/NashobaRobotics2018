@@ -28,7 +28,7 @@ public class DriveForwardCommand extends NRCommand {
 	
 	@Override
 	public void onExecute() {
-		System.out.println(Drive.getInstance().getLeftSpeed().get(Distance.Unit.FOOT, Time.Unit.SECOND));
+		System.out.println(Drive.getInstance().getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND));
 	}
 	
 	@Override

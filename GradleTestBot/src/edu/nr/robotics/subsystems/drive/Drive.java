@@ -358,13 +358,13 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		}
 	}
 	
-	public Speed getLeftSpeed() {
+	public Speed getLeftVelocity() {
 		if (leftDrive != null)
 			return new Speed(leftDrive.getSelectedSensorVelocity(SLOT_0), Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
 		return Speed.ZERO;
 	}
 	
-	public Speed getRightSpeed() {
+	public Speed getRightVelocity() {
 		if(rightDrive != null)
 			return new Speed(rightDrive.getSelectedSensorVelocity(SLOT_0), Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
 		return Speed.ZERO;
@@ -380,8 +380,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		SmartDashboard.putNumber("Drive Left Current", leftDrive.getOutputCurrent());
 		SmartDashboard.putNumber("Drive Right Current", rightDrive.getOutputCurrent());
 		
-		SmartDashboard.putString("Drive Left Speed vs Set Speed: ", getLeftSpeed().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
-		SmartDashboard.putString("Drive Right Speed vs Set Speed: ", -getRightSpeed().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + -rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+		SmartDashboard.putString("Drive Left Speed vs Set Speed: ", getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+		SmartDashboard.putString("Drive Right Speed vs Set Speed: ", -getRightVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + -rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 		
 		SmartDashboard.putNumber("Drive Left Voltage", leftDrive.getMotorOutputVoltage());
 		SmartDashboard.putNumber("Drive Right Voltage", rightDrive.getMotorOutputVoltage());
