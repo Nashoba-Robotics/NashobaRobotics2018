@@ -39,15 +39,13 @@ public class DriveTypeCalculations {
 	 * @return
 	 * 				Array of doubles with left motor percent followed by the right motor percent
 	 */
-	public static double[] cheesyDrive(double moveRaw, double turnRaw, boolean isQuickTurn, boolean isHighGear) {
-		
-		double oldTurn = 0;
-		
-		//double quickStopAccumulator = 0;
+	public static double[] cheesyDrive(double moveRaw, double turnRaw, double oldTurnRaw, boolean isHighGear) {
+				
 		double negInertiaAccumulator = 0;
 		
 		double move = NRMath.limit(moveRaw);
 		double turn = -NRMath.limit(turnRaw);
+		double oldTurn = -NRMath.limit(oldTurnRaw);
 		
 		double negInertia = turn - oldTurn;
         oldTurn = turn;

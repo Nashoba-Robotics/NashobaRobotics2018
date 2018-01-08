@@ -1,10 +1,9 @@
 package edu.nr.robotics.subsystems.drive;
 
-import com.ctre.CANTalon;
-import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.nr.lib.GyroCorrection;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.driving.DriveTypeCalculations;
 import edu.nr.lib.gyro.Gyro;
@@ -17,7 +16,7 @@ import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotor;
 import edu.nr.lib.motionprofiling.OneDimensionalTrajectoryRamped;
 import edu.nr.lib.motionprofiling.TwoDimensionalMotionProfilerPathfinder;
 import edu.nr.lib.sensorhistory.TalonEncoder;
-import edu.nr.lib.talons.TalonCreator;
+import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Acceleration;
 import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.AngularSpeed;
@@ -63,7 +62,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final double MAX_DRIVE_CURRENT = 25; //in amps, maximum current while driving normally
 	public static final double ABOVE_MAX_CURRENT_DRIVE_PERCENT = 0.8; //if the max current is reached, it will run at this percent voltage instead
 	
-	private CANTalon leftDrive, rightDrive, rightDriveFollow, leftDriveFollow;
+	private TalonSRX leftDrive, rightDrive, rightDriveFollow, leftDriveFollow;
 	private TalonEncoder leftEncoder, rightEncoder;
 	
 	//The speed in RPM that the motors are supposed to be running at... they get set later
@@ -115,11 +114,11 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		
 		if(EnabledSubsystems.DRIVE_ENABLED || EnabledSubsystems.DUMB_DRIVE_ENABLED) {
 			
-			leftDrive = TalonCreator.createMasterTalon(RobotMap.DRIVE_LEFT);
-			rightDrive = TalonCreator.createMasterTalon(RobotMap.DRIVE_RIGHT);
+			leftDrive = CTRECreator.createMasterTalon(RobotMap.DRIVE_LEFT);
+			rightDrive = CTRECreator.createMasterTalon(RobotMap.DRIVE_RIGHT);
 			
-			leftDriveFollow = TalonCreator.createFollowerTalon(RobotMap.DRIVE_LEFT_FOLLOW, leftDrive.getDeviceID());
-			rightDriveFollow = TalonCreator.createFollowerTalon(RobotMap.DRIVE_RIGHT_FOLLOW, rightDrive.getDeviceID());
+			leftDriveFollow = CTRECreator.createFollowerTalon(RobotMap.DRIVE_LEFT_FOLLOW, leftDrive.getDeviceID());
+			rightDriveFollow = CTRECreator.createFollowerTalon(RobotMap.DRIVE_RIGHT_FOLLOW, rightDrive.getDeviceID());
 			
 			leftDrive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 			leftDrive.setProfile(0);

@@ -10,13 +10,14 @@ public class Distance {
 	private Unit type;
 	
 	public enum Unit implements GenericUnit {
-		FOOT, INCH, DRIVE_ROTATION, METER;
+		FOOT, INCH, DRIVE_ROTATION, METER, MAGNETIC_ENCODER_TICK;
 		
 		public static final Unit defaultUnit = INCH;
 		
 		private static final double DRIVE_ROTATION_PER_INCH = 1/(Drive.WHEEL_DIAMETER_INCHES * Math.PI);
 		private static final double FOOT_PER_INCH = 1.0/Units.INCHES_PER_FOOT;
 		private static final double METER_PER_INCH = 1.0/Units.INCHES_PER_METER;
+		private static final double MAGNETIC_ENCODER_TICK_PER_INCH = Units.MAGNETIC_NATIVE_UNITS_PER_REV * DRIVE_ROTATION_PER_INCH / Units.NATIVE_UNITS_PER_TICK;
 				
 		public double convertToDefault(double val) {
 			if(this == Unit.defaultUnit) {
@@ -30,6 +31,9 @@ public class Distance {
 			}
 			if(this == Unit.METER) {
 				return val / METER_PER_INCH;
+			}
+			if(this == Unit.MAGNETIC_ENCODER_TICK) {
+				return val / MAGNETIC_ENCODER_TICK_PER_INCH;
 			}
 			return 0;
 		}
@@ -46,6 +50,9 @@ public class Distance {
 			}
 			if(this == Unit.METER) {
 				return METER_PER_INCH * val;
+			}
+			if(this == Unit.MAGNETIC_ENCODER_TICK) {
+				return MAGNETIC_ENCODER_TICK_PER_INCH * val;
 			}
 			return 0;
 		}
