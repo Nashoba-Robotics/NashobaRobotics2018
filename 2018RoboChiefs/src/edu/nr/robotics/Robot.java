@@ -2,9 +2,13 @@
 package edu.nr.robotics;
 
 import edu.nr.lib.commandbased.CancelAllCommand;
+import edu.nr.lib.commandbased.DoNothingCommand;
+import edu.nr.lib.commandbased.*;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.interfaces.Periodic;
 import edu.nr.lib.interfaces.SmartDashboardSource;
+import edu.nr.robotics.auton.AutoChoosers;
+import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.nr.robotics.subsystems.drive.CSVSaverDisable;
 import edu.nr.robotics.subsystems.drive.CSVSaverEnable;
@@ -33,7 +37,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	Command autonomousCommand;
-	SendableChooser<Command> autoSpotChooser = new SendableChooser<>();
+	SendableChooser<Command> autoChooser = new SendableChooser<>();
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -49,16 +53,24 @@ public class Robot extends IterativeRobot {
 		smartDashboardInit();
 		
 		//chooser.addDefault("Default Auto", new ExampleCommand());
-		SmartDashboard.putData("Auto mode", autoSpotChooser);
+		SmartDashboard.putData("Auto mode", autoChooser);
 	}
 
 	public void autoChooserInit() {
-		SmartDashboard.putData("Auto Destination", autoSpotChooser);
+		autoChooser.addDefault("Do Nothing", new DoNothingCommand());
+		autoChooser.addObject("Complex Auto Start", new StartAutoCommand());
+		autoChooser.addObject("Baseline Auto", new DriveOverBaselineAutoCommand());
+		
+		SmartDashboard.putData("Auto Destination", autoChooser);	
 	}
 
 	public void smartDashboardInit() {
 		SmartDashboard.putData(new CSVSaverEnable());
 		SmartDashboard.putData(new CSVSaverDisable());
+	
+		SmartDashboard.putData("Auto Start Position", AutoChoosers.autoStartPosChooser);
+		SmartDashboard.putData("Auto Switch", AutoChoosers.autoSwitchChooser);
+		SmartDashboard.putData("Auto Scale", AutoChoosers.autoScaleChooser);
 	}
 	
 	public void tcpServerInit() {
@@ -95,7 +107,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = autoSpotChooser.getSelected();
+		FieldData.getFieldData();
+		
+		autonomousCommand = autoChooser.getSelected();
 
 		System.out.println("Initializing auto command: " + autonomousCommand);
 		

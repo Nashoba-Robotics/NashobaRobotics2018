@@ -132,6 +132,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	 */
 	public static final Time PROFILE_TIME_THRESHOLD = new Time(0, Time.Unit.MILLISECOND); //TODO: Find Drive profile time threshold
 	
+	public static final double PROFILE_DRIVE_PERCENT = 0; //TODO: Find Drive profile percent
+	
 	/**
 	 * No timeout for talon configuration functions
 	 */
