@@ -1,5 +1,7 @@
 package edu.nr.robotics;
 
+import edu.nr.robotics.subsystems.drive.Drive;
+import edu.nr.robotics.subsystems.drive.DriveJoystickCommand;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class FieldData {
@@ -13,11 +15,25 @@ public class FieldData {
 		red, blue;
 	}
 	
-	public static Direction nearSwitch;
-	public static Direction farSwitch;
-	public static Direction scale;
+	public Direction nearSwitch;
+	public Direction farSwitch;
+	public Direction scale;
 	
-	public static void getFieldData() { 
+	public static FieldData singleton;
+	
+	public static FieldData getInstance() {
+		if (singleton == null)
+			init();
+		return singleton;
+	}
+	
+	public synchronized static void init() {
+		if (singleton == null) {
+			singleton = new FieldData();
+		}
+	}
+	
+	public void getFieldData() { 
 		String gsm = DriverStation.getInstance().getGameSpecificMessage();
 		
 		if (gsm.charAt(0) == 'l' || gsm.charAt(0) == 'L'){

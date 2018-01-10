@@ -107,7 +107,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		FieldData.getFieldData();
+		FieldData.getInstance().getFieldData();
 		
 		autonomousCommand = autoChooser.getSelected();
 

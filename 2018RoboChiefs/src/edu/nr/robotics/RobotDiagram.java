@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.tables.ITable;
 
 public class RobotDiagram implements NamedSendable {
-
+//TODO: Fix Errors
 	private static RobotDiagram singleton;
 
 	public static RobotDiagram getInstance() {
