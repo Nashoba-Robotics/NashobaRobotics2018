@@ -40,6 +40,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	private static Drive singleton;
 	
 	public static final double WHEEL_DIAMETER_INCHES = 3.5;
+	public static final double WHEEL_DIAMETER_INCHES_H = 0;
 	public static final Distance WHEEL_DIAMETER = new Distance(WHEEL_DIAMETER_INCHES, Distance.Unit.INCH);
 	public static final Distance WHEEL_BASE = new Distance(27, Distance.Unit.INCH); //TODO: find for real
 	

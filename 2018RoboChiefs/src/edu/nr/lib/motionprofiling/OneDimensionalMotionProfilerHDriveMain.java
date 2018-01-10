@@ -4,60 +4,72 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.PIDSource;
+import edu.nr.lib.gyro.GyroCorrection;
+import edu.nr.lib.interfaces.TriplePIDOutput;
+import edu.nr.lib.interfaces.TriplePIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneDimensionalMotionProfiler  {
+public class OneDimensionalMotionProfilerHDriveMain extends TimerTask implements OneDimensionalMotionProfiler  {
 
 	private final Timer timer;
 	
 	//In milliseconds
 	private final long period;
-	private static final long defaultPeriod = 10; //200 Hz 
+	private static final long defaultPeriod = 10; //100 Hz 
 	
 	private double prevTime;
 	private double startTime;
 	
 	private boolean enabled = false;
-	private PIDOutput out;
-	private PIDSource source;
+	private TriplePIDOutput out;
+	private TriplePIDSource source;
 	
-	private double ka, kp, kd, kv;
-	private double errorLast;
+	private double ka, kp, ki, kd, kv, kp_theta;
+	public static double errorH;
+	private double errorHLast;
 	
-	private double initialPosition;
+	public static double positionGoal, velocityGoal, accelGoal;
 	
-	private ArrayList<Double> posPoints;
-	private ArrayList<Double> velPoints;
-	private ArrayList<Double> accelPoints;
+	public static double initialPositionH, initialPositionLeft, initialPositionRight;
 	
-	private OneDimensionalTrajectory trajectory;
+	GyroCorrection gyroCorrection;
 	
+	public static ArrayList<Double> posPoints;
+	public static ArrayList<Double> velPoints;
+	public static ArrayList<Double> accelPoints;
+
 	private int loopIteration;
+			
+	private OneDimensionalTrajectory trajectory;
 		
-	public OneDimensionalMotionProfilerBasic(PIDOutput out, PIDSource source, double kv, double ka, double kp, double kd, long period) {
+	public OneDimensionalMotionProfilerHDriveMain(TriplePIDOutput out, TriplePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, long period) {
 		this.out = out;
 		this.source = source;
 		this.period = period;
-		this.trajectory = new OneDimensionalTrajectorySimple(0,1,1);
+		this.trajectory = new OneDimensionalTrajectoryRamped(0,1,1);
 		timer = new Timer();
-		timer.scheduleAtFixedRate(this, 0, this.period);
+		timer.schedule(this, 0, this.period);
 		reset();
 		this.source.setPIDSourceType(PIDSourceType.kDisplacement);
 		this.ka = ka;
 		this.kp = kp;
+		this.ki = ki;
 		this.kd = kd;
 		this.kv = kv;
+		this.kp_theta = kp_theta;
+		this.initialPositionH = source.pidGetH();
+		this.initialPositionLeft = source.pidGetLeft();
+		this.initialPositionRight = source.pidGetRight();
+		this.gyroCorrection = new GyroCorrection();
 		this.posPoints = new ArrayList<Double>();
 		this.velPoints = new ArrayList<Double>();
 		this.accelPoints = new ArrayList<Double>();
-		this.initialPosition = source.pidGet();
+		reset();
+		timer.scheduleAtFixedRate(this, 0, this.period);
 	}
 	
-	public OneDimensionalMotionProfilerBasic(PIDOutput out, PIDSource source, double kv, double ka, double kp, double kd) {
-		this(out, source, kv, ka, kp, kd, defaultPeriod);
+	public OneDimensionalMotionProfilerHDriveMain(TriplePIDOutput out, TriplePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta) {
+		this(out, source, kv, ka, kp, ki, kd, kp_theta, defaultPeriod);
 	}
 	
 	double timeOfVChange = 0;
@@ -65,13 +77,11 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 	
 	@Override
 	public void run() {
-		if(enabled) {
+		if(enabled && posPoints.size() > 0 && velPoints.size() > 0 && accelPoints.size() > 0) {
 			double dt = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - prevTime;
-						
-			double positionGoal;
-			double velocityGoal;
-			double accelGoal;
-
+			prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+			//System.out.println(dt * 1000);
+			
 			if (loopIteration < posPoints.size()) {
 				positionGoal = posPoints.get(loopIteration);
 				velocityGoal = velPoints.get(loopIteration);
@@ -82,27 +92,20 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 				accelGoal = 0;
 			}
 			
-			double error = trajectory.getGoalPosition(edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime) - source.pidGet() + initialPosition;
-						
-			double errorDeriv = (error - errorLast) / dt;
+			errorH = positionGoal - source.pidGetH() + initialPositionH;
+			double errorDerivH = (errorH - errorHLast) / dt;
+			double errorIntegralH = (errorH - errorHLast) * dt / 2;
+			double outputH = velocityGoal * kv + accelGoal * ka + errorH * kp + errorIntegralH * ki + errorDerivH * kd;
+			errorHLast = errorH;
 			
-			double output = velocityGoal * kv + accelGoal * ka + error * kp + errorDeriv * kd;
+			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
 			
-			out.pidWrite(output);
-
-			errorLast = error;
+			double outputLeft, outputRight;
 			
-			double timeSinceStart = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime;
+			outputLeft = -headingAdjustment;
+			outputRight = headingAdjustment;
 			
-			if((initialPosition + (trajectory.getGoalPosition(timeSinceStart))) < 0) {
-				//double goalPosition = trajectory.getGoalPosition(timeSinceStart);
-				//double currentTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-				
-				isEnabled();
-			}
-			
-			loopIteration++;
-
+			out.pidWrite(outputLeft, outputRight, outputH);			
 			//source.setPIDSourceType(PIDSourceType.kRate);
 			//SmartDashboard.putString("Motion Profiler V", source.pidGet() + ":" + (output * trajectory.getMaxUsedVelocity() * Math.signum(trajectory.getMaxUsedVelocity())));
 			//source.setPIDSourceType(PIDSourceType.kDisplacement);
@@ -138,11 +141,11 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 	 * Doesn't disable the controller
 	 */
 	public void reset() {
-		errorLast = 0;
+		errorHLast = 0;
 		startTime = prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 		PIDSourceType type = source.getPIDSourceType();
 		source.setPIDSourceType(PIDSourceType.kDisplacement);
-		initialPosition = source.pidGet();
+		initialPositionH = source.pidGetH();
 		source.setPIDSourceType(type);
 	}
 	

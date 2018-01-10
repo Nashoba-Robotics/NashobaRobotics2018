@@ -8,11 +8,7 @@ import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.interfaces.SmartDashboardSource;
-import edu.nr.lib.units.Distance;
-import edu.nr.lib.units.Time;
-import edu.nr.robotics.subsystems.drive.Drive;
 import edu.wpi.first.wpilibj.PIDSourceType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements OneDimensionalMotionProfiler, SmartDashboardSource {
 
@@ -20,7 +16,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	
 	//In milliseconds
 	private final long period;
-	private static final long defaultPeriod = 13; //200 Hz 
+	private static final long defaultPeriod = 10; //200 Hz 
 	
 	private double prevTime;
 	private double startTime;
@@ -33,26 +29,20 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	private double errorLastLeft;
 	private double errorLastRight;
 	
-	public static double initialPositionLeft;
-	public static double initialPositionRight;
+	private double initialPositionLeft;
+	private double initialPositionRight;
 			
-	public static OneDimensionalTrajectory trajectory;
+	private OneDimensionalTrajectory trajectory;
 	
 	GyroCorrection gyroCorrection;
 	
-	public static ArrayList<Double> posPoints;
-	public static ArrayList<Double> velPoints;
-	public static ArrayList<Double> accelPoints;
-	
 	public static double positionGoal;
 	public static double velocityGoal;
-	double accelGoal;
+	public static double accelGoal;
 	
-	public static double errorLeft;
-	public static double errorRight;
-	
-	public static double outputLeft;
-	public static double outputRight;
+	private ArrayList<Double> posPoints;
+	private ArrayList<Double> velPoints;
+	private ArrayList<Double> accelPoints;
 
 	private int loopIteration;
 	
@@ -60,8 +50,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		this.out = out;
 		this.source = source;
 		this.period = period;
-		//this.trajectory = new OneDimensionalTrajectorySimple(0,1,1);
-		trajectory = new OneDimensionalTrajectoryRamped(0, 1, 1);
+		this.trajectory = new OneDimensionalTrajectorySimple(0,1,1);
 		timer = new Timer();
 		this.source.setPIDSourceType(PIDSourceType.kDisplacement);
 		this.ka = ka;
@@ -70,12 +59,12 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		this.kd = kd;
 		this.kv = kv;
 		this.kp_theta = kp_theta;
-		initialPositionLeft = source.pidGetLeft();
-		initialPositionRight = source.pidGetRight();
+		this.initialPositionLeft = source.pidGetLeft();
+		this.initialPositionRight = source.pidGetRight();
 		this.gyroCorrection = new GyroCorrection();
-		posPoints = new ArrayList<Double>();
-		velPoints = new ArrayList<Double>();
-		accelPoints = new ArrayList<Double>();
+		this.posPoints = new ArrayList<Double>();
+		this.velPoints = new ArrayList<Double>();
+		this.accelPoints = new ArrayList<Double>();
 		reset();
 		timer.scheduleAtFixedRate(this, 0, this.period);
 	}
@@ -93,7 +82,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 			double dt = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - prevTime;
 			prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 			//System.out.println(dt * 1000);
-			
+
 			if (loopIteration < posPoints.size()) {
 				positionGoal = posPoints.get(loopIteration);
 				velocityGoal = velPoints.get(loopIteration);
@@ -104,24 +93,23 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 				accelGoal = 0;
 			}
 			
-			
-			/*double currentTimeSinceStart = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime;
+			/*
+			double currentTimeSinceStart = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime;
 
-			velocityGoal = trajectory.getGoalVelocity(currentTimeSinceStart);
-			positionGoal = trajectory.getGoalPosition(currentTimeSinceStart);
-			accelGoal = trajectory.getGoalAccel(currentTimeSinceStart);
+			double velocityGoal = trajectory.getGoalVelocity(currentTimeSinceStart);
+			double positionGoal = trajectory.getGoalPosition(currentTimeSinceStart);
+			double accelGoal = trajectory.getGoalAccel(currentTimeSinceStart);
 			*/
 			
 			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
 			
-			source.setPIDSourceType(PIDSourceType.kDisplacement);
-			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;
+			double errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;
 			double errorIntegralLeft = (errorLeft - errorLastLeft) * dt / 2;
 			double prelimOutputLeft = velocityGoal * kv + accelGoal * ka + errorLeft * kp + errorIntegralLeft * ki + errorDerivLeft * kd;
 			errorLastLeft = errorLeft;
 			
-			outputLeft = 0;
+			double outputLeft = 0;
 
 			if (prelimOutputLeft > 0.0) {
 				if (headingAdjustment > 0.0) {
@@ -137,13 +125,12 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 				}
 			}
 			
-			source.setPIDSourceType(PIDSourceType.kDisplacement);
-			errorRight = positionGoal - source.pidGetRight() + initialPositionRight;			
+			double errorRight = positionGoal - source.pidGetRight() + initialPositionRight;			
 			double errorDerivRight = (errorRight - errorLastRight) / dt;
 			double prelimOutputRight = velocityGoal * kv + accelGoal * ka + errorRight * kp + errorDerivRight * kd;
 			errorLastRight = errorRight;
 			
-			outputRight = 0;
+			double outputRight = 0;
 			
 			if (prelimOutputRight > 0.0) {
 				if (headingAdjustment > 0.0) {
@@ -180,6 +167,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		//System.out.println("enabled");
 		reset();
 		posPoints = trajectory.loadPosPoints(period);
+		System.out.println(posPoints.size());
 		velPoints = trajectory.loadVelPoints(period);
 		accelPoints = trajectory.loadAccelPoints(period);
 		enabled = true;
@@ -206,8 +194,8 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	 * Sets the trajectory for the profiler
 	 * @param trajectory
 	 */
-	public void setTrajectory(OneDimensionalTrajectory traj) {
-		trajectory = traj;
+	public void setTrajectory(OneDimensionalTrajectory trajectory) {
+		this.trajectory = trajectory;
 	}
 
 	@Override

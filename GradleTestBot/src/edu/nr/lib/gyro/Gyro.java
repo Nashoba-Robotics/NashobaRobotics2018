@@ -1,6 +1,7 @@
 package edu.nr.lib.gyro;
 
 import edu.nr.lib.units.Angle;
+import edu.nr.lib.units.Distance;
 
 public abstract class Gyro {
 
@@ -13,4 +14,5 @@ public abstract class Gyro {
 	
 	public abstract Angle getYaw();
 	public abstract void reset();
+	public abstract Distance getYError();
 }

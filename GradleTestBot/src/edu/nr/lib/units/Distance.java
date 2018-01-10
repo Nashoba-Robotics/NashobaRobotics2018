@@ -10,7 +10,7 @@ public class Distance {
 	private Unit type;
 	
 	public enum Unit implements GenericUnit {
-		FOOT, INCH, DRIVE_ROTATION, METER, MAGNETIC_ENCODER_TICK;
+		FOOT, INCH, DRIVE_ROTATION, DRIVE_ROTATION_H, METER, MAGNETIC_ENCODER_TICK, MAGNETIC_ENCODER_TICK_H;
 		
 		public static final Unit defaultUnit = INCH;
 		
@@ -18,7 +18,10 @@ public class Distance {
 		private static final double FOOT_PER_INCH = 1.0/Units.INCHES_PER_FOOT;
 		private static final double METER_PER_INCH = 1.0/Units.INCHES_PER_METER;
 		private static final double MAGNETIC_ENCODER_TICK_PER_INCH = Units.MAGNETIC_NATIVE_UNITS_PER_REV * DRIVE_ROTATION_PER_INCH / Units.NATIVE_UNITS_PER_TICK;
-				
+		
+		private static final double DRIVE_ROTATION_H_PER_INCH = 1/(Drive.WHEEL_DIAMETER_INCHES_H * Math.PI);
+		private static final double MAGNETIC_ENCODER_TICK_H_PER_INCH = Units.MAGNETIC_NATIVE_UNITS_PER_REV * DRIVE_ROTATION_H_PER_INCH / Units.NATIVE_UNITS_PER_TICK;
+		
 		public double convertToDefault(double val) {
 			if(this == Unit.defaultUnit) {
 				return val;
@@ -29,11 +32,17 @@ public class Distance {
 			if(this == Unit.DRIVE_ROTATION) {
 				return val / DRIVE_ROTATION_PER_INCH;
 			}
+			if(this == Unit.DRIVE_ROTATION_H) {
+				return val / DRIVE_ROTATION_H_PER_INCH;
+			}
 			if(this == Unit.METER) {
 				return val / METER_PER_INCH;
 			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK) {
 				return val / MAGNETIC_ENCODER_TICK_PER_INCH;
+			}
+			if(this == Unit.MAGNETIC_ENCODER_TICK_H) {
+				return val / MAGNETIC_ENCODER_TICK_H_PER_INCH;
 			}
 			return 0;
 		}
@@ -48,11 +57,17 @@ public class Distance {
 			if(this == Unit.DRIVE_ROTATION) {
 				return DRIVE_ROTATION_PER_INCH * val;
 			}
+			if (this == Unit.DRIVE_ROTATION_H) {
+				return DRIVE_ROTATION_H_PER_INCH * val;
+			}
 			if(this == Unit.METER) {
 				return METER_PER_INCH * val;
 			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK) {
 				return MAGNETIC_ENCODER_TICK_PER_INCH * val;
+			}
+			if(this == Unit.MAGNETIC_ENCODER_TICK_H) {
+				return MAGNETIC_ENCODER_TICK_H_PER_INCH * val;
 			}
 			return 0;
 		}

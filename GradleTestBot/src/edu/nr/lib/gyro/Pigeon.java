@@ -7,6 +7,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.nr.lib.interfaces.Periodic;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Angle;
+import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Time;
 
 public class Pigeon extends Gyro implements Periodic {
@@ -18,6 +19,7 @@ public class Pigeon extends Gyro implements Periodic {
 	private int talonID = 3;
 	
 	private double[] yawPitchRoll;
+	private short[] XYZError;
 	
 	OrientationHistory orientationHistory;
 	
@@ -67,6 +69,13 @@ public class Pigeon extends Gyro implements Periodic {
 	@Override
 	public void reset() {
 		pigeon.setYaw(0, 0);
+	}
+
+	@Override
+	public Distance getYError() {
+		pigeon.getBiasedAccelerometer(XYZError);
+		return new Distance(XYZError[0], Distance.Unit.FOOT); //THIS IS WRONG PROBABLY IN MANY WAYS
+		
 	}
 	
 }

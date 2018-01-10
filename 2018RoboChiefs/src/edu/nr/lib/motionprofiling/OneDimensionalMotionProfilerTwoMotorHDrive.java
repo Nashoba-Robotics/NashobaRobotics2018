@@ -5,12 +5,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import edu.nr.lib.gyro.GyroCorrection;
-import edu.nr.lib.interfaces.DoublePIDOutput;
-import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.interfaces.SmartDashboardSource;
+import edu.nr.lib.interfaces.TriplePIDOutput;
+import edu.nr.lib.interfaces.TriplePIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
-public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements OneDimensionalMotionProfiler, SmartDashboardSource {
+public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implements OneDimensionalMotionProfiler, SmartDashboardSource {
 
 	private final Timer timer;
 	
@@ -22,31 +22,37 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	private double startTime;
 	
 	private boolean enabled = true;
-	private DoublePIDOutput out;
-	private DoublePIDSource source;
+	private TriplePIDOutput out;
+	private TriplePIDSource source;
 	
 	private double ka, kp, ki, kd, kv, kp_theta;
 	private double errorLastLeft;
 	private double errorLastRight;
+	private double errorLastH;
+	private double kp_H, ki_H, kd_H;
 	
-	private double initialPositionLeft;
-	private double initialPositionRight;
-			
-	private OneDimensionalTrajectory trajectory;
-	
-	GyroCorrection gyroCorrection;
+	public static double initialPositionLeft;
+	public static double initialPositionRight;
+	public static double initialPositionH;
 	
 	public static double positionGoal;
 	public static double velocityGoal;
 	public static double accelGoal;
 	
-	private ArrayList<Double> posPoints;
-	private ArrayList<Double> velPoints;
-	private ArrayList<Double> accelPoints;
+	public static double errorRight;
+	public static double errorLeft;
+			
+	private OneDimensionalTrajectory trajectory;
+	
+	GyroCorrection gyroCorrection;
+	
+	public static ArrayList<Double> posPoints;
+	public static ArrayList<Double> velPoints;
+	public static ArrayList<Double> accelPoints;
 
 	private int loopIteration;
 	
-	public OneDimensionalMotionProfilerTwoMotor(DoublePIDOutput out, DoublePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, long period) {
+	public OneDimensionalMotionProfilerTwoMotorHDrive(TriplePIDOutput out, TriplePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, double kp_H, double ki_H, double kd_H, long period) {
 		this.out = out;
 		this.source = source;
 		this.period = period;
@@ -59,8 +65,12 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		this.kd = kd;
 		this.kv = kv;
 		this.kp_theta = kp_theta;
+		this.kp_H = kp_H;
+		this.ki_H = ki_H;
+		this.kd_H = kd_H;
 		this.initialPositionLeft = source.pidGetLeft();
 		this.initialPositionRight = source.pidGetRight();
+		this.initialPositionH = source.pidGetH();
 		this.gyroCorrection = new GyroCorrection();
 		this.posPoints = new ArrayList<Double>();
 		this.velPoints = new ArrayList<Double>();
@@ -69,8 +79,8 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		timer.scheduleAtFixedRate(this, 0, this.period);
 	}
 	
-	public OneDimensionalMotionProfilerTwoMotor(DoublePIDOutput out, DoublePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta) {
-		this(out, source, kv, ka, kp, ki, kd, kp_theta, defaultPeriod);
+	public OneDimensionalMotionProfilerTwoMotorHDrive(TriplePIDOutput out, TriplePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, double kp_H, double ki_H, double kd_H) {
+		this(out, source, kv, ka, kp, ki, kd, kp_theta, kp_H, ki_H, kd_H, defaultPeriod);
 	}
 	
 	double timeOfVChange = 0;
@@ -103,7 +113,13 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 			
 			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
 			
-			double errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
+			double errorH = 0; //TODO: make Ben tell me what to do
+			double errorDerivH = (errorH - errorLastH) / dt;
+			double errorIntegralH = (errorH - errorLastH) * dt / 2;
+			double outputH = errorH * kp_H + errorIntegralH * ki_H + errorDerivH * kd_H;
+			errorLastH = errorH;
+			
+			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;
 			double errorIntegralLeft = (errorLeft - errorLastLeft) * dt / 2;
 			double prelimOutputLeft = velocityGoal * kv + accelGoal * ka + errorLeft * kp + errorIntegralLeft * ki + errorDerivLeft * kd;
@@ -125,7 +141,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 				}
 			}
 			
-			double errorRight = positionGoal - source.pidGetRight() + initialPositionRight;			
+			errorRight = positionGoal - source.pidGetRight() + initialPositionRight;			
 			double errorDerivRight = (errorRight - errorLastRight) / dt;
 			double prelimOutputRight = velocityGoal * kv + accelGoal * ka + errorRight * kp + errorDerivRight * kd;
 			errorLastRight = errorRight;
@@ -146,7 +162,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 				}
 			}
 			
-			out.pidWrite(outputLeft, outputRight);
+			out.pidWrite(outputLeft, outputRight, outputH);
 			
 			loopIteration++;
 		}
@@ -180,11 +196,13 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	public void reset() {
 		errorLastLeft = 0;
 		errorLastRight = 0;
+		errorLastH = 0;
 		startTime = prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 		PIDSourceType type = source.getPIDSourceType();
 		source.setPIDSourceType(PIDSourceType.kDisplacement);
 		initialPositionLeft = source.pidGetLeft();
 		initialPositionRight = source.pidGetRight();
+		initialPositionH = 00000; //TODO: do
 		source.setPIDSourceType(type);
 		gyroCorrection.clearInitialValue();
 		loopIteration = 0;
@@ -228,6 +246,18 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		this.kp_theta = kp_theta;
 	}
 
+	public void setKP_H(double kp_H) {
+		this.kp_H = kp_H;
+	}
+	
+	public void setKI_H(double ki_H) {
+		this.ki_H = ki_H;
+	}
+	
+	public void setKD_H(double kd_H) {
+		this.kd_H = kd_H;
+	}
+	
 	@Override
 	public void smartDashboardInfo() {
 		//source.setPIDSourceType(PIDSourceType.kRate);
