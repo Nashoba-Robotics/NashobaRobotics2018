@@ -21,10 +21,9 @@ public class StartAutoCommand extends NRCommand {
 	
 	public AutoChoosers.StartPos selectedStartPos;
 	public AutoChoosers.Switch selectedSwitch;
-	public AutoChoosers.Scale selectedScale;
+	public static AutoChoosers.Scale selectedScale;
 	
 	public StartAutoCommand() {
-		
 	}
 	
 	@Override

@@ -9,6 +9,7 @@ import edu.nr.lib.interfaces.Periodic;
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.robotics.auton.AutoChoosers;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
+import edu.nr.robotics.auton.StartAutoCommand;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.nr.robotics.subsystems.drive.CSVSaverDisable;
 import edu.nr.robotics.subsystems.drive.CSVSaverEnable;
