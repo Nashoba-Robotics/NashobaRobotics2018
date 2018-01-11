@@ -1,6 +1,20 @@
 
 package edu.nr.robotics;
 
+import edu.nr.lib.commandbased.CancelAllCommand;
+import edu.nr.lib.commandbased.DoNothingCommand;
+import edu.nr.lib.commandbased.*;
+import edu.nr.lib.commandbased.NRSubsystem;
+import edu.nr.lib.interfaces.Periodic;
+import edu.nr.lib.interfaces.SmartDashboardSource;
+import edu.nr.robotics.auton.AutoChoosers;
+import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
+import edu.nr.robotics.auton.StartAutoCommand;
+import edu.nr.robotics.subsystems.EnabledSubsystems;
+import edu.nr.robotics.subsystems.drive.CSVSaverDisable;
+import edu.nr.robotics.subsystems.drive.CSVSaverEnable;
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -16,9 +30,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
+	
+	private static Robot singleton;
+	
+	public synchronized static Robot getInstance() {
+		return singleton;
+	}
 
 	Command autonomousCommand;
-	SendableChooser<Command> chooser = new SendableChooser<>();
+	SendableChooser<Command> autoChooser = new SendableChooser<>();
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -26,10 +46,38 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+		singleton = this;
+		
+		autoChooserInit();
+		tcpServerInit();
+		OI.init();
+		smartDashboardInit();
+		
 		//chooser.addDefault("Default Auto", new ExampleCommand());
-		SmartDashboard.putData("Auto mode", chooser);
+		SmartDashboard.putData("Auto mode", autoChooser);
 	}
 
+	public void autoChooserInit() {
+		autoChooser.addDefault("Do Nothing", new DoNothingCommand());
+		autoChooser.addObject("Complex Auto Start", new StartAutoCommand());
+		autoChooser.addObject("Baseline Auto", new DriveOverBaselineAutoCommand());
+		
+		SmartDashboard.putData("Auto Destination", autoChooser);	
+	}
+
+	public void smartDashboardInit() {
+		SmartDashboard.putData(new CSVSaverEnable());
+		SmartDashboard.putData(new CSVSaverDisable());
+	
+		SmartDashboard.putData("Auto Start Position", AutoChoosers.autoStartPosChooser);
+		SmartDashboard.putData("Auto Switch", AutoChoosers.autoSwitchChooser);
+		SmartDashboard.putData("Auto Scale", AutoChoosers.autoScaleChooser);
+	}
+	
+	public void tcpServerInit() {
+		
+	}
+	
 	/**
 	 * This function is called once each time the robot enters Disabled mode.
 	 * You can use it to reset any subsystem information you want to clear when
@@ -37,7 +85,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-
+		for (NRSubsystem subsystem : NRSubsystem.subsystems) {
+			subsystem.disable();
+		}
 	}
 
 	@Override
@@ -58,7 +108,16 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = chooser.getSelected();
+		FieldData.getInstance().getFieldData();
+		
+		autonomousCommand = autoChooser.getSelected();
+
+		System.out.println("Initializing auto command: " + autonomousCommand);
+		
+		// schedule the autonomous command (example)
+		if (autonomousCommand != null)
+			autonomousCommand.start();
+
 
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -82,6 +141,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
+		new CancelAllCommand().start();
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
@@ -104,5 +164,14 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 		LiveWindow.run();
+	}
+	
+	public void robotPeriodic() {
+		Scheduler.getInstance().run();
+		
+		Periodic.runAll();
+		SmartDashboardSource.runAll();
+		
+		SmartDashboard.putData(RobotDiagram.getInstance());
 	}
 }

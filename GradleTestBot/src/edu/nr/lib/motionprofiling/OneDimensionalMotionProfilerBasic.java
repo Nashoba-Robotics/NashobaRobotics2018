@@ -1,5 +1,6 @@
 package edu.nr.lib.motionprofiling;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,7 +15,7 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 	
 	//In milliseconds
 	private final long period;
-	private static final long defaultPeriod = 5; //200 Hz 
+	private static final long defaultPeriod = 10; //200 Hz 
 	
 	private double prevTime;
 	private double startTime;
@@ -27,8 +28,14 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 	private double errorLast;
 	
 	private double initialPosition;
-			
+	
+	private ArrayList<Double> posPoints;
+	private ArrayList<Double> velPoints;
+	private ArrayList<Double> accelPoints;
+	
 	private OneDimensionalTrajectory trajectory;
+	
+	private int loopIteration;
 		
 	public OneDimensionalMotionProfilerBasic(PIDOutput out, PIDSource source, double kv, double ka, double kp, double kd, long period) {
 		this.out = out;
@@ -36,13 +43,16 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 		this.period = period;
 		this.trajectory = new OneDimensionalTrajectorySimple(0,1,1);
 		timer = new Timer();
-		timer.schedule(this, 0, this.period);
+		timer.scheduleAtFixedRate(this, 0, this.period);
 		reset();
 		this.source.setPIDSourceType(PIDSourceType.kDisplacement);
 		this.ka = ka;
 		this.kp = kp;
 		this.kd = kd;
 		this.kv = kv;
+		this.posPoints = new ArrayList<Double>();
+		this.velPoints = new ArrayList<Double>();
+		this.accelPoints = new ArrayList<Double>();
 		this.initialPosition = source.pidGet();
 	}
 	
@@ -58,9 +68,19 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 		if(enabled) {
 			double dt = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - prevTime;
 						
-			double velocityGoal = trajectory.getGoalVelocity(edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime);
-			
-			double accelGoal = trajectory.getGoalAccel(edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime);
+			double positionGoal;
+			double velocityGoal;
+			double accelGoal;
+
+			if (loopIteration < posPoints.size()) {
+				positionGoal = posPoints.get(loopIteration);
+				velocityGoal = velPoints.get(loopIteration);
+				accelGoal = accelPoints.get(loopIteration);
+			} else {
+				positionGoal = posPoints.get(posPoints.size() - 1);
+				velocityGoal = 0;
+				accelGoal = 0;
+			}
 			
 			double error = trajectory.getGoalPosition(edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime) - source.pidGet() + initialPosition;
 						
@@ -80,12 +100,14 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 				
 				isEnabled();
 			}
+			
+			loopIteration++;
 
-			source.setPIDSourceType(PIDSourceType.kRate);
-			SmartDashboard.putString("Motion Profiler V", source.pidGet() + ":" + (output * trajectory.getMaxUsedVelocity() * Math.signum(trajectory.getMaxUsedVelocity())));
-			source.setPIDSourceType(PIDSourceType.kDisplacement);
-			SmartDashboard.putString("Motion Profiler X", source.pidGet() + ":" 
-					+ (initialPosition + (trajectory.getGoalPosition(edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime))));
+			//source.setPIDSourceType(PIDSourceType.kRate);
+			//SmartDashboard.putString("Motion Profiler V", source.pidGet() + ":" + (output * trajectory.getMaxUsedVelocity() * Math.signum(trajectory.getMaxUsedVelocity())));
+			//source.setPIDSourceType(PIDSourceType.kDisplacement);
+			//SmartDashboard.putString("Motion Profiler X", source.pidGet() + ":" 
+			//		+ (initialPosition + (trajectory.getGoalPosition(edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime))));
 		}
 		
 		prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
@@ -103,8 +125,12 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 	 * Reset the profiler and start it running
 	 */
 	public void enable() {
-		enabled = true;
 		reset();
+		posPoints = trajectory.loadPosPoints(period);
+		System.out.println(posPoints.size());
+		velPoints = trajectory.loadVelPoints(period);
+		accelPoints = trajectory.loadAccelPoints(period);
+		enabled = true;
 	}
 	
 	/**

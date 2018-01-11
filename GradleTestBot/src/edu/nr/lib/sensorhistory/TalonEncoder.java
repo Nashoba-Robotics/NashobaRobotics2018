@@ -18,7 +18,7 @@ public class TalonEncoder extends TimerTask {
 	private final Timer timer;
 
 	private final int PID_TYPE = 0; //0 = primary, 1 = cascade
-	
+	//TODO: Make HDrive functions
 	// In milliseconds
 	private final Time period;
 	private static final Time defaultPeriod = new Time(5, Time.Unit.MILLISECOND); // 200

@@ -48,16 +48,15 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	 */
 	public static final double WHEEL_DIAMETER_INCHES = 0; //TODO: Find real drive wheel diameter
 	
+	/**
+	 * The diameter of the H-drive wheel in inches
+	 */
+	public static final double WHEEL_DIAMETER_INCHES_H = 0;//TODO: Find real drive H-wheel diameter
 	
 	/**
 	 * The diameter of the drive wheels
 	 */
 	public static final Distance WHEEL_DIAMETER = new Distance(WHEEL_DIAMETER_INCHES, Distance.Unit.INCH);
-
-	/**
-	 * The circumference of the drive wheels or the distance traveled in one rotation
-	 */
-	public static final Distance DISTANCE_PER_REV = WHEEL_DIAMETER.mul(Math.PI);
 
 	/**
 	 * The maximum speed of the drive base
@@ -131,6 +130,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	 * Time stopped before motion profiling ends
 	 */
 	public static final Time PROFILE_TIME_THRESHOLD = new Time(0, Time.Unit.MILLISECOND); //TODO: Find Drive profile time threshold
+	
+	public static final double PROFILE_DRIVE_PERCENT = 0; //TODO: Find Drive profile percent
 	
 	/**
 	 * No timeout for talon configuration functions
