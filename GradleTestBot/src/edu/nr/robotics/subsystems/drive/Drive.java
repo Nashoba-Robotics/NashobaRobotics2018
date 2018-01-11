@@ -57,13 +57,6 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0717;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0739;
 	
-	public static double ampTimerStart = Timer.getFPGATimestamp();
-	public static boolean ampTimerStarted = false;
-	public static final double MAX_CURRENT_PERIOD = 0.5;
-	
-	public static final double MAX_DRIVE_CURRENT = 25; //in amps, maximum current while driving normally
-	public static final double ABOVE_MAX_CURRENT_DRIVE_PERCENT = 0.8; //if the max current is reached, it will run at this percent voltage instead
-	
 	private TalonSRX leftDrive, rightDrive, rightDriveFollow, leftDriveFollow;
 	private TalonEncoder leftEncoder, rightEncoder;
 	
@@ -135,7 +128,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			leftDrive.config_kD(SLOT_0, D_LEFT, NO_TIMEOUT);
 			leftDrive.setNeutralMode(NEUTRAL_MODE);
 			leftDrive.setInverted(false);
-			leftDrive.setSensorPhase(true);
+			leftDrive.setSensorPhase(false);
 			//TODO: Find replacement leftDrive.enable();
 			
 			rightDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
@@ -150,7 +143,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 
 			rightEncoder = new TalonEncoder(rightDrive);
 			leftEncoder = new TalonEncoder(leftDrive);
-			
+
 			leftDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
@@ -164,10 +157,11 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			
 			CheesyDriveCalculationConstants.createDriveTypeCalculations();
 			
+			smartDashboardInit();
+			
 		}
 		
 	}
-	
 	
 	public void smartDashboardInit() {
 		SmartDashboard.putNumber("Drive Percent", 0);

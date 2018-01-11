@@ -27,6 +27,10 @@ public class EfficientTalonSRX extends TalonSRX {
     	set(getControlMode(), value);
     }
     
+    public void set(ControlMode controlMode) {
+    	set(controlMode, 0);
+    }
+    
     @Override
     public void set(ControlMode controlMode, double value) {
     	if (value != mLastSet || getControlMode() != mLastControlMode) {
