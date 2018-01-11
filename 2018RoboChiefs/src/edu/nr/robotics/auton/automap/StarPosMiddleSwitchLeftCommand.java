@@ -5,11 +5,11 @@ import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
 import edu.nr.robotics.auton.StartAutoCommand;
-import edu.nr.robotics.auton.autoroutes.BlockToScaleLeftProfilingCommand;
-import edu.nr.robotics.auton.autoroutes.BlockToScaleRightProfilingCommand;
-import edu.nr.robotics.auton.autoroutes.StartPosMiddleToLeftSwitchProfilingCommand;
+import edu.nr.robotics.auton.autoroutes.BlockLeftToScaleLeftProfilingCommand;
+import edu.nr.robotics.auton.autoroutes.BlockLeftToScaleRightProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosMiddleToScaleLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosMiddleToScaleRightProfilingCommand;
+import edu.nr.robotics.auton.autoroutes.StartPosMiddleToSwitchLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.SwitchLeftToBlockProfilingCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
@@ -19,7 +19,7 @@ public class StarPosMiddleSwitchLeftCommand extends CommandGroup {
 	public StarPosMiddleSwitchLeftCommand() {
 		
 		//Checks
-		addSequential(new ConditionalCommand(new StartPosMiddleToLeftSwitchProfilingCommand()) {
+		addSequential(new ConditionalCommand(new StartPosMiddleToSwitchLeftProfilingCommand()) {
 			
 			@Override
 			protected boolean condition() {
@@ -36,7 +36,7 @@ public class StarPosMiddleSwitchLeftCommand extends CommandGroup {
 			
 		});
 		
-		addSequential(new ConditionalCommand(new BlockToScaleLeftProfilingCommand()){
+		addSequential(new ConditionalCommand(new BlockLeftToScaleLeftProfilingCommand()){
 
 			@Override
 			protected boolean condition() {
@@ -45,7 +45,7 @@ public class StarPosMiddleSwitchLeftCommand extends CommandGroup {
 			
 		});
 		
-		addSequential(new ConditionalCommand(new BlockToScaleRightProfilingCommand()){
+		addSequential(new ConditionalCommand(new BlockLeftToScaleRightProfilingCommand()){
 
 			@Override
 			protected boolean condition() {
