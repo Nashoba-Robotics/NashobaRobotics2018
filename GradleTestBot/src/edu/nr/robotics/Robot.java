@@ -1,6 +1,8 @@
 
 package edu.nr.robotics;
 
+import com.ctre.phoenix.sensors.PigeonIMU;
+
 import edu.nr.lib.commandbased.CancelAllCommand;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.interfaces.Periodic;
@@ -40,7 +42,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		
+				
 		singleton = this;
 		OI.init();
 		

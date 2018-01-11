@@ -103,8 +103,6 @@ public class CTRECreator {
      */
     public static TalonSRX createTalon(int id, Configuration config) {
         EfficientTalonSRX talon = new EfficientTalonSRX(id);
-        talon.setControlFramePeriod(ControlFrame.Control_3_General, config.CONTROL_FRAME_PERIOD_MS);
-        talon.setControlFramePeriod(ControlFrame.Control_4_Advanced, config.CONTROL_FRAME_PERIOD_MS);
         talon.changeMotionControlFramePeriod(config.MOTION_CONTROL_FRAME_PERIOD_MS);
         talon.setIntegralAccumulator(0, 0, config.TIMEOUT);
         talon.clearMotionProfileHasUnderrun(config.TIMEOUT);
@@ -135,6 +133,8 @@ public class CTRECreator {
         talon.enableVoltageCompensation(config.ENABLE_VOLTAGE_COMPENSATION);
         talon.configOpenloopRamp(config.VOLTAGE_RAMP_RATE, config.TIMEOUT);
         talon.configClosedloopRamp(config.VOLTAGE_RAMP_RATE, config.TIMEOUT);
+        talon.setControlFramePeriod(ControlFrame.Control_3_General, config.CONTROL_FRAME_PERIOD_MS);
+        talon.setControlFramePeriod(ControlFrame.Control_4_Advanced, config.CONTROL_FRAME_PERIOD_MS);
         
         talon.setStatusFramePeriod(StatusFrame.Status_1_General, config.GENERAL_STATUS_FRAME_RATE_MS, config.TIMEOUT);
         talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, config.FEEDBACK_STATUS_FRAME_RATE_MS, config.TIMEOUT);
