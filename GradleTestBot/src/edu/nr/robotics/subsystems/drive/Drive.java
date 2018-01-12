@@ -77,11 +77,17 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final int TICKS_PER_REV_2017 = 2048; // For 2017 Robot
 	public static final int TICKS_PER_REV_TEST = 256; // For Test Bot
 	
-	PIDSourceType type = PIDSourceType.kRate;
+	//Based on MAXI circuit breaker model
+	public static final int PEAK_CURRENT = 80; //In amps
+	public static final int PEAK_CURRENT_DURATION = 1000; //In milliseconds
+	public static final int CONTINUOUS_CURRENT_LIMIT = 40; //In amps
+	
+	private PIDSourceType type = PIDSourceType.kRate;
 	
 	public static final int PID_TYPE = 0; //0 = primary, 1 = cascade
 	public static final int NO_TIMEOUT = 0;
 	public static final int SLOT_0 = 0;
+	public static final double VOLTAGE_COMPENSATION_LEVEL = 12; //In volts
 	
 	public static final NeutralMode NEUTRAL_MODE = NeutralMode.Brake;
 	
@@ -116,7 +122,6 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		
 		if(EnabledSubsystems.DRIVE_ENABLED || EnabledSubsystems.DUMB_DRIVE_ENABLED) {
 						
-			
 			leftDrive = CTRECreator.createMasterTalon(RobotMap.DRIVE_LEFT);
 			rightDrive = CTRECreator.createMasterTalon(RobotMap.DRIVE_RIGHT);
 			
@@ -130,6 +135,15 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			leftDrive.config_kP(SLOT_0, P_LEFT, NO_TIMEOUT);
 			leftDrive.config_kI(SLOT_0, I_LEFT, NO_TIMEOUT);
 			leftDrive.config_kD(SLOT_0, D_LEFT, NO_TIMEOUT);
+			
+			leftDrive.enableVoltageCompensation(true);
+			leftDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
+			
+			leftDrive.enableCurrentLimit(true);
+			leftDrive.configPeakCurrentLimit(PEAK_CURRENT, NO_TIMEOUT);
+			leftDrive.configPeakCurrentDuration(PEAK_CURRENT_DURATION, NO_TIMEOUT);
+			leftDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
+			
 			leftDrive.setNeutralMode(NEUTRAL_MODE);
 			leftDrive.setInverted(false);
 			leftDrive.setSensorPhase(true);
@@ -139,6 +153,15 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			rightDrive.config_kP(SLOT_0, P_RIGHT, NO_TIMEOUT);
 			rightDrive.config_kI(SLOT_0, I_RIGHT, NO_TIMEOUT);
 			rightDrive.config_kD(SLOT_0, D_RIGHT, NO_TIMEOUT);
+			
+			rightDrive.enableVoltageCompensation(true);
+			rightDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
+			
+			rightDrive.enableCurrentLimit(true);
+			rightDrive.configPeakCurrentLimit(PEAK_CURRENT, NO_TIMEOUT);
+			rightDrive.configPeakCurrentDuration(PEAK_CURRENT_DURATION, NO_TIMEOUT);
+			rightDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
+			
 			rightDrive.setNeutralMode(NEUTRAL_MODE);			
 			rightDrive.setInverted(false);
 			rightDrive.setSensorPhase(false);

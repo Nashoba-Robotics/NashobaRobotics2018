@@ -146,6 +146,18 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final int SLOT_1 = 1;
 	
 	/**
+	 * Current ratings based on MAXI Circuit Breaker Model MX5
+	 */
+	private static final int PEAK_CURRENT = 80; //In amps
+	private static final int PEAK_CURRENT_DURATION = 1000; //In milliseconds
+	private static final int CONTINUOUS_CURRENT_LIMIT = 40; //In amps
+	
+	/**
+	 * Voltage level considered 100% for calculation
+	 */
+	private static final int VOLTAGE_COMPENSATION_LEVEL = 12; //In volts
+	
+	/**
 	 * Tracking of the drive motor setpoints
 	 */
 	private Speed leftMotorSetpoint = Speed.ZERO;
@@ -223,7 +235,15 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			leftDrive.setNeutralMode(NEUTRAL_MODE);
 			leftDrive.setInverted(false);
 			leftDrive.setSensorPhase(true);
-						
+			
+			leftDrive.enableVoltageCompensation(true);
+			leftDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
+			
+			leftDrive.enableCurrentLimit(true);
+			leftDrive.configPeakCurrentLimit(PEAK_CURRENT, NO_TIMEOUT);
+			leftDrive.configPeakCurrentDuration(PEAK_CURRENT_DURATION, NO_TIMEOUT);
+			leftDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
+			
 			leftEncoder = new TalonEncoder(leftDrive);
 			
 			leftDriveFollow.setNeutralMode(NEUTRAL_MODE);
@@ -242,6 +262,14 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			rightDrive.setNeutralMode(NEUTRAL_MODE);			
 			rightDrive.setInverted(false);
 			rightDrive.setSensorPhase(false);
+			
+			rightDrive.enableVoltageCompensation(true);
+			rightDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
+			
+			rightDrive.enableCurrentLimit(true);
+			rightDrive.configPeakCurrentLimit(PEAK_CURRENT, NO_TIMEOUT);
+			rightDrive.configPeakCurrentDuration(PEAK_CURRENT_DURATION, NO_TIMEOUT);
+			rightDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
 			
 			rightEncoder = new TalonEncoder(rightDrive);
 			
