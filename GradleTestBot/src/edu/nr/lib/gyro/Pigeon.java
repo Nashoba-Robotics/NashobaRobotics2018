@@ -9,14 +9,14 @@ import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Time;
+import edu.nr.robotics.subsystems.drive.Drive;
 
 public class Pigeon extends Gyro implements Periodic {
 
 	private static Pigeon singleton;
 	
 	private PigeonIMU pigeon;
-	private TalonSRX talon;
-	private int talonID = 3;
+	private static int talonID;
 	
 	private double[] yawPitchRoll;
 	private short[] XYZError;
@@ -25,20 +25,9 @@ public class Pigeon extends Gyro implements Periodic {
 	
 	double lastWriteTimestamp = 0;
 	
-	public static Pigeon getInstance() {
-		init();
-		return singleton;
-	}
-	
-	public synchronized static void init() {
-		if(singleton == null) {
-			System.out.println("PigeonImu talonID not specified");
-			singleton = new Pigeon();
-		}
-	}
-	
-	public Pigeon() {
-		pigeon = CTRECreator.createPigeon(talonID);
+	public Pigeon(TalonSRX talon) {
+		pigeon = CTRECreator.createPigeon(talon);
+		talonID = talon.getDeviceID();
 		
 		yawPitchRoll = new double[3];
 		
@@ -46,6 +35,24 @@ public class Pigeon extends Gyro implements Periodic {
 			periodics.add(this);
 		} catch (Exception ex) {
 			System.out.println("Error instantiating Pigeon IMU");
+		}
+	}
+	
+	public static Pigeon getPigeon(TalonSRX talon) {
+		if (singleton == null) {
+			init(talon);
+		}
+		if (talon.getDeviceID() == talonID) {
+			return singleton;
+		} else {
+			System.out.println("Pigeon doesn't exist");
+			return null;
+		}
+	}
+	
+	public synchronized static void init(TalonSRX talon) {
+		if(singleton == null) {
+			singleton = new Pigeon(talon);
 		}
 	}
 	

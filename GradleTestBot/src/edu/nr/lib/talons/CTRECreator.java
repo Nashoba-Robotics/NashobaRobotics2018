@@ -145,12 +145,12 @@ public class CTRECreator {
         return talon;
     }
     
-    public static PigeonIMU createPigeon(int id) {
-    	return createPigeon(id, defaultConfiguration);
+    public static PigeonIMU createPigeon(TalonSRX talon) {
+    	return createPigeon(talon, defaultConfiguration);
     }
     
-    public static PigeonIMU createPigeon(int id, Configuration config) {
-    	PigeonIMU pigeon = new PigeonIMU(id);
+    public static PigeonIMU createPigeon(TalonSRX talon, Configuration config) {
+    	PigeonIMU pigeon = new PigeonIMU(talon);
     	pigeon.clearStickyFaults(config.TIMEOUT);
     	pigeon.setAccumZAngle(0, config.TIMEOUT);
     	pigeon.setCompassAngle(0, config.TIMEOUT);

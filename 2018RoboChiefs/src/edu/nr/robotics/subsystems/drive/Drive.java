@@ -35,7 +35,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 
 	private static Drive singleton;
 	
-	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow;
+	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow, pigeonTalon;
 	private TalonEncoder leftEncoder, rightEncoder;
 		
 	/**
@@ -202,6 +202,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 
 			leftDrive = CTRECreator.createMasterTalon(RobotMap.DRIVE_LEFT);
 			rightDrive = CTRECreator.createMasterTalon(RobotMap.DRIVE_RIGHT);
+			pigeonTalon = CTRECreator.createMasterTalon(0);//TODO: find real pigeon talon
 			
 			leftDriveFollow = CTRECreator.createFollowerTalon(RobotMap.TEMP_LEFT_TALON, leftDrive.getDeviceID());
 			rightDriveFollow = CTRECreator.createFollowerTalon(RobotMap.TEMP_RIGHT_TALON, rightDrive.getDeviceID());
@@ -260,6 +261,10 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			singleton = new Drive();
 			singleton.setJoystickCommand(new DriveJoystickCommand());
 		}
+	}
+
+	public TalonSRX getPigeonTalon() {
+		return pigeonTalon;
 	}
 	
 	public void arcadeDrive(double move, double turn) {
@@ -443,7 +448,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 				if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
 					SmartDashboard.putNumber("Gyro Yaw", NavX.getInstance().getYaw().get(Angle.Unit.DEGREE));
 				} else {
-					SmartDashboard.putNumber("Gyro Yaw", Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE));
+					SmartDashboard.putNumber("Gyro Yaw", Pigeon.getPigeon(getInstance().getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE));
 				}
 				
 				SmartDashboard.putNumber("Drive Left Percent", leftMotorSetpoint.div(currentMaxSpeed()));

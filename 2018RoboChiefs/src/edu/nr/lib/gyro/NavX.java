@@ -6,9 +6,9 @@ import com.kauailabs.sf2.orientation.OrientationHistory;
 
 import edu.nr.lib.interfaces.Periodic;
 import edu.nr.lib.units.Angle;
+import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Time;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.Timer;
 
 public class NavX extends Gyro implements Periodic {
 	
@@ -29,6 +29,7 @@ public class NavX extends Gyro implements Periodic {
 	}
 
 	public AHRS ahrs;
+	public float HError;
 	
 	public NavX() {
 		try {
@@ -78,6 +79,12 @@ public class NavX extends Gyro implements Periodic {
 	public void reset() {
 		ahrs.reset();
 		ahrs.resetDisplacement();
+	}
+
+	@Override
+	public Distance getYError() {
+		HError = ahrs.getDisplacementY();
+		return new Distance(HError, Distance.Unit.METER);
 	}
 	
 }
