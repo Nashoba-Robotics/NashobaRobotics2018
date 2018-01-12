@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.nr.lib.NRMath;
 import edu.nr.lib.gyro.NavX;
 import edu.nr.lib.commandbased.NRSubsystem;
+import edu.nr.lib.driving.DriveTypeCalculations;
 import edu.nr.lib.gyro.Gyro;
 import edu.nr.lib.gyro.Pigeon;
 import edu.nr.lib.gyro.Gyro.ChosenGyro;
@@ -149,6 +150,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	 */
 	private Speed leftMotorSetpoint = Speed.ZERO;
 	private Speed rightMotorSetpoint = Speed.ZERO;
+	private double oldTurn;
 
 	/**
 	 * Possible drive mode selections
@@ -267,30 +269,30 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		return pigeonTalon;
 	}
 	
-	public void arcadeDrive(double move, double turn) {
-		move = NRMath.limit(move);
-		turn = NRMath.limit(turn);
-		double leftMotorSpeed, rightMotorSpeed;
-
-		if (move > 0.0) {
-			if (turn > 0.0) {
-				leftMotorSpeed = move - turn;
-				rightMotorSpeed = Math.max(move, turn);
-			} else {
-				leftMotorSpeed = Math.max(move, -turn);
-				rightMotorSpeed = move + turn;
-			}
-		} else {
-			if (turn > 0.0) {
-				leftMotorSpeed = -Math.max(-move, turn);
-				rightMotorSpeed = move + turn;
-			} else {
-				leftMotorSpeed = move - turn;
-				rightMotorSpeed = -Math.max(-move, -turn);
-			}
-		}
+	/**
+	 * Uses 254's CheesyDrive to drive
+	 * 
+	 * @param move 
+	 * 				The speed, from -1 to 1 (inclusive), that the robot should go
+	 *             	at. 1 is max forward, 0 is stopped, -1 is max backward
+	 * @param turn 
+	 * 				The speed, from -1 to 1 (inclusive), that the robot should
+	 *            	turn at. 1 is max right, 0 is stopped, -1 is max left
+	 */
+	public void cheesyDrive(double move, double turn) {
+		double[] cheesyMotorPercents = new double[2];
+		cheesyMotorPercents = DriveTypeCalculations.cheesyDrive(move, turn, oldTurn, false);
+		
+		oldTurn = turn;
+		
+		tankDrive(cheesyMotorPercents[0], cheesyMotorPercents[1]);
+	}
 	
-		tankDrive(leftMotorSpeed, rightMotorSpeed);
+	public void arcadeDrive(double move, double turn) {
+		double[] motorPercents = new double[2];
+		motorPercents = DriveTypeCalculations.arcadeDrive(move, turn);
+		
+		tankDrive(motorPercents[0], motorPercents[1]);
 	}
 	
 	public void tankDrive(double left, double right) {
