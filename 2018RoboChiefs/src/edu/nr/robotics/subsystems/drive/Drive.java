@@ -156,7 +156,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	 * Possible drive mode selections
 	 */
 	public static enum DriveMode {
-		arcadeDrive, tankDrive
+		arcadeDrive, tankDrive, cheesyDrive
 	}
 	
 	/**
@@ -248,7 +248,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
 			smartDashboardInit();
-			
+	
+			CheesyDriveCalculationConstants.createDriveTypeCalculations();
 		}
 	}
 	
