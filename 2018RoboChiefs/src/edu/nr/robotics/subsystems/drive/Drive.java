@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.nr.lib.NRMath;
 import edu.nr.lib.gyro.NavX;
 import edu.nr.lib.commandbased.NRSubsystem;
+import edu.nr.lib.driving.DriveTypeCalculations;
 import edu.nr.lib.gyro.Gyro;
 import edu.nr.lib.gyro.Pigeon;
 import edu.nr.lib.gyro.Gyro.ChosenGyro;
@@ -35,7 +36,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 
 	private static Drive singleton;
 	
-	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow;
+	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow, pigeonTalon;
 	private TalonEncoder leftEncoder, rightEncoder;
 		
 	/**
@@ -149,6 +150,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	 */
 	private Speed leftMotorSetpoint = Speed.ZERO;
 	private Speed rightMotorSetpoint = Speed.ZERO;
+	private double oldTurn;
 
 	/**
 	 * Possible drive mode selections
@@ -202,6 +204,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 
 			leftDrive = CTRECreator.createMasterTalon(RobotMap.DRIVE_LEFT);
 			rightDrive = CTRECreator.createMasterTalon(RobotMap.DRIVE_RIGHT);
+			pigeonTalon = CTRECreator.createMasterTalon(0);//TODO: find real pigeon talon
 			
 			leftDriveFollow = CTRECreator.createFollowerTalon(RobotMap.TEMP_LEFT_TALON, leftDrive.getDeviceID());
 			rightDriveFollow = CTRECreator.createFollowerTalon(RobotMap.TEMP_RIGHT_TALON, rightDrive.getDeviceID());
@@ -261,31 +264,35 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			singleton.setJoystickCommand(new DriveJoystickCommand());
 		}
 	}
+
+	public TalonSRX getPigeonTalon() {
+		return pigeonTalon;
+	}
+	
+	/**
+	 * Uses 254's CheesyDrive to drive
+	 * 
+	 * @param move 
+	 * 				The speed, from -1 to 1 (inclusive), that the robot should go
+	 *             	at. 1 is max forward, 0 is stopped, -1 is max backward
+	 * @param turn 
+	 * 				The speed, from -1 to 1 (inclusive), that the robot should
+	 *            	turn at. 1 is max right, 0 is stopped, -1 is max left
+	 */
+	public void cheesyDrive(double move, double turn) {
+		double[] cheesyMotorPercents = new double[2];
+		cheesyMotorPercents = DriveTypeCalculations.cheesyDrive(move, turn, oldTurn, false);
+		
+		oldTurn = turn;
+		
+		tankDrive(cheesyMotorPercents[0], cheesyMotorPercents[1]);
+	}
 	
 	public void arcadeDrive(double move, double turn) {
-		move = NRMath.limit(move);
-		turn = NRMath.limit(turn);
-		double leftMotorSpeed, rightMotorSpeed;
-
-		if (move > 0.0) {
-			if (turn > 0.0) {
-				leftMotorSpeed = move - turn;
-				rightMotorSpeed = Math.max(move, turn);
-			} else {
-				leftMotorSpeed = Math.max(move, -turn);
-				rightMotorSpeed = move + turn;
-			}
-		} else {
-			if (turn > 0.0) {
-				leftMotorSpeed = -Math.max(-move, turn);
-				rightMotorSpeed = move + turn;
-			} else {
-				leftMotorSpeed = move - turn;
-				rightMotorSpeed = -Math.max(-move, -turn);
-			}
-		}
-	
-		tankDrive(leftMotorSpeed, rightMotorSpeed);
+		double[] motorPercents = new double[2];
+		motorPercents = DriveTypeCalculations.arcadeDrive(move, turn);
+		
+		tankDrive(motorPercents[0], motorPercents[1]);
 	}
 	
 	public void tankDrive(double left, double right) {
@@ -443,7 +450,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 				if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
 					SmartDashboard.putNumber("Gyro Yaw", NavX.getInstance().getYaw().get(Angle.Unit.DEGREE));
 				} else {
-					SmartDashboard.putNumber("Gyro Yaw", Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE));
+					SmartDashboard.putNumber("Gyro Yaw", Pigeon.getPigeon(getInstance().getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE));
 				}
 				
 				SmartDashboard.putNumber("Drive Left Percent", leftMotorSetpoint.div(currentMaxSpeed()));

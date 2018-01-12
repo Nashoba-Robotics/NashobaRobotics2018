@@ -1,6 +1,6 @@
 package edu.nr.robotics.subsystems.drive;
 
-import edu.nr.lib.GyroCorrection;
+import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.units.Distance;
 
