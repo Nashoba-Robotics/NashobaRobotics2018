@@ -42,14 +42,17 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-				
-		singleton = this;
+		
+		PigeonIMU pigeon = new PigeonIMU(3);
+		System.out.println(pigeon.getFirmwareVersion());
+		
+		/*singleton = this;
 		OI.init();
 		
 		AutoChooserInit();
 		SmartDashboardInit();
 		
-		Drive.getInstance();
+		Drive.getInstance();*/
 	}
 
 	public void SmartDashboardInit() {
