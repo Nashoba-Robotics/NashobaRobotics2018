@@ -26,11 +26,11 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	private DoublePIDSource source;
 	
 	private double ka, kp, ki, kd, kv, kp_theta;
-	private double errorLastLeft;
-	private double errorLastRight;
+	public static double errorLastLeft;
+	public static double errorLastRight;
 	
-	private double initialPositionLeft;
-	private double initialPositionRight;
+	public static double initialPositionLeft;
+	public static double initialPositionRight;
 			
 	private OneDimensionalTrajectory trajectory;
 	
@@ -40,9 +40,9 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	public static double velocityGoal;
 	public static double accelGoal;
 	
-	private ArrayList<Double> posPoints;
-	private ArrayList<Double> velPoints;
-	private ArrayList<Double> accelPoints;
+	public static ArrayList<Double> posPoints;
+	public static ArrayList<Double> velPoints;
+	public static ArrayList<Double> accelPoints;
 
 	private int loopIteration;
 	
