@@ -126,15 +126,15 @@ public class CTRECreator {
         talon.configContinuousCurrentLimit(config.CURRENT_LIMIT, config.TIMEOUT);
         talon.configForwardSoftLimitThreshold(config.FORWARD_SOFT_LIMIT, config.TIMEOUT);
         talon.configReverseSoftLimitThreshold(config.REVERSE_SOFT_LIMIT, config.TIMEOUT);
-        talon.set(ControlMode.Position, 0);
+        talon.set(ControlMode.PercentOutput, 0);
         talon.selectProfileSlot(0, 0);
         talon.configVelocityMeasurementPeriod(config.VELOCITY_MEASUREMENT_PERIOD, config.TIMEOUT);
         talon.configVelocityMeasurementWindow(config.VELOCITY_MEASUREMENT_ROLLING_AVERAGE_WINDOW, config.TIMEOUT);
         talon.enableVoltageCompensation(config.ENABLE_VOLTAGE_COMPENSATION);
         talon.configOpenloopRamp(config.VOLTAGE_RAMP_RATE, config.TIMEOUT);
         talon.configClosedloopRamp(config.VOLTAGE_RAMP_RATE, config.TIMEOUT);
-        talon.setControlFramePeriod(ControlFrame.Control_3_General, config.CONTROL_FRAME_PERIOD_MS);
-        talon.setControlFramePeriod(ControlFrame.Control_4_Advanced, config.CONTROL_FRAME_PERIOD_MS);
+        //talon.setControlFramePeriod(ControlFrame.Control_3_General, config.CONTROL_FRAME_PERIOD_MS);
+        //talon.setControlFramePeriod(ControlFrame.Control_4_Advanced, config.CONTROL_FRAME_PERIOD_MS);
         
         talon.setStatusFramePeriod(StatusFrame.Status_1_General, config.GENERAL_STATUS_FRAME_RATE_MS, config.TIMEOUT);
         talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, config.FEEDBACK_STATUS_FRAME_RATE_MS, config.TIMEOUT);
@@ -151,10 +151,7 @@ public class CTRECreator {
     
     public static PigeonIMU createPigeon(TalonSRX talon, Configuration config) {
     	PigeonIMU pigeon = new PigeonIMU(talon);
-    	pigeon.clearStickyFaults(config.TIMEOUT);
     	pigeon.setAccumZAngle(0, config.TIMEOUT);
-    	pigeon.setCompassAngle(0, config.TIMEOUT);
-    	pigeon.setCompassDeclination(0, config.TIMEOUT);
     	pigeon.setControlFramePeriod(PigeonIMU_ControlFrame.Control_1, config.CONTROL_FRAME_PERIOD_MS);
     	pigeon.setFusedHeading(0, config.TIMEOUT);
     	pigeon.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_2_Gyro, config.GYRO_STATUS_FRAME_PERIOD_MS, config.TIMEOUT);

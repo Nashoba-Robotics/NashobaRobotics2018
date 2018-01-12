@@ -1,6 +1,8 @@
 
 package edu.nr.robotics;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.nr.lib.commandbased.CancelAllCommand;
@@ -35,7 +37,7 @@ public class Robot extends IterativeRobot {
 
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
-
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -43,16 +45,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		
-		PigeonIMU pigeon = new PigeonIMU(3);
-		System.out.println(pigeon.getFirmwareVersion());
-		
-		/*singleton = this;
+		singleton = this;
 		OI.init();
 		
 		AutoChooserInit();
 		SmartDashboardInit();
 		
-		Drive.getInstance();*/
+		Drive.getInstance();
 	}
 
 	public void SmartDashboardInit() {

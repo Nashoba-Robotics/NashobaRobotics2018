@@ -12,8 +12,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class EfficientTalonSRX extends TalonSRX {
 
-	protected double mLastSet = Double.NaN;
-    protected ControlMode mLastControlMode = null;
+	protected double mLastSet = 0;
+    protected ControlMode mLastControlMode = ControlMode.PercentOutput;
     
     /**
      * Creates new EfficientTalonSRX
@@ -23,20 +23,12 @@ public class EfficientTalonSRX extends TalonSRX {
         super(deviceNumber);
     }
     
-    public void set(double value) {
-    	set(getControlMode(), value);
-    }
-    
-    public void set(ControlMode controlMode) {
-    	set(controlMode, 0);
-    }
-    
     @Override
     public void set(ControlMode controlMode, double value) {
-    	if (value != mLastSet || getControlMode() != mLastControlMode) {
+    	if (value != mLastSet || controlMode != mLastControlMode) {
             mLastSet = value;
-            mLastControlMode = getControlMode();
+            mLastControlMode = controlMode;
             super.set(mLastControlMode, mLastSet);
-        }
+    	}
     }
 }

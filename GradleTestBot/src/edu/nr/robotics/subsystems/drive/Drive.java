@@ -115,6 +115,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	private Drive() {
 		
 		if(EnabledSubsystems.DRIVE_ENABLED || EnabledSubsystems.DUMB_DRIVE_ENABLED) {
+						
 			
 			leftDrive = CTRECreator.createMasterTalon(RobotMap.DRIVE_LEFT);
 			rightDrive = CTRECreator.createMasterTalon(RobotMap.DRIVE_RIGHT);
@@ -131,8 +132,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			leftDrive.config_kD(SLOT_0, D_LEFT, NO_TIMEOUT);
 			leftDrive.setNeutralMode(NEUTRAL_MODE);
 			leftDrive.setInverted(false);
-			leftDrive.setSensorPhase(false);
-			//TODO: Find replacement leftDrive.enable();
+			leftDrive.setSensorPhase(true);
 			
 			rightDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
 			rightDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
@@ -142,13 +142,14 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			rightDrive.setNeutralMode(NEUTRAL_MODE);			
 			rightDrive.setInverted(false);
 			rightDrive.setSensorPhase(false);
-			//TODO: Find replacement rightDrive.enable();
 
 			rightEncoder = new TalonEncoder(rightDrive);
 			leftEncoder = new TalonEncoder(leftDrive);
 
 			leftDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
+			leftDriveFollow.set(ControlMode.Follower, leftDrive.getDeviceID());
+			rightDriveFollow.set(ControlMode.Follower, rightDrive.getDeviceID());
 			
 			if (EnabledSubsystems.DUMB_DRIVE_ENABLED) {
 				leftDrive.set(ControlMode.PercentOutput, 0);
@@ -161,7 +162,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			CheesyDriveCalculationConstants.createDriveTypeCalculations();
 			
 			smartDashboardInit();
-			
+
 		}
 		
 	}
@@ -194,6 +195,23 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		SmartDashboard.putNumber("kITwoD Value: ", kITwoD);
 		SmartDashboard.putNumber("kDTwoD Value: ", kDTwoD);
 		SmartDashboard.putNumber("kP_thetaTwoD Value: ", kP_thetaTwoD);
+	}
+	
+	public static Drive getInstance() {
+		if(singleton == null)
+			init();
+		return singleton;
+	}
+	
+	public synchronized static void init() {
+		if(singleton == null) {
+			singleton = new Drive();
+			singleton.setJoystickCommand(new DriveJoystickCommand());
+		}
+	}
+	
+	public void setMotorSpeedInPercent(double left, double right) {
+		setMotorSpeed(currentMaxSpeed().mul(left), currentMaxSpeed().mul(right));
 	}
 	
 	public Speed currentMaxSpeed() {
@@ -248,26 +266,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		tankDrive(cheesyMotorPercents[0], cheesyMotorPercents[1]);
 	}
 	
-	public static Drive getInstance() {
-		if(singleton == null)
-			init();
-		return singleton;
-	}
-	
-	public synchronized static void init() {
-		if(singleton == null) {
-			singleton = new Drive();
-			singleton.setJoystickCommand(new DriveJoystickCommand());
-		}
-	}
-	
-	public void setMotorSpeedInPercent(double left, double right) {
-		setMotorSpeed(currentMaxSpeed().mul(left), currentMaxSpeed().mul(right));
-	}
-	
 	public void setMotorSpeed(Speed left, Speed right) {
 		if (leftDrive != null && rightDrive != null) {
-			
+						
 			leftMotorSetpoint = left;
 			rightMotorSetpoint = right.negate();
 			
