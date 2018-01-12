@@ -58,7 +58,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0717;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0739;
 	
-	private TalonSRX leftDrive, rightDrive, rightDriveFollow, leftDriveFollow;
+	private TalonSRX leftDrive, rightDrive, rightDriveFollow, leftDriveFollow, pigeonTalon;
 	private TalonEncoder leftEncoder, rightEncoder;
 	
 	//The speed in RPM that the motors are supposed to be running at... they get set later
@@ -121,6 +121,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			
 			leftDriveFollow = CTRECreator.createFollowerTalon(RobotMap.DRIVE_LEFT_FOLLOW, leftDrive.getDeviceID());
 			rightDriveFollow = CTRECreator.createFollowerTalon(RobotMap.DRIVE_RIGHT_FOLLOW, rightDrive.getDeviceID());
+			
+			pigeonTalon = CTRECreator.createMasterTalon(RobotMap.PIGEON_TALON);
 			
 			leftDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
 			leftDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
@@ -384,7 +386,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
 			SmartDashboard.putNumber("Gyro Yaw", NavX.getInstance().getYaw().get(Angle.Unit.DEGREE));
 		} else {
-			SmartDashboard.putNumber("Gyro Yaw", Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE));
+			SmartDashboard.putNumber("Gyro Yaw", Pigeon.getPigeon(getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE));
 		}
 		
 		leftDrive.config_kP(SLOT_0, SmartDashboard.getNumber("Left P Value: ", P_LEFT), NO_TIMEOUT);
@@ -458,5 +460,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	public void disableTwoDProfiler() {
 		twoDProfiler.disable();
+	}
+	
+	public TalonSRX getPigeonTalon() {
+		return pigeonTalon;
 	}
 }

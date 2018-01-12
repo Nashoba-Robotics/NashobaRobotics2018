@@ -12,6 +12,7 @@ import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.units.Angle;
+import edu.nr.robotics.subsystems.drive.Drive;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import jaci.pathfinder.Pathfinder;
@@ -129,7 +130,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 				if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
 					currentHeading = -NavX.getInstance().getYaw().get(Angle.Unit.DEGREE);
 				} else {
-					currentHeading = -Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE);
+					currentHeading = -Pigeon.getPigeon(Drive.getInstance().getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE);
 				}
 				//double currentHeading = -gyroCorrection.getAngleErrorDegrees();
 				desiredHeading = Pathfinder.r2d(left.getHeading());
@@ -190,7 +191,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 		if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
 			NavX.getInstance().reset();
 		} else {
-			Pigeon.getInstance().reset();
+			Pigeon.getPigeon(Drive.getInstance().getPigeonTalon()).reset();
 		}
 	}
 	

@@ -16,7 +16,6 @@ public class EnableOneDDriveMotionProfileOneMotor extends NRCommand {
 		super(Drive.getInstance());
 		distanceToDrive = y;
 	}
-	
 
 	@Override
 	public void onStart() {
