@@ -40,7 +40,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	private static Drive singleton;
 	
-	public static final double WHEEL_DIAMETER_INCHES = 3.5;
+	public static final double REAL_WHEEL_DIAMETER_INCHES = 3.5;
+	public static final double WHEEL_DIAMETER_INCHES = 3.5 * 0.946;
 	public static final double WHEEL_DIAMETER_INCHES_H = 0;
 	public static final Distance WHEEL_DIAMETER = new Distance(WHEEL_DIAMETER_INCHES, Distance.Unit.INCH);
 	public static final Distance WHEEL_BASE = new Distance(27, Distance.Unit.INCH); //TODO: find for real
@@ -49,10 +50,10 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final Acceleration MAX_ACC = new Acceleration(31.53, Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND);
 	public static final Jerk MAX_JERK = new Jerk(813, Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND);
 	
-	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(0.1, Distance.Unit.INCH);
+	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(0.01, Distance.Unit.INCH);
 	public static final Time PROFILE_TIME_THRESHOLD = new Time(0.25, Time.Unit.SECOND);
 	
-	public static final double ACCEL_PERCENT = 0.7;
+	public static final double ACCEL_PERCENT = 0.5;
 	
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0924; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0567; //This is 0 to 1 number
@@ -94,8 +95,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	//public static double kVOneD = 0.07226;
 	public static double kVOneD = 1 / MAX_SPEED.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kAOneD = 0.01;
-	public static double kPOneD = 0;//0.01
+	public static double kAOneD = 0.001;
+	public static double kPOneD = .0001;
 	public static double kIOneD = 0;
 	public static double kDOneD = 0;
 	public static double kP_thetaOneD = 0.007;
@@ -150,7 +151,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			leftDrive.setSensorPhase(true);
 			
 			leftDrive.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, NO_TIMEOUT);
-			leftDrive.configVelocityMeasurementWindow(1, NO_TIMEOUT);
+			leftDrive.configVelocityMeasurementWindow(32, NO_TIMEOUT);
 			
 			rightDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
 			rightDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);

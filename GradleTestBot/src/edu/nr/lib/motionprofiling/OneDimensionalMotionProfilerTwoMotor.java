@@ -19,7 +19,6 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	private static final long defaultPeriod = 10; //200 Hz 
 	
 	private double prevTime;
-	private double startTime;
 	
 	private boolean enabled = true;
 	private DoublePIDOutput out;
@@ -98,7 +97,8 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 			
 			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
 			
-			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
+			source.setPIDSourceType(PIDSourceType.kDisplacement);
+			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;
 			double errorIntegralLeft = (errorLeft - errorLastLeft) * dt / 2;
 			double prelimOutputLeft = velocityGoal * kv + accelGoal * ka + errorLeft * kp + errorIntegralLeft * ki + errorDerivLeft * kd;
@@ -107,6 +107,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 			double outputLeft = 0;
 
 			if (prelimOutputLeft > 0.0) {
+				
 				if (headingAdjustment > 0.0) {
 					outputLeft = prelimOutputLeft - headingAdjustment;
 				} else {
@@ -120,6 +121,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 				}
 			}
 			
+			source.setPIDSourceType(PIDSourceType.kDisplacement);
 			errorRight = positionGoal - source.pidGetRight() + initialPositionRight;			
 			double errorDerivRight = (errorRight - errorLastRight) / dt;
 			double prelimOutputRight = velocityGoal * kv + accelGoal * ka + errorRight * kp + errorDerivRight * kd;
@@ -174,7 +176,6 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	public void reset() {
 		errorLastLeft = 0;
 		errorLastRight = 0;
-		startTime = prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 		PIDSourceType type = source.getPIDSourceType();
 		source.setPIDSourceType(PIDSourceType.kDisplacement);
 		initialPositionLeft = source.pidGetLeft();

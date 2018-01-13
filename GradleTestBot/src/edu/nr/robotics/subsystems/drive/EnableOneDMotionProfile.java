@@ -14,7 +14,7 @@ public class EnableOneDMotionProfile extends NRCommand {
 	Distance tempLeftPosition = Distance.ZERO;
 	Distance tempRightPosition = Distance.ZERO;
 	
-	private final Distance END_THRESHOLD = new Distance(0.3, Distance.Unit.INCH);
+	private final Distance END_THRESHOLD = new Distance(3, Distance.Unit.INCH);
 	
 	public EnableOneDMotionProfile() {
 		super(Drive.getInstance());
@@ -41,6 +41,7 @@ public class EnableOneDMotionProfile extends NRCommand {
 	@Override
 	public void onEnd() {
 		Drive.getInstance().disableOneDProfiler();
+		System.out.println("Ended");
 	}
 	
 	@Override

@@ -10,7 +10,7 @@ public class CheesyDriveCalculationConstants {
 	public static final double HIGH_NEG_INERTIA_FAR_SCALAR = 0;
 	
 	public static final double LOW_NEG_THRESHOLD = 0.5;//0.65
-	public static final double LOW_NEG_INERTIA_TURN_SCALAR = 3.0;
+	public static final double LOW_NEG_INERTIA_TURN_SCALAR = 3.0;//3.5
 	public static final double LOW_NEG_INERTIA_CLOSE_SCALAR = 80.0;//4.0
 	public static final double LOW_NEG_INERTIA_FAR_SCALAR = 100.0;//5.0
 	
