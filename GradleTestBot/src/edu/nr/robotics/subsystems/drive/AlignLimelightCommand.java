@@ -9,6 +9,9 @@ public class AlignLimelightCommand extends NRCommand {
 	
 	private DoublePIDOutput out;
 	private LimelightNetworkTable.Pipeline pipeline;
+	private Angle initialAngle;
+	
+	private final Angle ANGLE_THRESHOLD = new Angle(0.01, Angle.Unit.DEGREE);
 	
 	public AlignLimelightCommand(DoublePIDOutput out, LimelightNetworkTable.Pipeline pipeline) {
 		this.out = out;
@@ -21,6 +24,7 @@ public class AlignLimelightCommand extends NRCommand {
 		LimelightNetworkTable.getInstance().lightLED(true);
 		LimelightNetworkTable.getInstance().setPipeline(pipeline);
 		LimelightNetworkTable.getInstance().enable();
+		initialAngle = LimelightNetworkTable.getInstance().getHorizOffset();
 	}
 
 	@Override
@@ -45,6 +49,16 @@ public class AlignLimelightCommand extends NRCommand {
 
 	@Override
 	public boolean isFinishedNR() {
+		/*boolean finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftDistance())).abs()
+				.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+				&& (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getLeftDistance())).abs()
+				.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+				&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightDistance())).abs()
+				.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+				&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getRightDistance())).abs()
+				.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+				&& (initialAngle.sub(LimelightNetworkTable.getInstance().getHorizOffset())).abs().greaterThan(ANGLE_THRESHOLD);
+		return finished;*/
 		return false;
 	}
 	
