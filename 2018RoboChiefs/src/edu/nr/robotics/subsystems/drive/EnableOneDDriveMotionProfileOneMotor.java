@@ -24,14 +24,11 @@ public class EnableOneDDriveMotionProfileOneMotor extends NRCommand {
 	
 	@Override
 	public void onExecute() {
-		//TODO: Change from left/right to H
 		//System.out.println("1D Profiler enabled: " + Drive.getInstance().isOneDProfilerEnabled());
 		Drive.getInstance().setPIDSourceType(PIDSourceType.kRate);
-		//SmartDashboard.putString("Motion Profiler V Left", Drive.getInstance().pidGetLeft() + ":" + OneDimensionalMotionProfilerTwoMotorHDrive.velocityGoal);
-		//SmartDashboard.putString("Motion Profiler V Right", Drive.getInstance().pidGetRight() + ":" + OneDimensionalMotionProfilerTwoMotorHDrive.velocityGoal);
+		//SmartDashboard.putString("Motion Profiler V H", Drive.getInstance().pidGetH() + ":" + OneDimensionalMotionProfilerHDriveMain.velocityGoal);
 		Drive.getInstance().setPIDSourceType(PIDSourceType.kDisplacement);
-		//SmartDashboard.putString("Motion Profiler X Left", new Distance(Drive.getInstance().pidGetLeft(), Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerTwoMotorHDrive.positionGoal + OneDimensionalMotionProfilerTwoMotorHDrive.initialPositionLeft, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerTwoMotorHDrive.errorLeft, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH));
-		//SmartDashboard.putString("Motion Profiler X Right", new Distance(Drive.getInstance().pidGetRight(), Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerTwoMotorHDrive.positionGoal + OneDimensionalMotionProfilerTwoMotorHDrive.initialPositionRight, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerTwoMotorHDrive.errorRight, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH));
+		//SmartDashboard.putString("Motion Profiler X H", new Distance(Drive.getInstance().pidGetH(), Distance.Unit.MAGNETIC_ENCODER_TICK_H).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerHDriveMain.positionGoal + OneDimensionalMotionProfilerHDriveMain.initialPositionH, Distance.Unit.MAGNETIC_ENCODER_TICK_H).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerHDriveMain.errorH, Distance.Unit.MAGNETIC_ENCODER_TICK_H).get(Distance.Unit.INCH));
 	
 	}
 	
