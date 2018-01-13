@@ -167,7 +167,6 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		//System.out.println("enabled");
 		reset();
 		posPoints = trajectory.loadPosPoints(period);
-		System.out.println(posPoints.size());
 		velPoints = trajectory.loadVelPoints(period);
 		accelPoints = trajectory.loadAccelPoints(period);
 		enabled = true;

@@ -29,7 +29,7 @@ case arcadeDrive:
 			moveValue = NRMath.powWithSign(moveValue, 3);
 			rotateValue = NRMath.powWithSign(rotateValue, 3);
 						
-			if (Math.abs(rotateValue) < 0.05 && Math.abs(moveValue) > 0.1) {
+			if (Math.abs(rotateValue) < 0.05 && Math.abs(moveValue) > 0.05) {
 				rotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD);
 			} else {
 				gyroCorrection.clearInitialValue();

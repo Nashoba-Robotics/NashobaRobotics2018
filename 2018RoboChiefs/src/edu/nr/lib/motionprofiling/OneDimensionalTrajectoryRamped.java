@@ -20,7 +20,8 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	double endPosition;
 	double startPosition;
 	
-	double pow = 4.0;
+	double pow = 2;
+	double timeMult = 11;
 	
 	ArrayList<Double> posPoints;
 	ArrayList<Double> velPoints;
@@ -59,14 +60,14 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 		double dVr = rampFunc(timeRamp);
 		timeAccel = (velMaxUsed - (2 * dVr)) / accelMax;
 		timeCruise = (endPosition - 2 * integRampFunc(0, timeRamp) - 2 * timeAccel * dVr - timeAccel * (velMaxUsed - 2 * dVr) - 2 * timeRamp * (velMaxUsed - dVr) - 2 * integXYRefRampFunc(0, timeRamp)) / velMaxUsed;
-		if (timeCruise < 0) {
+		if (timeCruise <= 0 || timeAccel <= 0) {
 			timeAccel = NRMath.quadratic(accelMax, 2 * timeRamp * accelMax + 2 * rampFunc(timeRamp), 
 					2 * integRampFunc(0, timeRamp) + 2 * integXYRefRampFunc(0, timeRamp) + 2 * timeRamp * rampFunc(timeRamp) - endPosition, true);
 			timeCruise = 0;
 			velMaxUsed = 2 * rampFunc(timeRamp) + timeAccel * accelMax;
 		}
 		if (timeAccel < 0) {
-			timeRamp = Math.pow(endPosition / 4, 1 / (pow + 1));
+			timeRamp = Math.pow(endPosition / (4 * timeMult), 1 / (pow + 1));
 			timeAccel = 0;
 			velMaxUsed = 2 * rampFunc(timeRamp);
 			accelMaxUsed = derivRampFunc(timeRamp);
@@ -76,7 +77,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	}
 	
 	public double rampFunc(double time) {
-		return Math.pow(time, pow);
+		return timeMult * Math.pow(time, pow);
 	}
 	
 	public double xyRefRampFunc(double time) {
@@ -84,12 +85,11 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	}
 	
 	public double integRampFunc(double time1, double time2) {
-		return 1.0 / (pow + 1) * Math.pow(time2, pow + 1) - 1.0 / (pow + 1) * Math.pow(time1, pow + 1);
+		return timeMult / (pow + 1) * Math.pow(time2, pow + 1) - timeMult / (pow + 1) * Math.pow(time1, pow + 1);
 	}
 	
 	public double integXYRefRampFunc(double time1, double time2) {
-		return rampFunc(timeRamp) * (time2 - time1) - (1.0 / (pow + 1) * Math.pow(timeRamp - time1, pow + 1) - 1.0 / (pow + 1) * Math.pow(timeRamp - time2, pow + 1));
-	}
+		return rampFunc(timeRamp) * (time2 - time1) - (timeMult / (pow + 1) * Math.pow(timeRamp - time1, pow + 1) - timeMult / (pow + 1) * Math.pow(timeRamp - time2, pow + 1));	}
 	
 	/**
 	 * 
@@ -97,8 +97,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	 * @return accel at specific time
 	 */
 	public double derivRampFunc(double time) {
-		return pow * Math.pow(time, pow - 1);
-		
+		return timeMult * pow * Math.pow(time, pow - 1);
 	}
 	
 	/**
@@ -107,7 +106,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	 * @return time when derivative equals acceleration
 	 */
 	public double flipDerivRampFunc(double accel) {
-		return Math.pow(accel / pow, 1.0 / (pow - 1));
+		return Math.pow(accel / (pow * timeMult), 1.0 / (pow - 1));
 	}
 	
 	/**
@@ -116,8 +115,8 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	 * @return accel at specific time
 	 */
 	public double derivXYRefRampFunc(double time) {
-		return (pow * Math.pow(timeRamp - time, pow - 1));
-	}
+		return (timeMult * pow * Math.pow(timeRamp - time, pow - 1));	
+		}
 	
 	public double getGoalVelocity(double time) {
 		if (time < timeRamp) {
@@ -208,7 +207,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	
 	@Override
 	public double getMaxUsedAccel() {
-		return accelMax;
+		return accelMaxUsed;
 	}
 
 	@Override
@@ -223,7 +222,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 
 	@Override
 	public double getMaxUsedVelocity() {
-		return velMax;
+		return velMaxUsed;
 	}
 	
 }
