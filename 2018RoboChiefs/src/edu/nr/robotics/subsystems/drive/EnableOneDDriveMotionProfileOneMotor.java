@@ -24,6 +24,7 @@ public class EnableOneDDriveMotionProfileOneMotor extends NRCommand {
 	
 	@Override
 	public void onExecute() {
+		//TODO: Change from left/right to H
 		//System.out.println("1D Profiler enabled: " + Drive.getInstance().isOneDProfilerEnabled());
 		Drive.getInstance().setPIDSourceType(PIDSourceType.kRate);
 		//SmartDashboard.putString("Motion Profiler V Left", Drive.getInstance().pidGetLeft() + ":" + OneDimensionalMotionProfilerTwoMotorHDrive.velocityGoal);

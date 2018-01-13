@@ -26,8 +26,11 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	private DoublePIDSource source;
 	
 	private double ka, kp, ki, kd, kv, kp_theta;
-	private double errorLastLeft;
-	private double errorLastRight;
+	public volatile static double errorLastLeft;
+	public volatile static double errorLastRight;
+	
+	public volatile static double errorLeft;
+	public volatile static double errorRight;
 	
 	public static double initialPositionLeft;
 	public static double initialPositionRight;
@@ -41,8 +44,8 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	public static double accelGoal;
 	
 	public static ArrayList<Double> posPoints;
-	private ArrayList<Double> velPoints;
-	private ArrayList<Double> accelPoints;
+	public static ArrayList<Double> velPoints;
+	public static ArrayList<Double> accelPoints;
 
 	private int loopIteration;
 	
@@ -59,12 +62,12 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		this.kd = kd;
 		this.kv = kv;
 		this.kp_theta = kp_theta;
-		this.initialPositionLeft = source.pidGetLeft();
-		this.initialPositionRight = source.pidGetRight();
+		initialPositionLeft = source.pidGetLeft();
+		initialPositionRight = source.pidGetRight();
 		this.gyroCorrection = new GyroCorrection();
-		this.posPoints = new ArrayList<Double>();
-		this.velPoints = new ArrayList<Double>();
-		this.accelPoints = new ArrayList<Double>();
+		posPoints = new ArrayList<Double>();
+		velPoints = new ArrayList<Double>();
+		accelPoints = new ArrayList<Double>();
 		reset();
 		timer.scheduleAtFixedRate(this, 0, this.period);
 	}
@@ -93,17 +96,9 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 				accelGoal = 0;
 			}
 			
-			/*
-			double currentTimeSinceStart = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime;
-
-			double velocityGoal = trajectory.getGoalVelocity(currentTimeSinceStart);
-			double positionGoal = trajectory.getGoalPosition(currentTimeSinceStart);
-			double accelGoal = trajectory.getGoalAccel(currentTimeSinceStart);
-			*/
-			
 			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
 			
-			double errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
+			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;
 			double errorIntegralLeft = (errorLeft - errorLastLeft) * dt / 2;
 			double prelimOutputLeft = velocityGoal * kv + accelGoal * ka + errorLeft * kp + errorIntegralLeft * ki + errorDerivLeft * kd;
@@ -125,7 +120,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 				}
 			}
 			
-			double errorRight = positionGoal - source.pidGetRight() + initialPositionRight;			
+			errorRight = positionGoal - source.pidGetRight() + initialPositionRight;			
 			double errorDerivRight = (errorRight - errorLastRight) / dt;
 			double prelimOutputRight = velocityGoal * kv + accelGoal * ka + errorRight * kp + errorDerivRight * kd;
 			errorLastRight = errorRight;

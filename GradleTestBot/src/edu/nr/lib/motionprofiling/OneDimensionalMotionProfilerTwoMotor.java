@@ -26,8 +26,11 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	private DoublePIDSource source;
 	
 	private double ka, kp, ki, kd, kv, kp_theta;
-	public static double errorLastLeft;
-	public static double errorLastRight;
+	public volatile static double errorLastLeft;
+	public volatile static double errorLastRight;
+	
+	public volatile static double errorLeft;
+	public volatile static double errorRight;
 	
 	public static double initialPositionLeft;
 	public static double initialPositionRight;
@@ -93,17 +96,9 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 				accelGoal = 0;
 			}
 			
-			/*
-			double currentTimeSinceStart = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime;
-
-			double velocityGoal = trajectory.getGoalVelocity(currentTimeSinceStart);
-			double positionGoal = trajectory.getGoalPosition(currentTimeSinceStart);
-			double accelGoal = trajectory.getGoalAccel(currentTimeSinceStart);
-			*/
-			
 			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
 			
-			double errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
+			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;
 			double errorIntegralLeft = (errorLeft - errorLastLeft) * dt / 2;
 			double prelimOutputLeft = velocityGoal * kv + accelGoal * ka + errorLeft * kp + errorIntegralLeft * ki + errorDerivLeft * kd;
@@ -125,7 +120,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 				}
 			}
 			
-			double errorRight = positionGoal - source.pidGetRight() + initialPositionRight;			
+			errorRight = positionGoal - source.pidGetRight() + initialPositionRight;			
 			double errorDerivRight = (errorRight - errorLastRight) / dt;
 			double prelimOutputRight = velocityGoal * kv + accelGoal * ka + errorRight * kp + errorDerivRight * kd;
 			errorLastRight = errorRight;
@@ -169,17 +164,6 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		posPoints = trajectory.loadPosPoints(period);
 		velPoints = trajectory.loadVelPoints(period);
 		accelPoints = trajectory.loadAccelPoints(period);
-		
-		for (Double p : posPoints) {
-			System.out.println(p.doubleValue());
-		}
-		for (Double v: velPoints) {
-			System.out.println(v.doubleValue());
-		}
-		for (Double a: accelPoints) {
-			System.out.println(a.doubleValue());
-		}
-		
 		enabled = true;
 	}
 	

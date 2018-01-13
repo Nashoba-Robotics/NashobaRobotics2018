@@ -178,29 +178,38 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 		}
 	}
 
+	/**
+	 * Multiply totalTime by 100 to get milliseconds per hundred ms
+	 */
 	@Override
 	public ArrayList<Double> loadPosPoints(double period) {
 		posPoints.clear();
-		for (int time = 0; time < Math.round(totalTime * 1000); time += period) {
-			posPoints.add(getGoalPosition(time / 1000.0));
+		for (int time = 0; time < Math.round(totalTime * 100); time += period) {
+			posPoints.add(getGoalPosition(time / 100.0));
 		}
 		return posPoints;
 	}
 	
+	/**
+	 * Multiply totalTime by 100 to get milliseconds per hundred ms
+	 */
 	@Override
 	public ArrayList<Double> loadVelPoints(double period) {
 		velPoints.clear();
-		for (int time = 0; time < Math.round(totalTime * 1000); time += period) {
-			velPoints.add(getGoalVelocity(time / 1000.0));
+		for (int time = 0; time < Math.round(totalTime * 100); time += period) {
+			velPoints.add(getGoalVelocity(time / 100.0));
 		}
 		return velPoints;
 	}
 	
+	/**
+	 * Multiply totalTime by 100 to get milliseconds per hundred ms
+	 */
 	@Override
 	public ArrayList<Double> loadAccelPoints(double period) {
 		accelPoints.clear();
-		for (int time = 0; time < Math.round(totalTime * 1000); time += period) {
-			accelPoints.add(getGoalAccel(time / 1000.0));
+		for (int time = 0; time < Math.round(totalTime * 100); time += period) {
+			accelPoints.add(getGoalAccel(time / 100.0));
 		}
 		return accelPoints;
 	}

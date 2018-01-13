@@ -33,7 +33,7 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 	
 	public static double initialPositionLeft;
 	public static double initialPositionRight;
-	public static double initialHPosition;
+	public static double initialPositionH;
 	
 	public static double positionGoal;
 	public static double velocityGoal;
@@ -68,13 +68,13 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 		this.kp_H = kp_H;
 		this.ki_H = ki_H;
 		this.kd_H = kd_H;
-		this.initialPositionLeft = source.pidGetLeft();
-		this.initialPositionRight = source.pidGetRight();
-		this.initialHPosition = source.pidGetH();
-		this.gyroCorrection = new GyroCorrection();
-		this.posPoints = new ArrayList<Double>();
-		this.velPoints = new ArrayList<Double>();
-		this.accelPoints = new ArrayList<Double>();
+		initialPositionLeft = source.pidGetLeft();
+		initialPositionRight = source.pidGetRight();
+		initialPositionH = source.pidGetH();
+		gyroCorrection = new GyroCorrection();
+		posPoints = new ArrayList<Double>();
+		velPoints = new ArrayList<Double>();
+		accelPoints = new ArrayList<Double>();
 		reset();
 		timer.scheduleAtFixedRate(this, 0, this.period);
 	}
@@ -102,14 +102,6 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 				velocityGoal = 0;
 				accelGoal = 0;
 			}
-			
-			/*
-			double currentTimeSinceStart = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime;
-
-			double velocityGoal = trajectory.getGoalVelocity(currentTimeSinceStart);
-			double positionGoal = trajectory.getGoalPosition(currentTimeSinceStart);
-			double accelGoal = trajectory.getGoalAccel(currentTimeSinceStart);
-			*/
 			
 			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
 			
@@ -201,7 +193,7 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 		source.setPIDSourceType(PIDSourceType.kDisplacement);
 		initialPositionLeft = source.pidGetLeft();
 		initialPositionRight = source.pidGetRight();
-		initialHPosition = 00000; //TODO: do
+		initialPositionH = 00000; //TODO: do
 		source.setPIDSourceType(type);
 		gyroCorrection.clearInitialValue();
 		loopIteration = 0;
