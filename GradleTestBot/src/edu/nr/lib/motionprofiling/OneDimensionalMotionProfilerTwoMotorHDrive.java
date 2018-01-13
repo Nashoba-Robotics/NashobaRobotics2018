@@ -183,7 +183,6 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 		//System.out.println("enabled");
 		reset();
 		posPoints = trajectory.loadPosPoints(period);
-		System.out.println(posPoints.size());
 		velPoints = trajectory.loadVelPoints(period);
 		accelPoints = trajectory.loadAccelPoints(period);
 		enabled = true;

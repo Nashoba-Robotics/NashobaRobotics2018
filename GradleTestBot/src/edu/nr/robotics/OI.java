@@ -2,6 +2,7 @@ package edu.nr.robotics;
 
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.robotics.subsystems.drive.Drive;
+import edu.nr.robotics.subsystems.drive.EnableOneDMotionProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
@@ -30,7 +31,7 @@ public class OI implements SmartDashboardSource {
 	public void smartDashboardInfo() {
 		
 	}
-		
+	
 	private OI() {
 		
 		stickLeft = new Joystick(JOYSTICK_LEFT);
@@ -48,7 +49,8 @@ public class OI implements SmartDashboardSource {
 	private void initDriveRight() {
 	}
 
-	private void initDriveLeft() {	
+	private void initDriveLeft() {
+		new JoystickButton(stickLeft, 14).whenPressed(new EnableOneDMotionProfile());
 	}
 	
 	private void driveModeChooserInit() {

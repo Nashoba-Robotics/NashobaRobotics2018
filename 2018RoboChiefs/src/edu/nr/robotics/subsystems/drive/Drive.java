@@ -15,6 +15,12 @@ import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.interfaces.SmartDashboardSource;
+import edu.nr.lib.interfaces.TriplePIDOutput;
+import edu.nr.lib.interfaces.TriplePIDSource;
+import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerHDriveMain;
+import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotor;
+import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotorHDrive;
+import edu.nr.lib.motionprofiling.OneDimensionalTrajectoryRamped;
 import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Acceleration;
@@ -32,13 +38,13 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSource {
+public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSource {
 
 	private static Drive singleton;
 	
-	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow, pigeonTalon;
-	private TalonEncoder leftEncoder, rightEncoder;
-		
+	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow, HDrive, pigeonTalon;
+	private TalonEncoder leftEncoder, rightEncoder, HEncoder;
+
 	/**
 	 * The max drive current in amperes
 	 */
@@ -132,6 +138,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	 */
 	public static final Time PROFILE_TIME_THRESHOLD = new Time(0, Time.Unit.MILLISECOND); //TODO: Find Drive profile time threshold
 	
+	public static final double ACCEL_PERCENT = 0; //TODO: Find this
+	
 	public static final double PROFILE_DRIVE_PERCENT = 0; //TODO: Find Drive profile percent
 	
 	/**
@@ -193,6 +201,13 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static double kDOneD = 0;
 	public static double kP_thetaOneD = 0;
 	
+	//TODO: Find These
+	public static double kVOneDH = 0;
+	public static double kAOneDH = 0;
+	public static double kPOneDH = 0;
+	public static double kIOneDH = 0;
+	public static double kDOneDH = 0; 
+	
 	/**
 	 * 2D Profiling kVAPID_theta loop constants
 	 */
@@ -210,12 +225,17 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static Distance yProfile;
 	public static Angle endAngle;
 	public static double drivePercent = 0;
+	
+	private OneDimensionalMotionProfilerTwoMotorHDrive oneDProfilerTwoMotorH;
+	
+	private OneDimensionalMotionProfilerHDriveMain oneDProfilerOneMotorH;
 		
 	private Drive() {
 		if (EnabledSubsystems.DRIVE_ENABLED) {
 
 			leftDrive = CTRECreator.createMasterTalon(RobotMap.DRIVE_LEFT);
 			rightDrive = CTRECreator.createMasterTalon(RobotMap.DRIVE_RIGHT);
+			HDrive = CTRECreator.createMasterTalon(RobotMap.DRIVE_H);
 			pigeonTalon = CTRECreator.createMasterTalon(0);//TODO: find real pigeon talon
 			
 			leftDriveFollow = CTRECreator.createFollowerTalon(RobotMap.TEMP_LEFT_TALON, leftDrive.getDeviceID());
@@ -278,6 +298,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			smartDashboardInit();
 	
 			CheesyDriveCalculationConstants.createDriveTypeCalculations();
+			
+			HEncoder = new TalonEncoder(HDrive);
+			
 		}
 	}
 	
@@ -352,6 +375,15 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		}
 	}
 	
+	public Distance getHPosition() {
+		if(HDrive != null){
+			return new Distance(rightDrive.getSelectedSensorPosition(PID_TYPE), Unit.MAGNETIC_ENCODER_TICK);
+		}
+		else{
+			return Distance.ZERO;
+		}
+	}
+	
 	/**
 	 * Gets the historical position of the left talon
 	 * 
@@ -375,6 +407,12 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public Distance getHistoricalRightPosition(Time deltaTime) {
 		if (rightEncoder != null)
 			return rightEncoder.getPosition(deltaTime);
+		return Distance.ZERO;
+	}
+	
+	public Distance getHistoricalHPosition(Time deltaTime) {
+		if (HEncoder != null)
+			return HEncoder.getPosition(deltaTime);
 		return Distance.ZERO;
 	}
 	
@@ -422,6 +460,12 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		return Speed.ZERO;
 	}
 	
+	public Speed getHVelocity() {
+		if(HDrive != null) 
+			return new Speed(HDrive.getSelectedSensorVelocity(SLOT_0), Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
+		return Speed.ZERO;
+	}
+	
 	public Speed getHistoricalLeftVelocity(Time deltaTime) {
 		if (leftEncoder != null)
 			return new Speed(leftEncoder.getVelocity(deltaTime));
@@ -431,6 +475,12 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public Speed getHistoricalRightVelocity(Time deltaTime) {
 		if (rightEncoder != null)
 			return new Speed(rightEncoder.getVelocity(deltaTime));
+		return Speed.ZERO;
+	}
+	
+	public Speed getHistoricalHVelocity(Time deltaTime) {
+		if (HEncoder != null)
+			return new Speed(HEncoder.getVelocity(deltaTime));
 		return Speed.ZERO;
 	}
 	
@@ -511,12 +561,12 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 				kDOneD = SmartDashboard.getNumber("kDOneD Value: ", kDOneD);
 				kP_thetaOneD = SmartDashboard.getNumber("kP_thetaOneD Value: ", kP_thetaOneD);
 				
-				kVTwoD = SmartDashboard.getNumber("kVTwoD Value: ", kVTwoD);
-				kATwoD = SmartDashboard.getNumber("kATwoD Value: ", kATwoD);
-				kPTwoD = SmartDashboard.getNumber("kPTwoD Value: ", kPTwoD);
-				kITwoD = SmartDashboard.getNumber("kITwoD Value: ", kITwoD);
-				kDTwoD = SmartDashboard.getNumber("kDTwoD Value: ", kDTwoD);
-				kP_thetaTwoD = SmartDashboard.getNumber("kP_thetaTwoD Value: ", kP_thetaTwoD);
+				
+				kVOneDH = SmartDashboard.getNumber("kVOneDH Value: ", kVOneDH);
+				kAOneDH = SmartDashboard.getNumber("kAOneDH Value: ", kAOneDH);
+				kPOneDH = SmartDashboard.getNumber("kPOneDH Value: ", kPOneDH);
+				kIOneDH = SmartDashboard.getNumber("kIOneDH Value: ", kIOneDH);
+				kDOneDH = SmartDashboard.getNumber("kDOneDH Value: ", kDOneDH);
 				
 				xProfile = new Distance(SmartDashboard.getNumber("X Profile Feet", 0), Distance.Unit.FOOT);
 				yProfile = new Distance(SmartDashboard.getNumber("Y Profile Feet", 0), Distance.Unit.FOOT);
@@ -529,6 +579,30 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	@Override
 	public void disable() {
 		setMotorSpeedInPercent(0, 0);
+	}
+	
+	public void enableOneDProfilerTwoMotorH(Distance dist) {
+		oneDProfilerTwoMotorH = new OneDimensionalMotionProfilerTwoMotorHDrive(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD, kPOneDH, kIOneDH, kDOneDH);
+		oneDProfilerTwoMotorH.setTrajectory(new OneDimensionalTrajectoryRamped(dist.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
+				MAX_SPEED.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), 
+				MAX_ACCELERATION.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
+		oneDProfilerTwoMotorH.enable();
+	}
+	
+	public void enableOneDProfilerOneMotorH(Distance dist) {
+		oneDProfilerOneMotorH = new OneDimensionalMotionProfilerHDriveMain(this, this, kVOneDH, kAOneDH, kPOneDH, kIOneDH, kDOneDH, kP_thetaOneD);
+		oneDProfilerOneMotorH.setTrajectory(new OneDimensionalTrajectoryRamped(dist.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
+				MAX_SPEED.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), 
+				MAX_ACCELERATION.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
+		oneDProfilerOneMotorH.enable();	
+	}
+	
+	public void disableOneDProfilerTwoMotorH() {
+		oneDProfilerTwoMotorH.disable();
+	}
+	
+	public void disableOneDProfilerOneMotorH() {
+		oneDProfilerOneMotorH.disable();
 	}
 	
 	public double getRightCurrent() {
@@ -591,7 +665,16 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 	
 	@Override
-	public void pidWrite(double outputLeft, double outputRight) {
+	public double pidGetH() {
+		if (type == PIDSourceType.kRate) {
+			return -getInstance().getHVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
+		} else {
+			return -getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK);
+		}
+	}
+	
+	@Override
+	public void pidWrite(double outputLeft, double outputRight, double outputH) {
 		setMotorSpeed(currentMaxSpeed().mul(outputLeft),currentMaxSpeed().mul(outputRight));
 	}
 }

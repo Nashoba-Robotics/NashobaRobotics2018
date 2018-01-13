@@ -59,12 +59,12 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		this.kd = kd;
 		this.kv = kv;
 		this.kp_theta = kp_theta;
-		this.initialPositionLeft = source.pidGetLeft();
-		this.initialPositionRight = source.pidGetRight();
+		initialPositionLeft = source.pidGetLeft();
+		initialPositionRight = source.pidGetRight();
 		this.gyroCorrection = new GyroCorrection();
-		this.posPoints = new ArrayList<Double>();
-		this.velPoints = new ArrayList<Double>();
-		this.accelPoints = new ArrayList<Double>();
+		posPoints = new ArrayList<Double>();
+		velPoints = new ArrayList<Double>();
+		accelPoints = new ArrayList<Double>();
 		reset();
 		timer.scheduleAtFixedRate(this, 0, this.period);
 	}
@@ -167,9 +167,19 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 		//System.out.println("enabled");
 		reset();
 		posPoints = trajectory.loadPosPoints(period);
-		System.out.println(posPoints.size());
 		velPoints = trajectory.loadVelPoints(period);
 		accelPoints = trajectory.loadAccelPoints(period);
+		
+		for (Double p : posPoints) {
+			System.out.println(p.doubleValue());
+		}
+		for (Double v: velPoints) {
+			System.out.println(v.doubleValue());
+		}
+		for (Double a: accelPoints) {
+			System.out.println(a.doubleValue());
+		}
+		
 		enabled = true;
 	}
 	

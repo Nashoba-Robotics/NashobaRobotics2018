@@ -29,8 +29,8 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	private double errorLastLeft;
 	private double errorLastRight;
 	
-	private double initialPositionLeft;
-	private double initialPositionRight;
+	public static double initialPositionLeft;
+	public static double initialPositionRight;
 			
 	private OneDimensionalTrajectory trajectory;
 	
@@ -40,7 +40,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	public static double velocityGoal;
 	public static double accelGoal;
 	
-	private ArrayList<Double> posPoints;
+	public static ArrayList<Double> posPoints;
 	private ArrayList<Double> velPoints;
 	private ArrayList<Double> accelPoints;
 

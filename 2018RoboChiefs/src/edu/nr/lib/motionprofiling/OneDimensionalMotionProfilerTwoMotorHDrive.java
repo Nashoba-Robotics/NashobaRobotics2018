@@ -33,7 +33,7 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 	
 	public static double initialPositionLeft;
 	public static double initialPositionRight;
-	public static double initialPositionH;
+	public static double initialHPosition;
 	
 	public static double positionGoal;
 	public static double velocityGoal;
@@ -70,7 +70,7 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 		this.kd_H = kd_H;
 		this.initialPositionLeft = source.pidGetLeft();
 		this.initialPositionRight = source.pidGetRight();
-		this.initialPositionH = source.pidGetH();
+		this.initialHPosition = source.pidGetH();
 		this.gyroCorrection = new GyroCorrection();
 		this.posPoints = new ArrayList<Double>();
 		this.velPoints = new ArrayList<Double>();
@@ -201,7 +201,7 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 		source.setPIDSourceType(PIDSourceType.kDisplacement);
 		initialPositionLeft = source.pidGetLeft();
 		initialPositionRight = source.pidGetRight();
-		initialPositionH = 00000; //TODO: do
+		initialHPosition = 00000; //TODO: do
 		source.setPIDSourceType(type);
 		gyroCorrection.clearInitialValue();
 		loopIteration = 0;
