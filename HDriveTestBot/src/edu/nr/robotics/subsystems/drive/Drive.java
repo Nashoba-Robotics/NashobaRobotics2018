@@ -3,6 +3,7 @@ package edu.nr.robotics.subsystems.drive;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.NRMath;
@@ -79,6 +80,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public Speed rightMotorSetpoint = Speed.ZERO;
 	public Speed leftMotorSetpoint = Speed.ZERO;
 	public Speed hMotorSetpoint = Speed.ZERO;
+	public double oldTurn = 0;
 	
 	//TODO: Tune PID for all
 	public static final double F_RIGHT = 0;
@@ -99,11 +101,17 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	//TODO: check once built
 	public static final double TICKS_PER_REV = 2048; 
 	
+	//Based on MAXI circuit breaker model
+	public static final int PEAK_CURRENT = 80; //In amps
+	public static final int PEAK_CURRENT_DURATION = 1000; //In milliseconds
+	public static final int CONTINUOUS_CURRENT_LIMIT = 40; //In amps
+	
 	PIDSourceType type = PIDSourceType.kRate;
 	
 	public static final int PID_TYPE = 0; //0 = primary, 1 = cascade
 	public static final int NO_TIMEOUT = 0;
 	public static final int SLOT_0 = 0;
+	public static final double VOLTAGE_COMPENSATION_LEVEL = 12; //In volts
 	
 	public static final NeutralMode NEUTRAL_MODE = NeutralMode.Brake;
 	
@@ -153,30 +161,57 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			leftDrive.config_kP(SLOT_0, P_LEFT, NO_TIMEOUT);
 			leftDrive.config_kI(SLOT_0, I_LEFT, NO_TIMEOUT);
 			leftDrive.config_kD(SLOT_0, D_LEFT, NO_TIMEOUT);
+			
+			leftDrive.enableVoltageCompensation(true);
+			leftDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
+			
+			leftDrive.enableCurrentLimit(true);
+			leftDrive.configPeakCurrentLimit(PEAK_CURRENT, NO_TIMEOUT);
+			leftDrive.configPeakCurrentDuration(PEAK_CURRENT_DURATION, NO_TIMEOUT);
+			leftDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
+			
 			leftDrive.setNeutralMode(NEUTRAL_MODE);
 			leftDrive.setInverted(false);
 			leftDrive.setSensorPhase(true);
-			//TODO: Find replacement leftDrive.enable();
+			
+			leftDrive.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, NO_TIMEOUT);
+			leftDrive.configVelocityMeasurementWindow(32, NO_TIMEOUT);
 			
 			rightDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
 			rightDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
 			rightDrive.config_kP(SLOT_0, P_RIGHT, NO_TIMEOUT);
 			rightDrive.config_kI(SLOT_0, I_RIGHT, NO_TIMEOUT);
 			rightDrive.config_kD(SLOT_0, D_RIGHT, NO_TIMEOUT);
+			
+			rightDrive.enableCurrentLimit(true);
+			rightDrive.configPeakCurrentLimit(PEAK_CURRENT, NO_TIMEOUT);
+			rightDrive.configPeakCurrentDuration(PEAK_CURRENT_DURATION, NO_TIMEOUT);
+			rightDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
+			
 			rightDrive.setNeutralMode(NEUTRAL_MODE);			
 			rightDrive.setInverted(false);
 			rightDrive.setSensorPhase(false);
-			//TODO: Find replacement rightDrive.enable();
+			
+			rightDrive.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, NO_TIMEOUT);
+			rightDrive.configVelocityMeasurementWindow(32, NO_TIMEOUT);
 			
 			hDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
 			hDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
 			hDrive.config_kP(SLOT_0, P_H, NO_TIMEOUT);
 			hDrive.config_kI(SLOT_0, I_H, NO_TIMEOUT);
 			hDrive.config_kD(SLOT_0, D_H, NO_TIMEOUT);
+			
+			hDrive.enableCurrentLimit(true);
+			hDrive.configPeakCurrentLimit(PEAK_CURRENT, NO_TIMEOUT);
+			hDrive.configPeakCurrentDuration(PEAK_CURRENT_DURATION, NO_TIMEOUT);
+			hDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
+			
 			hDrive.setNeutralMode(NEUTRAL_MODE);			
 			hDrive.setInverted(false);
 			hDrive.setSensorPhase(false);
-			//TODO: Find replacement hDrive.enable();
+			
+			hDrive.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, NO_TIMEOUT);
+			hDrive.configVelocityMeasurementWindow(32, NO_TIMEOUT);
 
 			rightEncoder = new TalonEncoder(rightDrive);
 			leftEncoder = new TalonEncoder(leftDrive);
@@ -217,6 +252,15 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 
 	public void tankDrive(double left, double right, double strafe) {
 		setMotorSpeedInPercent(left, right, strafe);	
+	}
+	
+	public void arcadeDriveNegInertia(double move, double turn, double strafe) {
+		double[] cheesyMotorPercents = new double[2];
+		cheesyMotorPercents = DriveTypeCalculations.cheesyDrive(move, turn, oldTurn, false);
+		
+		oldTurn = turn;
+		
+		tankDrive(cheesyMotorPercents[0], cheesyMotorPercents[1], strafe);		
 	}
 	
 	public Distance getLeftDistance() {
@@ -419,7 +463,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
 			SmartDashboard.putNumber("Gyro Yaw", NavX.getInstance().getYaw().get(Angle.Unit.DEGREE));
 		} else {
-			SmartDashboard.putNumber("Gyro Yaw", Pigeon.getInstance().getYaw().get(Angle.Unit.DEGREE));
+			SmartDashboard.putNumber("Gyro Yaw", Pigeon.getPigeon(getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE));
 		}
 		
 		SmartDashboard.putNumber("Left P Value: ", P_LEFT);
@@ -489,6 +533,10 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public void pidWrite(double outputLeft, double outputRight, double outputH) {
 		setMotorSpeedInPercent(outputLeft, outputRight, outputH);
 		
+	}
+
+	public TalonSRX getPigeonTalon() {
+		return leftDrive; //TODO: get actual talon with pigeon
 	}
 
 }
