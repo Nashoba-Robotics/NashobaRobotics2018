@@ -130,6 +130,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static Distance oneDProfileHAssist;
 	public static double drivePercent = 0;
 	public static double drivePercentH = 0;
+	public static Angle angleToTurn = Angle.ZERO;
 	
 	private OneDimensionalMotionProfilerTwoMotorHDrive oneDProfiler;
 	private OneDimensionalMotionProfilerHDriveMain oneDProfilerH;
@@ -472,6 +473,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		SmartDashboard.putNumber("Distance to Profile Feet", 0);
 		SmartDashboard.putNumber("Drive Percent", 0);
 		SmartDashboard.putNumber("Drive Percent H", 0);
+		
+		SmartDashboard.putNumber("Angle To Turn", 0);
 	}
 	
 	@Override
@@ -532,6 +535,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		oneDProfileHAssist = new Distance(SmartDashboard.getNumber("Distance to Profile Feet", 0), Distance.Unit.FOOT);
 		drivePercent = SmartDashboard.getNumber("Drive Percent", 0);
 		drivePercentH = SmartDashboard.getNumber("Drive Percent H", 0);
+		angleToTurn = new Angle(SmartDashboard.getNumber("Angle To Turn", 0), Angle.Unit.DEGREE);
 	}
 
 	public void periodic() {
