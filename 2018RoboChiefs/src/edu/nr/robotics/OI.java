@@ -88,6 +88,10 @@ public class OI implements SmartDashboardSource {
 	public double getArcadeTurnValue() {
 		return -snapDriveJoysticks(driveRight.getX()) * getTurnAdjust();
 	}
+	
+	public double getArcadeHValue() {
+		return snapDriveJoysticks(driveLeft.getX());
+	}
 
 	public double getTankLeftValue() {
 		return snapDriveJoysticks(driveLeft.getY());
@@ -95,6 +99,10 @@ public class OI implements SmartDashboardSource {
 
 	public double getTankRightValue() {
 		return snapDriveJoysticks(driveRight.getY());
+	}
+	
+	public double getTankHValue() {
+		return snapDriveJoysticks(driveLeft.getX());
 	}
 
 	public double getDriveLeftXValue() {
@@ -147,11 +155,11 @@ public class OI implements SmartDashboardSource {
 	}
 	
 	public boolean isTankNonZero() {
-		return getTankLeftValue() != 0 || getTankRightValue() != 0;
+		return getTankLeftValue() != 0 || getTankRightValue() != 0 || getTankHValue() != 0;
 	}
 	
 	public boolean isArcadeNonZero() {
-		return getArcadeMoveValue() != 0 || getArcadeTurnValue() != 0;
+		return getArcadeMoveValue() != 0 || getArcadeTurnValue() != 0 || getArcadeHValue() != 0;
 	}
 	
 	public boolean isDriveNonZero() {
@@ -159,6 +167,7 @@ public class OI implements SmartDashboardSource {
 	}
 	
 	public boolean shouldDumbDrive() {
-		return dumbDriveSwitch.get();
+		//TODO: Find how we want to switch to dumb drive
+		return false;
 	}
 }

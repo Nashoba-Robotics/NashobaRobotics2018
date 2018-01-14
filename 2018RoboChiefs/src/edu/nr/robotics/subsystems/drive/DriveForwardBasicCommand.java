@@ -8,7 +8,7 @@ public class DriveForwardBasicCommand extends NRCommand {
 
 	double percent;
 	Distance distance;
-	Distance encoderDistance;
+	Distance initialPosition;
 	GyroCorrection gyro;
 	
 	public DriveForwardBasicCommand(double percent, Distance distance) {
@@ -20,7 +20,7 @@ public class DriveForwardBasicCommand extends NRCommand {
 	
 	@Override
 	public void onStart() {
-		encoderDistance = Drive.getInstance().getLeftPosition();
+		initialPosition = Drive.getInstance().getLeftPosition();
 		gyro.reset();
 
 	}
@@ -28,7 +28,7 @@ public class DriveForwardBasicCommand extends NRCommand {
 	@Override
 	public void onExecute() {
 		double turnValue = gyro.getTurnValue(Drive.kP_thetaOneD);
-		Drive.getInstance().setMotorSpeedInPercent(percent - turnValue, percent + turnValue);
+		Drive.getInstance().setMotorSpeedInPercent(percent - turnValue, percent + turnValue, 0);
 	}
 	
 	public void onEnd() {
@@ -37,6 +37,6 @@ public class DriveForwardBasicCommand extends NRCommand {
 	
 	@Override
 	public boolean isFinishedNR() {
-		return (Drive.getInstance().getLeftPosition().sub(encoderDistance)).abs().greaterThan(distance);
+		return (Drive.getInstance().getLeftPosition().sub(initialPosition)).abs().greaterThan(distance);
 	}
 }

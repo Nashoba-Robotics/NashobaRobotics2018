@@ -21,41 +21,46 @@ public class DriveJoystickCommand extends JoystickCommand {
 	@Override
 	public void onExecute() {
 		switch (OI.driveMode) {
-case arcadeDrive:
-			
+		case arcadeDrive:
 			double moveValue = OI.getInstance().getArcadeMoveValue();
 			double rotateValue = OI.getInstance().getArcadeTurnValue();
+			double hValue = OI.getInstance().getArcadeHValue();
 			
 			moveValue = NRMath.powWithSign(moveValue, 3);
 			rotateValue = NRMath.powWithSign(rotateValue, 3);
-						
-			if (Math.abs(rotateValue) < 0.05 && Math.abs(moveValue) > 0.05) {
-				rotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD);
+			hValue = NRMath.powWithSign(hValue, 3);
+			
+			if (Math.abs(rotateValue) < 0.05 && Math.abs(moveValue) > 0.1) {
+				rotateValue = gyroCorrection.getTurnValue(Drive.getInstance().kP_thetaOneD);
 			} else {
 				gyroCorrection.clearInitialValue();
 			}
-			
-			Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier());
+			Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier(), hValue * OI.getInstance().getDriveSpeedMultiplier());
 			break;
 		
 		case tankDrive:
 			double left = OI.getInstance().getTankLeftValue();
 			double right = OI.getInstance().getTankRightValue();
+			double hDrive = OI.getInstance().getTankHValue();
 			
 			left = (Math.abs(left) + Math.abs(right)) / 2 * Math.signum(left);
 			right = (Math.abs(left) + Math.abs(right)) / 2 * Math.signum(right);
 			
 			right = NRMath.powWithSign(right, 3);
 			left = NRMath.powWithSign(left, 3);
-			Drive.getInstance().tankDrive(OI.getInstance().getDriveSpeedMultiplier() * left, -OI.getInstance().getDriveSpeedMultiplier() * right);
+			hDrive = NRMath.powWithSign(hDrive, 3);
+			
+			Drive.getInstance().tankDrive(OI.getInstance().getDriveSpeedMultiplier() * left, -OI.getInstance().getDriveSpeedMultiplier() * right, OI.getInstance().getDriveSpeedMultiplier() * hDrive);
 			break;
 			
 		case cheesyDrive:
 			double cheesyMoveValue = OI.getInstance().getArcadeMoveValue();
 			double cheesyRotateValue = OI.getInstance().getArcadeTurnValue();
+			double cheesyHValue = OI.getInstance().getArcadeHValue();
 			
 			cheesyMoveValue = NRMath.powWithSign(cheesyMoveValue, 3);
 			cheesyRotateValue = NRMath.powWithSign(cheesyRotateValue, 3);
+			cheesyHValue = NRMath.powWithSign(cheesyHValue, 3);
 			
 			if (Math.abs(cheesyRotateValue) < 0.05 && Math.abs(cheesyMoveValue) > 0.1) {
 				cheesyRotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD);
@@ -63,7 +68,8 @@ case arcadeDrive:
 				gyroCorrection.clearInitialValue();
 			}
 			
-			Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue);
+			Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue, cheesyHValue);
+			
 			
 			break;
 		}
