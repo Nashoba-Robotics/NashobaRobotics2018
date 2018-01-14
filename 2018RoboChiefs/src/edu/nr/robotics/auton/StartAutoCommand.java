@@ -5,7 +5,7 @@ import edu.nr.robotics.auton.AutoChoosers;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.AutoChoosers.StartPos;
 import edu.nr.robotics.auton.AutoChoosers.Switch;
-import edu.nr.robotics.auton.automap.StarPosMiddleSwitchLeftCommand;
+import edu.nr.robotics.auton.automap.StartPosMiddleSwitchLeftCommand;
 import edu.nr.robotics.auton.automap.StartPosFarRightSwitchNoneCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchBothCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchLeftCommand;
@@ -47,7 +47,7 @@ public class StartAutoCommand extends NRCommand {
 				new StartPosMiddleSwitchNoneCommand();
 				
 			} else if (selectedSwitch == AutoChoosers.Switch.leftOnly) {
-				new StarPosMiddleSwitchLeftCommand();
+				new StartPosMiddleSwitchLeftCommand();
 				
 			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly){
 				new StartPosMiddleSwitchRightCommand();

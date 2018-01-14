@@ -3,9 +3,11 @@ package edu.nr.robotics;
 public class RobotMap {
 
 	//Talon Port Numbers
-		public static final int TEMP_LEFT_TALON = -1;
-		public static final int TEMP_RIGHT_TALON = -1;
-		public static final int DRIVE_RIGHT = -1;
-		public static final int DRIVE_LEFT = -1;
-		public static final int DRIVE_H = -1;
+	//TODO: Find talon port numbers
+	public static final int LEFT_DRIVE_FOLLOW = -1;
+	public static final int RIGHT_DRIVE_FOLLOW = -1;
+	public static final int H_DRIVE_FOLLOW = -1;
+	public static final int RIGHT_DRIVE = -1;
+	public static final int LEFT_DRIVE = -1;
+	public static final int H_DRIVE = -1;
 }

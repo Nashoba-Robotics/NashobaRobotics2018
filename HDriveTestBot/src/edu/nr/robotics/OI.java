@@ -14,7 +14,7 @@ public class OI implements SmartDashboardSource {
 	
 	private static OI singleton;
 	
-	private static final double JOYSTICK_DEAD_ZONE = 0.25;
+	private static final double JOYSTICK_DEAD_ZONE = 0.15;
 	private static final int JOYSTICK_LEFT = 0;
 	private static final int JOYSTICK_RIGHT = 1;
 	

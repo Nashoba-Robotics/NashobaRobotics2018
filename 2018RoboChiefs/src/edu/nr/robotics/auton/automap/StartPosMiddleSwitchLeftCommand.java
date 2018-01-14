@@ -14,9 +14,9 @@ import edu.nr.robotics.auton.autoroutes.SwitchLeftToBlockProfilingCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
-public class StarPosMiddleSwitchLeftCommand extends CommandGroup {
+public class StartPosMiddleSwitchLeftCommand extends CommandGroup {
 	
-	public StarPosMiddleSwitchLeftCommand() {
+	public StartPosMiddleSwitchLeftCommand() {
 		
 		//Checks
 		addSequential(new ConditionalCommand(new StartPosMiddleToSwitchLeftProfilingCommand()) {
