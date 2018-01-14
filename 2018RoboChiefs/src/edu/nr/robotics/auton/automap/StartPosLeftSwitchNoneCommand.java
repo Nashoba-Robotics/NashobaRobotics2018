@@ -5,6 +5,8 @@ import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.auton.StartAutoCommand;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
+import edu.nr.robotics.auton.autoroutes.StartPosLeftToScaleLeftProfilingCommand;
+import edu.nr.robotics.auton.autoroutes.StartPosLeftToScaleRightProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosLeftToSwitchLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosLeftToSwitchRightProfilingCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -14,7 +16,7 @@ public class StartPosLeftSwitchNoneCommand extends CommandGroup {
 	
 	public StartPosLeftSwitchNoneCommand() {
 		
-		addSequential(new ConditionalCommand(new StartPosLeftToSwitchLeftProfilingCommand()){
+		addSequential(new ConditionalCommand(new StartPosLeftToScaleLeftProfilingCommand()){
 
 			@Override
 			protected boolean condition() {
@@ -23,7 +25,7 @@ public class StartPosLeftSwitchNoneCommand extends CommandGroup {
 			
 		});
 		
-		addSequential(new ConditionalCommand(new StartPosLeftToSwitchRightProfilingCommand()){
+		addSequential(new ConditionalCommand(new StartPosLeftToScaleRightProfilingCommand()){
 
 			@Override
 			protected boolean condition() {

@@ -11,36 +11,36 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
 public class StartPosFarRightSwitchNoneCommand extends CommandGroup {
-	
+
 	public StartPosFarRightSwitchNoneCommand() {
-	
-	addSequential(new ConditionalCommand(new StartPosFarRightToScaleRightProfilingCommand()){
 
-		@Override
-		protected boolean condition() {
-			return StartAutoCommand.selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.right;
-		}
-		
-	});
-	
-	addSequential(new ConditionalCommand(new StartPosFarRightToScaleLeftProfilingCommand()){
+		addSequential(new ConditionalCommand(new StartPosFarRightToScaleRightProfilingCommand()) {
 
-		@Override
-		protected boolean condition() {
-			return StartAutoCommand.selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.left;
-		}
-		
-	});
-	
-	addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()){
+			@Override
+			protected boolean condition() {
+				return StartAutoCommand.selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.right;
+			}
 
-		@Override
-		protected boolean condition() {
-			return StartAutoCommand.selectedScale == Scale.no;
-		}
-		
-	});
-	
+		});
+
+		addSequential(new ConditionalCommand(new StartPosFarRightToScaleLeftProfilingCommand()) {
+
+			@Override
+			protected boolean condition() {
+				return StartAutoCommand.selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.left;
+			}
+
+		});
+
+		addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()) {
+
+			@Override
+			protected boolean condition() {
+				return StartAutoCommand.selectedScale == Scale.no;
+			}
+
+		});
+
 	}
 
 }

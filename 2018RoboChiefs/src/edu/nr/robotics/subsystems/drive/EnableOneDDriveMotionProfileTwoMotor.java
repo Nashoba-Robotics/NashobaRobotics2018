@@ -9,25 +9,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class EnableOneDDriveMotionProfileTwoMotor extends NRCommand {
 	
-	Distance initialLeftPosition;
-	Distance initialRightPosition;
-	Distance initialHPosition;
-	Distance tempLeftPosition = Distance.ZERO;
-	Distance tempRightPosition = Distance.ZERO;
-	
 	Distance distanceToDrive = Distance.ZERO;
-	
-	private final Distance END_THRESHOLD = new Distance(0.3, Distance.Unit.INCH);
-	
+	double percent = 0;
+		
 	public EnableOneDDriveMotionProfileTwoMotor(Distance x) {
+		this(x, Drive.PROFILE_DRIVE_PERCENT);
+	}
+	
+	public EnableOneDDriveMotionProfileTwoMotor(Distance x, double percent) {
 		super(Drive.getInstance());
 		distanceToDrive = x;
+		this.percent = percent;
 	}
 	
 	@Override
 	public void onStart() {
 		Drive.getInstance().enableOneDProfilerTwoMotorH(distanceToDrive);
-		initialHPosition = Drive.getInstance().getHPosition();
 	}
 	
 	@Override
@@ -57,7 +54,7 @@ public class EnableOneDDriveMotionProfileTwoMotor extends NRCommand {
 				.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 				&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getRightPosition())).abs()
 				.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-				&& Math.abs(((Math.abs(Drive.getInstance().getLeftPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H) - OneDimensionalMotionProfilerTwoMotorHDrive.initialPositionLeft)) - Math.abs(OneDimensionalMotionProfilerTwoMotorHDrive.posPoints.get(OneDimensionalMotionProfilerTwoMotorHDrive.posPoints.size() - 1)))) < END_THRESHOLD.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H);
+				&& Math.abs(((Math.abs(Drive.getInstance().getLeftPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H) - OneDimensionalMotionProfilerTwoMotorHDrive.initialPositionLeft)) - Math.abs(OneDimensionalMotionProfilerTwoMotorHDrive.posPoints.get(OneDimensionalMotionProfilerTwoMotorHDrive.posPoints.size() - 1)))) < Drive.END_THRESHOLD.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H);
 				
 			return finished;
 	}

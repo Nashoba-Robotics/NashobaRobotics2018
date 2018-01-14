@@ -117,7 +117,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final int PID_TYPE = 0;
 	
 	/**
-	 * Acceptable position error in motion profiling
+	 * Position error in motion profiling that talon needs to be within for 2 * profile position threshold for profile to stop
 	 */
 	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(0, Distance.Unit.INCH); //TODO: Find Drive profile position threshold
 	
@@ -126,8 +126,19 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	public static final Time PROFILE_TIME_THRESHOLD = Time.ZERO; //TODO: Find Drive profile time threshold
 	
+	/**
+	 * The position from the end at which profile position threshold takes effect
+	 */
+	public static final Distance END_THRESHOLD = new Distance(3, Distance.Unit.INCH); //TODO: Find End Threshold
+	
+	/**
+	 * Percent accelerating during profiling
+	 */
 	public static final double ACCEL_PERCENT = 0; //TODO: Find optimal drive profiling acceleration percent
 	
+	/**
+	 * Percent driving during profiling
+	 */
 	public static final double PROFILE_DRIVE_PERCENT = 0; //TODO: Find Drive profile percent
 	
 	/**

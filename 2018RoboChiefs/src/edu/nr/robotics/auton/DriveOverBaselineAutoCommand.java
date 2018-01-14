@@ -4,25 +4,29 @@ import edu.nr.lib.units.Distance;
 import edu.nr.robotics.Robot;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveForwardBasicCommand;
+import edu.nr.robotics.subsystems.drive.EnableOneDDriveMotionProfileTwoMotor;
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
 public class DriveOverBaselineAutoCommand extends CommandGroup {
 
 	/**
 	 * The distance (in inches) to drive to get over baseline safely in auto.
 	 * 
-	 * It needs to be at least 62 inches, but more is safer.
+	 * It needs to be 120 but can be 288 - robotLength. 196 Gets back of robot to back of switch
 	 */
-	public static final Distance DISTANCE_TO_GET_OVER_BASELINE = new Distance(0, Distance.Unit.INCH); //TODO: Put in distance to baseline
-	
-	/**
-	 * The speed in percent to drive forward to get over baseline safely in auto
-	 */
-	public static final double FORWARD_PERCENT = 0.25;
+	public static final Distance DISTANCE_TO_GET_OVER_BASELINE = new Distance(196, Distance.Unit.INCH); //TODO: Put in distance to baseline
 	
 	public DriveOverBaselineAutoCommand() {
 
-		addSequential(new DriveForwardBasicCommand(Drive.PROFILE_DRIVE_PERCENT, DISTANCE_TO_GET_OVER_BASELINE));
+		
+		addSequential(new ConditionalCommand(new DriveForwardBasicCommand(DISTANCE_TO_GET_OVER_BASELINE), new EnableOneDDriveMotionProfileTwoMotor(DISTANCE_TO_GET_OVER_BASELINE)) {
+			
+			@Override
+			protected boolean condition() {
+				return AutoChoosers.chosen == AutoChoosers.ProfilingMethod.basic;
+			}
+		});
 
 	}
 }

@@ -16,81 +16,91 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
 public class StartPosMiddleSwitchBothCommand extends CommandGroup {
-	
+
 	public StartPosMiddleSwitchBothCommand() {
-		
-		addSequential(new ConditionalCommand(new StartPosMiddleToSwitchLeftProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new StartPosMiddleToSwitchLeftProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.left;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new SwitchLeftToBlockProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new SwitchLeftToBlockProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.left && StartAutoCommand.selectedScale == Scale.yes;
+				return FieldData.getInstance().nearSwitch == Direction.left
+						&& StartAutoCommand.selectedScale == Scale.yes;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new BlockLeftToScaleLeftProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new BlockLeftToScaleLeftProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.left && StartAutoCommand.selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.left;
+				return FieldData.getInstance().nearSwitch == Direction.left
+						&& StartAutoCommand.selectedScale == Scale.yes
+						&& FieldData.getInstance().scale == Direction.left;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new BlockLeftToScaleRightProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new BlockLeftToScaleRightProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.left && StartAutoCommand.selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.right;
+				return FieldData.getInstance().nearSwitch == Direction.left
+						&& StartAutoCommand.selectedScale == Scale.yes
+						&& FieldData.getInstance().scale == Direction.right;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new StartPosMiddleToSwitchRightProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new StartPosMiddleToSwitchRightProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.right;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new SwitchRightToBlockProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new SwitchRightToBlockProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.right && StartAutoCommand.selectedScale == Scale.yes;
+				return FieldData.getInstance().nearSwitch == Direction.right
+						&& StartAutoCommand.selectedScale == Scale.yes;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new BlockRightToScaleLeftProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new BlockRightToScaleLeftProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.right && StartAutoCommand.selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.left;
+				return FieldData.getInstance().nearSwitch == Direction.right
+						&& StartAutoCommand.selectedScale == Scale.yes
+						&& FieldData.getInstance().scale == Direction.left;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new BlockRightToScaleRightProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new BlockRightToScaleRightProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.right && StartAutoCommand.selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.right;
+				return FieldData.getInstance().nearSwitch == Direction.right
+						&& StartAutoCommand.selectedScale == Scale.yes
+						&& FieldData.getInstance().scale == Direction.right;
 			}
-			
+
 		});
-		
+
 	}
 
 }
