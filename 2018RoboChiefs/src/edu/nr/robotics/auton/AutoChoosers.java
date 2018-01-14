@@ -7,6 +7,7 @@ public class AutoChoosers {
 	public static SendableChooser<AutoChoosers.StartPos> autoStartPosChooser = new SendableChooser<>();
 	public static SendableChooser<AutoChoosers.Switch> autoSwitchChooser = new SendableChooser<>();
 	public static SendableChooser<AutoChoosers.Scale> autoScaleChooser = new SendableChooser<>();
+	public static ProfilingMethod chosen = ProfilingMethod.basic;
 	
 	public enum StartPos {
 		left,
@@ -25,5 +26,9 @@ public class AutoChoosers {
 	public enum Scale {
 		yes,
 		no;
+	}
+	
+	public enum ProfilingMethod {
+		basic, oneD
 	}
 }

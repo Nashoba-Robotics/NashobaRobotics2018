@@ -9,12 +9,16 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 public class EnableOneDDriveMotionProfileOneMotor extends NRCommand {
 	
 	Distance distanceToDrive = Distance.ZERO;
-	
-	private final Distance END_THRESHOLD = new Distance(0.3, Distance.Unit.INCH);
+	double percent = 0;
 	
 	public EnableOneDDriveMotionProfileOneMotor(Distance y) {
+		this(y, Drive.PROFILE_DRIVE_PERCENT);
+	}
+	
+	public EnableOneDDriveMotionProfileOneMotor(Distance y, double percent) {
 		super(Drive.getInstance());
 		distanceToDrive = y;
+		this.percent = percent;
 	}
 
 	@Override
@@ -45,7 +49,7 @@ public class EnableOneDDriveMotionProfileOneMotor extends NRCommand {
 			.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 			&& (Drive.getInstance().getHistoricalHPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getHPosition())).abs()
 			.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-			&& Math.abs(((Math.abs(Drive.getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H) - OneDimensionalMotionProfilerHDriveMain.initialPositionH)) - Math.abs(OneDimensionalMotionProfilerHDriveMain.posPoints.get(OneDimensionalMotionProfilerTwoMotorHDrive.posPoints.size() - 1)))) < END_THRESHOLD.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H);
+			&& Math.abs(((Math.abs(Drive.getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H) - OneDimensionalMotionProfilerHDriveMain.initialPositionH)) - Math.abs(OneDimensionalMotionProfilerHDriveMain.posPoints.get(OneDimensionalMotionProfilerTwoMotorHDrive.posPoints.size() - 1)))) < Drive.END_THRESHOLD.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H);
 			
 		return finished;
 	}
