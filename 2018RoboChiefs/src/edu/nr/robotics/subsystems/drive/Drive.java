@@ -456,7 +456,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		if (leftDrive != null && rightDrive != null && hDrive != null) {
 			
 			leftMotorSetpoint = left;
-			rightMotorSetpoint = right.negate();
+			rightMotorSetpoint = right;
 			hMotorSetpoint = strafe;
 			
 			leftDrive.config_kF(SLOT_0, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / leftMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), NO_TIMEOUT);

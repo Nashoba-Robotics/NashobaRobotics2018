@@ -16,7 +16,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	
 	//In milliseconds
 	private final long period;
-	private static final long defaultPeriod = 10; //200 Hz 
+	private static final long defaultPeriod = 15; //200 Hz 
 	
 	private double prevTime;
 	

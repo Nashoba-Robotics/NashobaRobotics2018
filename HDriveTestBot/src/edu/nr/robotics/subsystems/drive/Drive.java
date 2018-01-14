@@ -49,12 +49,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	
 	//TODO: find all
 	public static final Speed MAX_SPEED = new Speed(13.142, Distance.Unit.FOOT, Time.Unit.SECOND);
-	public static final Acceleration MAX_ACC = new Acceleration(0, Distance.Unit.DRIVE_ROTATION, Time.Unit.SECOND, Time.Unit.SECOND);
+	public static final Acceleration MAX_ACC = new Acceleration(16, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	
 	public static final Speed MAX_SPEED_H = new Speed(0, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Acceleration MAX_ACC_H = new Acceleration(0, Distance.Unit.DRIVE_ROTATION_H, Time.Unit.SECOND, Time.Unit.SECOND);
 	
-	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(0.5, Distance.Unit.INCH);
+	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(0.01, Distance.Unit.INCH);
 	public static final Time PROFILE_TIME_THRESHOLD = new Time(0.25, Time.Unit.SECOND);
 	
 	public static final double ACCEL_PERCENT = 0.5;
@@ -80,17 +80,14 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public double oldTurn = 0;
 	
 	//TODO: Tune PID for all
-	public static double F_RIGHT = 0;
-	public static double P_RIGHT = 0;
+	public static double P_RIGHT = 3.5;
 	public static double I_RIGHT = 0;
-	public static double D_RIGHT = 0;
+	public static double D_RIGHT = 35;
 	
-	public static double F_LEFT = 0;
-	public static double P_LEFT = 0;
+	public static double P_LEFT = 3.5;
 	public static double I_LEFT = 0;
-	public static double D_LEFT = 0;
+	public static double D_LEFT = 35;
 	
-	public static double F_H = 0;
 	public static double P_H = 0;
 	public static double I_H = 0;
 	public static double D_H = 0;
@@ -112,11 +109,11 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final NeutralMode NEUTRAL_MODE = NeutralMode.Brake;
 	
 	public static double kVOneD = 1 / MAX_SPEED.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kAOneD = 0.0;
-	public static double kPOneD = 0;
+	public static double kAOneD = 0.0018;
+	public static double kPOneD = 0.0001;
 	public static double kIOneD = 0;
 	public static double kDOneD = 0;
-	public static double kP_thetaOneD = 0;
+	public static double kP_thetaOneD = 0.05;
 	
 	public static double H_kVOneD = 1 / MAX_SPEED_H.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
 	public static double H_kAOneD = 0.0;
@@ -308,17 +305,15 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	public void setMotorSpeedInPercent(double left, double right, double strafe) {
-		leftDrive.set(ControlMode.PercentOutput, left);
-		rightDrive.set(ControlMode.PercentOutput, right);
-		hDrive.set(ControlMode.PercentOutput, strafe);
-		//setMotorSpeed(currentMaxSpeed().mul(left), currentMaxSpeed().mul(right), currentMaxHSpeed().mul(strafe));
+		//hDrive.set(ControlMode.PercentOutput, strafe);
+		setMotorSpeed(currentMaxSpeed().mul(left), currentMaxSpeed().mul(right), currentMaxHSpeed().mul(strafe));
 	}
 	
 	public void setMotorSpeed(Speed left, Speed right, Speed strafe) {
 		if (leftDrive != null && rightDrive != null && hDrive != null) {
 			
 			leftMotorSetpoint = left;
-			rightMotorSetpoint = right.negate();
+			rightMotorSetpoint = right;
 			hMotorSetpoint = strafe;
 			
 			leftDrive.config_kF(SLOT_0, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / leftMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), NO_TIMEOUT);
@@ -418,9 +413,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	@Override
 	public double pidGetRight() {
 		if (type == PIDSourceType.kRate) {
-			return -rightDrive.getSelectedSensorVelocity(PID_TYPE);
+			return rightDrive.getSelectedSensorVelocity(PID_TYPE);
 		} else {
-			return -rightDrive.getSelectedSensorPosition(PID_TYPE);
+			return rightDrive.getSelectedSensorPosition(PID_TYPE);
 		}
 	}
 	
