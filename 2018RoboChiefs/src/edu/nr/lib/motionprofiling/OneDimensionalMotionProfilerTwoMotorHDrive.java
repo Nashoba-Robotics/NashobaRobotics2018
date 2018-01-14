@@ -16,7 +16,7 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 	
 	//In milliseconds
 	private final long period;
-	private static final long defaultPeriod = 10; //200 Hz 
+	private static final long defaultPeriod = 20; //200 Hz 
 	
 	private double prevTime;
 	private double startTime;
@@ -111,6 +111,7 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 			double outputH = errorH * kp_H + errorIntegralH * ki_H + errorDerivH * kd_H;
 			errorLastH = errorH;
 			
+			source.setPIDSourceType(PIDSourceType.kDisplacement);
 			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;
 			double errorIntegralLeft = (errorLeft - errorLastLeft) * dt / 2;
@@ -133,6 +134,7 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 				}
 			}
 			
+			source.setPIDSourceType(PIDSourceType.kDisplacement);
 			errorRight = positionGoal - source.pidGetRight() + initialPositionRight;			
 			double errorDerivRight = (errorRight - errorLastRight) / dt;
 			double prelimOutputRight = velocityGoal * kv + accelGoal * ka + errorRight * kp + errorDerivRight * kd;

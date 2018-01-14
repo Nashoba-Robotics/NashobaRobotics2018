@@ -29,8 +29,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 			
 			moveValue = NRMath.powWithSign(moveValue, 3);
 			rotateValue = NRMath.powWithSign(rotateValue, 3);
-			
-			System.out.println(gyroCorrection.getAngleError().get(Angle.Unit.DEGREE));
+			hValue = NRMath.powWithSign(hValue, 3);
 			
 			if (Math.abs(rotateValue) < 0.05 && Math.abs(moveValue) > 0.1) {
 				rotateValue = gyroCorrection.getTurnValue(Drive.getInstance().kP_thetaOneD);
@@ -50,10 +49,27 @@ public class DriveJoystickCommand extends JoystickCommand {
 			
 			right = NRMath.powWithSign(right, 3);
 			left = NRMath.powWithSign(left, 3);
+			hDrive = NRMath.powWithSign(hDrive, 3);
+			
 			Drive.getInstance().tankDrive(OI.getInstance().getDriveSpeedMultiplier() * left, -OI.getInstance().getDriveSpeedMultiplier() * right, OI.getInstance().getDriveSpeedMultiplier() * hDrive);
 			break;
 			
 		case arcadeNegInertia:
+			double cheesyMoveValue = OI.getInstance().getArcadeMoveValue();
+			double cheesyRotateValue = OI.getInstance().getArcadeTurnValue();
+			double cheesyHValue = OI.getInstance().getArcadeHValue();
+			
+			cheesyMoveValue = NRMath.powWithSign(cheesyMoveValue, 3);
+			cheesyRotateValue = NRMath.powWithSign(cheesyRotateValue, 3);
+			cheesyHValue = NRMath.powWithSign(cheesyHValue, 3);
+			
+			if (Math.abs(cheesyRotateValue) < 0.05 && Math.abs(cheesyMoveValue) > 0.1) {
+				cheesyRotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD);
+			} else {
+				gyroCorrection.clearInitialValue();
+			}
+			
+			Drive.getInstance().arcadeDriveNegInertia(cheesyMoveValue, cheesyRotateValue, cheesyHValue);
 			
 			
 			break;

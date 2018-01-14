@@ -103,8 +103,4 @@ public class OI implements SmartDashboardSource {
 	public double getTankRightValue() {
 		return snapDriveJoysticks(stickRight.getY());
 	}
-	
-	public boolean isJoystickNonZero() {
-		return ((Math.abs(stickRight.getX()) > JOYSTICK_DEAD_ZONE) || (Math.abs(stickLeft.getX()) > JOYSTICK_DEAD_ZONE) || (Math.abs(stickRight.getY()) > JOYSTICK_DEAD_ZONE) || (Math.abs(stickLeft.getY()) > JOYSTICK_DEAD_ZONE));
-	}
 }

@@ -16,7 +16,7 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 	
 	//In milliseconds
 	private final long period;
-	private static final long defaultPeriod = 10; //200 Hz 
+	private static final long defaultPeriod = 20; //200 Hz 
 	
 	private double prevTime;
 	private double startTime;
@@ -68,13 +68,13 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 		this.kp_H = kp_H;
 		this.ki_H = ki_H;
 		this.kd_H = kd_H;
-		this.initialPositionLeft = source.pidGetLeft();
-		this.initialPositionRight = source.pidGetRight();
-		this.initialPositionH = source.pidGetH();
-		this.gyroCorrection = new GyroCorrection();
-		this.posPoints = new ArrayList<Double>();
-		this.velPoints = new ArrayList<Double>();
-		this.accelPoints = new ArrayList<Double>();
+		initialPositionLeft = source.pidGetLeft();
+		initialPositionRight = source.pidGetRight();
+		initialPositionH = source.pidGetH();
+		gyroCorrection = new GyroCorrection();
+		posPoints = new ArrayList<Double>();
+		velPoints = new ArrayList<Double>();
+		accelPoints = new ArrayList<Double>();
 		reset();
 		timer.scheduleAtFixedRate(this, 0, this.period);
 	}
@@ -103,14 +103,6 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 				accelGoal = 0;
 			}
 			
-			/*
-			double currentTimeSinceStart = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime;
-
-			double velocityGoal = trajectory.getGoalVelocity(currentTimeSinceStart);
-			double positionGoal = trajectory.getGoalPosition(currentTimeSinceStart);
-			double accelGoal = trajectory.getGoalAccel(currentTimeSinceStart);
-			*/
-			
 			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
 			
 			double errorH = 0; //TODO: make Ben tell me what to do
@@ -119,6 +111,7 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 			double outputH = errorH * kp_H + errorIntegralH * ki_H + errorDerivH * kd_H;
 			errorLastH = errorH;
 			
+			source.setPIDSourceType(PIDSourceType.kDisplacement);
 			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;
 			double errorIntegralLeft = (errorLeft - errorLastLeft) * dt / 2;
@@ -141,6 +134,7 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 				}
 			}
 			
+			source.setPIDSourceType(PIDSourceType.kDisplacement);
 			errorRight = positionGoal - source.pidGetRight() + initialPositionRight;			
 			double errorDerivRight = (errorRight - errorLastRight) / dt;
 			double prelimOutputRight = velocityGoal * kv + accelGoal * ka + errorRight * kp + errorDerivRight * kd;
@@ -183,7 +177,6 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 		//System.out.println("enabled");
 		reset();
 		posPoints = trajectory.loadPosPoints(period);
-		System.out.println(posPoints.size());
 		velPoints = trajectory.loadVelPoints(period);
 		accelPoints = trajectory.loadAccelPoints(period);
 		enabled = true;

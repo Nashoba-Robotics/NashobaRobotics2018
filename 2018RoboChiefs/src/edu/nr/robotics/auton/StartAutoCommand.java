@@ -5,7 +5,7 @@ import edu.nr.robotics.auton.AutoChoosers;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.AutoChoosers.StartPos;
 import edu.nr.robotics.auton.AutoChoosers.Switch;
-import edu.nr.robotics.auton.automap.StarPosMiddleSwitchLeftCommand;
+import edu.nr.robotics.auton.automap.StartPosMiddleSwitchLeftCommand;
 import edu.nr.robotics.auton.automap.StartPosFarRightSwitchNoneCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchBothCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchLeftCommand;
@@ -33,44 +33,32 @@ public class StartAutoCommand extends NRCommand {
 		if (selectedStartPos == AutoChoosers.StartPos.left) {
 			if (selectedSwitch == AutoChoosers.Switch.none) {
 				new StartPosLeftSwitchNoneCommand();
-				
 			} else if (selectedSwitch == AutoChoosers.Switch.leftOnly) {
-				new StartPosLeftSwitchLeftCommand();
-				
+				new StartPosLeftSwitchLeftCommand();			
 			} else if (selectedSwitch == AutoChoosers.Switch.both) {
-				new StartPosLeftSwitchBothCommand();
-				
-			}
-			
+				new StartPosLeftSwitchBothCommand();		
+			}	
 		} else if (selectedStartPos == AutoChoosers.StartPos.middle) {
 			if (selectedSwitch == AutoChoosers.Switch.none) {
-				new StartPosMiddleSwitchNoneCommand();
-				
+				new StartPosMiddleSwitchNoneCommand();		
 			} else if (selectedSwitch == AutoChoosers.Switch.leftOnly) {
-				new StarPosMiddleSwitchLeftCommand();
-				
+				new StartPosMiddleSwitchLeftCommand();		
 			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly){
 				new StartPosMiddleSwitchRightCommand();
-				
 			} else if (selectedSwitch == AutoChoosers.Switch.both) {
 				new StartPosMiddleSwitchBothCommand();
 			}
-
 		} else if (selectedStartPos == AutoChoosers.StartPos.right) {
 			if (selectedSwitch == AutoChoosers.Switch.none) {
-				new StartPosRightSwitchNoneCommand();
-				
+				new StartPosRightSwitchNoneCommand();	
 			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly){
 				new StartPosRightSwitchRightCommand();
-				
 			} else if (selectedSwitch == AutoChoosers.Switch.both) {
 				new StartPosRightSwitchBothCommand();
 			}
-			
 		} else if (selectedStartPos == AutoChoosers.StartPos.farRight) {
 			if (selectedSwitch == AutoChoosers.Switch.none) {
 				new StartPosFarRightSwitchNoneCommand();
-				
 			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly){
 				new StartPosRightSwitchRightCommand();
 			}

@@ -1,7 +1,5 @@
 package edu.nr.robotics;
 
-import edu.nr.robotics.subsystems.drive.Drive;
-import edu.nr.robotics.subsystems.drive.DriveJoystickCommand;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class FieldData {

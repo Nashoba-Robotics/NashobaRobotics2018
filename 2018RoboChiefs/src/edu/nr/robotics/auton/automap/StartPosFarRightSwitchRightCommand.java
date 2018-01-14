@@ -15,70 +15,80 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
 public class StartPosFarRightSwitchRightCommand extends CommandGroup {
-	
+
 	public StartPosFarRightSwitchRightCommand() {
-		
-		addSequential(new ConditionalCommand(new StartPosFarRightToSwitchRightProfilingCommand()){
-			
+
+		addSequential(new ConditionalCommand(new StartPosFarRightToSwitchRightProfilingCommand()) {
+
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.right;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new SwitchRightToBlockProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new SwitchRightToBlockProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.right && StartAutoCommand.selectedScale == Scale.yes;
+				return FieldData.getInstance().nearSwitch == Direction.right
+						&& StartAutoCommand.selectedScale == Scale.yes;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new BlockRightToScaleLeftProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new BlockRightToScaleLeftProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.right && StartAutoCommand.selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.left;
+				return FieldData.getInstance().nearSwitch == Direction.right
+						&& StartAutoCommand.selectedScale == Scale.yes
+						&& FieldData.getInstance().scale == Direction.left;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new BlockRightToScaleRightProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new BlockRightToScaleRightProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.right && StartAutoCommand.selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.right;
+				return FieldData.getInstance().nearSwitch == Direction.right
+						&& StartAutoCommand.selectedScale == Scale.yes
+						&& FieldData.getInstance().scale == Direction.right;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new StartPosFarRightToScaleRightProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new StartPosFarRightToScaleRightProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.left && StartAutoCommand.selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.right;
+				return FieldData.getInstance().nearSwitch == Direction.left
+						&& StartAutoCommand.selectedScale == Scale.yes
+						&& FieldData.getInstance().scale == Direction.right;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new StartPosFarRightToScaleLeftProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new StartPosFarRightToScaleLeftProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.left && StartAutoCommand.selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.left;
+				return FieldData.getInstance().nearSwitch == Direction.left
+						&& StartAutoCommand.selectedScale == Scale.yes
+						&& FieldData.getInstance().scale == Direction.left;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()){
+
+		addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.left && StartAutoCommand.selectedScale == Scale.no;
+				return FieldData.getInstance().nearSwitch == Direction.left
+						&& StartAutoCommand.selectedScale == Scale.no;
 			}
-			
+
 		});
 	}
 

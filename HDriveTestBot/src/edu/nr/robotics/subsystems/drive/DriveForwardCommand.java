@@ -28,7 +28,7 @@ public class DriveForwardCommand extends NRCommand {
 	
 	@Override
 	public void onExecute() {
-		System.out.println(Drive.getInstance().getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND));
+		//System.out.println(Drive.getInstance().getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND));
 	}
 	
 	@Override
@@ -38,7 +38,7 @@ public class DriveForwardCommand extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return (Drive.getInstance().getRightDistance().sub(startPosition)).abs().greaterThan(new Distance(SmartDashboard.getNumber("X Profile Feet", 0), Distance.Unit.FOOT));	
+		return (Drive.getInstance().getRightDistance().sub(startPosition)).abs().greaterThan(new Distance(SmartDashboard.getNumber("Distance to Profile Feet", 0), Distance.Unit.FOOT));	
 		
 	}
 

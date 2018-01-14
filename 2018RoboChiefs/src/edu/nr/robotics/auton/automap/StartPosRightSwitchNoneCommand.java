@@ -11,36 +11,38 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
 public class StartPosRightSwitchNoneCommand extends CommandGroup {
-	
+
 	public StartPosRightSwitchNoneCommand() {
-		
-		addSequential(new ConditionalCommand(new StartPosRightToScaleLeftProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new StartPosRightToScaleLeftProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return StartAutoCommand.selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.left;
+				return StartAutoCommand.selectedScale == Scale.yes 
+						&& FieldData.getInstance().scale == Direction.left;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new StartPosRightToScaleRightProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new StartPosRightToScaleRightProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return StartAutoCommand.selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.right;
+				return StartAutoCommand.selectedScale == Scale.yes 
+						&& FieldData.getInstance().scale == Direction.right;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()){
+
+		addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()) {
 
 			@Override
 			protected boolean condition() {
 				return StartAutoCommand.selectedScale == Scale.no;
 			}
-			
+
 		});
-		
+
 	}
 
 }
