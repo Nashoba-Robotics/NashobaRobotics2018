@@ -5,6 +5,9 @@ import edu.nr.lib.units.Angle;
 
 public class Units {
 
+	public static final double ENC_REV_PER_DRIVE_ROTATION = 1;
+	public static final double ENC_REV_PER_H_DRIVE_ROTATION = 5;
+	
 	/**
 	 * The number of seconds per minute. This is used to convert from feet per second to rpm.
 	 */
@@ -36,7 +39,7 @@ public class Units {
 	public static final Angle RIGHT_ANGLE = new Angle(90, Angle.Unit.DEGREE);
 	public static final Angle HALF_CIRCLE = new Angle(180, Angle.Unit.DEGREE);
 	public static final Angle FULL_CIRCLE = new Angle(360, Angle.Unit.DEGREE);
-	public static final int MAGNETIC_NATIVE_UNITS_PER_REV = 4096;
+	public static final int MAGNETIC_NATIVE_UNITS_PER_ENC_REV = 4096;
 	public static final double HUNDRED_MS_PER_SECOND = 10;
 	
 	/**
