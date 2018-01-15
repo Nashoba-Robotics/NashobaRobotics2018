@@ -46,11 +46,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	private TalonEncoder leftEncoder, rightEncoder, hEncoder;
 
 	/**
-	 * The max drive current in amperes
-	 */
-	public static final double MAX_DRIVE_CURRENT = 0; //TODO: Find real value of max drive current
-	
-	/**
 	 * The diameter of the drive wheels in inches
 	 */
 	public static final double WHEEL_DIAMETER_INCHES = 0; //TODO: Find real drive wheel diameter
@@ -76,11 +71,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	public static final Acceleration MAX_ACCELERATION = Acceleration.ZERO; //TODO: Find real drive max acceleration
 	public static final Acceleration MAX_ACCELERATION_H = Acceleration.ZERO; //TODO: Find real drive max acceleration h
-	
-	/**
-	 * Ticks per revolution of the drive encoders
-	 */
-	public static final int TICKS_PER_REV = 0; //TODO: Get real ticks per rev of the drive encoders
 	
 	/**
 	 * The drive voltage-velocity curve slopes
@@ -155,8 +145,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Current ratings based on MAXI Circuit Breaker Model MX5
 	 */
-	private static final int PEAK_CURRENT = 80; //In amps
-	private static final int PEAK_CURRENT_DURATION = 1000; //In milliseconds
+	private static final int PEAK_DRIVE_CURRENT = 80; //In amps
+	private static final int PEAK_DRIVE_CURRENT_DURATION = 1000; //In milliseconds
 	private static final int CONTINUOUS_CURRENT_LIMIT = 40; //In amps
 	
 	/**
@@ -264,8 +254,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			leftDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
 			
 			leftDrive.enableCurrentLimit(true);
-			leftDrive.configPeakCurrentLimit(PEAK_CURRENT, NO_TIMEOUT);
-			leftDrive.configPeakCurrentDuration(PEAK_CURRENT_DURATION, NO_TIMEOUT);
+			leftDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
+			leftDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
 			leftDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
 			
 			leftEncoder = new TalonEncoder(leftDrive);
@@ -287,8 +277,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			rightDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
 			
 			rightDrive.enableCurrentLimit(true);
-			rightDrive.configPeakCurrentLimit(PEAK_CURRENT, NO_TIMEOUT);
-			rightDrive.configPeakCurrentDuration(PEAK_CURRENT_DURATION, NO_TIMEOUT);
+			rightDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
+			rightDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
 			rightDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
 			
 			rightEncoder = new TalonEncoder(rightDrive);
@@ -310,8 +300,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			hDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
 			
 			hDrive.enableCurrentLimit(true);
-			hDrive.configPeakCurrentLimit(PEAK_CURRENT, NO_TIMEOUT);
-			hDrive.configPeakCurrentDuration(PEAK_CURRENT_DURATION, NO_TIMEOUT);
+			hDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
+			hDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
 			hDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
 			
 			hEncoder = new TalonEncoder(hDrive);
@@ -595,6 +585,18 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	private void smartDashboardInit() {
 		if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {
+			
+			SmartDashboard.putNumber("Left P Value: ", P_LEFT);
+			SmartDashboard.putNumber("Left I Value: ", I_LEFT);
+			SmartDashboard.putNumber("Left D Value: ", D_LEFT);
+			
+			SmartDashboard.putNumber("Right P Value: ", P_RIGHT);
+			SmartDashboard.putNumber("Right I Value: ", I_RIGHT);
+			SmartDashboard.putNumber("Right D Value: ", D_RIGHT);
+			
+			SmartDashboard.putNumber("H P Value: ", P_H);
+			SmartDashboard.putNumber("H I Value: ", I_H);
+			SmartDashboard.putNumber("H D Value: ", D_H);
 		}
 	}
 	
@@ -614,6 +616,24 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				SmartDashboard.putString("Drive Left Velocity: ", getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 				SmartDashboard.putString("Drive Right Velocity: ", getRightVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 				SmartDashboard.putString("Drive H Velocity: ", getHVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + hMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+			
+				SmartDashboard.putNumber("kVOneD Value: ", kVOneD);
+				SmartDashboard.putNumber("kAOneD Value: ", kAOneD);
+				SmartDashboard.putNumber("kPOneD Value: ", kPOneD);
+				SmartDashboard.putNumber("kIOneD Value: ", kIOneD);
+				SmartDashboard.putNumber("kDOneD Value: ", kDOneD);
+				SmartDashboard.putNumber("kP_thetaOneD Value: ", kP_thetaOneD);
+				
+				SmartDashboard.putNumber("kVOneDH Value: ", kVOneDH);
+				SmartDashboard.putNumber("kAOneDH Value: ", kAOneDH);
+				SmartDashboard.putNumber("kPOneDH Value: ", kPOneDH);
+				SmartDashboard.putNumber("kIOneDH Value: ", kIOneDH);
+				SmartDashboard.putNumber("kDOneDH Value: ", kDOneDH);
+				
+				SmartDashboard.putNumber("X Profile Feet", 0);
+				SmartDashboard.putNumber("Y Profile Feet", 0);
+				SmartDashboard.putNumber("End Degree", 0);
+				SmartDashboard.putNumber("Drive Percent", 0);
 				
 			}
 			if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {
@@ -660,7 +680,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				kDOneD = SmartDashboard.getNumber("kDOneD Value: ", kDOneD);
 				kP_thetaOneD = SmartDashboard.getNumber("kP_thetaOneD Value: ", kP_thetaOneD);
 				
-				
 				kVOneDH = SmartDashboard.getNumber("kVOneDH Value: ", kVOneDH);
 				kAOneDH = SmartDashboard.getNumber("kAOneDH Value: ", kAOneDH);
 				kPOneDH = SmartDashboard.getNumber("kPOneDH Value: ", kPOneDH);
@@ -681,7 +700,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	public void enableOneDProfilerTwoMotorH(Distance dist) {
-		oneDProfilerTwoMotorH = new OneDimensionalMotionProfilerTwoMotorHDrive(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD, kPOneDH, kIOneDH, kDOneDH);
+		oneDProfilerTwoMotorH = new OneDimensionalMotionProfilerTwoMotorHDrive(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
 		oneDProfilerTwoMotorH.setTrajectory(new OneDimensionalTrajectoryRamped(dist.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
 				MAX_SPEED.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), 
 				MAX_ACCELERATION.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));

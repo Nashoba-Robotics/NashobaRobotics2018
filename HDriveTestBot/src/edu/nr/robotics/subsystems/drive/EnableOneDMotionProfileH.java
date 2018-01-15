@@ -11,7 +11,7 @@ public class EnableOneDMotionProfileH extends NRCommand {
 	
 	Distance initialHPosition;
 	
-	private final Distance END_THRESHOLD = new Distance(3, Distance.Unit.INCH);
+	private final Distance END_THRESHOLD = new Distance(4, Distance.Unit.INCH);
 	
 	public EnableOneDMotionProfileH() {
 		super(Drive.getInstance());
@@ -43,9 +43,7 @@ public class EnableOneDMotionProfileH extends NRCommand {
 			&& (Drive.getInstance().getHistoricalHPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getHDistance())).abs()
 			.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 			&& Math.abs(((Math.abs(Drive.getInstance().getHDistance().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H) - OneDimensionalMotionProfilerHDriveMain.initialPositionH)) - Math.abs(OneDimensionalMotionProfilerHDriveMain.posPoints.get(OneDimensionalMotionProfilerHDriveMain.posPoints.size() - 1)))) < END_THRESHOLD.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H);
-		
-		System.out.println(Drive.getInstance().getHistoricalHPosition(Drive.PROFILE_TIME_THRESHOLD));
-		
+				
 		return finished;
 	}
 

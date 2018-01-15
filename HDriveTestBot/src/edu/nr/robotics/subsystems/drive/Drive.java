@@ -41,10 +41,10 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	TalonEncoder leftEncoder, rightEncoder;
 	TalonEncoderH hEncoder;
 	
-	public static final double ENC_TO_H_WHEEL_GEARING = 20.0;
+	public static final double ENC_TO_H_WHEEL_GEARING = 4.0;
 	public static final double REAL_WHEEL_DIAMETER_INCHES_H = 4.0;
 	public static final double WHEEL_DIAMETER_INCHES = 6.0;
-	public static final double WHEEL_DIAMETER_INCHES_H = REAL_WHEEL_DIAMETER_INCHES_H / ENC_TO_H_WHEEL_GEARING;
+	public static final double WHEEL_DIAMETER_INCHES_H = REAL_WHEEL_DIAMETER_INCHES_H / ENC_TO_H_WHEEL_GEARING * 0.88;
 	public static final Distance WHEEL_DIAMETER = new Distance(WHEEL_DIAMETER_INCHES, Distance.Unit.INCH);
 	public static final Distance WHEEL_DIAMETER_H = new Distance(WHEEL_DIAMETER_INCHES_H, Distance.Unit.INCH);
 	
@@ -52,11 +52,11 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final Speed MAX_SPEED = new Speed(13.142, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Acceleration MAX_ACC = new Acceleration(16, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	
-	public static final Speed MAX_SPEED_H = new Speed(2.299, Distance.Unit.FOOT, Time.Unit.SECOND);
-	public static final Acceleration MAX_ACC_H = new Acceleration(1.802, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_H = new Speed(2.299 * 5, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Acceleration MAX_ACC_H = new Acceleration(1.802 * 5, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	
 	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(0.1, Distance.Unit.INCH);
-	public static final Time PROFILE_TIME_THRESHOLD = new Time(0.25, Time.Unit.SECOND);
+	public static final Time PROFILE_TIME_THRESHOLD = new Time(0.1, Time.Unit.SECOND);
 	
 	public static final double ACCEL_PERCENT = 0.5;
 	
@@ -66,7 +66,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_H = 0.165;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0670;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0685;
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H = 0.363;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H = 0.363 / 5;
 	
 	public Speed rightMotorSetpoint = Speed.ZERO;
 	public Speed leftMotorSetpoint = Speed.ZERO;
@@ -109,8 +109,10 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static double kDOneD = 0;
 	public static double kP_thetaOneD = 0.01;
 	
+	public static double kDTurn = 0;
+	
 	public static double H_kVOneD = 1 / MAX_SPEED_H.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
-	public static double H_kAOneD = 0.0008;
+	public static double H_kAOneD = 0.0;
 	public static double H_kPOneD = 0.000005;
 	public static double H_kIOneD = 0;
 	public static double H_kDOneD = 0;
@@ -162,6 +164,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			leftDrive.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, NO_TIMEOUT);
 			leftDrive.configVelocityMeasurementWindow(32, NO_TIMEOUT);
 			
+			leftDrive.configClosedloopRamp(0.05, NO_TIMEOUT);
+			leftDrive.configOpenloopRamp(0.05, NO_TIMEOUT);
+			
 			rightDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
 			rightDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
 			rightDrive.config_kP(SLOT_0, P_RIGHT, NO_TIMEOUT);
@@ -182,6 +187,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			rightDrive.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, NO_TIMEOUT);
 			rightDrive.configVelocityMeasurementWindow(32, NO_TIMEOUT);
 			
+			rightDrive.configClosedloopRamp(0.05, NO_TIMEOUT);
+			rightDrive.configOpenloopRamp(0.05, NO_TIMEOUT);
+			
 			hDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
 			hDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
 			hDrive.config_kP(SLOT_0, P_H, NO_TIMEOUT);
@@ -200,6 +208,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			hDrive.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, NO_TIMEOUT);
 			hDrive.configVelocityMeasurementWindow(32, NO_TIMEOUT);
 
+			hDrive.configClosedloopRamp(0.05, NO_TIMEOUT);
+			hDrive.configOpenloopRamp(0.05, NO_TIMEOUT);
+			
 			rightEncoder = new TalonEncoder(rightDrive);
 			leftEncoder = new TalonEncoder(leftDrive);
 			hEncoder = new TalonEncoderH(hDrive);
@@ -455,6 +466,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		SmartDashboard.putNumber("kDOneD Value: ", kDOneD);
 		SmartDashboard.putNumber("kP_thetaOneD Value: ", kP_thetaOneD);
 		
+		SmartDashboard.putNumber("kD Turn Value: ", kDTurn);
+		
 		SmartDashboard.putNumber("HkVOneD Value: ", H_kVOneD);
 		SmartDashboard.putNumber("HkAOneD Value: ", H_kAOneD);
 		SmartDashboard.putNumber("HkPOneD Value: ", H_kPOneD);
@@ -518,6 +531,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		kIOneD = SmartDashboard.getNumber("kIOneD Value: ", kIOneD);
 		kDOneD = SmartDashboard.getNumber("kDOneD Value: ", kDOneD);
 		kP_thetaOneD = SmartDashboard.getNumber("kP_thetaOneD Value: ", kP_thetaOneD);
+		
+		kDTurn = SmartDashboard.getNumber("kD Turn Value: ", kDTurn);
 		
 		H_kVOneD = SmartDashboard.getNumber("HkVOneD Value: ", H_kVOneD);
 		H_kAOneD = SmartDashboard.getNumber("HkAOneD Value: ", H_kAOneD);

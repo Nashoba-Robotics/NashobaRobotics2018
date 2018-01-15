@@ -28,8 +28,6 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 	private double ka, kp, ki, kd, kv, kp_theta;
 	private double errorLastLeft;
 	private double errorLastRight;
-	private double errorLastH;
-	private double kp_H, ki_H, kd_H;
 	
 	public static double initialPositionLeft;
 	public static double initialPositionRight;
@@ -52,7 +50,7 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 
 	private int loopIteration;
 	
-	public OneDimensionalMotionProfilerTwoMotorHDrive(TriplePIDOutput out, TriplePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, double kp_H, double ki_H, double kd_H, long period) {
+	public OneDimensionalMotionProfilerTwoMotorHDrive(TriplePIDOutput out, TriplePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, long period) {
 		this.out = out;
 		this.source = source;
 		this.period = period;
@@ -65,9 +63,6 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 		this.kd = kd;
 		this.kv = kv;
 		this.kp_theta = kp_theta;
-		this.kp_H = kp_H;
-		this.ki_H = ki_H;
-		this.kd_H = kd_H;
 		initialPositionLeft = source.pidGetLeft();
 		initialPositionRight = source.pidGetRight();
 		initialPositionH = source.pidGetH();
@@ -79,8 +74,8 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 		timer.scheduleAtFixedRate(this, 0, this.period);
 	}
 	
-	public OneDimensionalMotionProfilerTwoMotorHDrive(TriplePIDOutput out, TriplePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, double kp_H, double ki_H, double kd_H) {
-		this(out, source, kv, ka, kp, ki, kd, kp_theta, kp_H, ki_H, kd_H, defaultPeriod);
+	public OneDimensionalMotionProfilerTwoMotorHDrive(TriplePIDOutput out, TriplePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta) {
+		this(out, source, kv, ka, kp, ki, kd, kp_theta, defaultPeriod);
 	}
 	
 	double timeOfVChange = 0;
@@ -104,12 +99,6 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 			}
 			
 			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
-			
-			double errorH = 0; //TODO: make Ben tell me what to do
-			double errorDerivH = (errorH - errorLastH) / dt;
-			double errorIntegralH = (errorH - errorLastH) * dt / 2;
-			double outputH = errorH * kp_H + errorIntegralH * ki_H + errorDerivH * kd_H;
-			errorLastH = errorH;
 			
 			source.setPIDSourceType(PIDSourceType.kDisplacement);
 			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			
@@ -156,7 +145,7 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 				}
 			}
 			
-			out.pidWrite(outputLeft, outputRight, outputH);
+			out.pidWrite(outputLeft, outputRight, 0);
 			
 			loopIteration++;
 		}
@@ -189,13 +178,11 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 	public void reset() {
 		errorLastLeft = 0;
 		errorLastRight = 0;
-		errorLastH = 0;
 		startTime = prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 		PIDSourceType type = source.getPIDSourceType();
 		source.setPIDSourceType(PIDSourceType.kDisplacement);
 		initialPositionLeft = source.pidGetLeft();
 		initialPositionRight = source.pidGetRight();
-		initialPositionH = 00000; //TODO: do
 		source.setPIDSourceType(type);
 		gyroCorrection.clearInitialValue();
 		loopIteration = 0;
@@ -238,30 +225,9 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 	public void setKP_theta(double kp_theta) {
 		this.kp_theta = kp_theta;
 	}
-
-	public void setKP_H(double kp_H) {
-		this.kp_H = kp_H;
-	}
-	
-	public void setKI_H(double ki_H) {
-		this.ki_H = ki_H;
-	}
-	
-	public void setKD_H(double kd_H) {
-		this.kd_H = kd_H;
-	}
 	
 	@Override
 	public void smartDashboardInfo() {
-		//source.setPIDSourceType(PIDSourceType.kRate);
-		//SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + outputLeft * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()) + ":" + Drive.getInstance().leftMotorSetpoint);
-		//SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + outputRight * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()) + ":" + Drive.getInstance().rightMotorSetpoint);
-		//SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + outputLeft * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()));
-		//SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + outputRight * trajectory.getMaxPossibleVelocity() * Math.signum(trajectory.getMaxPossibleVelocity()));
-		//SmartDashboard.putString("Motion Profiler V Left", source.pidGetLeft() + ":" + velocityGoal);
-		//SmartDashboard.putString("Motion Profiler V Right", source.pidGetRight() + ":" + velocityGoal);
-		//source.setPIDSourceType(PIDSourceType.kDisplacement);
-		//SmartDashboard.putString("Motion Profiler X Left", source.pidGetLeft() + ":" + (positionGoal + initialPositionLeft) + ":" + errorLeft);
-		//SmartDashboard.putString("Motion Profiler X Right", source.pidGetRight() + ":" + (positionGoal + initialPositionRight) + ":" + errorRight);
+
 	}
 }
