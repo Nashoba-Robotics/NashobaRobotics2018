@@ -22,6 +22,7 @@ import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotor;
 import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotorHDrive;
 import edu.nr.lib.motionprofiling.OneDimensionalTrajectoryRamped;
 import edu.nr.lib.sensorhistory.TalonEncoder;
+import edu.nr.lib.sensorhistory.TalonEncoderH;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Acceleration;
 import edu.nr.lib.units.Angle;
@@ -43,7 +44,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	private static Drive singleton;
 	
 	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow, hDrive, hDriveFollow, pigeonTalon;
-	private TalonEncoder leftEncoder, rightEncoder, hEncoder;
+	private TalonEncoder leftEncoder, rightEncoder;
+	private TalonEncoderH hEncoder;
 
 	/**
 	 * The diameter of the drive wheels in inches
@@ -132,6 +134,11 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final double PROFILE_DRIVE_PERCENT = 0; //TODO: Find Drive profile percent
 	
 	/**
+	 * Max speed of turn during
+	 */
+	public static final double PROFILE_TURN_PERCENT = 0; //TODO: Find Drive turn percent
+	
+	/**
 	 * No timeout for talon configuration functions
 	 */
 	public static final int NO_TIMEOUT = 0;
@@ -153,6 +160,16 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 * Voltage level considered 100% for calculation
 	 */
 	private static final int VOLTAGE_COMPENSATION_LEVEL = 12; //In volts
+	
+	/**
+	 * The amount of time drive can go from 0 to 12 volts
+	 */
+	private static Time DRIVE_RAMP_RATE = Time.ZERO; //TODO: Find drive ramp rate
+	
+	/**
+	 * The amount of time h drive can go from 0 to 12 volts
+	 */
+	private static Time H_DRIVE_RAMP_RATE = Time.ZERO; //TODO: Find h drive ramp rate
 	
 	/**
 	 * Tracking of the drive motor setpoints
@@ -210,7 +227,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	public static Distance xProfile;
 	public static Distance yProfile;
-	public static Angle endAngle;
 	public static double drivePercent = 0;
 	
 	private OneDimensionalMotionProfilerTwoMotorHDrive oneDProfilerTwoMotorH;
@@ -258,6 +274,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			leftDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
 			leftDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
 			
+			leftDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			leftDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			
 			leftEncoder = new TalonEncoder(leftDrive);
 			
 			leftDriveFollow.setNeutralMode(NEUTRAL_MODE);
@@ -269,9 +288,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			rightDrive.config_kD(SLOT_0, D_RIGHT, NO_TIMEOUT);
 			rightDrive.setNeutralMode(NEUTRAL_MODE);			
 			rightDrive.setInverted(false);
-			rightDrive.setInverted(false);
+			rightDriveFollow.setInverted(false);
 			rightDrive.setSensorPhase(false);
-			rightDrive.setSensorPhase(false);
+			rightDriveFollow.setSensorPhase(false);
 			
 			rightDrive.enableVoltageCompensation(true);
 			rightDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
@@ -280,6 +299,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			rightDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
 			rightDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
 			rightDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
+			
+			rightDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			rightDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			
 			rightEncoder = new TalonEncoder(rightDrive);
 			
@@ -304,7 +326,10 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			hDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
 			hDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
 			
-			hEncoder = new TalonEncoder(hDrive);
+			hDrive.configClosedloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			hDrive.configOpenloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			
+			hEncoder = new TalonEncoderH(hDrive);
 			
 			hDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
@@ -630,10 +655,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				SmartDashboard.putNumber("kIOneDH Value: ", kIOneDH);
 				SmartDashboard.putNumber("kDOneDH Value: ", kDOneDH);
 				
-				SmartDashboard.putNumber("X Profile Feet", 0);
-				SmartDashboard.putNumber("Y Profile Feet", 0);
-				SmartDashboard.putNumber("End Degree", 0);
-				SmartDashboard.putNumber("Drive Percent", 0);
+				SmartDashboard.putNumber("Drive Ramp Rate: ", DRIVE_RAMP_RATE.get(Time.Unit.SECOND));
+				SmartDashboard.putNumber("H Drive Ramp Rate: ", H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND));
+				
+				SmartDashboard.putNumber("X Profile Feet: ", 0);
+				SmartDashboard.putNumber("Y Profile Feet: ", 0);
+				SmartDashboard.putNumber("Drive Percent: ", 0);
 				
 			}
 			if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {
@@ -686,10 +713,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				kIOneDH = SmartDashboard.getNumber("kIOneDH Value: ", kIOneDH);
 				kDOneDH = SmartDashboard.getNumber("kDOneDH Value: ", kDOneDH);
 				
-				xProfile = new Distance(SmartDashboard.getNumber("X Profile Feet", 0), Distance.Unit.FOOT);
-				yProfile = new Distance(SmartDashboard.getNumber("Y Profile Feet", 0), Distance.Unit.FOOT);
-				endAngle = new Angle(SmartDashboard.getNumber("End Degree", 0), Angle.Unit.DEGREE);
-				drivePercent = SmartDashboard.getNumber("Drive Percent", 0);
+				DRIVE_RAMP_RATE = new Time(SmartDashboard.getNumber("Drive Ramp Rate: ", DRIVE_RAMP_RATE.get(Time.Unit.SECOND)), Time.Unit.SECOND);
+				H_DRIVE_RAMP_RATE = new Time(SmartDashboard.getNumber("H Drive Ramp Rate: ", H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND)), Time.Unit.SECOND);
+
+				xProfile = new Distance(SmartDashboard.getNumber("X Profile Feet: ", 0), Distance.Unit.FOOT);
+				yProfile = new Distance(SmartDashboard.getNumber("Y Profile Feet: ", 0), Distance.Unit.FOOT);
+				drivePercent = SmartDashboard.getNumber("Drive Percent: ", 0);
 			}
 		}
 	}
@@ -753,27 +782,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		return 0;
 	}
 	
-	public void setVoltageRampRate(double rampRate) {
-		if(rightDrive != null) {
-			rightDrive.configOpenloopRamp(rampRate, NO_TIMEOUT);
-		} 
-		if(rightDriveFollow != null) {
-			rightDriveFollow.configOpenloopRamp(rampRate, NO_TIMEOUT);
-		}
-		if(leftDrive != null) {
-			leftDrive.configOpenloopRamp(rampRate, NO_TIMEOUT);
-		}
-		if(leftDriveFollow != null) {
-			leftDriveFollow.configOpenloopRamp(rampRate, NO_TIMEOUT);
-		}
-		if(hDrive != null) {
-			hDrive.configOpenloopRamp(rampRate, NO_TIMEOUT);
-		}
-		if(hDriveFollow != null) {
-			hDriveFollow.configOpenloopRamp(rampRate, NO_TIMEOUT);
-		}
-	}
-	
 	private PIDSourceType type = PIDSourceType.kRate;
 
 	@Override
@@ -798,18 +806,18 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	@Override
 	public double pidGetRight() {
 		if (type == PIDSourceType.kRate) {
-			return -getInstance().getRightVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
+			return getInstance().getRightVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
 		} else {
-			return -getInstance().getRightPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK);
+			return getInstance().getRightPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK);
 		}
 	}
 	
 	@Override
 	public double pidGetH() {
 		if (type == PIDSourceType.kRate) {
-			return -getInstance().getHVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
+			return getInstance().getHVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
 		} else {
-			return -getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H);
+			return getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H);
 		}
 	}
 	

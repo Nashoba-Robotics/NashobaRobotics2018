@@ -13,19 +13,22 @@ public class TurnPIDCommand extends NRCommand {
 	private static final Angle ANGLE_THRESHOLD = new Angle(0.1, Angle.Unit.DEGREE);
 	
 	private TriplePIDOutput out;
-	Angle angleToTurn;
-	Angle initialAngle;
-	GyroCorrection gyro;
+	private Angle angleToTurn;
+	private Angle initialAngle;
+	private GyroCorrection gyro;
+	private double kP_theta;
+	private double turnPercent;
 	
-	public TurnPIDCommand(TriplePIDOutput out) {
+	public TurnPIDCommand(TriplePIDOutput out, Angle angleToTurn, double turnPercent, double kP_theta) {
 		this.out = out;
-		this.angleToTurn = Drive.angleToTurn;
+		this.angleToTurn = angleToTurn;
+		this.turnPercent = turnPercent;
+		this.kP_theta = kP_theta;
 	}
 	
 	@Override
 	public void onStart() {
-		this.angleToTurn = Drive.angleToTurn;
-		gyro = new GyroCorrection(angleToTurn, 0.5, Drive.getInstance());
+		gyro = new GyroCorrection(angleToTurn, turnPercent, Drive.getInstance());
 		out.pidWrite(0, 0, 0);
 		initialAngle = gyro.getAngleError().sub(angleToTurn);
 	}
@@ -33,7 +36,7 @@ public class TurnPIDCommand extends NRCommand {
 	@Override
 	public void onExecute() {
 		
-		double headingAdjustment = gyro.getTurnValue(Drive.kP_thetaOneD);	
+		double headingAdjustment = gyro.getTurnValue(kP_theta);	
 		
 		double outputLeft, outputRight;
 		
@@ -47,13 +50,9 @@ public class TurnPIDCommand extends NRCommand {
 	@Override
 	public boolean isFinishedNR() {
 		
-		boolean finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftDistance())).abs()
+		boolean finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftPosition())).abs()
 		.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-		//&& (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getLeftDistance())).abs()
-		//.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-		&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightDistance())).abs()
-		//.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-		//&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getRightDistance())).abs()
+		&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightPosition())).abs()
 		.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 		&& (initialAngle.sub(gyro.getAngleError())).abs().lessThan(ANGLE_THRESHOLD);
 		return finished;

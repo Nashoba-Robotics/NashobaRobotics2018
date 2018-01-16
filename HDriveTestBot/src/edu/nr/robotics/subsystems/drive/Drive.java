@@ -208,8 +208,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			hDrive.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, NO_TIMEOUT);
 			hDrive.configVelocityMeasurementWindow(32, NO_TIMEOUT);
 
-			hDrive.configClosedloopRamp(0.05, NO_TIMEOUT);
-			hDrive.configOpenloopRamp(0.05, NO_TIMEOUT);
+			hDrive.configClosedloopRamp(0.1, NO_TIMEOUT);
+			hDrive.configOpenloopRamp(0.1, NO_TIMEOUT);
 			
 			rightEncoder = new TalonEncoder(rightDrive);
 			leftEncoder = new TalonEncoder(leftDrive);
@@ -486,6 +486,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		SmartDashboard.putNumber("Drive Left Current", leftDrive.getOutputCurrent());
 		SmartDashboard.putNumber("Drive Right Current", rightDrive.getOutputCurrent());
 		SmartDashboard.putNumber("Drive H Current", hDrive.getOutputCurrent());
+		SmartDashboard.putNumber("Drive H Follow Current", hFollowDrive.getOutputCurrent());
 		
 		SmartDashboard.putString("Drive Left Speed vs Set Speed: ", getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 		SmartDashboard.putString("Drive Right Speed vs Set Speed: ", -getRightVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + -rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));

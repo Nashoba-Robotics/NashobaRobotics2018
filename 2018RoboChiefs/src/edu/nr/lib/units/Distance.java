@@ -14,13 +14,20 @@ public class Distance {
 		
 		public static final Unit defaultUnit = INCH;
 		
+		/**
+		 * For a drive subsystem
+		 */
 		private static final double DRIVE_ROTATION_PER_INCH = 1/(Drive.WHEEL_DIAMETER_INCHES * Math.PI);
-		private static final double FOOT_PER_INCH = 1.0/Units.INCHES_PER_FOOT;
-		private static final double METER_PER_INCH = 1.0/Units.INCHES_PER_METER;
 		private static final double MAGNETIC_ENCODER_TICK_PER_INCH = Units.MAGNETIC_NATIVE_UNITS_PER_REV * DRIVE_ROTATION_PER_INCH / Units.NATIVE_UNITS_PER_TICK;
 		
+		/**
+		 * For an h drive
+		 */
 		private static final double DRIVE_ROTATION_H_PER_INCH = 1/(Drive.WHEEL_DIAMETER_INCHES_H * Math.PI);
 		private static final double MAGNETIC_ENCODER_TICK_H_PER_INCH = Units.MAGNETIC_NATIVE_UNITS_PER_REV * DRIVE_ROTATION_H_PER_INCH / Units.NATIVE_UNITS_PER_TICK;
+		
+		private static final double FOOT_PER_INCH = 1.0/Units.INCHES_PER_FOOT;
+		private static final double METER_PER_INCH = 1.0/Units.INCHES_PER_METER;
 		
 		public double convertToDefault(double val) {
 			if(this == Unit.defaultUnit) {
