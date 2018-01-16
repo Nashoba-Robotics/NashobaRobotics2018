@@ -30,7 +30,9 @@ public class Elevator extends NRSubsystem{
 	 */
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_H = 0; //This si 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_H = 0; //This is 0 to 1 number
+	
+	
 	
 	@Override
 	public void smartDashboardInfo() {

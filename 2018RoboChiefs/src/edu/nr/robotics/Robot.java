@@ -9,17 +9,25 @@ import edu.nr.lib.interfaces.Periodic;
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.robotics.auton.AutoChoosers;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
-import edu.nr.robotics.auton.StartAutoCommand;
-import edu.nr.robotics.subsystems.EnabledSubsystems;
+import edu.nr.robotics.auton.AutoChoosers.Scale;
+import edu.nr.robotics.auton.AutoChoosers.StartPos;
+import edu.nr.robotics.auton.AutoChoosers.Switch;
+import edu.nr.robotics.auton.automap.StartPosFarRightSwitchNoneCommand;
+import edu.nr.robotics.auton.automap.StartPosLeftSwitchBothCommand;
+import edu.nr.robotics.auton.automap.StartPosLeftSwitchLeftCommand;
+import edu.nr.robotics.auton.automap.StartPosLeftSwitchNoneCommand;
+import edu.nr.robotics.auton.automap.StartPosMiddleSwitchBothCommand;
+import edu.nr.robotics.auton.automap.StartPosMiddleSwitchLeftCommand;
+import edu.nr.robotics.auton.automap.StartPosMiddleSwitchNoneCommand;
+import edu.nr.robotics.auton.automap.StartPosMiddleSwitchRightCommand;
+import edu.nr.robotics.auton.automap.StartPosRightSwitchBothCommand;
+import edu.nr.robotics.auton.automap.StartPosRightSwitchNoneCommand;
+import edu.nr.robotics.auton.automap.StartPosRightSwitchRightCommand;
 import edu.nr.robotics.subsystems.drive.CSVSaverDisable;
 import edu.nr.robotics.subsystems.drive.CSVSaverEnable;
-import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -37,9 +45,11 @@ public class Robot extends IterativeRobot {
 		return singleton;
 	}
 
-	Command autonomousCommand;
-	SendableChooser<Command> autoChooser = new SendableChooser<>();
-
+	private Command autonomousCommand;
+	public AutoChoosers.StartPos selectedStartPos;
+	public AutoChoosers.Switch selectedSwitch;
+	public AutoChoosers.Scale selectedScale;
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -49,33 +59,36 @@ public class Robot extends IterativeRobot {
 		singleton = this;
 		
 		autoChooserInit();
-		tcpServerInit();
 		OI.init();
 		smartDashboardInit();
-		
-		//chooser.addDefault("Default Auto", new ExampleCommand());
-		SmartDashboard.putData("Auto mode", autoChooser);
 	}
 
 	public void autoChooserInit() {
-		autoChooser.addDefault("Do Nothing", new DoNothingCommand());
-		autoChooser.addObject("Complex Auto Start", new StartAutoCommand());
-		autoChooser.addObject("Baseline Auto", new DriveOverBaselineAutoCommand());
 		
-		SmartDashboard.putData("Auto Destination", autoChooser);	
-	}
-
-	public void smartDashboardInit() {
-		SmartDashboard.putData(new CSVSaverEnable());
-		SmartDashboard.putData(new CSVSaverDisable());
-	
-		SmartDashboard.putData("Auto Start Position", AutoChoosers.autoStartPosChooser);
+		AutoChoosers.autoStartPosChooser.addDefault("Left", StartPos.left);
+		AutoChoosers.autoStartPosChooser.addObject("Middle", StartPos.middle);
+		AutoChoosers.autoStartPosChooser.addObject("Right", StartPos.right);
+		AutoChoosers.autoStartPosChooser.addObject("Far Right", StartPos.farRight);
+		
+		AutoChoosers.autoSwitchChooser.addDefault("Left Only", Switch.leftOnly);
+		AutoChoosers.autoSwitchChooser.addObject("RightOnly", Switch.rightOnly);
+		AutoChoosers.autoSwitchChooser.addObject("None", Switch.none);
+		AutoChoosers.autoSwitchChooser.addObject("both", Switch.both);
+		
+		AutoChoosers.autoScaleChooser.addDefault("Scale", Scale.yes);
+		AutoChoosers.autoScaleChooser.addObject("No Scale", Scale.no);
+		
+		SmartDashboard.putData("Auto StartPosition", AutoChoosers.autoStartPosChooser);
 		SmartDashboard.putData("Auto Switch", AutoChoosers.autoSwitchChooser);
 		SmartDashboard.putData("Auto Scale", AutoChoosers.autoScaleChooser);
 	}
-	
-	public void tcpServerInit() {
-		
+
+	/**
+	 * What SmartDashboard puts on initialization (usually commands)
+	 */
+	public void smartDashboardInit() {
+		SmartDashboard.putData(new CSVSaverEnable());
+		SmartDashboard.putData(new CSVSaverDisable());
 	}
 	
 	/**
@@ -110,22 +123,14 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		FieldData.getInstance().getFieldData();
 		
-		autonomousCommand = autoChooser.getSelected();
+		selectedStartPos = AutoChoosers.autoStartPosChooser.getSelected();
+		selectedSwitch = AutoChoosers.autoSwitchChooser.getSelected();
+		selectedScale = AutoChoosers.autoScaleChooser.getSelected();
+		
+		autonomousCommand = getAutoCommand();
 
 		System.out.println("Initializing auto command: " + autonomousCommand);
 		
-		// schedule the autonomous command (example)
-		if (autonomousCommand != null)
-			autonomousCommand.start();
-
-
-		/*
-		 * String autoSelected = SmartDashboard.getString("Auto Selector",
-		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-		 * = new MyAutoCommand(); break; case "Default Auto": default:
-		 * autonomousCommand = new ExampleCommand(); break; }
-		 */
-
 		// schedule the autonomous command (example)
 		if (autonomousCommand != null)
 			autonomousCommand.start();
@@ -163,7 +168,6 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
-		LiveWindow.run();
 	}
 	
 	public void robotPeriodic() {
@@ -173,5 +177,41 @@ public class Robot extends IterativeRobot {
 		SmartDashboardSource.runAll();
 		
 		SmartDashboard.putData(RobotDiagram.getInstance());
+	}
+	
+	public Command getAutoCommand() {
+		if (selectedStartPos == AutoChoosers.StartPos.left) {
+			if (selectedSwitch == AutoChoosers.Switch.none) {
+				return (new StartPosLeftSwitchNoneCommand());
+			} else if (selectedSwitch == AutoChoosers.Switch.leftOnly) {
+				return new StartPosLeftSwitchLeftCommand();			
+			} else if (selectedSwitch == AutoChoosers.Switch.both) {
+				return new StartPosLeftSwitchBothCommand();		
+			}	
+		} else if (selectedStartPos == AutoChoosers.StartPos.middle) {
+			if (selectedSwitch == AutoChoosers.Switch.none) {
+				return (new StartPosMiddleSwitchNoneCommand());		
+			} else if (selectedSwitch == AutoChoosers.Switch.leftOnly) {
+				return (new StartPosMiddleSwitchLeftCommand());		
+			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly){
+				return (new StartPosMiddleSwitchRightCommand());
+			} else if (selectedSwitch == AutoChoosers.Switch.both) {
+				return (new StartPosMiddleSwitchBothCommand());
+			}
+		} else if (selectedStartPos == AutoChoosers.StartPos.right) {
+			if (selectedSwitch == AutoChoosers.Switch.none) {
+				return (new StartPosRightSwitchNoneCommand());	
+			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly){
+				return (new StartPosRightSwitchRightCommand());
+			} else if (selectedSwitch == AutoChoosers.Switch.both) {
+				return (new StartPosRightSwitchBothCommand());
+			}
+		} else if (selectedStartPos == AutoChoosers.StartPos.farRight) {
+			if (selectedSwitch == AutoChoosers.Switch.none) {
+				return (new StartPosFarRightSwitchNoneCommand());
+			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly){
+				return (new StartPosRightSwitchRightCommand());
+			}
+		} return new DoNothingCommand();
 	}
 }
