@@ -70,7 +70,6 @@ public class DriveJoystickCommand extends JoystickCommand {
 			
 			Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue, cheesyHValue);
 			
-			
 			break;
 		}
 		
