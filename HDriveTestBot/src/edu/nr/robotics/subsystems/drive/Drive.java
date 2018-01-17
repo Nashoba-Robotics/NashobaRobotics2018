@@ -15,9 +15,11 @@ import edu.nr.lib.gyro.NavX;
 import edu.nr.lib.gyro.Pigeon;
 import edu.nr.lib.interfaces.TriplePIDOutput;
 import edu.nr.lib.interfaces.TriplePIDSource;
+import edu.nr.lib.motionprofiling.HDriveDiagonalProfiler;
 import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerHDriveMain;
 import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotorHDrive;
 import edu.nr.lib.motionprofiling.OneDimensionalTrajectoryRamped;
+import edu.nr.lib.motionprofiling.RampedDiagonalHTrajectory;
 import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.sensorhistory.TalonEncoderH;
 import edu.nr.lib.talons.CTRECreator;
@@ -48,7 +50,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final Distance WHEEL_DIAMETER = new Distance(WHEEL_DIAMETER_INCHES, Distance.Unit.INCH);
 	public static final Distance WHEEL_DIAMETER_H = new Distance(WHEEL_DIAMETER_INCHES_H, Distance.Unit.INCH);
 	
-	//TODO: find all
 	public static final Speed MAX_SPEED = new Speed(13.142, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Acceleration MAX_ACC = new Acceleration(16, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	
@@ -60,7 +61,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	
 	public static final double ACCEL_PERCENT = 0.5;
 	
-	//TODO: find for all
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0965; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0927; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_H = 0.165;
@@ -73,7 +73,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public Speed hMotorSetpoint = Speed.ZERO;
 	public double oldTurn = 0;
 	
-	//TODO: Tune PID for all
 	public static double P_RIGHT = 3.5;
 	public static double I_RIGHT = 0;
 	public static double D_RIGHT = 35;
@@ -117,14 +116,15 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static double H_kIOneD = 0;
 	public static double H_kDOneD = 0;
 	
-	public static Distance oneDProfileHMain;
-	public static Distance oneDProfileHAssist;
+	public static Distance profileDistanceX;
+	public static Distance profileDistanceY;
 	public static double drivePercent = 0;
 	public static double drivePercentH = 0;
 	public static Angle angleToTurn = Angle.ZERO;
 		
 	private OneDimensionalMotionProfilerTwoMotorHDrive oneDProfiler;
 	private OneDimensionalMotionProfilerHDriveMain oneDProfilerH;
+	private HDriveDiagonalProfiler diagonalProfiler;
 	
 	public enum DriveMode {
 		tankDrive, arcadeDrive, arcadeNegInertia
@@ -474,7 +474,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		SmartDashboard.putNumber("HkIOneD Value: ", H_kIOneD);
 		SmartDashboard.putNumber("HkDOneD Value: ", H_kDOneD);
 		
-		SmartDashboard.putNumber("Distance to Profile Feet", 0);
+		SmartDashboard.putNumber("Distance to Profile Feet X", 0);
+		SmartDashboard.putNumber("Distance to Profile Feet Y", 0);
 		SmartDashboard.putNumber("Drive Percent", 0);
 		SmartDashboard.putNumber("Drive Percent H", 0);
 		
@@ -541,8 +542,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		H_kIOneD = SmartDashboard.getNumber("HkIOneD Value: ", H_kIOneD);
 		H_kDOneD = SmartDashboard.getNumber("HkDOneD Value: ", H_kDOneD);
 		
-		oneDProfileHMain = new Distance(SmartDashboard.getNumber("Distance to Profile Feet", 0), Distance.Unit.FOOT);
-		oneDProfileHAssist = new Distance(SmartDashboard.getNumber("Distance to Profile Feet", 0), Distance.Unit.FOOT);
+		profileDistanceX = new Distance(SmartDashboard.getNumber("Distance to Profile Feet X", 0), Distance.Unit.FOOT);
+		profileDistanceY = new Distance(SmartDashboard.getNumber("Distance to Profile Feet Y", 0), Distance.Unit.FOOT);
 		drivePercent = SmartDashboard.getNumber("Drive Percent", 0);
 		drivePercentH = SmartDashboard.getNumber("Drive Percent H", 0);
 		angleToTurn = new Angle(SmartDashboard.getNumber("Angle To Turn", 0), Angle.Unit.DEGREE);
@@ -559,28 +560,38 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		}
 	}
 	
-	public void enableOneDProfiler(Distance dist) {
-		oneDProfiler = new OneDimensionalMotionProfilerTwoMotorHDrive(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
-		oneDProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(dist.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
-				MAX_SPEED.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), 
-				MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
-		oneDProfiler.enable();
+	public void enableProfiler(Distance distX, Distance distY) {
+		if (distX == Distance.ZERO && distY != Distance.ZERO) {
+			oneDProfilerH = new OneDimensionalMotionProfilerHDriveMain(this, this, H_kVOneD, H_kAOneD, H_kPOneD, H_kIOneD, H_kDOneD, kP_thetaOneD);
+			oneDProfilerH.setTrajectory(new OneDimensionalTrajectoryRamped(distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H),
+					MAX_SPEED_H.mul(drivePercentH).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H,Time.Unit.HUNDRED_MILLISECOND), 
+					MAX_ACC_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
+			oneDProfilerH.enable();
+		}
+		else if (distX != Distance.ZERO && distY == Distance.ZERO) {
+			oneDProfiler = new OneDimensionalMotionProfilerTwoMotorHDrive(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
+			oneDProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
+					MAX_SPEED.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), 
+					MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
+			oneDProfiler.enable();
+		} else if (distX != Distance.ZERO && distY != Distance.ZERO) {
+			diagonalProfiler = new HDriveDiagonalProfiler(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD, H_kVOneD, H_kAOneD, H_kPOneD, H_kIOneD, H_kDOneD);
+			diagonalProfiler.setTrajectory(new RampedDiagonalHTrajectory(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
+					distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H),
+					Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND),
+							(NRMath.hypot(distX, distY).div(distY)) * MAX_SPEED_H.mul(drivePercentH).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND)), 
+					Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
+							(NRMath.hypot(distX, distY).div(distY)) * MAX_ACC_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND))));
+			diagonalProfiler.enable();
+		} else {
+			System.out.println("No profiler was enabled. Distances are 0.");
+		}
 	}
 	
-	public void enableOneDProfilerH (Distance dist) {
-		oneDProfilerH = new OneDimensionalMotionProfilerHDriveMain(this, this, H_kVOneD, H_kAOneD, H_kPOneD, H_kIOneD, H_kDOneD, kP_thetaOneD);
-		oneDProfilerH.setTrajectory(new OneDimensionalTrajectoryRamped(dist.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H),
-				MAX_SPEED_H.mul(drivePercentH).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H,Time.Unit.HUNDRED_MILLISECOND), 
-				MAX_ACC_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
-		oneDProfilerH.enable();
-	}
-	
-	public void disableOneDProfiler() {
+	public void disableProfiler() {
 		oneDProfiler.disable();
-	}
-	
-	public void disableOneDProfilerH() {
 		oneDProfilerH.disable();
+		diagonalProfiler.disable();
 	}
 
 	@Override

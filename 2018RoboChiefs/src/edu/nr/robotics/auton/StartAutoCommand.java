@@ -63,7 +63,10 @@ public class StartAutoCommand extends NRCommand {
 				new StartPosRightSwitchRightCommand();
 			}
 		}
+		
 	}
+	
+	
 	
 	public void sendableChoosers(){
 		AutoChoosers.autoStartPosChooser.addDefault("Left", StartPos.left);
