@@ -100,6 +100,15 @@ public class StartPosLeftSwitchBothCommand extends CommandGroup {
 			}
 
 		});
+		
+		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()){
+
+			@Override
+			protected boolean condition() {
+				return Robot.getInstance().selectedScale == Scale.yes;
+			}
+			
+		});
 
 	}
 
