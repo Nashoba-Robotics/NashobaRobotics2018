@@ -29,6 +29,7 @@ public class AutoChoosers {
 	}
 	
 	public enum ProfilingMethod {
-		basic, oneD
+		basic,
+		oneD;
 	}
 }

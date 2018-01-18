@@ -57,7 +57,7 @@ public class AlignLimelightCommand extends NRCommand {
 				.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 				&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getRightDistance())).abs()
 				.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-				&& (initialAngle.sub(LimelightNetworkTable.getInstance().getHorizOffset())).abs().greaterThan(ANGLE_THRESHOLD);
+				&& (initialAngle.sub(LimelightNetworkTable.getInstance().getHorizOffset())).abs().lessThan(ANGLE_THRESHOLD);
 		return finished;*/
 		return false;
 	}

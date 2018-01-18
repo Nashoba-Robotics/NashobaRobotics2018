@@ -5,6 +5,7 @@ import edu.nr.robotics.Robot;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveForwardBasicCommand;
 import edu.nr.robotics.subsystems.drive.EnableOneDDriveMotionProfileTwoMotor;
+import edu.nr.robotics.subsystems.drive.EnableOneDMotionProfile;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
@@ -20,7 +21,7 @@ public class DriveOverBaselineAutoCommand extends CommandGroup {
 	public DriveOverBaselineAutoCommand() {
 
 		
-		addSequential(new ConditionalCommand(new DriveForwardBasicCommand(DISTANCE_TO_GET_OVER_BASELINE), new EnableOneDDriveMotionProfileTwoMotor(DISTANCE_TO_GET_OVER_BASELINE)) {
+		addSequential(new ConditionalCommand(new DriveForwardBasicCommand(DISTANCE_TO_GET_OVER_BASELINE), new EnableOneDMotionProfile(DISTANCE_TO_GET_OVER_BASELINE, Distance.ZERO)) {
 			
 			@Override
 			protected boolean condition() {

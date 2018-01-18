@@ -9,7 +9,7 @@ import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveForwardCommand;
 import edu.nr.robotics.subsystems.drive.DriveForwardCommandH;
 import edu.nr.robotics.subsystems.drive.EnableOneDMotionProfile;
-import edu.nr.robotics.subsystems.drive.EnableOneDMotionProfileH;
+import edu.nr.robotics.subsystems.drive.TurnPIDCommand;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -54,8 +54,8 @@ public class Robot extends IterativeRobot {
 	public void SmartDashboardInit() {
 		SmartDashboard.putData("Drive Forward", new DriveForwardCommand());
 		SmartDashboard.putData("Drive Forward H", new DriveForwardCommandH());
-		SmartDashboard.putData("OneD Motion Profile", new EnableOneDMotionProfile());
-		SmartDashboard.putData("OneD Motion Profile H", new EnableOneDMotionProfileH());
+		SmartDashboard.putData("Motion Profile", new EnableOneDMotionProfile());
+		SmartDashboard.putData("Turn PID Command", new TurnPIDCommand(Drive.getInstance()));
 	}
 
 	public void AutoChooserInit() {

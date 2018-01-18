@@ -15,7 +15,7 @@ public class OneDimensionalMotionProfilerHDriveMain extends TimerTask implements
 	
 	//In milliseconds
 	private final long period;
-	private static final long defaultPeriod = 10; //100 Hz 
+	private static final long defaultPeriod = 20; //100 Hz 
 	
 	private double prevTime;
 	private double startTime;
@@ -46,9 +46,8 @@ public class OneDimensionalMotionProfilerHDriveMain extends TimerTask implements
 		this.out = out;
 		this.source = source;
 		this.period = period;
-		this.trajectory = new OneDimensionalTrajectoryRamped(0,1,1);
+		this.trajectory = new OneDimensionalTrajectorySimple(0,1,1);
 		timer = new Timer();
-		timer.schedule(this, 0, this.period);
 		reset();
 		this.source.setPIDSourceType(PIDSourceType.kDisplacement);
 		this.ka = ka;
@@ -57,13 +56,13 @@ public class OneDimensionalMotionProfilerHDriveMain extends TimerTask implements
 		this.kd = kd;
 		this.kv = kv;
 		this.kp_theta = kp_theta;
-		this.initialPositionH = source.pidGetH();
-		this.initialPositionLeft = source.pidGetLeft();
-		this.initialPositionRight = source.pidGetRight();
+		initialPositionH = source.pidGetH();
+		initialPositionLeft = source.pidGetLeft();
+		initialPositionRight = source.pidGetRight();
 		this.gyroCorrection = new GyroCorrection();
-		this.posPoints = new ArrayList<Double>();
-		this.velPoints = new ArrayList<Double>();
-		this.accelPoints = new ArrayList<Double>();
+		posPoints = new ArrayList<Double>();
+		velPoints = new ArrayList<Double>();
+		accelPoints = new ArrayList<Double>();
 		reset();
 		timer.scheduleAtFixedRate(this, 0, this.period);
 	}
@@ -91,26 +90,24 @@ public class OneDimensionalMotionProfilerHDriveMain extends TimerTask implements
 				velocityGoal = 0;
 				accelGoal = 0;
 			}
-			
+						
+			source.setPIDSourceType(PIDSourceType.kDisplacement);
 			errorH = positionGoal - source.pidGetH() + initialPositionH;
 			double errorDerivH = (errorH - errorHLast) / dt;
 			double errorIntegralH = (errorH - errorHLast) * dt / 2;
 			double outputH = velocityGoal * kv + accelGoal * ka + errorH * kp + errorIntegralH * ki + errorDerivH * kd;
 			errorHLast = errorH;
-			
+									
 			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
 			
 			double outputLeft, outputRight;
 			
 			outputLeft = -headingAdjustment;
 			outputRight = headingAdjustment;
-			
+						
 			out.pidWrite(outputLeft, outputRight, outputH);			
-			//source.setPIDSourceType(PIDSourceType.kRate);
-			//SmartDashboard.putString("Motion Profiler V", source.pidGet() + ":" + (output * trajectory.getMaxUsedVelocity() * Math.signum(trajectory.getMaxUsedVelocity())));
-			//source.setPIDSourceType(PIDSourceType.kDisplacement);
-			//SmartDashboard.putString("Motion Profiler X", source.pidGet() + ":" 
-			//		+ (initialPosition + (trajectory.getGoalPosition(edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime))));
+			
+			loopIteration++;
 		}
 		
 		prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
@@ -130,7 +127,6 @@ public class OneDimensionalMotionProfilerHDriveMain extends TimerTask implements
 	public void enable() {
 		reset();
 		posPoints = trajectory.loadPosPoints(period);
-		System.out.println(posPoints.size());
 		velPoints = trajectory.loadVelPoints(period);
 		accelPoints = trajectory.loadAccelPoints(period);
 		enabled = true;

@@ -25,10 +25,10 @@ public class EnableOneDMotionProfile extends NRCommand {
 	
 	@Override
 	public void onStart() {
-		Drive.getInstance().enableProfiler(Drive.profileDistanceX, Drive.profileDistanceY);
-		initialLeftPosition = Drive.getInstance().getLeftDistance();
-		initialRightPosition = Drive.getInstance().getRightDistance();
-		initialHPosition = Drive.getInstance().getHDistance();
+		Drive.getInstance().enableMotionProfiler(Drive.xProfile, Drive.yProfile);
+		initialLeftPosition = Drive.getInstance().getLeftPosition();
+		initialRightPosition = Drive.getInstance().getRightPosition();
+		initialHPosition = Drive.getInstance().getHPosition();
 	}
 
 	@Override
@@ -52,57 +52,57 @@ public class EnableOneDMotionProfile extends NRCommand {
 	public boolean isFinishedNR() {
 		boolean finished = false;
 
-		if (Drive.profileDistanceX != Distance.ZERO && Drive.profileDistanceY == Distance.ZERO) {
+		if (Drive.xProfile != Distance.ZERO && Drive.yProfile == Distance.ZERO) {
 			finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD)
-					.sub(Drive.getInstance().getLeftDistance())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+					.sub(Drive.getInstance().getLeftPosition())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2))
-							.sub(Drive.getInstance().getLeftDistance())).abs()
+							.sub(Drive.getInstance().getLeftPosition())).abs()
 									.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD)
-							.sub(Drive.getInstance().getRightDistance())).abs()
+							.sub(Drive.getInstance().getRightPosition())).abs()
 									.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2))
-							.sub(Drive.getInstance().getRightDistance())).abs()
+							.sub(Drive.getInstance().getRightPosition())).abs()
 									.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& Math.abs(((Math
-							.abs(Drive.getInstance().getLeftDistance().get(Distance.Unit.MAGNETIC_ENCODER_TICK)
+							.abs(Drive.getInstance().getLeftPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK)
 									- OneDimensionalMotionProfilerTwoMotorHDrive.initialPositionLeft))
 							- Math.abs(OneDimensionalMotionProfilerTwoMotorHDrive.posPoints.get(
 									OneDimensionalMotionProfilerTwoMotorHDrive.posPoints.size() - 1)))) < END_THRESHOLD
 											.get(Distance.Unit.MAGNETIC_ENCODER_TICK);
-		} else if (Drive.profileDistanceX == Distance.ZERO && Drive.profileDistanceY != Distance.ZERO) {
+		} else if (Drive.xProfile == Distance.ZERO && Drive.yProfile != Distance.ZERO) {
 			finished = (Drive.getInstance().getHistoricalHPosition(Drive.PROFILE_TIME_THRESHOLD)
-					.sub(Drive.getInstance().getHDistance())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+					.sub(Drive.getInstance().getHPosition())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& (Drive.getInstance().getHistoricalHPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2))
-							.sub(Drive.getInstance().getHDistance())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-					&& Math.abs(((Math.abs(Drive.getInstance().getHDistance().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H)
+							.sub(Drive.getInstance().getHPosition())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+					&& Math.abs(((Math.abs(Drive.getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H)
 							- OneDimensionalMotionProfilerHDriveMain.initialPositionH))
 							- Math.abs(OneDimensionalMotionProfilerHDriveMain.posPoints
 									.get(OneDimensionalMotionProfilerHDriveMain.posPoints.size() - 1)))) < END_THRESHOLD
 											.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H);
-		} else if (Drive.profileDistanceX != Distance.ZERO && Drive.profileDistanceY != Distance.ZERO) {
+		} else if (Drive.xProfile != Distance.ZERO && Drive.yProfile != Distance.ZERO) {
 			finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD)
-					.sub(Drive.getInstance().getLeftDistance())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+					.sub(Drive.getInstance().getLeftPosition())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2))
-							.sub(Drive.getInstance().getLeftDistance())).abs()
+							.sub(Drive.getInstance().getLeftPosition())).abs()
 									.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD)
-							.sub(Drive.getInstance().getRightDistance())).abs()
+							.sub(Drive.getInstance().getRightPosition())).abs()
 									.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2))
-							.sub(Drive.getInstance().getRightDistance())).abs()
+							.sub(Drive.getInstance().getRightPosition())).abs()
 									.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& Math.abs(((Math
-							.abs(Drive.getInstance().getLeftDistance().get(Distance.Unit.MAGNETIC_ENCODER_TICK)
+							.abs(Drive.getInstance().getLeftPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK)
 									- HDriveDiagonalProfiler.initialPositionLeft))
 							- Math.abs(HDriveDiagonalProfiler.posPoints.get(
 									HDriveDiagonalProfiler.posPoints.size() - 1)))) < END_THRESHOLD
 											.get(Distance.Unit.MAGNETIC_ENCODER_TICK)
 					&& (Drive.getInstance().getHistoricalHPosition(Drive.PROFILE_TIME_THRESHOLD)
-							.sub(Drive.getInstance().getHDistance())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+							.sub(Drive.getInstance().getHPosition())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& (Drive.getInstance().getHistoricalHPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2))
-							.sub(Drive.getInstance().getHDistance())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-					&& Math.abs(((Math.abs(Drive.getInstance().getHDistance().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H)
+							.sub(Drive.getInstance().getHPosition())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+					&& Math.abs(((Math.abs(Drive.getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H)
 							- HDriveDiagonalProfiler.initialPositionH))
 							- Math.abs(HDriveDiagonalProfiler.posPoints
 									.get(HDriveDiagonalProfiler.posPoints.size() - 1)))) < END_THRESHOLD

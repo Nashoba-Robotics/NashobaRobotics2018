@@ -4,13 +4,19 @@ import java.util.ArrayList;
 
 import edu.nr.lib.NRMath;
 
-public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory {
+public class RampedDiagonalHTrajectory implements OneDimensionalTrajectory {
 
 	double velMax;
 	double accelMax;
+	
+	double velMaxH;
+	double accelMaxH;
 
 	double velMaxUsed;
 	double accelMaxUsed;
+	
+	double velMaxHUsed;
+	double accelMaxHUsed;
 
 	double totalTime;
 	double timeRamp;
@@ -18,7 +24,12 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	double timeCruise;
 
 	double endPosition;
+	double endPositionX;
+	double endPositionY;
 	double startPosition;
+	
+	double endPositionH;
+	double startPositionH;
 
 	double pow = 2;
 	double timeMult = 5;
@@ -26,8 +37,12 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	ArrayList<Double> posPoints;
 	ArrayList<Double> velPoints;
 	ArrayList<Double> accelPoints;
+	
+	ArrayList<Double> posPointsH;
+	ArrayList<Double> velPointsH;
+	ArrayList<Double> accelPointsH;
 
-	double direction;
+	double directionX, directionY;
 
 	/**
 	 * 
@@ -38,10 +53,13 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	 * @param accelMax
 	 *            The max acceleration (always positive)
 	 */
-	public OneDimensionalTrajectoryRamped(double goalPositionDelta, double velMax, double accelMax) {
-		this.endPosition = Math.abs(goalPositionDelta);
+	public RampedDiagonalHTrajectory(double goalPositionDeltaX, double goalPositionDeltaY, double velMax, double accelMax) {
+		this.endPosition = Math.hypot(goalPositionDeltaX, goalPositionDeltaY);
+		this.endPositionX = goalPositionDeltaX;
+		this.endPositionY = goalPositionDeltaY;
 		this.startPosition = 0;
-		this.direction = Math.signum(goalPositionDelta);
+		this.directionX = Math.signum(goalPositionDeltaX);
+		this.directionY = Math.signum(goalPositionDeltaY);
 
 		this.velMax = Math.abs(velMax);
 		this.accelMax = Math.abs(accelMax);
@@ -49,6 +67,10 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 		posPoints = new ArrayList<Double>();
 		velPoints = new ArrayList<Double>();
 		accelPoints = new ArrayList<Double>();
+		
+		posPointsH = new ArrayList<Double>();
+		velPointsH = new ArrayList<Double>();
+		accelPointsH = new ArrayList<Double>();
 
 		calcTimes();
 	}
@@ -129,22 +151,22 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 
 	public double getGoalVelocity(double time) {
 		if (time < timeRamp) {
-			return (rampFunc(time)) * direction;
+			return (rampFunc(time));
 		} else if (time < timeRamp + timeAccel) {
-			return (rampFunc(timeRamp) + accelMaxUsed * (time - timeRamp)) * direction;
+			return (rampFunc(timeRamp) + accelMaxUsed * (time - timeRamp));
 		} else if (time < 2 * timeRamp + timeAccel) {
 			return (rampFunc(timeRamp) + (accelMaxUsed * timeAccel) + xyRefRampFunc(time - timeAccel - timeRamp))
-					* direction;
+					* directionX;
 		} else if (time < 2 * timeRamp + timeAccel + timeCruise) {
-			return (velMaxUsed) * direction;
+			return (velMaxUsed);
 		} else if (time < 3 * timeRamp + timeAccel + timeCruise) {
 			return (xyRefRampFunc((timeCruise + 3 * timeRamp + timeAccel) - time) + (accelMaxUsed * timeAccel)
-					+ rampFunc(timeRamp)) * direction;
+					+ rampFunc(timeRamp));
 		} else if (time < 3 * timeRamp + 2 * timeAccel + timeCruise) {
 			return (-accelMaxUsed * (time - 3 * timeRamp - timeAccel - timeCruise) + rampFunc(timeRamp)
-					+ (accelMaxUsed * timeAccel)) * direction;
+					+ (accelMaxUsed * timeAccel));
 		} else if (time < 4 * timeRamp + 2 * timeAccel + timeCruise) {
-			return (rampFunc(timeRamp * 4 + timeAccel * 2 + timeCruise - time)) * direction;
+			return (rampFunc(timeRamp * 4 + timeAccel * 2 + timeCruise - time));
 		} else {
 			return 0;
 		}
@@ -152,22 +174,22 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 
 	public double getGoalPosition(double time) {
 		if (time < timeRamp) {
-			return (integRampFunc(0, time)) * direction;
+			return (integRampFunc(0, time));
 		} else if (time < timeRamp + timeAccel) {
 			return (integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (time - timeRamp)
 					+ 0.5 * (time - timeRamp)
 							* ((rampFunc(timeRamp) + accelMaxUsed * (time - timeRamp)) - rampFunc(timeRamp)))
-					* direction;
+					* directionX;
 		} else if (time < 2 * timeRamp + timeAccel) {
 			return (integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel)
 					+ 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp))
 					+ integXYRefRampFunc(0, time - timeAccel - timeRamp)
-					+ (rampFunc(timeRamp) + timeAccel * accelMaxUsed) * (time - timeAccel - timeRamp)) * direction;
+					+ (rampFunc(timeRamp) + timeAccel * accelMaxUsed) * (time - timeAccel - timeRamp));
 		} else if (time < 2 * timeRamp + timeAccel + timeCruise) {
 			return (integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel)
 					+ 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp))
 					+ integXYRefRampFunc(0, timeRamp) + (velMaxUsed - xyRefRampFunc(timeRamp)) * (timeRamp)
-					+ velMaxUsed * (time - (2 * timeRamp + timeAccel))) * direction;
+					+ velMaxUsed * (time - (2 * timeRamp + timeAccel)));
 		} else if (time < 3 * timeRamp + timeAccel + timeCruise) {
 			return (integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel)
 					+ 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp))
@@ -175,7 +197,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 					+ velMaxUsed * (timeCruise) + integXYRefRampFunc(0, timeRamp)
 					- integXYRefRampFunc(0, (3 * timeRamp) + timeCruise + timeAccel - time)
 					+ (velMaxUsed - xyRefRampFunc(timeRamp)) * (time - timeCruise - (2 * timeRamp) - timeAccel))
-					* direction;
+					* directionX;
 		} else if (time < 3 * timeRamp + 2 * timeAccel + timeCruise) {
 			return (integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel)
 					+ 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp))
@@ -186,7 +208,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 					- 0.5 * (((3 * timeRamp) + (2 * timeAccel) + timeCruise - time)
 							* ((-accelMaxUsed * (time - 3 * timeRamp - timeAccel - timeCruise))
 									+ (accelMaxUsed * timeAccel)))
-					+ 0.5 * (timeAccel) * (velMaxUsed - (2 * rampFunc(timeRamp)))) * direction;
+					+ 0.5 * (timeAccel) * (velMaxUsed - (2 * rampFunc(timeRamp))));
 		} else if (time < 4 * timeRamp + 2 * timeAccel + timeCruise) {
 			return (integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel)
 					+ 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp))
@@ -194,31 +216,32 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 					+ velMaxUsed * (timeCruise) + integXYRefRampFunc(0, timeRamp)
 					+ (velMaxUsed - xyRefRampFunc(timeRamp)) * (timeRamp) + rampFunc(timeRamp) * (timeAccel)
 					+ 0.5 * (timeAccel) * (velMaxUsed - (2 * rampFunc(timeRamp))) + integRampFunc(0, timeRamp)
-					- integRampFunc(0, ((4 * timeRamp) + (2 * timeAccel) + timeCruise - time))) * direction;
+					- integRampFunc(0, ((4 * timeRamp) + (2 * timeAccel) + timeCruise - time)));
 		} else {
-			return (endPosition) * direction;
+			return (endPosition);
 		}
 	}
 
 	public double getGoalAccel(double time) {
 		if (time < timeRamp) {
-			return (derivRampFunc(time)) * direction;
+			return (derivRampFunc(time));
 		} else if (time < timeRamp + timeAccel) {
-			return (accelMaxUsed) * direction;
+			return (accelMaxUsed);
 		} else if (time < (2 * timeRamp) + timeAccel) {
-			return (derivXYRefRampFunc(time - (timeAccel + timeRamp))) * direction;
+			return (derivXYRefRampFunc(time - (timeAccel + timeRamp)));
 		} else if (time < (2 * timeRamp) + timeAccel + timeCruise) {
 			return 0;
 		} else if (time < (3 * timeRamp) + timeAccel + timeCruise) {
-			return (-derivXYRefRampFunc(((3 * timeRamp) + timeAccel + timeCruise) - time)) * direction;
+			return (-derivXYRefRampFunc(((3 * timeRamp) + timeAccel + timeCruise) - time));
 		} else if (time < (3 * timeRamp) + (2 * timeAccel) + timeCruise) {
-			return (-accelMaxUsed) * direction;
+			return (-accelMaxUsed);
 		} else if (time < 4 * timeRamp + 2 * timeAccel + timeCruise) {
-			return (-derivRampFunc(((timeRamp * 4) + (timeAccel * 2) + timeCruise) - time)) * direction;
+			return (-derivRampFunc(((timeRamp * 4) + (timeAccel * 2) + timeCruise) - time));
 		} else {
 			return 0;
 		}
 	}
+
 
 	/**
 	 * Multiply totalTime by 100 to get milliseconds per hundred ms
@@ -227,9 +250,20 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	public ArrayList<Double> loadPosPoints(double period) {
 		posPoints.clear();
 		for (int time = 0; time < Math.round(totalTime * 100); time += period) {
-			posPoints.add(getGoalPosition(time / 100.0));
+			posPoints.add(getGoalPosition(time / 100.0) * endPositionX / endPosition * directionX);
 		}
 		return posPoints;
+	}
+	
+	/**
+	 * Multiply totalTime by 100 to get milliseconds per hundred ms
+	 */
+	public ArrayList<Double> loadPosPointsH(double period) {
+		posPointsH.clear();
+		for (int time = 0; time < Math.round(totalTime * 100); time += period) {
+			posPoints.add(getGoalPosition(time / 100.0) * endPositionY / endPosition * directionY);
+		}
+		return posPointsH;
 	}
 
 	/**
@@ -239,9 +273,20 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	public ArrayList<Double> loadVelPoints(double period) {
 		velPoints.clear();
 		for (int time = 0; time < Math.round(totalTime * 100); time += period) {
-			velPoints.add(getGoalVelocity(time / 100.0));
+			velPoints.add(getGoalVelocity(time / 100.0) * endPositionX / endPosition * directionX);
 		}
 		return velPoints;
+	}
+	
+	/**
+	 * Multiply totalTime by 100 to get milliseconds per hundred ms
+	 */
+	public ArrayList<Double> loadVelPointsH(double period) {
+		velPointsH.clear();
+		for (int time = 0; time < Math.round(totalTime * 100); time += period) {
+			velPointsH.add(getGoalVelocity(time / 100) * endPositionY / endPosition * directionY);
+		}
+		return velPointsH;
 	}
 
 	/**
@@ -251,21 +296,32 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	public ArrayList<Double> loadAccelPoints(double period) {
 		accelPoints.clear();
 		for (int time = 0; time < Math.round(totalTime * 100); time += period) {
-			accelPoints.add(getGoalAccel(time / 100.0));
+			accelPoints.add(getGoalAccel(time / 100.0) * endPositionX / endPosition * directionX);
 		}
 		return accelPoints;
+	}
+	
+	/**
+	 * Multiply totalTime by 100 to get milliseconds per hundred ms
+	 */
+	public ArrayList<Double> loadAccelPointsH(double period) {
+		accelPointsH.clear();
+		for (int time = 0; time < Math.round(totalTime * 100); time += period) {
+			accelPointsH.add(getGoalAccel(time / 100.0) * endPositionY / endPosition * directionY);
+		}
+		return accelPointsH;
 	}
 
 	@Override
 	public double getMaxUsedAccel() {
 		return accelMaxUsed;
 	}
-
+	
 	@Override
 	public double getEndPosition() {
 		return endPosition;
 	}
-
+	
 	@Override
 	public double getGoalHeading(double time) {
 		return 0;

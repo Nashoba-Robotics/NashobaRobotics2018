@@ -2,8 +2,8 @@ package edu.nr.robotics.auton.automap;
 
 import edu.nr.robotics.FieldData;
 import edu.nr.robotics.FieldData.Direction;
+import edu.nr.robotics.Robot;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
-import edu.nr.robotics.auton.StartAutoCommand;
 import edu.nr.robotics.auton.autoroutes.BlockLeftToScaleLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.BlockLeftToScaleRightProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.BlockRightToScaleLeftProfilingCommand;
@@ -33,7 +33,7 @@ public class StartPosLeftSwitchBothCommand extends CommandGroup {
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.left
-						&& StartAutoCommand.selectedScale == Scale.yes;
+						&& Robot.getInstance().selectedScale == Scale.yes;
 			}
 
 		});
@@ -52,7 +52,7 @@ public class StartPosLeftSwitchBothCommand extends CommandGroup {
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.right
-						&& StartAutoCommand.selectedScale == Scale.yes;
+						&& Robot.getInstance().selectedScale == Scale.yes;
 			}
 
 		});
@@ -62,7 +62,7 @@ public class StartPosLeftSwitchBothCommand extends CommandGroup {
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.left
-						&& StartAutoCommand.selectedScale == Scale.yes
+						&& Robot.getInstance().selectedScale == Scale.yes
 						&& FieldData.getInstance().scale == Direction.left;
 			}
 
@@ -73,7 +73,7 @@ public class StartPosLeftSwitchBothCommand extends CommandGroup {
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.left
-						&& StartAutoCommand.selectedScale == Scale.yes
+						&& Robot.getInstance().selectedScale == Scale.yes
 						&& FieldData.getInstance().scale == Direction.right;
 			}
 
@@ -84,7 +84,7 @@ public class StartPosLeftSwitchBothCommand extends CommandGroup {
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.right
-						&& StartAutoCommand.selectedScale == Scale.yes
+						&& Robot.getInstance().selectedScale == Scale.yes
 						&& FieldData.getInstance().scale == Direction.left;
 			}
 
@@ -95,10 +95,19 @@ public class StartPosLeftSwitchBothCommand extends CommandGroup {
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.right
-						&& StartAutoCommand.selectedScale == Scale.yes
+						&& Robot.getInstance().selectedScale == Scale.yes
 						&& FieldData.getInstance().scale == Direction.right;
 			}
 
+		});
+		
+		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()){
+
+			@Override
+			protected boolean condition() {
+				return Robot.getInstance().selectedScale == Scale.yes;
+			}
+			
 		});
 
 	}
