@@ -17,14 +17,17 @@ public class TurnPIDCommand extends NRCommand {
 	Angle initialAngle;
 	GyroCorrection gyro;
 	
-	public TurnPIDCommand(TriplePIDOutput out) {
+	public TurnPIDCommand(TriplePIDOutput out, Angle angle) {
 		this.out = out;
-		this.angleToTurn = Drive.angleToTurn;
+		this.angleToTurn = angle;
+	}
+	
+	public TurnPIDCommand(TriplePIDOutput out) {
+		this(out, Drive.angleToTurn);
 	}
 	
 	@Override
 	public void onStart() {
-		this.angleToTurn = Drive.angleToTurn;
 		gyro = new GyroCorrection(angleToTurn, 0.5, Drive.getInstance());
 		out.pidWrite(0, 0, 0);
 		initialAngle = gyro.getAngleError().sub(angleToTurn);

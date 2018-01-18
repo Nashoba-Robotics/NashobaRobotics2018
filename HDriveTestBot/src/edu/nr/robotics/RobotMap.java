@@ -12,6 +12,6 @@ public class RobotMap {
 	public static final int LEFT_TALON_ID = 2; 			//master
 	public static final int RIGHT_FOLLOW_TALON_ID = 1; 	//follower
 	public static final int LEFT_FOLLOW_TALON_ID = 4; 	//follower
-	public static final int H_TALON_ID = 6; 			//master
-	public static final int H_TALON_FOLLOW_ID = 3;		//follower
+	public static final int H_TALON_ID = 3; 			//master
+	public static final int H_TALON_FOLLOW_ID = 6;		//follower
 }

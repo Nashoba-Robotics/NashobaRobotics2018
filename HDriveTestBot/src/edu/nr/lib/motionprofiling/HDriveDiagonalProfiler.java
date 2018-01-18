@@ -121,6 +121,7 @@ public class HDriveDiagonalProfiler extends TimerTask implements SmartDashboardS
 		velPointsH = trajectory.loadVelPointsH(period);
 		accelPointsH = trajectory.loadAccelPointsH(period);
 		enabled = true;
+		//System.out.println("trajectory loaded " + enabled);
 	}
 
 	public void reset() {
@@ -151,6 +152,8 @@ public class HDriveDiagonalProfiler extends TimerTask implements SmartDashboardS
 
 	@Override
 	public void run() {
+		//System.out.println("is enabled: " + enabled);
+		//System.out.println("position size: " + posPoints.size() + " vel size: " + velPoints.size() + " accel size: " + accelPoints.size() + " pos H size: " + posPointsH.size() + " vel H size: " + velPointsH.size() + " acc H size: " + accelPointsH.size());
 		if (enabled && posPoints.size() > 0 && velPoints.size() > 0 && accelPoints.size() > 0 && posPointsH.size() > 0
 				&& velPointsH.size() > 0 && accelPointsH.size() > 0) {
 			double dt = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - prevTime;
@@ -176,6 +179,8 @@ public class HDriveDiagonalProfiler extends TimerTask implements SmartDashboardS
 				accelGoalH = 0;
 			}
 
+			//System.out.println("Position Goal: " + positionGoal + "    Position Goal H: " + positionGoalH);
+			
 			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
 
 			source.setPIDSourceType(PIDSourceType.kDisplacement);
