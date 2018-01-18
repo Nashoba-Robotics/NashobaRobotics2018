@@ -561,32 +561,29 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	public void enableProfiler(Distance distX, Distance distY) {
-		if (distX == Distance.ZERO && distY != Distance.ZERO) {
-			oneDProfilerH = new OneDimensionalMotionProfilerHDriveMain(this, this, H_kVOneD, H_kAOneD, H_kPOneD, H_kIOneD, H_kDOneD, kP_thetaOneD);
-			oneDProfilerH.setTrajectory(new OneDimensionalTrajectoryRamped(distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H),
-					MAX_SPEED_H.mul(drivePercentH).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H,Time.Unit.HUNDRED_MILLISECOND), 
-					MAX_ACC_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
-			oneDProfilerH.enable();
-		}
-		else if (distX != Distance.ZERO && distY == Distance.ZERO) {
-			oneDProfiler = new OneDimensionalMotionProfilerTwoMotorHDrive(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
-			oneDProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
-					MAX_SPEED.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), 
-					MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
-			oneDProfiler.enable();
-		} else if (distX != Distance.ZERO && distY != Distance.ZERO) {
+			double minVel;
+			double minAccel;
+			
+			if (distX == Distance.ZERO && distY != Distance.ZERO) {
+				minVel = (NRMath.hypot(distX, distY).div(distY))  * MAX_SPEED_H.mul(drivePercentH).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
+				minAccel = (NRMath.hypot(distX, distY).div(distY)) * MAX_ACC_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
+			} else if (distY == Distance.ZERO && distX != Distance.ZERO) {
+				minVel = (NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
+				minAccel = (NRMath.hypot(distX, distY).div(distX)) * MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
+			} else if (distX != Distance.ZERO && distY != Distance.ZERO) {
+				minVel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_SPEED_H.mul(drivePercentH).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
+				minAccel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_ACC_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND));
+			} else {
+				minVel = 0;
+				minAccel = 0;
+				System.out.println("No Distances Set");
+			}
+			
 			diagonalProfiler = new HDriveDiagonalProfiler(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD, H_kVOneD, H_kAOneD, H_kPOneD, H_kIOneD, H_kDOneD);
-			diagonalProfiler.setTrajectory(new RampedDiagonalHTrajectory(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
-					distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H),
-					Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND),
-							(NRMath.hypot(distX, distY).div(distY)) * MAX_SPEED_H.mul(drivePercentH).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND)), 
-					Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
-							(NRMath.hypot(distX, distY).div(distY)) * MAX_ACC_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND))));
+			diagonalProfiler.setTrajectory(new RampedDiagonalHTrajectory(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK), distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H), minVel, minAccel));
 			diagonalProfiler.enable();
-		} else {
-			System.out.println("No profiler was enabled. Distances are 0.");
-		}
 	}
+	
 	
 	public void disableProfiler() {
 		oneDProfiler.disable();
