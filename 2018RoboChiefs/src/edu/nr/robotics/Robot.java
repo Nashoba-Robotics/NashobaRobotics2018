@@ -9,6 +9,7 @@ import edu.nr.lib.interfaces.Periodic;
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.robotics.auton.AutoChoosers;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
+import edu.nr.robotics.auton.AutoChoosers.AllianceBlocks;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.AutoChoosers.StartPos;
 import edu.nr.robotics.auton.AutoChoosers.Switch;
@@ -49,6 +50,7 @@ public class Robot extends IterativeRobot {
 	public AutoChoosers.StartPos selectedStartPos;
 	public AutoChoosers.Switch selectedSwitch;
 	public AutoChoosers.Scale selectedScale;
+	public AutoChoosers.AllianceBlocks selectedBlocks;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -78,9 +80,15 @@ public class Robot extends IterativeRobot {
 		AutoChoosers.autoScaleChooser.addDefault("Scale", Scale.yes);
 		AutoChoosers.autoScaleChooser.addObject("No Scale", Scale.no);
 		
+		AutoChoosers.allianceBlockChooser.addDefault("None", AllianceBlocks.none);
+		AutoChoosers.allianceBlockChooser.addObject("Block 1", AllianceBlocks.block1);
+		AutoChoosers.allianceBlockChooser.addObject("Block 6", AllianceBlocks.block6);
+		AutoChoosers.allianceBlockChooser.addObject("Both", AllianceBlocks.both);
+		
 		SmartDashboard.putData("Auto StartPosition", AutoChoosers.autoStartPosChooser);
 		SmartDashboard.putData("Auto Switch", AutoChoosers.autoSwitchChooser);
 		SmartDashboard.putData("Auto Scale", AutoChoosers.autoScaleChooser);
+		SmartDashboard.putData("Alliance Partner Blocks", AutoChoosers.allianceBlockChooser);
 	}
 
 	/**
@@ -126,6 +134,7 @@ public class Robot extends IterativeRobot {
 		selectedStartPos = AutoChoosers.autoStartPosChooser.getSelected();
 		selectedSwitch = AutoChoosers.autoSwitchChooser.getSelected();
 		selectedScale = AutoChoosers.autoScaleChooser.getSelected();
+		selectedBlocks = AutoChoosers.allianceBlockChooser.getSelected();
 		
 		autonomousCommand = getAutoCommand();
 

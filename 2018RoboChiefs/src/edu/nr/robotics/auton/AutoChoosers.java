@@ -7,6 +7,7 @@ public class AutoChoosers {
 	public static SendableChooser<AutoChoosers.StartPos> autoStartPosChooser = new SendableChooser<>();
 	public static SendableChooser<AutoChoosers.Switch> autoSwitchChooser = new SendableChooser<>();
 	public static SendableChooser<AutoChoosers.Scale> autoScaleChooser = new SendableChooser<>();
+	public static SendableChooser<AutoChoosers.AllianceBlocks> allianceBlockChooser = new SendableChooser<>();
 	public static ProfilingMethod chosen = ProfilingMethod.basic;
 	
 	public enum StartPos {
@@ -26,6 +27,13 @@ public class AutoChoosers {
 	public enum Scale {
 		yes,
 		no;
+	}
+	
+	public enum AllianceBlocks {
+		none,
+		block1,
+		block6,
+		both;
 	}
 	
 	public enum ProfilingMethod {

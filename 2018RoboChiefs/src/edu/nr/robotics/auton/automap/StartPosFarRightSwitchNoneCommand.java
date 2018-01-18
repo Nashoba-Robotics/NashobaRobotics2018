@@ -41,7 +41,7 @@ public class StartPosFarRightSwitchNoneCommand extends CommandGroup {
 
 		});
 		
-		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()){
+		addSequential(new ConditionalCommand(new AutoScaleLoopCommandChooser()){
 
 			@Override
 			protected boolean condition() {
