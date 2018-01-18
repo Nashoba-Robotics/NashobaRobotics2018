@@ -8,7 +8,7 @@ import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveForwardCommand;
 import edu.nr.robotics.subsystems.drive.DriveForwardCommandH;
-import edu.nr.robotics.subsystems.drive.EnableOneDMotionProfile;
+import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnPIDCommand;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -54,7 +54,7 @@ public class Robot extends IterativeRobot {
 	public void SmartDashboardInit() {
 		SmartDashboard.putData("Drive Forward", new DriveForwardCommand());
 		SmartDashboard.putData("Drive Forward H", new DriveForwardCommandH());
-		SmartDashboard.putData("Motion Profile", new EnableOneDMotionProfile());
+		SmartDashboard.putData("Motion Profile", new EnableMotionProfile());
 		SmartDashboard.putData("Turn PID Command", new TurnPIDCommand(Drive.getInstance()));
 	}
 
