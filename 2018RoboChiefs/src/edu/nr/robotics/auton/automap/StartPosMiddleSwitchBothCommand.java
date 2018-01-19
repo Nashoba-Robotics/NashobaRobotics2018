@@ -4,10 +4,7 @@ import edu.nr.robotics.FieldData;
 import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.Robot;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
-import edu.nr.robotics.auton.autoroutes.BlockLeftToScaleLeftProfilingCommand;
-import edu.nr.robotics.auton.autoroutes.BlockLeftToScaleRightProfilingCommand;
-import edu.nr.robotics.auton.autoroutes.BlockRightToScaleLeftProfilingCommand;
-import edu.nr.robotics.auton.autoroutes.BlockRightToScaleRightProfilingCommand;
+import edu.nr.robotics.auton.autoroutes.BlockToScaleProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosMiddleToSwitchLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosMiddleToSwitchRightProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.SwitchLeftToBlockProfilingCommand;
@@ -38,7 +35,7 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 
 		});
 
-		addSequential(new ConditionalCommand(new BlockLeftToScaleLeftProfilingCommand()) {
+		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(1)) {
 
 			@Override
 			protected boolean condition() {
@@ -49,7 +46,7 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 
 		});
 
-		addSequential(new ConditionalCommand(new BlockLeftToScaleRightProfilingCommand()) {
+		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(1)) {
 
 			@Override
 			protected boolean condition() {
@@ -79,7 +76,7 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 
 		});
 
-		addSequential(new ConditionalCommand(new BlockRightToScaleLeftProfilingCommand()) {
+		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(6)) {
 
 			@Override
 			protected boolean condition() {
@@ -90,7 +87,7 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 
 		});
 
-		addSequential(new ConditionalCommand(new BlockRightToScaleRightProfilingCommand()) {
+		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(6)) {
 
 			@Override
 			protected boolean condition() {
