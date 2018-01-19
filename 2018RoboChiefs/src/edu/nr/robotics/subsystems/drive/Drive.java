@@ -115,8 +115,15 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H = 0;
 	
-	public static final double VOLTAGE_RAMP_RATE_DRIVE = 0; // TODO: Find real voltage ramp rate
-	public static final double VOLTAGE_RAMP_RATE_DRIVE_H = 0; //TODO: Find real H voltage ramp rate
+	/**
+	 * The amount of time drive can go from 0 to 12 volts
+	 */
+	private static Time DRIVE_RAMP_RATE = Time.ZERO; //TODO: Find drive ramp rate
+	
+	/**
+	 * The amount of time h drive can go from 0 to 12 volts
+	 */
+	private static Time H_DRIVE_RAMP_RATE = Time.ZERO; //TODO: Find h drive ramp rate
 	
 	
 	/**
@@ -137,7 +144,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * 1D Profiling kVAPID_theta loop constants
 	 */
-	public static double kVOneD = 1 / MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
+	public static double kVOneD = 0 / MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
 	public static double kAOneD = 0;
 	public static double kPOneD = 0;
 	public static double kIOneD = 0;
@@ -145,6 +152,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static double kP_thetaOneD = 0;
 	
 	//TODO: Find These
+	
 	public static double kVOneDH = 1 / MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
 	public static double kAOneDH = 0;
 	public static double kPOneDH = 0;
@@ -172,11 +180,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final Distance END_THRESHOLD = new Distance(3, Distance.Unit.INCH); //TODO: Find End Threshold
 	
 	/**
-	 * Type of PID. 0 = primary. 1 = cascade
-	 */
-	public static final int PID_TYPE = 0;
-	
-	/**
 	 * Position error in motion profiling that talon needs to be within for 2 * profile position threshold for profile to stop
 	 */
 	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(0, Distance.Unit.INCH); //TODO: Find Drive profile position threshold
@@ -187,9 +190,29 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final Time PROFILE_TIME_THRESHOLD = Time.ZERO; //TODO: Find Drive profile time threshold
 	
 	/**
-	 * No timeout for talon configuration functions
+	 * Current ratings based on MAXI Circuit Breaker Model MX5
 	 */
-	public static final int NO_TIMEOUT = 0;
+	private static final int PEAK_DRIVE_CURRENT = 80; //In amps
+	private static final int PEAK_DRIVE_CURRENT_DURATION = 1000; //In milliseconds
+	private static final int CONTINUOUS_CURRENT_LIMIT = 40; //In amps
+	
+	public static final double VELOCITY_MEASUREMENT_PERIOD_DRIVE = 0; //TODO: Find measurement period of velocity
+	public static final double VELOCITY_MEASUREMENT_WINDOW_DRIVE = 0; //TODO: Find this
+	
+	/**
+	 * Voltage level considered 100% for calculation
+	 */
+	private static final int VOLTAGE_COMPENSATION_LEVEL = 12; //In volts
+	
+	/**
+	 * Default neutral mode (brake or coast)
+	 */
+	public static final NeutralMode NEUTRAL_MODE = NeutralMode.Brake;
+	
+	/**
+	 * Type of PID. 0 = primary. 1 = cascade
+	 */
+	public static final int PID_TYPE = 0;
 	
 	/**
 	 * Used to prevent magic numbers from showing up in code
@@ -198,26 +221,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final int SLOT_1 = 1;
 	
 	/**
-	 * Current ratings based on MAXI Circuit Breaker Model MX5
+	 * No timeout for talon configuration functions
 	 */
-	private static final int PEAK_DRIVE_CURRENT = 80; //In amps
-	private static final int PEAK_DRIVE_CURRENT_DURATION = 1000; //In milliseconds
-	private static final int CONTINUOUS_CURRENT_LIMIT = 40; //In amps
-	
-	/**
-	 * Voltage level considered 100% for calculation
-	 */
-	private static final int VOLTAGE_COMPENSATION_LEVEL = 12; //In volts
-	
-	/**
-	 * The amount of time drive can go from 0 to 12 volts
-	 */
-	private static Time DRIVE_RAMP_RATE = Time.ZERO; //TODO: Find drive ramp rate
-	
-	/**
-	 * The amount of time h drive can go from 0 to 12 volts
-	 */
-	private static Time H_DRIVE_RAMP_RATE = Time.ZERO; //TODO: Find h drive ramp rate
+	public static final int NO_TIMEOUT = 0;
 	
 	/**
 	 * Tracking of the drive motor setpoints
@@ -226,152 +232,20 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	private Speed rightMotorSetpoint = Speed.ZERO;
 	private Speed hMotorSetpoint = Speed.ZERO;
 	private double oldTurn;
-
-	/**
-	 * Possible drive mode selections
-	 */
-	public static enum DriveMode {
-		arcadeDrive, tankDrive, cheesyDrive
-	}
 	
-	/**
-	 * Default neutral mode (brake or coast)
-	 */
-	public static final NeutralMode NEUTRAL_MODE = NeutralMode.Brake;
-	
-	/**
-	 * @return max drive speed in current gearing
-	 */
-	public Speed currentMaxSpeed() {
-		return MAX_SPEED_DRIVE;
-	}
-	
-	/**
-	 * @return max drive speed h in current gearing
-	 */
-	public Speed currentMaxSpeedH() {
-		return MAX_SPEED_DRIVE_H;
-	}
-	
-	
-	/**
-	 * Motion profiling parameters (x is front-back, y is left-right)
-	 */
-	public static Distance xProfile;
-	public static Distance yProfile;
-	public static double drivePercent = 0;
+	private PIDSourceType type = PIDSourceType.kRate;
 	
 	private OneDimensionalMotionProfilerTwoMotorHDrive oneDProfilerTwoMotorH;
 	
 	private OneDimensionalMotionProfilerHDriveMain oneDProfilerOneMotorH;
 	
 	private HDriveDiagonalProfiler diagonalProfiler;
-	
-	private Drive() {
-		if (EnabledSubsystems.DRIVE_ENABLED) {
 
-			leftDrive = CTRECreator.createMasterTalon(RobotMap.LEFT_DRIVE);
-			rightDrive = CTRECreator.createMasterTalon(RobotMap.RIGHT_DRIVE);
-			hDrive = CTRECreator.createMasterTalon(RobotMap.H_DRIVE);
-			pigeonTalon = CTRECreator.createMasterTalon(0);//TODO: find real pigeon talon
-			
-			leftDriveFollow = CTRECreator.createFollowerTalon(RobotMap.LEFT_DRIVE_FOLLOW, leftDrive.getDeviceID());
-			rightDriveFollow = CTRECreator.createFollowerTalon(RobotMap.RIGHT_DRIVE_FOLLOW, rightDrive.getDeviceID());
-			hDriveFollow = CTRECreator.createFollowerTalon(RobotMap.H_DRIVE_FOLLOW, hDrive.getDeviceID());
-			
-			if (EnabledSubsystems.DRIVE_DUMB_ENABLED) {
-				leftDrive.set(ControlMode.PercentOutput, 0);
-				rightDrive.set(ControlMode.PercentOutput, 0);
-				hDrive.set(ControlMode.PercentOutput, 0);
-			} else {
-				leftDrive.set(ControlMode.Velocity, 0);
-				rightDrive.set(ControlMode.Velocity, 0);
-				hDrive.set(ControlMode.Velocity, 0);
-			}
-			
-			leftDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
-			leftDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
-			leftDrive.config_kP(SLOT_0, P_LEFT, NO_TIMEOUT);
-			leftDrive.config_kI(SLOT_0, I_LEFT, NO_TIMEOUT);
-			leftDrive.config_kD(SLOT_0, D_LEFT, NO_TIMEOUT);
-			leftDrive.setNeutralMode(NEUTRAL_MODE);
-			leftDrive.setInverted(false);
-			leftDriveFollow.setInverted(false);
-			leftDrive.setSensorPhase(false);
-			leftDriveFollow.setSensorPhase(false);
-			
-			leftDrive.enableVoltageCompensation(true);
-			leftDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
-			
-			leftDrive.enableCurrentLimit(true);
-			leftDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
-			leftDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
-			leftDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
-			
-			leftDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			leftDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			
-			leftEncoder = new TalonEncoder(leftDrive);
-			
-			leftDriveFollow.setNeutralMode(NEUTRAL_MODE);
-			
-			rightDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
-			rightDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
-			rightDrive.config_kP(SLOT_0, P_RIGHT, NO_TIMEOUT);
-			rightDrive.config_kI(SLOT_0, I_RIGHT, NO_TIMEOUT);
-			rightDrive.config_kD(SLOT_0, D_RIGHT, NO_TIMEOUT);
-			rightDrive.setNeutralMode(NEUTRAL_MODE);			
-			rightDrive.setInverted(false);
-			rightDriveFollow.setInverted(false);
-			rightDrive.setSensorPhase(false);
-			rightDriveFollow.setSensorPhase(false);
-			
-			rightDrive.enableVoltageCompensation(true);
-			rightDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
-			
-			rightDrive.enableCurrentLimit(true);
-			rightDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
-			rightDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
-			rightDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
-			
-			rightDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			rightDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			
-			rightEncoder = new TalonEncoder(rightDrive);
-			
-			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
-			
-			hDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
-			hDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
-			hDrive.config_kP(SLOT_0, P_LEFT, NO_TIMEOUT);
-			hDrive.config_kI(SLOT_0, I_LEFT, NO_TIMEOUT);
-			hDrive.config_kD(SLOT_0, D_LEFT, NO_TIMEOUT);
-			hDrive.setNeutralMode(NEUTRAL_MODE);
-			hDrive.setInverted(false);
-			hDriveFollow.setInverted(false);
-			hDrive.setSensorPhase(false);
-			hDriveFollow.setSensorPhase(false);
-			
-			hDrive.enableVoltageCompensation(true);
-			hDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
-			
-			hDrive.enableCurrentLimit(true);
-			hDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
-			hDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
-			hDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
-			
-			hDrive.configClosedloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			hDrive.configOpenloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			
-			hEncoder = new TalonEncoderH(hDrive);
-			
-			hDriveFollow.setNeutralMode(NEUTRAL_MODE);
-			
-			smartDashboardInit();
-	
-			CheesyDriveCalculationConstants.createDriveTypeCalculations();
-			
-		}
+	/**
+	 * Possible drive mode selections
+	 */
+	public static enum DriveMode {
+		arcadeDrive, tankDrive, cheesyDrive
 	}
 	
 	public static Drive getInstance() {
@@ -385,52 +259,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			singleton = new Drive();
 			singleton.setJoystickCommand(new DriveJoystickCommand());
 		}
-	}
-
-	public TalonSRX getPigeonTalon() {
-		return pigeonTalon;
-	}
-	
-	/**
-	 * Uses 254's CheesyDrive to drive
-	 * 
-	 * @param move 
-	 * 				The speed, from -1 to 1 (inclusive), that the robot should go
-	 *             	at. 1 is max forward, 0 is stopped, -1 is max backward
-	 * @param turn 
-	 * 				The speed, from -1 to 1 (inclusive), that the robot should
-	 *            	turn at. 1 is max right, 0 is stopped, -1 is max left
-	 */
-	public void cheesyDrive(double move, double turn, double strafe) {
-		double[] cheesyMotorPercents = new double[2];
-		cheesyMotorPercents = DriveTypeCalculations.cheesyDrive(move, turn, oldTurn, false);
-		
-		oldTurn = turn;
-		
-		tankDrive(cheesyMotorPercents[0], cheesyMotorPercents[1], strafe);		
-	}
-	
-	/**
-	 * An arcade drive
-	 * 
-	 * @param move The speed, from -1 to 1 (inclusive), that the robot should go
-	 *             	at. 1 is max forward, 0 is stopped, -1 is max backward
-	 * @param turn The speed, from -1 to 1 (inclusive), that the robot should
-	 *            	turn at. 1 is max right, 0 is stopped, -1 is max left
-	 * @param strafeRaw The speed, from -1 to 1 (inclusive), that the robot should
-	 * 				strafe at. 1 is max right, 0 is stopped, -1 is max left
-	 */
-	public void arcadeDrive(double move, double turn, double strafeRaw) {
-		
-		double[] motorPercents = new double[2];
-		motorPercents = DriveTypeCalculations.arcadeDrive(move, turn);
-		
-		double strafe = NRMath.limit(strafeRaw);
-		tankDrive(motorPercents[0], motorPercents[1], strafe);
-	}
-	
-	public void tankDrive(double left, double right, double strafe) {
-		setMotorSpeedInPercent(left, right, strafe);	
 	}
 	
 	/**
@@ -508,39 +336,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		return Distance.ZERO;
 	}
 	
-	public void setMotorSpeedInPercent(double left, double right, double strafe) {
-		setMotorSpeed(currentMaxSpeed().mul(left), currentMaxSpeed().mul(right), currentMaxSpeedH().mul(strafe));
-	}
-	
-	public void setMotorSpeed(Speed left, Speed right, Speed strafe) {
-		if (leftDrive != null && rightDrive != null && hDrive != null) {
-			
-			leftMotorSetpoint = left;
-			rightMotorSetpoint = right;
-			hMotorSetpoint = strafe;
-			
-			leftDrive.config_kF(SLOT_0, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / leftMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), NO_TIMEOUT);
-			rightDrive.config_kF(SLOT_0, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / rightMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), NO_TIMEOUT);
-			hDrive.config_kF(SLOT_0, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_H * hMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_H) * 1023.0) / hMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND), NO_TIMEOUT);
-			
-			if (leftDrive.getControlMode() == ControlMode.PercentOutput) {
-				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.div(currentMaxSpeed()));
-			} else {
-				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
-			}
-			if (rightDrive.getControlMode() == ControlMode.PercentOutput) {
-				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.div(currentMaxSpeed()));
-			} else {
-				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
-			}
-			if (hDrive.getControlMode() == ControlMode.PercentOutput) {
-				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.div(currentMaxSpeedH()));
-			} else {
-				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
-			}	
-		}
-	}
-	
 	/**
 	 * @return Current velocity of the left talon
 	 */
@@ -607,36 +402,189 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		return Speed.ZERO;
 	}
 	
-	public void startDumbDrive() {
+	/**
+	 * @return Current of the right drive talon
+	 */
+	public double getRightCurrent() {
+		if (rightDrive != null) {
+			return rightDrive.getOutputCurrent();
+		}
+		return 0;
+	}
+	
+	/**
+	 * @return Current of the left drive talon
+	 */
+	public double getLeftCurrent() {
+		if (leftDrive != null) {
+			return leftDrive.getOutputCurrent();
+		}
+		return 0;
+	}
+	
+	/**
+	 * @return Current of the h drive talon
+	 */
+	public double getHCurrent() {
+		if (hDrive != null) {
+			return hDrive.getOutputCurrent();
+		}
+		return 0;
+	}
+	
+	public void setMotorSpeedInPercent(double left, double right, double strafe) {
+		setMotorSpeed(currentMaxSpeed().mul(left), currentMaxSpeed().mul(right), currentMaxSpeedH().mul(strafe));
+	}
+	
+	public void setMotorSpeed(Speed left, Speed right, Speed strafe) {
 		if (leftDrive != null && rightDrive != null && hDrive != null) {
-			if (rightDrive.getControlMode() != ControlMode.PercentOutput) {
-				rightDrive.set(ControlMode.PercentOutput, getRightVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
+			
+			leftMotorSetpoint = left;
+			rightMotorSetpoint = right;
+			hMotorSetpoint = strafe;
+			
+			leftDrive.config_kF(SLOT_0, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / leftMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), NO_TIMEOUT);
+			rightDrive.config_kF(SLOT_0, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / rightMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), NO_TIMEOUT);
+			hDrive.config_kF(SLOT_0, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_H * hMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_H) * 1023.0) / hMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND), NO_TIMEOUT);
+			
+			if (leftDrive.getControlMode() == ControlMode.PercentOutput) {
+				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.div(currentMaxSpeed()));
+			} else {
+				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
 			}
-			if (leftDrive.getControlMode() != ControlMode.PercentOutput) {
-				leftDrive.set(ControlMode.PercentOutput, getLeftVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
+			if (rightDrive.getControlMode() == ControlMode.PercentOutput) {
+				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.div(currentMaxSpeed()));
+			} else {
+				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
 			}
-			if(hDrive.getControlMode() != ControlMode.PercentOutput) {
-				hDrive.set(ControlMode.PercentOutput, getHVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
-			}
+			if (hDrive.getControlMode() == ControlMode.PercentOutput) {
+				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.div(currentMaxSpeedH()));
+			} else {
+				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
+			}	
 		}
 	}
 	
-	public void endDumbDrive() {
-		if (leftDrive != null && rightDrive != null && hDrive != null) {
-			if (rightDrive.getControlMode() != ControlMode.Velocity) {
-				rightDrive.set(ControlMode.Velocity, 0);
-			}
-			if (leftDrive.getControlMode() != ControlMode.Velocity) {
-				leftDrive.set(ControlMode.Velocity, 0);
-			}
-			if(hDrive.getControlMode() != ControlMode.Velocity) {
-				hDrive.set(ControlMode.Velocity, 0);
-			}
+	public void tankDrive(double left, double right, double strafe) {
+		setMotorSpeedInPercent(left, right, strafe);	
+	}
+	
+	/**
+	 * An arcade drive
+	 * 
+	 * @param move The speed, from -1 to 1 (inclusive), that the robot should go
+	 *             	at. 1 is max forward, 0 is stopped, -1 is max backward
+	 * @param turn The speed, from -1 to 1 (inclusive), that the robot should
+	 *            	turn at. 1 is max right, 0 is stopped, -1 is max left
+	 * @param strafeRaw The speed, from -1 to 1 (inclusive), that the robot should
+	 * 				strafe at. 1 is max right, 0 is stopped, -1 is max left
+	 */
+	public void arcadeDrive(double move, double turn, double strafeRaw) {
+		
+		double[] motorPercents = new double[2];
+		motorPercents = DriveTypeCalculations.arcadeDrive(move, turn);
+		
+		double strafe = NRMath.limit(strafeRaw);
+		tankDrive(motorPercents[0], motorPercents[1], strafe);
+	}
+	
+	/**
+	 * Uses 254's CheesyDrive to drive
+	 * 
+	 * @param move 
+	 * 				The speed, from -1 to 1 (inclusive), that the robot should go
+	 *             	at. 1 is max forward, 0 is stopped, -1 is max backward
+	 * @param turn 
+	 * 				The speed, from -1 to 1 (inclusive), that the robot should
+	 *            	turn at. 1 is max right, 0 is stopped, -1 is max left
+	 */
+	public void cheesyDrive(double move, double turn, double strafe) {
+		double[] cheesyMotorPercents = new double[2];
+		cheesyMotorPercents = DriveTypeCalculations.cheesyDrive(move, turn, oldTurn, false);
+		
+		oldTurn = turn;
+		
+		tankDrive(cheesyMotorPercents[0], cheesyMotorPercents[1], strafe);		
+	}
+	
+	public TalonSRX getPigeonTalon() {
+		return pigeonTalon;
+	}
+	
+	@Override
+	public void setPIDSourceType(PIDSourceType pidSource) {
+		type = pidSource;
+	}
+	
+	@Override
+	public PIDSourceType getPIDSourceType() {
+		return type;
+	}
+	
+	@Override
+	public double pidGetLeft() {
+		if (type == PIDSourceType.kRate) {
+			return getInstance().getLeftVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
+		} else {
+			return getInstance().getLeftPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK);
 		}
 	}
 	
 	@Override
-	public void periodic() {
+	public double pidGetRight() {
+		if (type == PIDSourceType.kRate) {
+			return getInstance().getRightVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
+		} else {
+			return getInstance().getRightPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK);
+		}
+	}
+	
+	@Override
+	public double pidGetH() {
+		if (type == PIDSourceType.kRate) {
+			return getInstance().getHVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
+		} else {
+			return getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H);
+		}
+	}
+	
+	@Override
+	public void pidWrite(double outputLeft, double outputRight, double outputH) {
+		setMotorSpeed(currentMaxSpeed().mul(outputLeft),currentMaxSpeed().mul(outputRight), currentMaxSpeedH().mul(outputH));
+	}
+	
+	public void enableMotionProfiler(Distance distX, Distance distY) {
+		if (distX == Distance.ZERO && distY != Distance.ZERO) {
+			oneDProfilerOneMotorH = new OneDimensionalMotionProfilerHDriveMain(this, this, kVOneDH, kAOneDH, kPOneDH, kIOneDH, kDOneDH, kP_thetaOneD);
+			oneDProfilerOneMotorH.setTrajectory(new OneDimensionalTrajectoryRamped(distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H),
+					MAX_SPEED_DRIVE_H.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H,Time.Unit.HUNDRED_MILLISECOND), 
+					MAX_ACCELERATION_DRIVE_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
+			oneDProfilerOneMotorH.enable();
+		}
+		else if (distX != Distance.ZERO && distY == Distance.ZERO) {
+			oneDProfilerTwoMotorH = new OneDimensionalMotionProfilerTwoMotorHDrive(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
+			oneDProfilerTwoMotorH.setTrajectory(new OneDimensionalTrajectoryRamped(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
+					MAX_SPEED_DRIVE.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), 
+					MAX_ACCELERATION_DRIVE.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
+			oneDProfilerTwoMotorH.enable();
+		} else if (distX != Distance.ZERO && distY != Distance.ZERO) {
+			diagonalProfiler = new HDriveDiagonalProfiler(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD, kVOneDH, kAOneDH, kPOneDH, kIOneDH, kDOneDH);
+			diagonalProfiler.setTrajectory(new RampedDiagonalHTrajectory(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
+					distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H),
+					Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED_DRIVE.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND),
+							(NRMath.hypot(distX, distY).div(distY)) * MAX_SPEED_DRIVE_H.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND)), 
+					Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACCELERATION_DRIVE.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
+							(NRMath.hypot(distX, distY).div(distY)) * MAX_ACCELERATION_DRIVE_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND))));
+			diagonalProfiler.enable();
+		} else {
+			System.out.println("No profiler was enabled. Distances are 0.");
+		}
+	}
+	
+	public void disableProfiler() {
+		oneDProfilerOneMotorH.disable();
+		oneDProfilerTwoMotorH.disable();
+		diagonalProfiler.disable();
 	}
 	
 	/**
@@ -758,46 +706,14 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	@Override
+	public void periodic() {
+	}
+	
+	@Override
 	public void disable() {
 		setMotorSpeedInPercent(0, 0, 0);
 	}
-	
-	public void enableMotionProfiler(Distance distX, Distance distY) {
-		if (distX == Distance.ZERO && distY != Distance.ZERO) {
-			oneDProfilerOneMotorH = new OneDimensionalMotionProfilerHDriveMain(this, this, kVOneDH, kAOneDH, kPOneDH, kIOneDH, kDOneDH, kP_thetaOneD);
-			oneDProfilerOneMotorH.setTrajectory(new OneDimensionalTrajectoryRamped(distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H),
-					MAX_SPEED_DRIVE_H.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H,Time.Unit.HUNDRED_MILLISECOND), 
-					MAX_ACCELERATION_DRIVE_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
-			oneDProfilerOneMotorH.enable();
-		}
-		else if (distX != Distance.ZERO && distY == Distance.ZERO) {
-			oneDProfilerTwoMotorH = new OneDimensionalMotionProfilerTwoMotorHDrive(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
-			oneDProfilerTwoMotorH.setTrajectory(new OneDimensionalTrajectoryRamped(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
-					MAX_SPEED_DRIVE.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), 
-					MAX_ACCELERATION_DRIVE.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
-			oneDProfilerTwoMotorH.enable();
-		} else if (distX != Distance.ZERO && distY != Distance.ZERO) {
-			diagonalProfiler = new HDriveDiagonalProfiler(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD, kVOneDH, kAOneDH, kPOneDH, kIOneDH, kDOneDH);
-			diagonalProfiler.setTrajectory(new RampedDiagonalHTrajectory(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
-					distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H),
-					Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED_DRIVE.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND),
-							(NRMath.hypot(distX, distY).div(distY)) * MAX_SPEED_DRIVE_H.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND)), 
-					Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACCELERATION_DRIVE.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
-							(NRMath.hypot(distX, distY).div(distY)) * MAX_ACCELERATION_DRIVE_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND))));
-			diagonalProfiler.enable();
-		} else {
-			System.out.println("No profiler was enabled. Distances are 0.");
-		}
-	}
-	
-	public void disableProfiler() {
-		oneDProfilerOneMotorH.disable();
-		oneDProfilerTwoMotorH.disable();
-		diagonalProfiler.disable();
-	}
 
-	
-	
 	public void disableOneDProfilerTwoMotorH() {
 		oneDProfilerTwoMotorH.disable();
 	}
@@ -807,76 +723,159 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	/**
-	 * @return Current of the right drive talon
+	 * @return max drive speed in current gearing
 	 */
-	public double getRightCurrent() {
-		if (rightDrive != null) {
-			return rightDrive.getOutputCurrent();
-		}
-		return 0;
+	public Speed currentMaxSpeed() {
+		return MAX_SPEED_DRIVE;
 	}
 	
 	/**
-	 * @return Current of the left drive talon
+	 * @return max drive speed h in current gearing
 	 */
-	public double getLeftCurrent() {
-		if (leftDrive != null) {
-			return leftDrive.getOutputCurrent();
-		}
-		return 0;
+	public Speed currentMaxSpeedH() {
+		return MAX_SPEED_DRIVE_H;
 	}
+	
 	
 	/**
-	 * @return Current of the h drive talon
+	 * Motion profiling parameters (x is front-back, y is left-right)
 	 */
-	public double getHCurrent() {
-		if (hDrive != null) {
-			return hDrive.getOutputCurrent();
-		}
-		return 0;
-	}
+	public static Distance xProfile;
+	public static Distance yProfile;
+	public static double drivePercent = 0;
 	
-	private PIDSourceType type = PIDSourceType.kRate;
+	private Drive() {
+		if (EnabledSubsystems.DRIVE_ENABLED) {
 
-	@Override
-	public void setPIDSourceType(PIDSourceType pidSource) {
-		type = pidSource;
-	}
+			leftDrive = CTRECreator.createMasterTalon(RobotMap.LEFT_DRIVE);
+			rightDrive = CTRECreator.createMasterTalon(RobotMap.RIGHT_DRIVE);
+			hDrive = CTRECreator.createMasterTalon(RobotMap.H_DRIVE);
+			pigeonTalon = CTRECreator.createMasterTalon(0);//TODO: find real pigeon talon
+			
+			leftDriveFollow = CTRECreator.createFollowerTalon(RobotMap.LEFT_DRIVE_FOLLOW, leftDrive.getDeviceID());
+			rightDriveFollow = CTRECreator.createFollowerTalon(RobotMap.RIGHT_DRIVE_FOLLOW, rightDrive.getDeviceID());
+			hDriveFollow = CTRECreator.createFollowerTalon(RobotMap.H_DRIVE_FOLLOW, hDrive.getDeviceID());
+			
+			if (EnabledSubsystems.DRIVE_DUMB_ENABLED) {
+				leftDrive.set(ControlMode.PercentOutput, 0);
+				rightDrive.set(ControlMode.PercentOutput, 0);
+				hDrive.set(ControlMode.PercentOutput, 0);
+			} else {
+				leftDrive.set(ControlMode.Velocity, 0);
+				rightDrive.set(ControlMode.Velocity, 0);
+				hDrive.set(ControlMode.Velocity, 0);
+			}
+			
+			leftDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
+			leftDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
+			leftDrive.config_kP(SLOT_0, P_LEFT, NO_TIMEOUT);
+			leftDrive.config_kI(SLOT_0, I_LEFT, NO_TIMEOUT);
+			leftDrive.config_kD(SLOT_0, D_LEFT, NO_TIMEOUT);
+			leftDrive.setNeutralMode(NEUTRAL_MODE);
+			leftDrive.setInverted(false);
+			leftDriveFollow.setInverted(false);
+			leftDrive.setSensorPhase(false);
+			leftDriveFollow.setSensorPhase(false);
+			
+			leftDrive.enableVoltageCompensation(true);
+			leftDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
+			
+			leftDrive.enableCurrentLimit(true);
+			leftDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
+			leftDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
+			leftDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
+			
+			leftDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			leftDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			
+			leftEncoder = new TalonEncoder(leftDrive);
+			
+			leftDriveFollow.setNeutralMode(NEUTRAL_MODE);
+			
+			rightDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
+			rightDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
+			rightDrive.config_kP(SLOT_0, P_RIGHT, NO_TIMEOUT);
+			rightDrive.config_kI(SLOT_0, I_RIGHT, NO_TIMEOUT);
+			rightDrive.config_kD(SLOT_0, D_RIGHT, NO_TIMEOUT);
+			rightDrive.setNeutralMode(NEUTRAL_MODE);			
+			rightDrive.setInverted(false);
+			rightDriveFollow.setInverted(false);
+			rightDrive.setSensorPhase(false);
+			rightDriveFollow.setSensorPhase(false);
+			
+			rightDrive.enableVoltageCompensation(true);
+			rightDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
+			
+			rightDrive.enableCurrentLimit(true);
+			rightDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
+			rightDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
+			rightDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
+			
+			rightDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			rightDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			
+			rightEncoder = new TalonEncoder(rightDrive);
+			
+			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
+			
+			hDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
+			hDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
+			hDrive.config_kP(SLOT_0, P_LEFT, NO_TIMEOUT);
+			hDrive.config_kI(SLOT_0, I_LEFT, NO_TIMEOUT);
+			hDrive.config_kD(SLOT_0, D_LEFT, NO_TIMEOUT);
+			hDrive.setNeutralMode(NEUTRAL_MODE);
+			hDrive.setInverted(false);
+			hDriveFollow.setInverted(false);
+			hDrive.setSensorPhase(false);
+			hDriveFollow.setSensorPhase(false);
+			
+			hDrive.enableVoltageCompensation(true);
+			hDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
+			
+			hDrive.enableCurrentLimit(true);
+			hDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
+			hDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
+			hDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
+			
+			hDrive.configClosedloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			hDrive.configOpenloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			
+			hEncoder = new TalonEncoderH(hDrive);
+			
+			hDriveFollow.setNeutralMode(NEUTRAL_MODE);
+			
+			smartDashboardInit();
 	
-	@Override
-	public PIDSourceType getPIDSourceType() {
-		return type;
-	}
-	
-	@Override
-	public double pidGetLeft() {
-		if (type == PIDSourceType.kRate) {
-			return getInstance().getLeftVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
-		} else {
-			return getInstance().getLeftPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK);
+			CheesyDriveCalculationConstants.createDriveTypeCalculations();
+			
 		}
 	}
 	
-	@Override
-	public double pidGetRight() {
-		if (type == PIDSourceType.kRate) {
-			return getInstance().getRightVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
-		} else {
-			return getInstance().getRightPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK);
+	public void startDumbDrive() {
+		if (leftDrive != null && rightDrive != null && hDrive != null) {
+			if (rightDrive.getControlMode() != ControlMode.PercentOutput) {
+				rightDrive.set(ControlMode.PercentOutput, getRightVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
+			}
+			if (leftDrive.getControlMode() != ControlMode.PercentOutput) {
+				leftDrive.set(ControlMode.PercentOutput, getLeftVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
+			}
+			if(hDrive.getControlMode() != ControlMode.PercentOutput) {
+				hDrive.set(ControlMode.PercentOutput, getHVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
+			}
 		}
 	}
 	
-	@Override
-	public double pidGetH() {
-		if (type == PIDSourceType.kRate) {
-			return getInstance().getHVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
-		} else {
-			return getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H);
+	public void endDumbDrive() {
+		if (leftDrive != null && rightDrive != null && hDrive != null) {
+			if (rightDrive.getControlMode() != ControlMode.Velocity) {
+				rightDrive.set(ControlMode.Velocity, 0);
+			}
+			if (leftDrive.getControlMode() != ControlMode.Velocity) {
+				leftDrive.set(ControlMode.Velocity, 0);
+			}
+			if(hDrive.getControlMode() != ControlMode.Velocity) {
+				hDrive.set(ControlMode.Velocity, 0);
+			}
 		}
-	}
-	
-	@Override
-	public void pidWrite(double outputLeft, double outputRight, double outputH) {
-		setMotorSpeed(currentMaxSpeed().mul(outputLeft),currentMaxSpeed().mul(outputRight), currentMaxSpeedH().mul(outputH));
 	}
 }
