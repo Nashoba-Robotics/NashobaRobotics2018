@@ -5,8 +5,7 @@ import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.Robot;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
-import edu.nr.robotics.auton.autoroutes.BlockLeftToScaleLeftProfilingCommand;
-import edu.nr.robotics.auton.autoroutes.BlockLeftToScaleRightProfilingCommand;
+import edu.nr.robotics.auton.autoroutes.BlockToScaleProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosMiddleToScaleLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosMiddleToScaleRightProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosMiddleToSwitchLeftProfilingCommand;
@@ -37,7 +36,7 @@ public class StartPosMiddleSwitchLeftCommand extends CommandGroup {
 
 		});
 
-		addSequential(new ConditionalCommand(new BlockLeftToScaleLeftProfilingCommand()) {
+		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(1)) {
 
 			@Override
 			protected boolean condition() {
@@ -48,7 +47,7 @@ public class StartPosMiddleSwitchLeftCommand extends CommandGroup {
 
 		});
 
-		addSequential(new ConditionalCommand(new BlockLeftToScaleRightProfilingCommand()) {
+		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(1)) {
 
 			@Override
 			protected boolean condition() {
