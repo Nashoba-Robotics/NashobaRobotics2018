@@ -48,7 +48,7 @@ public class TalonEncoder extends TimerTask {
 			data.remove(0);
 		}
 		data.add(new Data(new Distance(talon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK),
-				new AngularSpeed(talon.getSelectedSensorVelocity(PID_TYPE), Angle.Unit.MAGNETIC_ENCODER_TICKS, Time.Unit.HUNDRED_MILLISECOND), Time.getCurrentTime()));
+				new AngularSpeed(talon.getSelectedSensorVelocity(PID_TYPE), Angle.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), Time.getCurrentTime()));
 	}
 
 	/**
@@ -115,11 +115,11 @@ public class TalonEncoder extends TimerTask {
 	public AngularSpeed getVelocity(Time deltaTime) {
 
 		if (deltaTime.equals(Time.ZERO)) {
-			return new AngularSpeed(talon.getSelectedSensorVelocity(PID_TYPE), Angle.Unit.MAGNETIC_ENCODER_TICKS, Time.Unit.HUNDRED_MILLISECOND);
+			return new AngularSpeed(talon.getSelectedSensorVelocity(PID_TYPE), Angle.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
 		}
 
 		if (data.size() == 0) {
-			return new AngularSpeed(talon.getSelectedSensorVelocity(PID_TYPE), Angle.Unit.MAGNETIC_ENCODER_TICKS, Time.Unit.HUNDRED_MILLISECOND);
+			return new AngularSpeed(talon.getSelectedSensorVelocity(PID_TYPE), Angle.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
 		} else if (data.size() == 1) {
 			return data.get(0).velocity;
 		}
