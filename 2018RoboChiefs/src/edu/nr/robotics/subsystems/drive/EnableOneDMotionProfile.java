@@ -19,7 +19,7 @@ public class EnableOneDMotionProfile extends NRCommand {
 	
 	private final Distance END_THRESHOLD = new Distance(3, Distance.Unit.INCH);
 	
-	public EnableOneDMotionProfile() {
+	public EnableOneDMotionProfile(Distance dist, Distance distH, maxVelPercent, maxAccelPercent) {
 		super(Drive.getInstance());
 	}
 	

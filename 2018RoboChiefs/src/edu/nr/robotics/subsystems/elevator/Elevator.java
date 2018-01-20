@@ -53,38 +53,31 @@ public class Elevator extends NRSubsystem {
 	 * The voltage ramp rate of the elevator. Voltage ramp rate is time it takes
 	 * to go from 0V to 12V
 	 */
-	public static Time VOLTAGE_RAMP_RATE_ELEVATOR = Time.ZERO; // TODO: Test for
-																// elevator
-																// voltage ramp
-																// rate
+	public static Time VOLTAGE_RAMP_RATE_ELEVATOR = Time.ZERO; // TODO: Test for elevator voltage ramp rate
 
 	/**
 	 * MotionMagic PID values for the elevator
 	 */
-	public static double P_POS_ELEVATOR = 0; // TODO: Find elevator MagicMotion
-												// PID values
+	public static double P_POS_ELEVATOR = 0; // TODO: Find elevator MagicMotion PID values
 	public static double I_POS_ELEVATOR = 0;
 	public static double D_POS_ELEVATOR = 0;
 
 	/**
 	 * Velocity PID values for the elevator
 	 */
-	public static double P_VEL_ELEVATOR = 0; // TODO: Find elevator velocity PID
-												// values
+	public static double P_VEL_ELEVATOR = 0; // TODO: Find elevator velocity PID values
 	public static double I_VEL_ELEVATOR = 0;
 	public static double D_VEL_ELEVATOR = 0;
 
 	/**
 	 * The default profiling velocity percent of the elevator
 	 */
-	public static double PROFILE_VEL_PERCENT_ELEVATOR = 0; // TODO: Decide on
-															// PROFILE_VEL_PERCENT_ELEVATOR
+	public static double PROFILE_VEL_PERCENT_ELEVATOR = 0; // TODO: Decide on PROFILE_VEL_PERCENT_ELEVATOR
 
 	/**
 	 * The default profiling acceleration of the elevator
 	 */
-	public static double PROFILE_ACCEL_PERCENT_ELEVATOR = 0; // TODO: Decide on
-																// PROFILE_ACCEL_PERCENT_ELEVATOR
+	public static double PROFILE_ACCEL_PERCENT_ELEVATOR = 0; // TODO: Decide on PROFILE_ACCEL_PERCENT_ELEVATOR
 
 	/**
 	 * The distance from the end of the elevator profile at which the stopping
@@ -102,12 +95,9 @@ public class Elevator extends NRSubsystem {
 	/**
 	 * The current values of the elevator
 	 */
-	public static final int PEAK_CURRENT_ELEVATOR = 0;// TODO: Find
-														// PEAK_CURRENT_ELEVATOR
-	public static final int PEAK_CURRENT_DURATION_ELEVATOR = 0; // TODO: Find
-																// PEAK_CURRENT_DURATION_ELEVATOR
-	public static final int CONTINUOUS_CURRENT_LIMIT_ELEVATOR = 0; // TODO: Find
-																	// CONTINUOUS_CURRENT_LIMIT_ELEVATOR
+	public static final int PEAK_CURRENT_ELEVATOR = 0;// TODO: Find PEAK_CURRENT_ELEVATOR
+	public static final int PEAK_CURRENT_DURATION_ELEVATOR = 0; // TODO: Find PEAK_CURRENT_DURATION_ELEVATOR
+	public static final int CONTINUOUS_CURRENT_LIMIT_ELEVATOR = 0; // TODO: Find CONTINUOUS_CURRENT_LIMIT_ELEVATOR
 
 	/**
 	 * The rate of velocity measurements on the elevator encoder
@@ -151,68 +141,64 @@ public class Elevator extends NRSubsystem {
 	 * The positions of the elevator at each limit switch and at the default
 	 * extend height
 	 */
-	public static final Distance TOP_POSITION_ELEVATOR = Distance.ZERO; // TODO:
-																		// Find
-																		// TOP_POSITION_ELEVATOR
-	public static final Distance AUTO_HEIGHT_ELEVATOR = Distance.ZERO; // TODO:
-																		// Find
-																		// AUTO_HEIGHT_ELEVATOR
-	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO; // TODO:
-																			// Find
-																			// BOTTOM_HEIGHT_ELEVATOR
+	public static final Distance TOP_POSITION_ELEVATOR = Distance.ZERO; // TODO: Find TOP_POSITION_ELEVATOR
+	public static final Distance AUTO_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find AUTO_HEIGHT_ELEVATOR
+	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find BOTTOM_HEIGHT_ELEVATOR
 
-	public Speed velSetpoint = Speed.ZERO;
-	public Distance posSetpoint = Distance.ZERO;
+	private Speed velSetpoint = Speed.ZERO;
+	private Distance posSetpoint = Distance.ZERO;
 
 	public Distance profileDeltaPos = Distance.ZERO;
 
 	private Elevator() {
 
-		elevTalon = CTRECreator.createMasterTalon(RobotMap.ELEVATOR_TALON);
-		elevTalonFollow = CTRECreator.createFollowerTalon(RobotMap.ELEVATOR_TALON_FOLLOW, elevTalon.getDeviceID());
-
 		if (EnabledSubsystems.ELEVATOR_ENABLED) {
-			elevTalon.set(ControlMode.Velocity, 0);
-		} else {
-			elevTalon.set(ControlMode.PercentOutput, 0);
+			elevTalon = CTRECreator.createMasterTalon(RobotMap.ELEVATOR_TALON);
+			elevTalonFollow = CTRECreator.createFollowerTalon(RobotMap.ELEVATOR_TALON_FOLLOW, elevTalon.getDeviceID());
+	
+			if (EnabledSubsystems.ELEVATOR_DUMB_ENABLED) {
+				elevTalon.set(ControlMode.PercentOutput, 0);
+			} else {
+				elevTalon.set(ControlMode.PercentOutput, 0);
+			}
+	
+			elevTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);
+			elevTalon.config_kF(VEL_SLOT, 0, DEFAULT_TIMEOUT);
+			elevTalon.config_kP(VEL_SLOT, P_VEL_ELEVATOR, DEFAULT_TIMEOUT);
+			elevTalon.config_kI(VEL_SLOT, I_VEL_ELEVATOR, DEFAULT_TIMEOUT);
+			elevTalon.config_kD(VEL_SLOT, D_VEL_ELEVATOR, DEFAULT_TIMEOUT);
+			elevTalon.config_kF(MOTION_MAGIC_SLOT, 0, DEFAULT_TIMEOUT);
+			elevTalon.config_kP(MOTION_MAGIC_SLOT, P_POS_ELEVATOR, DEFAULT_TIMEOUT);
+			elevTalon.config_kI(MOTION_MAGIC_SLOT, I_POS_ELEVATOR, DEFAULT_TIMEOUT);
+			elevTalon.config_kD(MOTION_MAGIC_SLOT, D_POS_ELEVATOR, DEFAULT_TIMEOUT);
+			elevTalon.setNeutralMode(NEUTRAL_MODE_ELEVATOR);
+			elevTalon.setInverted(false);
+			elevTalon.setSensorPhase(false);
+	
+			elevTalon.enableVoltageCompensation(true);
+			elevTalon.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL_ELEVATOR, DEFAULT_TIMEOUT);
+	
+			elevTalon.enableCurrentLimit(true);
+			elevTalon.configPeakCurrentLimit(PEAK_CURRENT_ELEVATOR, DEFAULT_TIMEOUT);
+			elevTalon.configPeakCurrentDuration(PEAK_CURRENT_DURATION_ELEVATOR, DEFAULT_TIMEOUT);
+			elevTalon.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT_ELEVATOR, DEFAULT_TIMEOUT);
+	
+			elevTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
+			elevTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
+	
+			elevTalon
+					.configMotionCruiseVelocity(
+							(int) MAX_SPEED_ELEVATOR.mul(PROFILE_VEL_PERCENT_ELEVATOR)
+									.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND),
+							DEFAULT_TIMEOUT);
+			elevTalon.configMotionAcceleration((int) MAX_ACCEL_ELEVATOR.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
+					Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
+					DEFAULT_TIMEOUT);
+	
+			elevEncoder = new TalonEncoderElev(elevTalon);
+	
+			elevTalonFollow.setNeutralMode(NEUTRAL_MODE_ELEVATOR);
 		}
-
-		elevTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);
-		elevTalon.config_kF(VEL_SLOT, 0, DEFAULT_TIMEOUT);
-		elevTalon.config_kP(VEL_SLOT, P_VEL_ELEVATOR, DEFAULT_TIMEOUT);
-		elevTalon.config_kI(VEL_SLOT, I_VEL_ELEVATOR, DEFAULT_TIMEOUT);
-		elevTalon.config_kD(VEL_SLOT, D_VEL_ELEVATOR, DEFAULT_TIMEOUT);
-		elevTalon.config_kF(MOTION_MAGIC_SLOT, 0, DEFAULT_TIMEOUT);
-		elevTalon.config_kP(MOTION_MAGIC_SLOT, P_POS_ELEVATOR, DEFAULT_TIMEOUT);
-		elevTalon.config_kI(MOTION_MAGIC_SLOT, I_POS_ELEVATOR, DEFAULT_TIMEOUT);
-		elevTalon.config_kD(MOTION_MAGIC_SLOT, D_POS_ELEVATOR, DEFAULT_TIMEOUT);
-		elevTalon.setNeutralMode(NEUTRAL_MODE_ELEVATOR);
-		elevTalon.setInverted(false);
-		elevTalon.setSensorPhase(false);
-
-		elevTalon.enableVoltageCompensation(true);
-		elevTalon.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL_ELEVATOR, DEFAULT_TIMEOUT);
-
-		elevTalon.enableCurrentLimit(true);
-		elevTalon.configPeakCurrentLimit(PEAK_CURRENT_ELEVATOR, DEFAULT_TIMEOUT);
-		elevTalon.configPeakCurrentDuration(PEAK_CURRENT_DURATION_ELEVATOR, DEFAULT_TIMEOUT);
-		elevTalon.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT_ELEVATOR, DEFAULT_TIMEOUT);
-
-		elevTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
-		elevTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
-
-		elevTalon
-				.configMotionCruiseVelocity(
-						(int) MAX_SPEED_ELEVATOR.mul(PROFILE_VEL_PERCENT_ELEVATOR)
-								.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND),
-						DEFAULT_TIMEOUT);
-		elevTalon.configMotionAcceleration((int) MAX_ACCEL_ELEVATOR.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
-				Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
-				DEFAULT_TIMEOUT);
-
-		elevEncoder = new TalonEncoderElev(elevTalon);
-
-		elevTalonFollow.setNeutralMode(NEUTRAL_MODE_ELEVATOR);
 
 		smartDashboardInit();
 	}
@@ -234,7 +220,9 @@ public class Elevator extends NRSubsystem {
 	 * @return The current position of the elevator encoders
 	 */
 	public Distance getPosition() {
-		return new Distance(elevTalon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV);
+		if (elevTalon != null)
+			return new Distance(elevTalon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV);
+		return Distance.ZERO;
 	}
 
 	/**
@@ -245,15 +233,19 @@ public class Elevator extends NRSubsystem {
 	 * @return old position of the elevator talon
 	 */
 	public Distance getHistoricalPosition(Time timePassed) {
-		return elevEncoder.getPosition(timePassed);
+		if (elevTalon != null)
+			return elevEncoder.getPosition(timePassed);
+		return Distance.ZERO;
 	}
 
 	/**
 	 * @return The current velocity of the elevator encoders
 	 */
 	public Speed getVelocity() {
-		return new Speed(elevTalon.getSelectedSensorVelocity(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
+		if (elevTalon != null)
+			return new Speed(elevTalon.getSelectedSensorVelocity(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
 				Time.Unit.HUNDRED_MILLISECOND);
+		return Speed.ZERO;
 	}
 
 	/**
@@ -264,14 +256,18 @@ public class Elevator extends NRSubsystem {
 	 * @return old velocity of the elevator talon
 	 */
 	public Speed getHistoricalVelocity(Time timePassed) {
-		return new Speed(elevEncoder.getVelocity(timePassed));
+		if (elevTalon != null)
+			return new Speed(elevEncoder.getVelocity(timePassed));
+		return Speed.ZERO;
 	}
 
 	/**
 	 * @return The current of the elevator talon
 	 */
 	public double getCurrent() {
-		return elevTalon.getOutputCurrent();
+		if (elevTalon != null)
+			return elevTalon.getOutputCurrent();
+		return 0;
 	}
 
 	/**
@@ -280,39 +276,41 @@ public class Elevator extends NRSubsystem {
 	 *            BOTTOM_HEIGHT up)
 	 */
 	public void setPosition(Distance position) {
-		posSetpoint = position;
-		velSetpoint = Speed.ZERO;
-		elevTalon.set(ControlMode.MotionMagic, position.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV));
+		if (elevTalon != null) {
+			posSetpoint = position;
+			velSetpoint = Speed.ZERO;
+			elevTalon.set(ControlMode.MotionMagic, position.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV));
+		}
 	}
 
 	/**
-	 * @param percent
-	 *            velocity
+	 * @param percent velocity
 	 */
 	public void setMotorSpeedPercent(double percent) {
 		setMotorSpeed(MAX_SPEED_ELEVATOR.mul(percent));
 	}
 
 	/**
-	 * @param speed
-	 *            to set motor in
+	 * @param speed to set motor in
 	 */
 	public void setMotorSpeed(Speed speed) {
 
-		velSetpoint = speed;
-		posSetpoint = Distance.ZERO;
-		elevTalon.config_kF(VEL_SLOT,
-				((VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR * velSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
-						+ MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR) * 1023.0)
-						/ velSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
-								Time.Unit.HUNDRED_MILLISECOND),
-				DEFAULT_TIMEOUT);
-
-		if (elevTalon.getControlMode() == ControlMode.PercentOutput) {
-			elevTalon.set(elevTalon.getControlMode(), velSetpoint.div(MAX_SPEED_ELEVATOR));
-		} else {
-			elevTalon.set(elevTalon.getControlMode(),
-					velSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND));
+		if (elevTalon != null) {
+			velSetpoint = speed;
+			posSetpoint = Distance.ZERO;
+			elevTalon.config_kF(VEL_SLOT,
+					((VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR * velSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
+							+ MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR) * 1023.0)
+							/ velSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
+									Time.Unit.HUNDRED_MILLISECOND),
+					DEFAULT_TIMEOUT);
+	
+			if (elevTalon.getControlMode() == ControlMode.PercentOutput) {
+				elevTalon.set(elevTalon.getControlMode(), velSetpoint.div(MAX_SPEED_ELEVATOR));
+			} else {
+				elevTalon.set(elevTalon.getControlMode(),
+						velSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND));
+			}
 		}
 	}
 
@@ -323,8 +321,10 @@ public class Elevator extends NRSubsystem {
 	 *            going from 0V to 12V
 	 */
 	public void setVoltageRamp(Time time) {
-		elevTalon.configOpenloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
-		elevTalon.configClosedloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
+		if (elevTalon != null) {
+			elevTalon.configOpenloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
+			elevTalon.configClosedloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
+		}
 	}
 
 	/**
