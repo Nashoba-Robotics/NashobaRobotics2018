@@ -1,9 +1,5 @@
 package edu.nr.robotics.subsystems.elevator;
 
-import java.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
-
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter.DEFAULT;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -11,7 +7,6 @@ import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.commandbased.NRSubsystem;
-import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.sensorhistory.TalonEncoderElev;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Acceleration;
@@ -32,31 +27,22 @@ public class Elevator extends NRSubsystem {
 	/**
 	 * The encoder ticks per inch moved on the elevator
 	 */
-	public static final double ENC_TICK_PER_INCH_ELEVATOR = 0; // TODO: Find
-																// ENC_TICK_PER_INCH_ELEVATOR
+	public static final double ENC_TICK_PER_INCH_ELEVATOR = 0; // TODO: Find ENC_TICK_PER_INCH_ELEVATOR
 
 	/**
 	 * The max speed of the elevator
 	 */
-	public static final Speed MAX_SPEED_ELEVATOR = Speed.ZERO; // TODO: Find
-																// MAX_SPEED_ELEVATOR
+	public static final Speed MAX_SPEED_ELEVATOR = Speed.ZERO; // TODO: Find MAX_SPEED_ELEVATOR
 
 	/**
 	 * The max acceleration of the elevator
 	 */
-	public static final Acceleration MAX_ACCEL_ELEVATOR = Acceleration.ZERO; // TODO:
-																				// Find
-																				// MAX_ACCEL_ELEVATOR
+	public static final Acceleration MAX_ACCEL_ELEVATOR = Acceleration.ZERO; // TODO: Find MAX_ACCEL_ELEVATOR
 
 	/**
 	 * The minimum voltage needed to move the elevator
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR = 0; // TODO:
-																		// Find
-																		// Elevator
-																		// voltage
-																		// velocity
-																		// curve
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR = 0; // TODO: Find Elevator voltage velocity curve
 
 	/**
 	 * The slope of voltage over velocity in feet per second
@@ -104,23 +90,14 @@ public class Elevator extends NRSubsystem {
 	 * The distance from the end of the elevator profile at which the stopping
 	 * algorithm starts
 	 */
-	public static final double PROFILE_END_POS_THRESHOLD_ELEVATOR = 0; // TODO:
-																		// Decide
-																		// on
-																		// PROFILE_END_POS_THRESHOLD_ELEVATOR
+	public static final Distance PROFILE_END_POS_THRESHOLD_ELEVATOR = Distance.ZERO; // TODO: Decide on PROFILE_END_POS_THRESHOLD_ELEVATOR
 
 	/**
 	 * The change in position elevator within for
 	 * PROFILE_TIME_POS_THRESHOLD_ELEVATOR before stopping profile
 	 */
-	public static final double PROFILE_DELTA_POS_THRESHOLD_ELEVATOR = 0; // TODO:
-																			// Decide
-																			// on
-																			// PROFILE_DELTA_POS_THRESHOLD_ELEVATOR
-	public static final double PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR = 0; // TODO:
-																			// Decide
-																			// on
-																			// PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR
+	public static final Distance PROFILE_DELTA_POS_THRESHOLD_ELEVATOR = Distance.ZERO; // TODO: Decide on PROFILE_DELTA_POS_THRESHOLD_ELEVATOR
+	public static final Time PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR = Time.ZERO; // TODO: Decide on PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR
 
 	/**
 	 * The current values of the elevator
@@ -187,6 +164,8 @@ public class Elevator extends NRSubsystem {
 	public Speed velSetpoint = Speed.ZERO;
 	public Distance posSetpoint = Distance.ZERO;
 
+	public Distance profileDeltaPos = Distance.ZERO;
+
 	private Elevator() {
 
 		elevTalon = CTRECreator.createMasterTalon(RobotMap.ELEVATOR_TALON);
@@ -222,9 +201,11 @@ public class Elevator extends NRSubsystem {
 		elevTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 		elevTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 
-		elevTalon.configMotionCruiseVelocity((int) MAX_SPEED_ELEVATOR.mul(PROFILE_VEL_PERCENT_ELEVATOR).get(
-				Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND), 
-				DEFAULT_TIMEOUT);
+		elevTalon
+				.configMotionCruiseVelocity(
+						(int) MAX_SPEED_ELEVATOR.mul(PROFILE_VEL_PERCENT_ELEVATOR)
+								.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND),
+						DEFAULT_TIMEOUT);
 		elevTalon.configMotionAcceleration((int) MAX_ACCEL_ELEVATOR.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
 				Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 				DEFAULT_TIMEOUT);
@@ -232,7 +213,7 @@ public class Elevator extends NRSubsystem {
 		elevEncoder = new TalonEncoderElev(elevTalon);
 
 		elevTalonFollow.setNeutralMode(NEUTRAL_MODE_ELEVATOR);
-		
+
 		smartDashboardInit();
 	}
 
@@ -245,6 +226,7 @@ public class Elevator extends NRSubsystem {
 	public synchronized static void init() {
 		if (singleton == null) {
 			singleton = new Elevator();
+			singleton.setJoystickCommand(new ElevatorJoystickCommand());
 		}
 	}
 
@@ -262,7 +244,7 @@ public class Elevator extends NRSubsystem {
 	 *            How long ago to look
 	 * @return old position of the elevator talon
 	 */
-	public Distance getHistoricalDistance(Time timePassed) {
+	public Distance getHistoricalPosition(Time timePassed) {
 		return elevEncoder.getPosition(timePassed);
 	}
 
@@ -293,79 +275,111 @@ public class Elevator extends NRSubsystem {
 	}
 
 	/**
-	 * @param position the absolute position the elevator talon should go to (0+ from BOTTOM_HEIGHT up)
+	 * @param position
+	 *            the absolute position the elevator talon should go to (0+ from
+	 *            BOTTOM_HEIGHT up)
 	 */
 	public void setPosition(Distance position) {
 		posSetpoint = position;
 		velSetpoint = Speed.ZERO;
 		elevTalon.set(ControlMode.MotionMagic, position.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV));
 	}
-	
+
 	/**
-	 * @param percent velocity
+	 * @param percent
+	 *            velocity
 	 */
 	public void setMotorSpeedPercent(double percent) {
 		setMotorSpeed(MAX_SPEED_ELEVATOR.mul(percent));
 	}
 
 	/**
-	 * @param speed to set motor in
+	 * @param speed
+	 *            to set motor in
 	 */
 	public void setMotorSpeed(Speed speed) {
-		
+
 		velSetpoint = speed;
 		posSetpoint = Distance.ZERO;
-		elevTalon.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR * velSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR) * 1023.0) / velSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
-		
-		if(elevTalon.getControlMode() == ControlMode.PercentOutput) {
+		elevTalon.config_kF(VEL_SLOT,
+				((VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR * velSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
+						+ MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR) * 1023.0)
+						/ velSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
+								Time.Unit.HUNDRED_MILLISECOND),
+				DEFAULT_TIMEOUT);
+
+		if (elevTalon.getControlMode() == ControlMode.PercentOutput) {
 			elevTalon.set(elevTalon.getControlMode(), velSetpoint.div(MAX_SPEED_ELEVATOR));
 		} else {
-			elevTalon.set(elevTalon.getControlMode(), velSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND));
-		}		
+			elevTalon.set(elevTalon.getControlMode(),
+					velSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND));
+		}
 	}
-	
+
 	/**
 	 * Sets the time limit going from 0V to 12V in seconds
 	 * 
-	 * @param time going from 0V to 12V
+	 * @param time
+	 *            going from 0V to 12V
 	 */
 	public void setVoltageRamp(Time time) {
 		elevTalon.configOpenloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 		elevTalon.configClosedloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	}
-	
+
 	/**
 	 * What is put on SmartDashboard when it's initialized
 	 */
 	public void smartDashboardInit() {
-		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_BASIC_ENABLED) {
-			
-		}
 		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
-			
+			SmartDashboard.putNumber("Elevator Profile Delta Inches: ", 0);
+			SmartDashboard.putNumber("Voltage Ramp Rate Elevator Seconds: ",
+					VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND));
+			SmartDashboard.putNumber("P Pos Elevator: ", P_POS_ELEVATOR);
+			SmartDashboard.putNumber("I Pos Elevator: ", I_POS_ELEVATOR);
+			SmartDashboard.putNumber("D Pos Elevator: ", D_POS_ELEVATOR);
+			SmartDashboard.putNumber("P Vel Elevator: ", P_VEL_ELEVATOR);
+			SmartDashboard.putNumber("I Vel Elevator: ", I_VEL_ELEVATOR);
+			SmartDashboard.putNumber("D Vel Elevator: ", D_VEL_ELEVATOR);
+			SmartDashboard.putNumber("Profile Vel Percent Elevator: ", PROFILE_VEL_PERCENT_ELEVATOR);
+			SmartDashboard.putNumber("Profile Accel Percent Elevator: ", PROFILE_ACCEL_PERCENT_ELEVATOR);
 		}
 	}
-	
+
 	/**
-	 * 
+	 * What is output or updated on SmartDashboard every time through the loop
 	 */
 	@Override
 	public void smartDashboardInfo() {
 		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_BASIC_ENABLED) {
 			SmartDashboard.putNumber("Elevator Current: ", getCurrent());
-			SmartDashboard.putString("Elevator Velocity vs. Set Velocity: ", getVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + velSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
-			SmartDashboard.putString("Elevator Position vs. Set Position: ", getPosition().get(Distance.Unit.INCH) + " : " + posSetpoint.get(Distance.Unit.INCH));
+			SmartDashboard.putString("Elevator Velocity vs. Set Velocity: ",
+					getVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : "
+							+ velSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+			SmartDashboard.putString("Elevator Position vs. Set Position: ",
+					getPosition().get(Distance.Unit.INCH) + " : " + posSetpoint.get(Distance.Unit.INCH));
 		}
 		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
-			
+			profileDeltaPos = new Distance(SmartDashboard.getNumber("Elevator Profile Delta Inches: ", 0),
+					Distance.Unit.INCH);
+			P_POS_ELEVATOR = SmartDashboard.getNumber("P Pos Elevator: ", P_POS_ELEVATOR);
+			I_POS_ELEVATOR = SmartDashboard.getNumber("I Pos Elevator: ", I_POS_ELEVATOR);
+			D_POS_ELEVATOR = SmartDashboard.getNumber("D Pos Elevator: ", D_POS_ELEVATOR);
+			P_VEL_ELEVATOR = SmartDashboard.getNumber("P Vel Elevator: ", P_VEL_ELEVATOR);
+			I_VEL_ELEVATOR = SmartDashboard.getNumber("I Vel Elevator: ", I_VEL_ELEVATOR);
+			D_VEL_ELEVATOR = SmartDashboard.getNumber("D Vel Elevator: ", D_VEL_ELEVATOR);
+			PROFILE_VEL_PERCENT_ELEVATOR = SmartDashboard.getNumber("Profile Vel Percent Elevator: ",
+					PROFILE_VEL_PERCENT_ELEVATOR);
+			PROFILE_ACCEL_PERCENT_ELEVATOR = SmartDashboard.getNumber("Profile Accel Percent Elevator: ",
+					PROFILE_ACCEL_PERCENT_ELEVATOR);
 		}
 	}
 
 	@Override
 	public void periodic() {
-		
+
 	}
-	
+
 	@Override
 	public void disable() {
 		setMotorSpeedPercent(0);
