@@ -1,144 +1,373 @@
 package edu.nr.robotics.subsystems.elevator;
 
-import com.ctre.CANTalon.VelocityMeasurementPeriod;
+import java.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
+
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter.DEFAULT;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.commandbased.NRSubsystem;
+import edu.nr.lib.sensorhistory.TalonEncoder;
+import edu.nr.lib.sensorhistory.TalonEncoderElev;
+import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Acceleration;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
+import edu.nr.robotics.RobotMap;
+import edu.nr.robotics.subsystems.EnabledSubsystems;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Elevator extends NRSubsystem{
+public class Elevator extends NRSubsystem {
 
-	private static Elevator elevator;
-	
+	private static Elevator singleton;
+
+	private TalonSRX elevTalon, elevTalonFollow;
+	private TalonEncoderElev elevEncoder;
+
 	/**
 	 * The encoder ticks per inch moved on the elevator
 	 */
-	public static final double ENC_TICK_PER_INCH_ELEVATOR = 0; //TODO: Find ENC_TICK_PER_INCH_ELEVATOR
-	
+	public static final double ENC_TICK_PER_INCH_ELEVATOR = 0; // TODO: Find
+																// ENC_TICK_PER_INCH_ELEVATOR
+
 	/**
 	 * The max speed of the elevator
 	 */
-	public static final Speed MAX_SPEED_ELEVATOR = Speed.ZERO; //TODO: Find MAX_SPEED_ELEVATOR
-	
+	public static final Speed MAX_SPEED_ELEVATOR = Speed.ZERO; // TODO: Find
+																// MAX_SPEED_ELEVATOR
+
 	/**
 	 * The max acceleration of the elevator
 	 */
-	public static final Acceleration MAX_ACCEL_ELEVATOR = Acceleration.ZERO; //TODO: Find MAX_ACCEL_ELEVATOR
-	
+	public static final Acceleration MAX_ACCEL_ELEVATOR = Acceleration.ZERO; // TODO:
+																				// Find
+																				// MAX_ACCEL_ELEVATOR
+
 	/**
 	 * The minimum voltage needed to move the elevator
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR = 0; //TODO: Find Elevator voltage velocity curve
-	
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR = 0; // TODO:
+																		// Find
+																		// Elevator
+																		// voltage
+																		// velocity
+																		// curve
+
 	/**
 	 * The slope of voltage over velocity in feet per second
 	 */
-	public static final double VOLTAGE_VELOCITY_SLOPE_ELEVATOR = 0;
-	
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR = 0;
+
 	/**
-	 * The voltage ramp rate of the elevator.
-	 * Voltage ramp rate is time it takes to go from 0V to 12V
+	 * The voltage ramp rate of the elevator. Voltage ramp rate is time it takes
+	 * to go from 0V to 12V
 	 */
-	public static Time VOLTAGE_RAMP_RATE_ELEVATOR = Time.ZERO; //TODO: Test for elevator voltage ramp rate
-	
+	public static Time VOLTAGE_RAMP_RATE_ELEVATOR = Time.ZERO; // TODO: Test for
+																// elevator
+																// voltage ramp
+																// rate
+
 	/**
 	 * MotionMagic PID values for the elevator
 	 */
-	public static double P_POS_ELEVATOR = 0; //TODO: Find elevator MagicMotion PID values
+	public static double P_POS_ELEVATOR = 0; // TODO: Find elevator MagicMotion
+												// PID values
 	public static double I_POS_ELEVATOR = 0;
 	public static double D_POS_ELEVATOR = 0;
-	
+
 	/**
 	 * Velocity PID values for the elevator
 	 */
-	public static double P_VEL_ELEVATOR = 0; //TODO: Find elevator velocity PID values
+	public static double P_VEL_ELEVATOR = 0; // TODO: Find elevator velocity PID
+												// values
 	public static double I_VEL_ELEVATOR = 0;
 	public static double D_VEL_ELEVATOR = 0;
-	
+
 	/**
 	 * The default profiling velocity percent of the elevator
 	 */
-	public static double PROFILE_VEL_PERCENT_ELEVATOR = 0; //TODO: Decide on PROFILE_VEL_PERCENT_ELEVATOR
-	
+	public static double PROFILE_VEL_PERCENT_ELEVATOR = 0; // TODO: Decide on
+															// PROFILE_VEL_PERCENT_ELEVATOR
+
 	/**
 	 * The default profiling acceleration of the elevator
 	 */
-	public static double PROFILE_ACCEL_PERCENT_ELEVATOR = 0; //TODO: Decide on PROFILE_ACCEL_PERCENT_ELEVATOR
-	
+	public static double PROFILE_ACCEL_PERCENT_ELEVATOR = 0; // TODO: Decide on
+																// PROFILE_ACCEL_PERCENT_ELEVATOR
+
 	/**
-	 * The distance from the end of the elevator profile at which the stopping algorithm
-	 * 		starts
+	 * The distance from the end of the elevator profile at which the stopping
+	 * algorithm starts
 	 */
-	public static final double PROFILE_END_POS_THRESHOLD_ELEVATOR = 0; //TODO: Decide on PROFILE_END_POS_THRESHOLD_ELEVATOR
-	
+	public static final double PROFILE_END_POS_THRESHOLD_ELEVATOR = 0; // TODO:
+																		// Decide
+																		// on
+																		// PROFILE_END_POS_THRESHOLD_ELEVATOR
+
 	/**
-	 * The change in position elevator within for PROFILE_TIME_POS_THRESHOLD_ELEVATOR before stopping profile
+	 * The change in position elevator within for
+	 * PROFILE_TIME_POS_THRESHOLD_ELEVATOR before stopping profile
 	 */
-	public static final double PROFILE_DELTA_POS_THRESHOLD_ELEVATOR = 0; //TODO: Decide on PROFILE_DELTA_POS_THRESHOLD_ELEVATOR
-	public static final double PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR = 0; //TODO: Decide on PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR
-	
+	public static final double PROFILE_DELTA_POS_THRESHOLD_ELEVATOR = 0; // TODO:
+																			// Decide
+																			// on
+																			// PROFILE_DELTA_POS_THRESHOLD_ELEVATOR
+	public static final double PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR = 0; // TODO:
+																			// Decide
+																			// on
+																			// PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR
+
 	/**
 	 * The current values of the elevator
 	 */
-	public static final double PEAK_CURRENT_ELEVATOR = 0;//TODO: Find PEAK_CURRENT_ELEVATOR
-	public static final double PEAK_CURRENT_DURATION_ELEVATOR = 0; //TODO: Find PEAK_CURRENT_DURATION_ELEVATOR
-	public static final double CONTINUOUS_CURRENT_LIMIT_ELEVATOR = 0; //TODO: Find CONTINUOUS_CURRENT_LIMIT_ELEVATOR
-	
+	public static final int PEAK_CURRENT_ELEVATOR = 0;// TODO: Find
+														// PEAK_CURRENT_ELEVATOR
+	public static final int PEAK_CURRENT_DURATION_ELEVATOR = 0; // TODO: Find
+																// PEAK_CURRENT_DURATION_ELEVATOR
+	public static final int CONTINUOUS_CURRENT_LIMIT_ELEVATOR = 0; // TODO: Find
+																	// CONTINUOUS_CURRENT_LIMIT_ELEVATOR
+
 	/**
 	 * The rate of velocity measurements on the elevator encoder
 	 */
 	public static final VelocityMeasPeriod VELOCITY_MEASUREMENT_PERIOD_ELEVATOR = VelocityMeasPeriod.Period_10Ms;
-	
+
 	/**
-	 * The number of measurements the elevator encoder averages to return a value
+	 * The number of measurements the elevator encoder averages to return a
+	 * value
 	 */
 	public static final double VELOCITY_MEASUREMENT_WINDOW_ELEVATOR = 32;
-	
+
 	/**
-	 * The 100% voltage that is used as a base calculation for all PercentOutputs
+	 * The 100% voltage that is used as a base calculation for all
+	 * PercentOutputs
 	 */
 	public static final double VOLTAGE_COMPENSATION_LEVEL_ELEVATOR = 12;
-	
+
 	/**
 	 * The neutral mode of the elevator (brake or coast)
 	 */
 	public static final NeutralMode NEUTRAL_MODE_ELEVATOR = NeutralMode.Brake;
-	
+
 	/**
 	 * The PID type of the elevator. 0 = Primary, 1 = Cascade
 	 */
-	public static final double PID_TYPE = 0;
-	
+	public static final int PID_TYPE = 0;
+
 	/**
 	 * The default timeout of the elevator functions in ms
 	 */
-	public static final double DEFAULT_TIMEOUT = 0;
+	public static final int DEFAULT_TIMEOUT = 0;
+
+	/**
+	 * The PID slot numbers
+	 */
+	public static final int VEL_SLOT = 0;
+	public static final int MOTION_MAGIC_SLOT = 1;
+
+	/**
+	 * The positions of the elevator at each limit switch and at the default
+	 * extend height
+	 */
+	public static final Distance TOP_POSITION_ELEVATOR = Distance.ZERO; // TODO:
+																		// Find
+																		// TOP_POSITION_ELEVATOR
+	public static final Distance AUTO_HEIGHT_ELEVATOR = Distance.ZERO; // TODO:
+																		// Find
+																		// AUTO_HEIGHT_ELEVATOR
+	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO; // TODO:
+																			// Find
+																			// BOTTOM_HEIGHT_ELEVATOR
+
+	public Speed velSetpoint = Speed.ZERO;
+	public Distance posSetpoint = Distance.ZERO;
+
+	private Elevator() {
+
+		elevTalon = CTRECreator.createMasterTalon(RobotMap.ELEVATOR_TALON);
+		elevTalonFollow = CTRECreator.createFollowerTalon(RobotMap.ELEVATOR_TALON_FOLLOW, elevTalon.getDeviceID());
+
+		if (EnabledSubsystems.ELEVATOR_ENABLED) {
+			elevTalon.set(ControlMode.Velocity, 0);
+		} else {
+			elevTalon.set(ControlMode.PercentOutput, 0);
+		}
+
+		elevTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);
+		elevTalon.config_kF(VEL_SLOT, 0, DEFAULT_TIMEOUT);
+		elevTalon.config_kP(VEL_SLOT, P_VEL_ELEVATOR, DEFAULT_TIMEOUT);
+		elevTalon.config_kI(VEL_SLOT, I_VEL_ELEVATOR, DEFAULT_TIMEOUT);
+		elevTalon.config_kD(VEL_SLOT, D_VEL_ELEVATOR, DEFAULT_TIMEOUT);
+		elevTalon.config_kF(MOTION_MAGIC_SLOT, 0, DEFAULT_TIMEOUT);
+		elevTalon.config_kP(MOTION_MAGIC_SLOT, P_POS_ELEVATOR, DEFAULT_TIMEOUT);
+		elevTalon.config_kI(MOTION_MAGIC_SLOT, I_POS_ELEVATOR, DEFAULT_TIMEOUT);
+		elevTalon.config_kD(MOTION_MAGIC_SLOT, D_POS_ELEVATOR, DEFAULT_TIMEOUT);
+		elevTalon.setNeutralMode(NEUTRAL_MODE_ELEVATOR);
+		elevTalon.setInverted(false);
+		elevTalon.setSensorPhase(false);
+
+		elevTalon.enableVoltageCompensation(true);
+		elevTalon.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL_ELEVATOR, DEFAULT_TIMEOUT);
+
+		elevTalon.enableCurrentLimit(true);
+		elevTalon.configPeakCurrentLimit(PEAK_CURRENT_ELEVATOR, DEFAULT_TIMEOUT);
+		elevTalon.configPeakCurrentDuration(PEAK_CURRENT_DURATION_ELEVATOR, DEFAULT_TIMEOUT);
+		elevTalon.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT_ELEVATOR, DEFAULT_TIMEOUT);
+
+		elevTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
+		elevTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
+
+		elevTalon.configMotionCruiseVelocity((int) MAX_SPEED_ELEVATOR.mul(PROFILE_VEL_PERCENT_ELEVATOR).get(
+				Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND), 
+				DEFAULT_TIMEOUT);
+		elevTalon.configMotionAcceleration((int) MAX_ACCEL_ELEVATOR.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
+				Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
+				DEFAULT_TIMEOUT);
+
+		elevEncoder = new TalonEncoderElev(elevTalon);
+
+		elevTalonFollow.setNeutralMode(NEUTRAL_MODE_ELEVATOR);
+		
+		smartDashboardInit();
+	}
+
+	public static Elevator getInstance() {
+		if (singleton == null)
+			init();
+		return singleton;
+	}
+
+	public synchronized static void init() {
+		if (singleton == null) {
+			singleton = new Elevator();
+		}
+	}
+
+	/**
+	 * @return The current position of the elevator encoders
+	 */
+	public Distance getPosition() {
+		return new Distance(elevTalon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV);
+	}
+
+	/**
+	 * Gets the historical position of the elevator talon
+	 * 
+	 * @param timePassed
+	 *            How long ago to look
+	 * @return old position of the elevator talon
+	 */
+	public Distance getHistoricalDistance(Time timePassed) {
+		return elevEncoder.getPosition(timePassed);
+	}
+
+	/**
+	 * @return The current velocity of the elevator encoders
+	 */
+	public Speed getVelocity() {
+		return new Speed(elevTalon.getSelectedSensorVelocity(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
+				Time.Unit.HUNDRED_MILLISECOND);
+	}
+
+	/**
+	 * Gets the historical velocity of the elevator talon
+	 * 
+	 * @param timePassed
+	 *            How long ago to look
+	 * @return old velocity of the elevator talon
+	 */
+	public Speed getHistoricalVelocity(Time timePassed) {
+		return new Speed(elevEncoder.getVelocity(timePassed));
+	}
+
+	/**
+	 * @return The current of the elevator talon
+	 */
+	public double getCurrent() {
+		return elevTalon.getOutputCurrent();
+	}
+
+	/**
+	 * @param position the absolute position the elevator talon should go to (0+ from BOTTOM_HEIGHT up)
+	 */
+	public void setPosition(Distance position) {
+		posSetpoint = position;
+		velSetpoint = Speed.ZERO;
+		elevTalon.set(ControlMode.MotionMagic, position.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV));
+	}
 	
 	/**
-	 * The PID slot numbers 
+	 * @param percent velocity
 	 */
-	public static final double VEL_SLOT = 0;
-	public static final double MOTION_MAGIC_SLOT = 1;
+	public void setMotorSpeedPercent(double percent) {
+		setMotorSpeed(MAX_SPEED_ELEVATOR.mul(percent));
+	}
+
+	/**
+	 * @param speed to set motor in
+	 */
+	public void setMotorSpeed(Speed speed) {
+		
+		velSetpoint = speed;
+		posSetpoint = Distance.ZERO;
+		elevTalon.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR * velSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR) * 1023.0) / velSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
+		
+		if(elevTalon.getControlMode() == ControlMode.PercentOutput) {
+			elevTalon.set(elevTalon.getControlMode(), velSetpoint.div(MAX_SPEED_ELEVATOR));
+		} else {
+			elevTalon.set(elevTalon.getControlMode(), velSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND));
+		}		
+	}
 	
 	/**
-	 * The positions of the elevator at each limit switch and at the default extend height
+	 * Sets the time limit going from 0V to 12V in seconds
+	 * 
+	 * @param time going from 0V to 12V
 	 */
-	public static final Distance TOP_POSITION_ELEVATOR = Distance.ZERO; //TODO: Find TOP_POSITION_ELEVATOR
-	public static final Distance AUTO_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find AUTO_HEIGHT_ELEVATOR
-	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find BOTTOM_HEIGHT_ELEVATOR
+	public void setVoltageRamp(Time time) {
+		elevTalon.configOpenloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
+		elevTalon.configClosedloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
+	}
 	
+	/**
+	 * What is put on SmartDashboard when it's initialized
+	 */
+	public void smartDashboardInit() {
+		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_BASIC_ENABLED) {
+			
+		}
+		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
+			
+		}
+	}
+	
+	/**
+	 * 
+	 */
 	@Override
 	public void smartDashboardInfo() {
-		
+		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_BASIC_ENABLED) {
+			SmartDashboard.putNumber("Elevator Current: ", getCurrent());
+			SmartDashboard.putString("Elevator Velocity vs. Set Velocity: ", getVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + velSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+			SmartDashboard.putString("Elevator Position vs. Set Position: ", getPosition().get(Distance.Unit.INCH) + " : " + posSetpoint.get(Distance.Unit.INCH));
+		}
+		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
+			
+		}
 	}
 
 	@Override
-	public void disable() {
+	public void periodic() {
 		
 	}
-
+	
+	@Override
+	public void disable() {
+		setMotorSpeedPercent(0);
+	}
 }

@@ -248,6 +248,113 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		arcadeDrive, tankDrive, cheesyDrive
 	}
 	
+	private Drive() {
+		if (EnabledSubsystems.DRIVE_ENABLED) {
+
+			leftDrive = CTRECreator.createMasterTalon(RobotMap.LEFT_DRIVE);
+			rightDrive = CTRECreator.createMasterTalon(RobotMap.RIGHT_DRIVE);
+			hDrive = CTRECreator.createMasterTalon(RobotMap.H_DRIVE);
+			pigeonTalon = CTRECreator.createMasterTalon(0);//TODO: find real pigeon talon
+			
+			leftDriveFollow = CTRECreator.createFollowerTalon(RobotMap.LEFT_DRIVE_FOLLOW, leftDrive.getDeviceID());
+			rightDriveFollow = CTRECreator.createFollowerTalon(RobotMap.RIGHT_DRIVE_FOLLOW, rightDrive.getDeviceID());
+			hDriveFollow = CTRECreator.createFollowerTalon(RobotMap.H_DRIVE_FOLLOW, hDrive.getDeviceID());
+			
+			if (EnabledSubsystems.DRIVE_DUMB_ENABLED) {
+				leftDrive.set(ControlMode.PercentOutput, 0);
+				rightDrive.set(ControlMode.PercentOutput, 0);
+				hDrive.set(ControlMode.PercentOutput, 0);
+			} else {
+				leftDrive.set(ControlMode.Velocity, 0);
+				rightDrive.set(ControlMode.Velocity, 0);
+				hDrive.set(ControlMode.Velocity, 0);
+			}
+			
+			leftDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
+			leftDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
+			leftDrive.config_kP(SLOT_0, P_LEFT, NO_TIMEOUT);
+			leftDrive.config_kI(SLOT_0, I_LEFT, NO_TIMEOUT);
+			leftDrive.config_kD(SLOT_0, D_LEFT, NO_TIMEOUT);
+			leftDrive.setNeutralMode(NEUTRAL_MODE);
+			leftDrive.setInverted(false);
+			leftDriveFollow.setInverted(false);
+			leftDrive.setSensorPhase(false);
+			leftDriveFollow.setSensorPhase(false);
+			
+			leftDrive.enableVoltageCompensation(true);
+			leftDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
+			
+			leftDrive.enableCurrentLimit(true);
+			leftDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
+			leftDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
+			leftDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
+			
+			leftDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			leftDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			
+			leftEncoder = new TalonEncoder(leftDrive);
+			
+			leftDriveFollow.setNeutralMode(NEUTRAL_MODE);
+			
+			rightDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
+			rightDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
+			rightDrive.config_kP(SLOT_0, P_RIGHT, NO_TIMEOUT);
+			rightDrive.config_kI(SLOT_0, I_RIGHT, NO_TIMEOUT);
+			rightDrive.config_kD(SLOT_0, D_RIGHT, NO_TIMEOUT);
+			rightDrive.setNeutralMode(NEUTRAL_MODE);			
+			rightDrive.setInverted(false);
+			rightDriveFollow.setInverted(false);
+			rightDrive.setSensorPhase(false);
+			rightDriveFollow.setSensorPhase(false);
+			
+			rightDrive.enableVoltageCompensation(true);
+			rightDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
+			
+			rightDrive.enableCurrentLimit(true);
+			rightDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
+			rightDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
+			rightDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
+			
+			rightDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			rightDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			
+			rightEncoder = new TalonEncoder(rightDrive);
+			
+			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
+			
+			hDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
+			hDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
+			hDrive.config_kP(SLOT_0, P_LEFT, NO_TIMEOUT);
+			hDrive.config_kI(SLOT_0, I_LEFT, NO_TIMEOUT);
+			hDrive.config_kD(SLOT_0, D_LEFT, NO_TIMEOUT);
+			hDrive.setNeutralMode(NEUTRAL_MODE);
+			hDrive.setInverted(false);
+			hDriveFollow.setInverted(false);
+			hDrive.setSensorPhase(false);
+			hDriveFollow.setSensorPhase(false);
+			
+			hDrive.enableVoltageCompensation(true);
+			hDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
+			
+			hDrive.enableCurrentLimit(true);
+			hDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
+			hDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
+			hDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
+			
+			hDrive.configClosedloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			hDrive.configOpenloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
+			
+			hEncoder = new TalonEncoderH(hDrive);
+			
+			hDriveFollow.setNeutralMode(NEUTRAL_MODE);
+			
+			smartDashboardInit();
+	
+			CheesyDriveCalculationConstants.createDriveTypeCalculations();
+			
+		}
+	}
+	
 	public static Drive getInstance() {
 		if (singleton == null)
 			init();
@@ -743,113 +850,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static Distance xProfile;
 	public static Distance yProfile;
 	public static double drivePercent = 0;
-	
-	private Drive() {
-		if (EnabledSubsystems.DRIVE_ENABLED) {
-
-			leftDrive = CTRECreator.createMasterTalon(RobotMap.LEFT_DRIVE);
-			rightDrive = CTRECreator.createMasterTalon(RobotMap.RIGHT_DRIVE);
-			hDrive = CTRECreator.createMasterTalon(RobotMap.H_DRIVE);
-			pigeonTalon = CTRECreator.createMasterTalon(0);//TODO: find real pigeon talon
-			
-			leftDriveFollow = CTRECreator.createFollowerTalon(RobotMap.LEFT_DRIVE_FOLLOW, leftDrive.getDeviceID());
-			rightDriveFollow = CTRECreator.createFollowerTalon(RobotMap.RIGHT_DRIVE_FOLLOW, rightDrive.getDeviceID());
-			hDriveFollow = CTRECreator.createFollowerTalon(RobotMap.H_DRIVE_FOLLOW, hDrive.getDeviceID());
-			
-			if (EnabledSubsystems.DRIVE_DUMB_ENABLED) {
-				leftDrive.set(ControlMode.PercentOutput, 0);
-				rightDrive.set(ControlMode.PercentOutput, 0);
-				hDrive.set(ControlMode.PercentOutput, 0);
-			} else {
-				leftDrive.set(ControlMode.Velocity, 0);
-				rightDrive.set(ControlMode.Velocity, 0);
-				hDrive.set(ControlMode.Velocity, 0);
-			}
-			
-			leftDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
-			leftDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
-			leftDrive.config_kP(SLOT_0, P_LEFT, NO_TIMEOUT);
-			leftDrive.config_kI(SLOT_0, I_LEFT, NO_TIMEOUT);
-			leftDrive.config_kD(SLOT_0, D_LEFT, NO_TIMEOUT);
-			leftDrive.setNeutralMode(NEUTRAL_MODE);
-			leftDrive.setInverted(false);
-			leftDriveFollow.setInverted(false);
-			leftDrive.setSensorPhase(false);
-			leftDriveFollow.setSensorPhase(false);
-			
-			leftDrive.enableVoltageCompensation(true);
-			leftDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
-			
-			leftDrive.enableCurrentLimit(true);
-			leftDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
-			leftDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
-			leftDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
-			
-			leftDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			leftDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			
-			leftEncoder = new TalonEncoder(leftDrive);
-			
-			leftDriveFollow.setNeutralMode(NEUTRAL_MODE);
-			
-			rightDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
-			rightDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
-			rightDrive.config_kP(SLOT_0, P_RIGHT, NO_TIMEOUT);
-			rightDrive.config_kI(SLOT_0, I_RIGHT, NO_TIMEOUT);
-			rightDrive.config_kD(SLOT_0, D_RIGHT, NO_TIMEOUT);
-			rightDrive.setNeutralMode(NEUTRAL_MODE);			
-			rightDrive.setInverted(false);
-			rightDriveFollow.setInverted(false);
-			rightDrive.setSensorPhase(false);
-			rightDriveFollow.setSensorPhase(false);
-			
-			rightDrive.enableVoltageCompensation(true);
-			rightDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
-			
-			rightDrive.enableCurrentLimit(true);
-			rightDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
-			rightDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
-			rightDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
-			
-			rightDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			rightDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			
-			rightEncoder = new TalonEncoder(rightDrive);
-			
-			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
-			
-			hDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
-			hDrive.config_kF(SLOT_0, 0, NO_TIMEOUT);
-			hDrive.config_kP(SLOT_0, P_LEFT, NO_TIMEOUT);
-			hDrive.config_kI(SLOT_0, I_LEFT, NO_TIMEOUT);
-			hDrive.config_kD(SLOT_0, D_LEFT, NO_TIMEOUT);
-			hDrive.setNeutralMode(NEUTRAL_MODE);
-			hDrive.setInverted(false);
-			hDriveFollow.setInverted(false);
-			hDrive.setSensorPhase(false);
-			hDriveFollow.setSensorPhase(false);
-			
-			hDrive.enableVoltageCompensation(true);
-			hDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, NO_TIMEOUT);
-			
-			hDrive.enableCurrentLimit(true);
-			hDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
-			hDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
-			hDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
-			
-			hDrive.configClosedloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			hDrive.configOpenloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			
-			hEncoder = new TalonEncoderH(hDrive);
-			
-			hDriveFollow.setNeutralMode(NEUTRAL_MODE);
-			
-			smartDashboardInit();
-	
-			CheesyDriveCalculationConstants.createDriveTypeCalculations();
-			
-		}
-	}
 	
 	public void startDumbDrive() {
 		if (leftDrive != null && rightDrive != null && hDrive != null) {
