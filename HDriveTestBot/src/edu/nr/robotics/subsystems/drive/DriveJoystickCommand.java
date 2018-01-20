@@ -3,6 +3,7 @@ package edu.nr.robotics.subsystems.drive;
 import edu.nr.lib.NRMath;
 import edu.nr.lib.commandbased.JoystickCommand;
 import edu.nr.lib.gyro.GyroCorrection;
+import edu.nr.lib.gyro.Pigeon;
 import edu.nr.lib.units.Angle;
 import edu.nr.robotics.OI;
 
@@ -74,6 +75,25 @@ public class DriveJoystickCommand extends JoystickCommand {
 			
 			
 			break;
+		
+		/*case fieldCentric:
+			double rawMoveValue = OI.getInstance().getArcadeMoveValue();
+			double centricRotateValue = OI.getInstance().getArcadeTurnValue();
+			double rawHValue = OI.getInstance().getArcadeHValue();
+			
+			double centricMoveValue = (rawMoveValue * Math.cos) + 
+			
+			cheesyMoveValue = NRMath.powWithSign(centricMoveValue, 3);
+			cheesyRotateValue = NRMath.powWithSign(centricRotateValue, 3);
+			cheesyHValue = NRMath.powWithSign(centricHValue, 3);
+			
+			if (Math.abs(cheesyRotateValue) < 0.05 && (Math.abs(cheesyMoveValue) > 0.05 || Math.abs(cheesyHValue) > 0.05)) {
+				cheesyRotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD);
+			} else {
+				gyroCorrection.clearInitialValue();
+			}
+			
+			break;*/
 		}
 	}
 

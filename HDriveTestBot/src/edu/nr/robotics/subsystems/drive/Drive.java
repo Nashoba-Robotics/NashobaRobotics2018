@@ -44,8 +44,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	TalonEncoderH hEncoder;
 	
 	public static final double ENC_TO_H_WHEEL_GEARING = 4.0;
-	public static final double REAL_WHEEL_DIAMETER_INCHES_H = 4.0;
-	public static final double WHEEL_DIAMETER_INCHES = 6.0;
+	public static final double REAL_WHEEL_DIAMETER_INCHES_H = 4.0 * 0.95;
+	public static final double WHEEL_DIAMETER_INCHES = 6.0 * 0.9583333333;
 	public static final double WHEEL_DIAMETER_INCHES_H = REAL_WHEEL_DIAMETER_INCHES_H / ENC_TO_H_WHEEL_GEARING * 0.88;
 	public static final Distance WHEEL_DIAMETER = new Distance(WHEEL_DIAMETER_INCHES, Distance.Unit.INCH);
 	public static final Distance WHEEL_DIAMETER_H = new Distance(WHEEL_DIAMETER_INCHES_H, Distance.Unit.INCH);
@@ -59,7 +59,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(0.1, Distance.Unit.INCH);
 	public static final Time PROFILE_TIME_THRESHOLD = new Time(0.1, Time.Unit.SECOND);
 	
-	public static final double ACCEL_PERCENT = 0.5;
+	public static final double PROFILE_ACCEL_PERCENT = 0.5;
 	
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0965; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0927; //This is 0 to 1 number
@@ -106,13 +106,13 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static double kPOneD = 0.0001;
 	public static double kIOneD = 0;
 	public static double kDOneD = 0;
-	public static double kP_thetaOneD = 0.01;
+	public static double kP_thetaOneD = 0.015;
 	
 	public static double kDTurn = 0;
 	
 	public static double H_kVOneD = 1 / MAX_SPEED_H.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
 	public static double H_kAOneD = 0.0;
-	public static double H_kPOneD = 0.000005;
+	public static double H_kPOneD = 0.00001;
 	public static double H_kIOneD = 0;
 	public static double H_kDOneD = 0;
 	
@@ -122,12 +122,10 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static double drivePercentH = 0;
 	public static Angle angleToTurn = Angle.ZERO;
 		
-	private OneDimensionalMotionProfilerTwoMotorHDrive oneDProfiler;
-	private OneDimensionalMotionProfilerHDriveMain oneDProfilerH;
 	private HDriveDiagonalProfiler diagonalProfiler;
 	
 	public enum DriveMode {
-		tankDrive, arcadeDrive, arcadeNegInertia
+		tankDrive, arcadeDrive, arcadeNegInertia //, fieldCentric
 	}
 	
 	private Drive() {
@@ -566,13 +564,13 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			
 			if (distX.equals(Distance.ZERO) && !distY.equals(Distance.ZERO)) {
 				minVel = MAX_SPEED_H.mul(drivePercentH).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
-				minAccel = MAX_ACC_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
+				minAccel = MAX_ACC_H.mul(PROFILE_ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
 			} else if (distY.equals(Distance.ZERO) && !distX.equals(Distance.ZERO)) {
 				minVel = MAX_SPEED.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
-				minAccel = MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
+				minAccel = MAX_ACC.mul(PROFILE_ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
 			} else if (!distX.equals(Distance.ZERO) && !distY.equals(Distance.ZERO)) {
 				minVel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_SPEED_H.mul(drivePercentH).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
-				minAccel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACC.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_ACC_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND));
+				minAccel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACC.mul(PROFILE_ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_ACC_H.mul(PROFILE_ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND));
 				//System.out.println("profiler enabled");
 			} else {
 				minVel = 0;
