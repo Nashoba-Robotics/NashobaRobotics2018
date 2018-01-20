@@ -9,7 +9,8 @@ public class Angle {
 	private Unit type;
 	
 	public enum Unit implements GenericUnit {
-		DEGREE, ROTATION, RADIAN, MAGNETIC_ENCODER_NATIVE_UNITS, MAGNETIC_ENCODER_TICKS;
+		DEGREE, ROTATION, RADIAN, MAGNETIC_ENCODER_NATIVE_UNITS, 
+		MAGNETIC_ENCODER_TICK;
 		
 		public static final Unit defaultUnit = DEGREE;
 		
@@ -32,7 +33,7 @@ public class Angle {
 			if(this == MAGNETIC_ENCODER_NATIVE_UNITS) {
 				return val / MAGNETIC_ENCODER_NATIVE_UNITS_PER_DEGREE;
 			}
-			if(this == Unit.MAGNETIC_ENCODER_TICKS) {
+			if(this == Unit.MAGNETIC_ENCODER_TICK) {
 				return val / MAGNETIC_ENCODER_TICKS_PER_DEGREE;
 			}
 			return 0;
@@ -51,7 +52,7 @@ public class Angle {
 			if(this == MAGNETIC_ENCODER_NATIVE_UNITS) {
 				return val * MAGNETIC_ENCODER_NATIVE_UNITS_PER_DEGREE;
 			}
-			if(this == MAGNETIC_ENCODER_TICKS) {
+			if(this == MAGNETIC_ENCODER_TICK) {
 				return val * MAGNETIC_ENCODER_TICKS_PER_DEGREE;
 			}
 			return 0;
