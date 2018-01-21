@@ -4,32 +4,24 @@ import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.units.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ElevatorMoveBasicCommand extends NRCommand {
-
-	private Distance height;
-	private double percent;
+public class ElevatorMoveBasicSmartDashboardCommand extends NRCommand {
+	
 	private Distance initialPos;
 
-	public ElevatorMoveBasicCommand(Distance height, double percent) {
+	public ElevatorMoveBasicSmartDashboardCommand() {
 		super(Elevator.getInstance());
-		this.height = height;
-		this.percent = percent;
 	}
 
 	@Override
 	protected void onStart() {
 		initialPos = Elevator.getInstance().getPosition();
-		Elevator.getInstance().setMotorSpeedPercent(Math.abs(percent) * height.signum());
+		Elevator.getInstance().setMotorSpeedPercent(Math.abs(Elevator.PROFILE_VEL_PERCENT_ELEVATOR) * Elevator.profileDeltaPos.signum());
 	}
 
 	@Override
-	protected void onEnd() {
-		
-	}
-	
-	@Override
 	protected boolean isFinishedNR() {
-		return (Elevator.getInstance().getPosition().sub(initialPos.add(height))).abs()
+		return (Elevator.getInstance().getPosition().sub(initialPos.add(Elevator.profileDeltaPos))).abs()
 				.lessThan(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR);
 	}
+
 }

@@ -219,6 +219,7 @@ public class Climber extends NRSubsystem {
 			SmartDashboard.putNumber("P Pos Climber: ", P_POS_CLIMBER);
 			SmartDashboard.putNumber("I Pos Climber: ", I_POS_CLIMBER);
 			SmartDashboard.putNumber("D Pos Climber: ", D_POS_CLIMBER);
+			SmartDashboard.putNumber("Climber Set Current:", DEFAULT_CLIMBER_CURRENT);
 		}
 	}
 	
@@ -238,6 +239,7 @@ public class Climber extends NRSubsystem {
 				P_POS_CLIMBER = SmartDashboard.getNumber("P Pos Climber: ", P_POS_CLIMBER);
 				I_POS_CLIMBER = SmartDashboard.getNumber("I Pos Climber: ", I_POS_CLIMBER);
 				D_POS_CLIMBER = SmartDashboard.getNumber("D Pos Climber: ", D_POS_CLIMBER);
+				DEFAULT_CLIMBER_CURRENT = SmartDashboard.getNumber("Climber Set Current: ", DEFAULT_CLIMBER_CURRENT);
 			}
 		
 	}

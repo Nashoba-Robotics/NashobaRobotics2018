@@ -232,6 +232,8 @@ public class ElevatorShooter extends NRSubsystem {
 			SmartDashboard.putNumber("I Vel Elevator Shooter: ", I_VEL_ELEVATOR_SHOOTER);
 			SmartDashboard.putNumber("D Vel Elevator Shooter: ", D_VEL_ELEVATOR_SHOOTER);
 			SmartDashboard.putNumber("Elevator Shooter Vel Percent: ", VEL_PERCENT_ELEVATOR_SHOOTER);
+			
+			SmartDashboard.putData("Elevator Shooter Velocity Command: ", new ElevatorShooterVelocitySmartDashboardCommand());
 		}
 	}
 	
@@ -242,6 +244,7 @@ public class ElevatorShooter extends NRSubsystem {
 			SmartDashboard.putNumber("Elevator Shooter Velocity vs Set Velocity: ", velSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 		}
 		if (EnabledSubsystems.ELEVATOR_SHOOTER_SMARTDASHBOARD_DEBUG_ENABLED) {
+			VEL_PERCENT_ELEVATOR_SHOOTER = SmartDashboard.getNumber("Elevator Shooter Vel Percent: ", VEL_PERCENT_ELEVATOR_SHOOTER);
 			VOLTAGE_RAMP_RATE_ELEVATOR_SHOOTER = new Time(
 					SmartDashboard.getNumber("Voltage Ramp Rate Elevator Shooter Seconds: ",
 							VOLTAGE_RAMP_RATE_ELEVATOR_SHOOTER.get(Time.Unit.SECOND)), Time.Unit.SECOND);

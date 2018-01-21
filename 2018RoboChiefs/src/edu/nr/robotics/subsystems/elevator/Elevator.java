@@ -144,12 +144,13 @@ public class Elevator extends NRSubsystem {
 	 */
 	public static final Distance TOP_POSITION_ELEVATOR = Distance.ZERO; // TODO: Find TOP_POSITION_ELEVATOR
 	public static final Distance AUTO_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find AUTO_HEIGHT_ELEVATOR
+	public static final Distance SCORE_LOW_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find SCORE_LOW_HEIGHT_ELEVATOR
 	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find BOTTOM_HEIGHT_ELEVATOR
 
 	private Speed velSetpoint = Speed.ZERO;
 	private Distance posSetpoint = Distance.ZERO;
 
-	public Distance profileDeltaPos = Distance.ZERO;
+	public static Distance profileDeltaPos = Distance.ZERO;
 
 	private Elevator() {
 
@@ -160,7 +161,7 @@ public class Elevator extends NRSubsystem {
 			if (EnabledSubsystems.ELEVATOR_DUMB_ENABLED) {
 				elevTalon.set(ControlMode.PercentOutput, 0);
 			} else {
-				elevTalon.set(ControlMode.PercentOutput, 0);
+				elevTalon.set(ControlMode.Velocity, 0);
 			}
 	
 			elevTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);
