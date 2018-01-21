@@ -15,7 +15,6 @@ import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
-import edu.nr.robotics.subsystems.elevator.ElevatorJoystickCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class IntakeElevator extends NRSubsystem {
@@ -156,7 +155,7 @@ public class IntakeElevator extends NRSubsystem {
 	public Speed velSetpoint = Speed.ZERO;
 	public Distance posSetpoint = Distance.ZERO;
 	
-	public Distance profileDeltaPos = Distance.ZERO;
+	public static Distance profileDeltaPos = Distance.ZERO;
 	
 	
 	private IntakeElevator() {
@@ -338,6 +337,9 @@ public class IntakeElevator extends NRSubsystem {
 			SmartDashboard.putNumber("D Vel Intake Elevator: ", D_VEL_INTAKE_ELEVATOR);
 			SmartDashboard.putNumber("Profile Vel Percent Intake Elevator: ", PROFILE_VEL_PERCENT_INTAKE_ELEVATOR);
 			SmartDashboard.putNumber("Profile Accel Percent Intake Elevator: ", PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR);
+			
+			SmartDashboard.putData("Intake Elevator Delta Pos Command: ", new IntakeElevatorDeltaPositionSmartDashboardCommand());
+			SmartDashboard.putData("Intake Elevator Move Basic Command: ", new IntakeElevatorMoveBasicSmartDashboardCommand());
 		}
 	}
 	
