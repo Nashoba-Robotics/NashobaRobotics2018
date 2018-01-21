@@ -22,6 +22,11 @@ public class ElevatorMoveBasicCommand extends NRCommand {
 	}
 
 	@Override
+	protected void onEnd() {
+		
+	}
+	
+	@Override
 	protected boolean isFinishedNR() {
 		return (Elevator.getInstance().getPosition().sub(initialPos)).abs()
 				.lessThan(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR);

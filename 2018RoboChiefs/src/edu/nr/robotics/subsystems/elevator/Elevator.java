@@ -58,6 +58,7 @@ public class Elevator extends NRSubsystem {
 	/**
 	 * MotionMagic PID values for the elevator
 	 */
+	public static double F_POS_ELEVATOR = 1.00 * 1023 / MAX_SPEED_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND);
 	public static double P_POS_ELEVATOR = 0; // TODO: Find elevator MagicMotion PID values
 	public static double I_POS_ELEVATOR = 0;
 	public static double D_POS_ELEVATOR = 0;
@@ -186,10 +187,8 @@ public class Elevator extends NRSubsystem {
 			elevTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			elevTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	
-			elevTalon
-					.configMotionCruiseVelocity(
-							(int) MAX_SPEED_ELEVATOR.mul(PROFILE_VEL_PERCENT_ELEVATOR)
-									.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND),
+			elevTalon.configMotionCruiseVelocity((int) MAX_SPEED_ELEVATOR.mul(PROFILE_VEL_PERCENT_ELEVATOR).get(
+					Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND),
 							DEFAULT_TIMEOUT);
 			elevTalon.configMotionAcceleration((int) MAX_ACCEL_ELEVATOR.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
 					Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
@@ -279,6 +278,13 @@ public class Elevator extends NRSubsystem {
 		if (elevTalon != null) {
 			posSetpoint = position;
 			velSetpoint = Speed.ZERO;
+			elevTalon.configMotionCruiseVelocity((int) MAX_SPEED_ELEVATOR.mul(PROFILE_VEL_PERCENT_ELEVATOR).get(
+					Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND),
+							DEFAULT_TIMEOUT);
+			elevTalon.configMotionAcceleration((int) MAX_ACCEL_ELEVATOR.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
+					Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
+					DEFAULT_TIMEOUT);
+	
 			elevTalon.set(ControlMode.MotionMagic, position.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV));
 		}
 	}
