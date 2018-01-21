@@ -13,7 +13,7 @@ import edu.nr.lib.units.AngularSpeed;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Time;
 
-public class TalonEncoder extends TimerTask {
+public class TalonEncoderDrive extends TimerTask {
 
 	private final Timer timer;
 
@@ -30,7 +30,7 @@ public class TalonEncoder extends TimerTask {
 
 	List<Data> data;
 
-	public TalonEncoder(TalonSRX talon) {
+	public TalonEncoderDrive(TalonSRX talon) {
 		this.talon = talon;
 
 		this.period = defaultPeriod;
