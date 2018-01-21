@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.sensorhistory.TalonEncoderCubeHandler;
 import edu.nr.lib.talons.CTRECreator;
@@ -229,6 +230,7 @@ private CubeHandler() {
 			SmartDashboard.putNumber("I Vel Cube Handler: ", I_VEL_CUBE_HANDLER);
 			SmartDashboard.putNumber("D Vel Cube Handler: ", D_VEL_CUBE_HANDLER);
 			SmartDashboard.putNumber("Cube Handler Vel Percent: ", VEL_PERCENT_CUBE_HANDLER);
+			SmartDashboard.putData("Cube Handler Velocity Command: ", new CubeHandlerVelocitySmartDashboardCommand());
 		}
 	}
 	

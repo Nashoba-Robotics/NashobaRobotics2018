@@ -2,18 +2,15 @@ package edu.nr.robotics.subsystems.cubeHandler;
 
 import edu.nr.lib.commandbased.NRCommand;
 
-public class CubeHandlerVelocityCommand extends NRCommand {
+public class CubeHandlerVelocitySmartDashboardCommand extends NRCommand {
 	
-private double percent;
-	
-	public CubeHandlerVelocityCommand(double percent) {
+	public CubeHandlerVelocitySmartDashboardCommand() {
 		super(CubeHandler.getInstance());
-		this.percent = percent;
 	}
 
 	@Override
 	protected void onStart() {
-		CubeHandler.getInstance().setMotorSpeedPercent(percent);
+		CubeHandler.getInstance().setMotorSpeedPercent(CubeHandler.VEL_PERCENT_CUBE_HANDLER);
 	}
 
 	@Override

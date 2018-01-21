@@ -7,7 +7,6 @@ import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.commandbased.NRSubsystem;
-import edu.nr.lib.sensorhistory.TalonEncoderElevShooter;
 import edu.nr.lib.sensorhistory.TalonEncoderIntakeRollers;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Distance;
@@ -15,7 +14,6 @@ import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
-import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class IntakeRollers extends NRSubsystem {
@@ -233,6 +231,8 @@ public class IntakeRollers extends NRSubsystem {
 			SmartDashboard.putNumber("I Vel Intake Rollers: ", I_VEL_INTAKE_ROLLERS);
 			SmartDashboard.putNumber("D Vel Intake Rollers: ", D_VEL_INTAKE_ROLLERS);
 			SmartDashboard.putNumber("Intake Rollers Vel Percent: ", VEL_PERCENT_INTAKE_ROLLERS);
+			
+			SmartDashboard.putData("Intake Rollers Velocity Command: ", new IntakeRollersVelocitySmartDashboardCommand());
 		}
 	}
 	
@@ -243,6 +243,7 @@ public class IntakeRollers extends NRSubsystem {
 			SmartDashboard.putNumber("Intake Rollers Velocity vs Set Velocity: ", velSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 		}
 		if (EnabledSubsystems.INTAKE_ROLLERS_SMARTDASHBOARD_DEBUG_ENABLED) {
+			VEL_PERCENT_INTAKE_ROLLERS = SmartDashboard.getNumber("Intake Rollers Vel Percent: ", VEL_PERCENT_INTAKE_ROLLERS);
 			VOLTAGE_RAMP_RATE_INTAKE_ROLLERS = new Time(
 					SmartDashboard.getNumber("Voltage Ramp Rate Intake Rollers Seconds: ",
 							VOLTAGE_RAMP_RATE_INTAKE_ROLLERS.get(Time.Unit.SECOND)), Time.Unit.SECOND);
