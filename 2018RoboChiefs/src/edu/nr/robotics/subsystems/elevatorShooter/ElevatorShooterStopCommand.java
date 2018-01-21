@@ -8,6 +8,7 @@ public class ElevatorShooterStopCommand extends NRCommand {
 	 * Sets motor speed to 0
 	 */
 	public ElevatorShooterStopCommand() {
+		super(ElevatorShooter.getInstance());
 	}
 	
 	@Override

@@ -8,6 +8,7 @@ public class ElevatorPositionCommand extends NRCommand {
 	private Distance height;
 	
 	public ElevatorPositionCommand(Distance height) {
+		super(Elevator.getInstance());
 		this.height = height;
 	}
 	

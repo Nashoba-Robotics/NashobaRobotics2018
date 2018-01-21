@@ -13,6 +13,7 @@ public class ElevatorDeltaPositionCommand extends NRCommand{
 	 * @param deltaHeight: The change in height to go. Up is positive and down is negative
 	 */
 	public ElevatorDeltaPositionCommand(Distance deltaHeight) {
+		super(Elevator.getInstance());
 		this.deltaHeight = deltaHeight;
 	}
 	

@@ -10,6 +10,7 @@ public class ElevatorMoveBasicCommand extends NRCommand {
 	private Distance initialPos;
 
 	public ElevatorMoveBasicCommand(Distance height, double percent) {
+		super(Elevator.getInstance());
 		this.height = height;
 		this.percent = percent;
 	}

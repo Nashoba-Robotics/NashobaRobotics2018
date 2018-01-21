@@ -20,6 +20,7 @@ public class TurnPIDCommand extends NRCommand {
 	private double turnPercent;
 	
 	public TurnPIDCommand(TriplePIDOutput out, Angle angleToTurn, double turnPercent, double kP_theta) {
+		super(Drive.getInstance());
 		this.out = out;
 		this.angleToTurn = angleToTurn;
 		this.turnPercent = turnPercent;

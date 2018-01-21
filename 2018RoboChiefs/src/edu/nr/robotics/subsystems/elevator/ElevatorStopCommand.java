@@ -8,6 +8,7 @@ public class ElevatorStopCommand extends NRCommand {
 	 * Sets the elevator speed to 0
 	 */
 	public ElevatorStopCommand() {
+		super(Elevator.getInstance());
 	}
 	
 	@Override
