@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.commandbased.NRSubsystem;
-import edu.nr.lib.sensorhistory.TalonEncoderCubeHandler;
+import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Speed;
@@ -21,7 +21,7 @@ public class CubeHandler extends NRSubsystem {
 private static CubeHandler singleton;
 	
 	private TalonSRX cubeHandlerTalon;
-	private TalonEncoderCubeHandler cubeHandlerEncoder;
+	private TalonEncoder cubeHandlerEncoder;
 	
 	/**
 	 * The encoder ticks per inch moved on the cube handler
@@ -138,7 +138,7 @@ private CubeHandler() {
 			cubeHandlerTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_CUBE_HANDLER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			cubeHandlerTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_CUBE_HANDLER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	
-			cubeHandlerEncoder = new TalonEncoderCubeHandler(cubeHandlerTalon);
+			cubeHandlerEncoder = new TalonEncoder(cubeHandlerTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_CUBE_HANDLER);
 		}
 		
 		smartDashboardInit();

@@ -6,25 +6,24 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.NRMath;
-import edu.nr.lib.gyro.NavX;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.driving.DriveTypeCalculations;
 import edu.nr.lib.gyro.Gyro;
-import edu.nr.lib.gyro.Pigeon;
 import edu.nr.lib.gyro.Gyro.ChosenGyro;
+import edu.nr.lib.gyro.NavX;
+import edu.nr.lib.gyro.Pigeon;
 import edu.nr.lib.interfaces.TriplePIDOutput;
 import edu.nr.lib.interfaces.TriplePIDSource;
 import edu.nr.lib.motionprofiling.HDriveDiagonalProfiler;
 import edu.nr.lib.motionprofiling.RampedDiagonalHTrajectory;
-import edu.nr.lib.sensorhistory.TalonEncoderDrive;
-import edu.nr.lib.sensorhistory.TalonEncoderH;
+import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Acceleration;
 import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Distance;
+import edu.nr.lib.units.Distance.Unit;
 import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
-import edu.nr.lib.units.Distance.Unit;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -35,8 +34,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	private static Drive singleton;
 	
 	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow, hDrive, hDriveFollow, pigeonTalon;
-	private TalonEncoderDrive leftEncoder, rightEncoder;
-	private TalonEncoderH hEncoder;
+	private TalonEncoder leftEncoder, rightEncoder, hEncoder;
 	
 	/**
 	 * The Gear ratio between the encoder and the drive wheels
@@ -282,7 +280,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			leftDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			leftDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			
-			leftEncoder = new TalonEncoderDrive(leftDrive);
+			leftEncoder = new TalonEncoder(leftDrive, Distance.Unit.MAGNETIC_ENCODER_TICK);
 			
 			leftDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
@@ -308,7 +306,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			rightDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			rightDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			
-			rightEncoder = new TalonEncoderDrive(rightDrive);
+			rightEncoder = new TalonEncoder(rightDrive, Distance.Unit.MAGNETIC_ENCODER_TICK);
 			
 			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
@@ -334,7 +332,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			hDrive.configClosedloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			hDrive.configOpenloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			
-			hEncoder = new TalonEncoderH(hDrive);
+			hEncoder = new TalonEncoder(hDrive, Distance.Unit.MAGNETIC_ENCODER_TICK_H);
 			
 			hDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			

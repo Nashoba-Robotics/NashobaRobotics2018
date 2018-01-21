@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.commandbased.NRSubsystem;
-import edu.nr.lib.sensorhistory.TalonEncoderIntakeElev;
+import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Acceleration;
 import edu.nr.lib.units.Distance;
@@ -21,7 +21,7 @@ public class IntakeElevator extends NRSubsystem {
 	private static IntakeElevator singleton;
 
 	private TalonSRX intakeElevTalon;
-	private TalonEncoderIntakeElev intakeElevEncoder;
+	private TalonEncoder intakeElevEncoder;
 
 	/**
 	 * The encoder ticks per inch moved on the intake elevator
@@ -202,7 +202,7 @@ public class IntakeElevator extends NRSubsystem {
 					Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 					DEFAULT_TIMEOUT);
 	
-			intakeElevEncoder = new TalonEncoderIntakeElev(intakeElevTalon);
+			intakeElevEncoder = new TalonEncoder(intakeElevTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV);
 	
 			smartDashboardInit();
 		}

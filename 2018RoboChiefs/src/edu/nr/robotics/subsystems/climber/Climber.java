@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.commandbased.NRSubsystem;
-import edu.nr.lib.sensorhistory.TalonEncoderClimber;
+import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Speed;
@@ -21,7 +21,7 @@ public class Climber extends NRSubsystem {
 	private static Climber singleton;
 	
 	private TalonSRX climberTalon;
-	private TalonEncoderClimber climberEncoder;
+	private TalonEncoder climberEncoder;
 	
 	public static final double ENC_TICKS_PER_INCH_CLIMBER = 0; //TODO: Find encoder ticks per inch for climber
 	
@@ -136,7 +136,7 @@ public class Climber extends NRSubsystem {
 			climberTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			climberTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	
-			climberEncoder = new TalonEncoderClimber(climberTalon);
+			climberEncoder = new TalonEncoder(climberTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_CLIMBER);
 	
 		}
 

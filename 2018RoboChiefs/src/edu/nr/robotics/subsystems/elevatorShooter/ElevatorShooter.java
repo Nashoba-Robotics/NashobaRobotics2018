@@ -7,16 +7,13 @@ import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.commandbased.NRSubsystem;
-import edu.nr.lib.sensorhistory.TalonEncoderElev;
-import edu.nr.lib.sensorhistory.TalonEncoderElevShooter;
+import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
-import edu.nr.robotics.subsystems.elevator.Elevator;
-import edu.nr.robotics.subsystems.elevator.ElevatorJoystickCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ElevatorShooter extends NRSubsystem {
@@ -24,7 +21,7 @@ public class ElevatorShooter extends NRSubsystem {
 	private static ElevatorShooter singleton;
 	
 	private TalonSRX elevShooterTalon;
-	private TalonEncoderElevShooter elevShooterEncoder;
+	private TalonEncoder elevShooterEncoder;
 	
 	/**
 	 * The encoder ticks per inch moved on the elevator shooter
@@ -140,7 +137,7 @@ public class ElevatorShooter extends NRSubsystem {
 			elevShooterTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR_SHOOTER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			elevShooterTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR_SHOOTER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	
-			elevShooterEncoder = new TalonEncoderElevShooter(elevShooterTalon);
+			elevShooterEncoder = new TalonEncoder(elevShooterTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV);
 		}
 		
 		smartDashboardInit();

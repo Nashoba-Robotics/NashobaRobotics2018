@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.commandbased.NRSubsystem;
-import edu.nr.lib.sensorhistory.TalonEncoderElev;
+import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Acceleration;
 import edu.nr.lib.units.Distance;
@@ -22,7 +22,7 @@ public class Elevator extends NRSubsystem {
 	private static Elevator singleton;
 
 	private TalonSRX elevTalon, elevTalonFollow;
-	private TalonEncoderElev elevEncoder;
+	private TalonEncoder elevEncoder;
 
 	/**
 	 * The encoder ticks per inch moved on the elevator
@@ -195,7 +195,7 @@ public class Elevator extends NRSubsystem {
 					Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 					DEFAULT_TIMEOUT);
 	
-			elevEncoder = new TalonEncoderElev(elevTalon);
+			elevEncoder = new TalonEncoder(elevTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV);
 	
 			elevTalonFollow.setNeutralMode(NEUTRAL_MODE_ELEVATOR);
 		}
