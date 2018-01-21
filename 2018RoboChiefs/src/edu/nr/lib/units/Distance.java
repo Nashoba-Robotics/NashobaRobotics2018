@@ -1,6 +1,7 @@
 package edu.nr.lib.units;
 
 import edu.nr.lib.Units;
+import edu.nr.robotics.subsystems.climber.Climber;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandler;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.elevator.Elevator;
@@ -17,7 +18,8 @@ public class Distance {
 	public enum Unit implements GenericUnit {
 		FOOT, INCH, DRIVE_ROTATION, DRIVE_ROTATION_H, METER, 
 		MAGNETIC_ENCODER_TICK, MAGNETIC_ENCODER_TICK_H, MAGNETIC_ENCODER_TICK_ELEV, MAGNETIC_ENCODER_TICK_INTAKE_ELEV,
-		MAGNETIC_ENCODER_TICK_ELEV_SHOOTER, MAGNETIC_ENCODER_TICK_CUBE_HANDLER, MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS;
+		MAGNETIC_ENCODER_TICK_ELEV_SHOOTER, MAGNETIC_ENCODER_TICK_CUBE_HANDLER, MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS,
+		MAGNETIC_ENCODER_TICK_CLIMBER;
 		
 		public static final Unit defaultUnit = INCH;
 		
@@ -53,6 +55,11 @@ public class Distance {
 		 * For the intake rollers
 		 */
 		private static final double ENCODER_TICK_INTAKE_ROLLERS_PER_INCH = IntakeRollers.ENC_TICK_PER_INCH_INTAKE_ROLLERS;
+		
+		/**
+		 * For the climber
+		 */
+		private static final double ENCODER_TICK_CLIMBER_PER_INCH = Climber.ENC_TICKS_PER_INCH_CLIMBER;
 		
 		private static final double FOOT_PER_INCH = 1.0/Units.INCHES_PER_FOOT;
 		private static final double METER_PER_INCH = 1.0/Units.INCHES_PER_METER;
@@ -94,6 +101,9 @@ public class Distance {
 			if(this == Unit.MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS) {
 				return val / ENCODER_TICK_INTAKE_ROLLERS_PER_INCH;
 			}
+			if(this == Unit.MAGNETIC_ENCODER_TICK_CLIMBER) {
+				return val / ENCODER_TICK_CLIMBER_PER_INCH;
+			}
 			return 0;
 		}
 		
@@ -133,6 +143,9 @@ public class Distance {
 			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS) {
 				return ENCODER_TICK_INTAKE_ROLLERS_PER_INCH * val;
+			}
+			if(this == Unit.MAGNETIC_ENCODER_TICK_CLIMBER) {
+				return ENCODER_TICK_CLIMBER_PER_INCH * val;
 			}
 			return 0;
 		}
