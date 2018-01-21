@@ -157,6 +157,16 @@ public class Climber extends NRSubsystem {
 	}
 	
 	/**
+	 * @return Current position of the climber encoders
+	 */
+	public Distance getPosition() {
+		if (climberTalon != null) {
+			return new Distance(climberTalon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_CLIMBER);
+		}
+		return Distance.ZERO;
+	}
+	
+	/**
 	 * @return The current velocity of the climber encoders
 	 */
 	public Speed getVelocity() {
@@ -189,6 +199,17 @@ public class Climber extends NRSubsystem {
 	}
 	
 	/**
+	 * Sets the raw position of the climber
+	 * 
+	 * @param pos
+	 */
+	public void setPosition(Distance pos) {
+		if(climberTalon != null) {
+			climberTalon.set(ControlMode.Position, pos.get(Distance.Unit.MAGNETIC_ENCODER_TICK_CLIMBER));
+		}
+	}
+	
+	/**
 	 * @param current 
 	 * 			The amps to set the climberTalon to
 	 */
@@ -197,13 +218,6 @@ public class Climber extends NRSubsystem {
 			currentSetpoint = current;
 			climberTalon.set(ControlMode.Current, current);
 		}
-	}
-	
-	/**
-	 * Command that holds the climber in its current position
-	 */
-	public void holdPosition() {
-		climberTalon.set(ControlMode.Position, climberTalon.getSelectedSensorPosition(PID_TYPE));
 	}
 	
 	/**

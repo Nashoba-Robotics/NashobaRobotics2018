@@ -15,6 +15,6 @@ public class IntakeRollersVelocitySmartDashboardCommand extends NRCommand {
 
 	@Override
 	protected boolean isFinishedNR() {
-		return true;
+		return false;
 	}
 }
