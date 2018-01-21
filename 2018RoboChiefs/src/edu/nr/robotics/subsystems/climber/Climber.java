@@ -40,7 +40,7 @@ public class Climber extends NRSubsystem {
 	public static double I_CURRENT_CLIMBER = 0;
 	public static double D_CURRENT_CLIMBER = 0;
 	
-	public static double DEFAULT_CLIMBER_CURRENT = 0; //TODO: Find default climber current
+	public double DEFAULT_CLIMBER_CURRENT = 0; //TODO: Find default climber current
 	
 	/**
 	 * The current values of the climber
@@ -179,6 +179,7 @@ public class Climber extends NRSubsystem {
 			SmartDashboard.putNumber("P Current Climber: ", P_CURRENT_CLIMBER);
 			SmartDashboard.putNumber("I Current Climber: ", I_CURRENT_CLIMBER);
 			SmartDashboard.putNumber("D Current Climber: ", D_CURRENT_CLIMBER);
+			SmartDashboard.putNumber("Climber Current:", DEFAULT_CLIMBER_CURRENT);
 		}
 	}
 	
@@ -194,6 +195,7 @@ public class Climber extends NRSubsystem {
 				P_CURRENT_CLIMBER = SmartDashboard.getNumber("P Current Climber: ", P_CURRENT_CLIMBER);
 				I_CURRENT_CLIMBER = SmartDashboard.getNumber("I Current Climber: ", I_CURRENT_CLIMBER);
 				D_CURRENT_CLIMBER = SmartDashboard.getNumber("D Current Climber: ", D_CURRENT_CLIMBER);
+				DEFAULT_CLIMBER_CURRENT = SmartDashboard.putNumber("Climber Current:", DEFAULT_CLIMBER_CURRENT);
 			}
 		
 	}

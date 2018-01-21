@@ -148,7 +148,7 @@ public class Elevator extends NRSubsystem {
 	private Speed velSetpoint = Speed.ZERO;
 	private Distance posSetpoint = Distance.ZERO;
 
-	public Distance profileDeltaPos = Distance.ZERO;
+	public static Distance profileDeltaPos = Distance.ZERO;
 
 	private Elevator() {
 
@@ -159,7 +159,7 @@ public class Elevator extends NRSubsystem {
 			if (EnabledSubsystems.ELEVATOR_DUMB_ENABLED) {
 				elevTalon.set(ControlMode.PercentOutput, 0);
 			} else {
-				elevTalon.set(ControlMode.PercentOutput, 0);
+				elevTalon.set(ControlMode.Velocity, 0);
 			}
 	
 			elevTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);

@@ -224,9 +224,10 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	
 	private PIDSourceType type = PIDSourceType.kRate;
 	
-	public Distance xProfile;
-	public Distance yProfile;
-	public double drivePercent;
+	public static Distance xProfile;
+	public static Distance yProfile;
+	public static double drivePercent;
+	public static Angle angleToTurn;
 	
 	private HDriveDiagonalProfiler diagonalProfiler;
 
@@ -733,6 +734,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				SmartDashboard.putNumber("X Profile Feet: ", 0);
 				SmartDashboard.putNumber("Y Profile Feet: ", 0);
 				SmartDashboard.putNumber("Drive Percent: ", 0);
+				SmartDashboard.putNumber("Angle To Turn", 0);
 				
 			}
 			if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {
@@ -791,6 +793,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				xProfile = new Distance(SmartDashboard.getNumber("X Profile Feet: ", 0), Distance.Unit.FOOT);
 				yProfile = new Distance(SmartDashboard.getNumber("Y Profile Feet: ", 0), Distance.Unit.FOOT);
 				drivePercent = SmartDashboard.getNumber("Drive Percent: ", 0);
+				angleToTurn = new Angle(SmartDashboard.getNumber("AngleToTurn:", 0), Angle.Unit.DEGREE);
 			}
 		}
 	}
