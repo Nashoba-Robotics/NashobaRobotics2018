@@ -1,6 +1,7 @@
 package edu.nr.robotics.subsystems.elevator;
 
 import edu.nr.lib.commandbased.JoystickCommand;
+import edu.nr.robotics.OI;
 
 public class ElevatorJoystickCommand extends JoystickCommand {
 
@@ -15,9 +16,13 @@ public class ElevatorJoystickCommand extends JoystickCommand {
 	}
 
 	@Override
+	protected void onExecute() {
+		Elevator.getInstance().setMotorSpeedPercent(OI.getInstance().getElevatorValue());
+	}
+	
+	@Override
 	protected boolean shouldSwitchToJoystick() {
-		//TODO: Check when we should switch to elevator joystick
-		return false;
+		return OI.getInstance().isElevatorJoystickNonZero();
 	}
 
 	@Override
