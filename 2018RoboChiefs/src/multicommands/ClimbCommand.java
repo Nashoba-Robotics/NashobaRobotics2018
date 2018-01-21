@@ -4,6 +4,7 @@ import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.units.Distance;
 import edu.nr.robotics.subsystems.climber.Climber;
+import edu.nr.robotics.subsystems.climber.ClimberHoldPositionCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 
 public class ClimbCommand extends NRCommand {
@@ -26,7 +27,7 @@ public class ClimbCommand extends NRCommand {
 
 	@Override
 	protected void onEnd() {
-		Climber.getInstance().holdPosition();
+		new ClimberHoldPositionCommand().start();
 	}
 	
 	@Override
