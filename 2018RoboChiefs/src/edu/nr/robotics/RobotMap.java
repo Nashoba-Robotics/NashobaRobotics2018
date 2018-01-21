@@ -22,4 +22,6 @@ public class RobotMap {
 
 	public static final int INTAKE_ROLLERS_MASTER = -1;
 	public static final int INTAKE_ROLLERS_FOLLOW = -1;
+	
+	public static final int CLIMBER_TALON = -1;
 }

@@ -18,7 +18,7 @@ public class ClimberCurrentCommand extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return true;
+		return false;
 	}
 
 }

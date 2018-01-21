@@ -23,7 +23,6 @@ public class Climber extends NRSubsystem {
 	private TalonSRX climberTalon;
 	private TalonEncoderClimber climberEncoder;
 
-
 	
 	public static final double ENC_TICKS_PER_INCH_CLIMBER = 0; //Find encoder ticks per inch for climber
 	
@@ -40,6 +39,9 @@ public class Climber extends NRSubsystem {
 	public static double I_CURRENT_CLIMBER = 0;
 	public static double D_CURRENT_CLIMBER = 0;
 	
+	/**
+	 * The default current of the climber
+	 */
 	public static double DEFAULT_CLIMBER_CURRENT = 0; //TODO: Find default climber current
 	
 	/**
@@ -86,9 +88,11 @@ public class Climber extends NRSubsystem {
 	 */
 	public static final int CURRENT_SLOT = 0;
 	
+	private double currentSetpoint = 0;
+	
 	private Climber() {
 		if (EnabledSubsystems.CLIMBER_ENABLED) {
-			climberTalon = CTRECreator.createMasterTalon(RobotMap.ELEVATOR_TALON);
+			climberTalon = CTRECreator.createMasterTalon(RobotMap.CLIMBER_TALON);
 			
 			if (EnabledSubsystems.CLIMBER_DUMB_ENABLED) {
 				climberTalon.set(ControlMode.PercentOutput, 0);
@@ -109,6 +113,7 @@ public class Climber extends NRSubsystem {
 			climberTalon.configPeakCurrentDuration(PEAK_CURRENT_DURATION_CLIMBER, DEFAULT_TIMEOUT);
 			climberTalon.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT_CLIMBER, DEFAULT_TIMEOUT);
 	
+			climberTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			climberTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	
 			climberEncoder = new TalonEncoderClimber(climberTalon);
@@ -155,7 +160,7 @@ public class Climber extends NRSubsystem {
 	}
 	
 	/**
-	 * @return The current of the climber talon
+	 * @return The current of the climber talon in amps
 	 */
 	public double getCurrent() {
 		if (climberTalon != null)
@@ -163,8 +168,13 @@ public class Climber extends NRSubsystem {
 		return 0;
 	}
 	
+	/**
+	 * @param current 
+	 * 			The amps to set the climberTalon to
+	 */
 	public void setCurrent(double current) {
 		if (climberTalon != null) {
+			currentSetpoint = current;
 			climberTalon.set(ControlMode.Current, current);
 		}
 	}
@@ -188,9 +198,10 @@ public class Climber extends NRSubsystem {
 		@Override
 	public void smartDashboardInfo() {
 			if (EnabledSubsystems.CLIMBER_SMARTDASHBOARD_BASIC_ENABLED) {
-				SmartDashboard.putNumber("Climber Current: ", getCurrent());
+				SmartDashboard.putString("Climber Current vs Set Current: ", getCurrent() + " : " + currentSetpoint);
 			}
 			if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
+				VOLTAGE_RAMP_RATE_CLIMBER = new Time(SmartDashboard.getNumber("Voltage Ramp Rate Climber Seconds: ", VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND)), Time.Unit.SECOND);
 				P_CURRENT_CLIMBER = SmartDashboard.getNumber("P Current Climber: ", P_CURRENT_CLIMBER);
 				I_CURRENT_CLIMBER = SmartDashboard.getNumber("I Current Climber: ", I_CURRENT_CLIMBER);
 				D_CURRENT_CLIMBER = SmartDashboard.getNumber("D Current Climber: ", D_CURRENT_CLIMBER);
@@ -205,7 +216,7 @@ public class Climber extends NRSubsystem {
 
 	@Override
 	public void disable() {
-		setCurrent(0);
+		climberTalon.set(ControlMode.PercentOutput, 0);
 	}
 
 }
