@@ -57,6 +57,7 @@ public void smartDashboardInfo() {
 		DriveMode.addDefault("Arcade Drive", Drive.DriveMode.arcadeDrive);
 		DriveMode.addObject("Tank Drive", Drive.DriveMode.tankDrive);
 		DriveMode.addObject("Arcade With NegInertia", Drive.DriveMode.arcadeNegInertia);
+		//DriveMode.addObject("Field Centric Drive", Drive.DriveMode.fieldCentric);
 		
 		SmartDashboard.putData("Drive Mode", DriveMode);
 	}

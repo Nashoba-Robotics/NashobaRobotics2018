@@ -12,7 +12,7 @@ public class ElevatorStopCommand extends NRCommand {
 	
 	@Override
 	protected void onStart() {
-		Elevator.getInstance().setMotorSpeedPercent(0);
+		Elevator.getInstance().disable();
 	}
 	
 	@Override 

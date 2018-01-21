@@ -184,13 +184,13 @@ public class HDriveDiagonalProfiler extends TimerTask implements SmartDashboardS
 			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
 
 			source.setPIDSourceType(PIDSourceType.kDisplacement);
-			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;
+			errorLeft = (positionGoal - source.pidGetRight() + initialPositionRight + positionGoal - source.pidGetLeft() + initialPositionLeft) / 2;
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;
 			double errorIntegralLeft = (errorLeft - errorLastLeft) * dt / 2;
 			double prelimOutputLeft = velocityGoal * kv + accelGoal * ka + errorLeft * kp + errorIntegralLeft * ki
 					+ errorDerivLeft * kd;
 			errorLastLeft = errorLeft;
-
+			
 			double outputLeft = 0;
 
 			if (prelimOutputLeft > 0.0) {
@@ -208,13 +208,13 @@ public class HDriveDiagonalProfiler extends TimerTask implements SmartDashboardS
 			}
 
 			source.setPIDSourceType(PIDSourceType.kDisplacement);
-			errorRight = positionGoal - source.pidGetRight() + initialPositionRight;
+			errorRight = (positionGoal - source.pidGetRight() + initialPositionRight + positionGoal - source.pidGetLeft() + initialPositionLeft) / 2;
 			double errorDerivRight = (errorRight - errorLastRight) / dt;
 			double errorIntegralRight = (errorRight - errorLastRight) * dt / 2;
 			double prelimOutputRight = velocityGoal * kv + accelGoal * ka + errorRight * kp + errorIntegralRight * ki 
 					+ errorDerivRight * kd;
 			errorLastRight = errorRight;
-
+			
 			double outputRight = 0;
 
 			if (prelimOutputRight > 0.0) {

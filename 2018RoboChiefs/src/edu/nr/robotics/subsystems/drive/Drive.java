@@ -235,9 +235,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	
 	private PIDSourceType type = PIDSourceType.kRate;
 	
-	private OneDimensionalMotionProfilerTwoMotorHDrive oneDProfilerTwoMotorH;
-	
-	private OneDimensionalMotionProfilerHDriveMain oneDProfilerOneMotorH;
+	public Distance xProfile;
+	public Distance yProfile;
+	public double drivePercent;
 	
 	private HDriveDiagonalProfiler diagonalProfiler;
 
@@ -540,7 +540,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	public void setMotorSpeedInPercent(double left, double right, double strafe) {
-		setMotorSpeed(currentMaxSpeed().mul(left), currentMaxSpeed().mul(right), currentMaxSpeedH().mul(strafe));
+		setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE.mul(strafe));
 	}
 	
 	public void setMotorSpeed(Speed left, Speed right, Speed strafe) {
@@ -555,17 +555,17 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			hDrive.config_kF(SLOT_0, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_H * hMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_H) * 1023.0) / hMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND), NO_TIMEOUT);
 			
 			if (leftDrive.getControlMode() == ControlMode.PercentOutput) {
-				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.div(currentMaxSpeed()));
+				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.div(MAX_SPEED_DRIVE));
 			} else {
 				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
 			}
 			if (rightDrive.getControlMode() == ControlMode.PercentOutput) {
-				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.div(currentMaxSpeed()));
+				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.div(MAX_SPEED_DRIVE));
 			} else {
 				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
 			}
 			if (hDrive.getControlMode() == ControlMode.PercentOutput) {
-				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.div(currentMaxSpeedH()));
+				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.div(MAX_SPEED_DRIVE_H));
 			} else {
 				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
 			}	
@@ -657,40 +657,34 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	
 	@Override
 	public void pidWrite(double outputLeft, double outputRight, double outputH) {
-		setMotorSpeed(currentMaxSpeed().mul(outputLeft),currentMaxSpeed().mul(outputRight), currentMaxSpeedH().mul(outputH));
+		setMotorSpeed(MAX_SPEED_DRIVE.mul(outputLeft),MAX_SPEED_DRIVE.mul(outputRight), MAX_SPEED_DRIVE_H.mul(outputH));
 	}
 	
-	public void enableMotionProfiler(Distance distX, Distance distY) {
-		if (distX == Distance.ZERO && distY != Distance.ZERO) {
-			oneDProfilerOneMotorH = new OneDimensionalMotionProfilerHDriveMain(this, this, kVOneDH, kAOneDH, kPOneDH, kIOneDH, kDOneDH, kP_thetaOneD);
-			oneDProfilerOneMotorH.setTrajectory(new OneDimensionalTrajectoryRamped(distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H),
-					MAX_SPEED_DRIVE_H.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H,Time.Unit.HUNDRED_MILLISECOND), 
-					MAX_ACCELERATION_DRIVE_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
-			oneDProfilerOneMotorH.enable();
-		}
-		else if (distX != Distance.ZERO && distY == Distance.ZERO) {
-			oneDProfilerTwoMotorH = new OneDimensionalMotionProfilerTwoMotorHDrive(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
-			oneDProfilerTwoMotorH.setTrajectory(new OneDimensionalTrajectoryRamped(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
-					MAX_SPEED_DRIVE.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), 
-					MAX_ACCELERATION_DRIVE.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
-			oneDProfilerTwoMotorH.enable();
-		} else if (distX != Distance.ZERO && distY != Distance.ZERO) {
-			diagonalProfiler = new HDriveDiagonalProfiler(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD, kVOneDH, kAOneDH, kPOneDH, kIOneDH, kDOneDH);
-			diagonalProfiler.setTrajectory(new RampedDiagonalHTrajectory(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK), 
-					distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H),
-					Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED_DRIVE.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND),
-							(NRMath.hypot(distX, distY).div(distY)) * MAX_SPEED_DRIVE_H.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND)), 
-					Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACCELERATION_DRIVE.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
-							(NRMath.hypot(distX, distY).div(distY)) * MAX_ACCELERATION_DRIVE_H.mul(ACCEL_PERCENT).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND))));
-			diagonalProfiler.enable();
+	public void enableMotionProfiler(Distance distX, Distance distY, double maxVelPercent, double maxAccelPercent) {
+		double minVel;
+		double minAccel;
+		
+		if (distX.equals(Distance.ZERO) && !distY.equals(Distance.ZERO)) {
+			minVel = MAX_SPEED_DRIVE_H.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
+			minAccel = MAX_ACCELERATION_DRIVE_H.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
+		} else if (distY.equals(Distance.ZERO) && !distX.equals(Distance.ZERO)) {
+			minVel = MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
+			minAccel = MAX_ACCELERATION_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
+		} else if (!distX.equals(Distance.ZERO) && !distY.equals(Distance.ZERO)) {
+			minVel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_SPEED_DRIVE_H.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
+			minAccel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACCELERATION_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_ACCELERATION_DRIVE_H.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND));
 		} else {
-			System.out.println("No profiler was enabled. Distances are 0.");
+			minVel = 0;
+			minAccel = 0;
+			System.out.println("No Distances Set");
 		}
-	}
+		
+		diagonalProfiler = new HDriveDiagonalProfiler(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD, kVOneDH, kAOneDH, kPOneDH, kIOneDH, kDOneDH);
+		diagonalProfiler.setTrajectory(new RampedDiagonalHTrajectory(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK), distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H), minVel, minAccel));
+		diagonalProfiler.enable();
+}
 	
 	public void disableProfiler() {
-		oneDProfilerOneMotorH.disable();
-		oneDProfilerTwoMotorH.disable();
 		diagonalProfiler.disable();
 	}
 	
@@ -754,9 +748,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			}
 			if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {
 				
-				SmartDashboard.putNumber("Drive Left Percent", leftMotorSetpoint.div(currentMaxSpeed()));
-				SmartDashboard.putNumber("Drive Right Percent", rightMotorSetpoint.div(currentMaxSpeed()));
-				SmartDashboard.putNumber("Drive H Percent", hMotorSetpoint.div(currentMaxSpeed()));
+				SmartDashboard.putNumber("Drive Left Percent", leftMotorSetpoint.div(MAX_SPEED_DRIVE));
+				SmartDashboard.putNumber("Drive Right Percent", rightMotorSetpoint.div(MAX_SPEED_DRIVE));
+				SmartDashboard.putNumber("Drive H Percent", hMotorSetpoint.div(MAX_SPEED_DRIVE_H));
 				
 				SmartDashboard.putData(this);
 				SmartDashboard.putString("Drive Voltage",
@@ -811,8 +805,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			}
 		}
 	}
+		
 	
-	@Override
+
 	public void periodic() {
 	}
 	
@@ -820,36 +815,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public void disable() {
 		setMotorSpeedInPercent(0, 0, 0);
 	}
-
-	public void disableOneDProfilerTwoMotorH() {
-		oneDProfilerTwoMotorH.disable();
-	}
-	
-	public void disableOneDProfilerOneMotorH() {
-		oneDProfilerOneMotorH.disable();
-	}
-	
-	/**
-	 * @return max drive speed in current gearing
-	 */
-	public Speed currentMaxSpeed() {
-		return MAX_SPEED_DRIVE;
-	}
-	
-	/**
-	 * @return max drive speed h in current gearing
-	 */
-	public Speed currentMaxSpeedH() {
-		return MAX_SPEED_DRIVE_H;
-	}
-	
-	
-	/**
-	 * Motion profiling parameters (x is front-back, y is left-right)
-	 */
-	public static Distance xProfile;
-	public static Distance yProfile;
-	public static double drivePercent = 0;
 	
 	public void startDumbDrive() {
 		if (leftDrive != null && rightDrive != null && hDrive != null) {

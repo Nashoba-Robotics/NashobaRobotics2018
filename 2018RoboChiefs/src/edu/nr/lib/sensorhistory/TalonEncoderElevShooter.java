@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.ctre.CANTalon;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.units.Angle;
@@ -13,12 +12,12 @@ import edu.nr.lib.units.AngularSpeed;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Time;
 
-public class TalonEncoder extends TimerTask {
+public class TalonEncoderElevShooter extends TimerTask{
 
 	private final Timer timer;
 
 	private final int PID_TYPE = 0; //0 = primary, 1 = cascade
-	//TODO: Make HDrive functions
+	
 	// In milliseconds
 	private final Time period;
 	private static final Time defaultPeriod = new Time(5, Time.Unit.MILLISECOND); // 200
@@ -30,7 +29,7 @@ public class TalonEncoder extends TimerTask {
 
 	List<Data> data;
 
-	public TalonEncoder(TalonSRX talon) {
+	public TalonEncoderElevShooter(TalonSRX talon) {
 		this.talon = talon;
 
 		this.period = defaultPeriod;
@@ -47,7 +46,7 @@ public class TalonEncoder extends TimerTask {
 		if(data.size() > maxNumPts) {
 			data.remove(0);
 		}
-		data.add(new Data(new Distance(talon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK),
+		data.add(new Data(new Distance(talon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER),
 				new AngularSpeed(talon.getSelectedSensorVelocity(PID_TYPE), Angle.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), Time.getCurrentTime()));
 	}
 
@@ -61,11 +60,11 @@ public class TalonEncoder extends TimerTask {
 	public Distance getPosition(Time deltaTime) {
 
 		if (deltaTime.equals(Time.ZERO)) {
-			return new Distance(talon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK);
+			return new Distance(talon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER);
 		}
 
 		if (data.size() == 0) {
-			return new Distance(talon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK);
+			return new Distance(talon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER);
 		} else if (data.size() == 1) {
 			return data.get(0).position;
 		}
@@ -101,7 +100,7 @@ public class TalonEncoder extends TimerTask {
 			System.out.println("The timestamps are equal in " + this + ". This is weird and unexpected...");
 			return Distance.ZERO;
 		}
-		return new Distance(interpolate(first.position.get(Distance.Unit.MAGNETIC_ENCODER_TICK), second.position.get(Distance.Unit.MAGNETIC_ENCODER_TICK), timestamp.div(second.timestamp.add(first.timestamp))), Distance.Unit.MAGNETIC_ENCODER_TICK);
+		return new Distance(interpolate(first.position.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER), second.position.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER), timestamp.div(second.timestamp.add(first.timestamp))), Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER);
 
 	}
 
@@ -113,19 +112,19 @@ public class TalonEncoder extends TimerTask {
 	 * @return the velocity
 	 */
 	public AngularSpeed getVelocity(Time deltaTime) {
-	
+
 		if (deltaTime.equals(Time.ZERO)) {
 			return new AngularSpeed(talon.getSelectedSensorVelocity(PID_TYPE), Angle.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
 		}
-	
+
 		if (data.size() == 0) {
 			return new AngularSpeed(talon.getSelectedSensorVelocity(PID_TYPE), Angle.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
 		} else if (data.size() == 1) {
 			return data.get(0).velocity;
 		}
-	
+
 		Time timestamp = Time.getCurrentTime().sub(deltaTime);
-	
+
 		int low = 0;
 		int up = data.size() - 1;
 		while (low < up)
@@ -177,5 +176,4 @@ public class TalonEncoder extends TimerTask {
 			this.timestamp = timestamp;
 		}
 	}
-
 }
