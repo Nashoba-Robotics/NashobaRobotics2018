@@ -114,7 +114,7 @@ public class ElevatorShooter extends NRSubsystem {
 		
 			elevShooterTalon = CTRECreator.createMasterTalon(RobotMap.ELEVATOR_SHOOTER_TALON);
 	
-			if (EnabledSubsystems.ELEVATOR_DUMB_ENABLED) {
+			if (EnabledSubsystems.ELEVATOR_SHOOTER_DUMB_ENABLED) {
 				elevShooterTalon.set(ControlMode.PercentOutput, 0);
 			} else {
 				elevShooterTalon.set(ControlMode.Velocity, 0);

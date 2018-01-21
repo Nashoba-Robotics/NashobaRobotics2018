@@ -361,8 +361,6 @@ public class Elevator extends NRSubsystem {
 		}
 		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
 			profileDeltaPos = new Distance(SmartDashboard.getNumber("Elevator Profile Delta Inches: ", 0), Distance.Unit.INCH);
-
-			profileDeltaPos = new Distance(SmartDashboard.getNumber("Elevator Profile Delta Inches: ", 0), Distance.Unit.INCH);
 			P_POS_ELEVATOR = SmartDashboard.getNumber("P Pos Elevator: ", P_POS_ELEVATOR);
 			I_POS_ELEVATOR = SmartDashboard.getNumber("I Pos Elevator: ", I_POS_ELEVATOR);
 			D_POS_ELEVATOR = SmartDashboard.getNumber("D Pos Elevator: ", D_POS_ELEVATOR);

@@ -17,4 +17,6 @@ public class RobotMap {
 	public static final int INTAKE_ELEVATOR_TALON = -1;
 
 	public static final int ELEVATOR_SHOOTER_TALON = -1;
+	
+	public static final int CUBE_HANDLER_TALON = -1;
 }
