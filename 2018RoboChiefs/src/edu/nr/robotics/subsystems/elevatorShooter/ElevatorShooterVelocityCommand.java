@@ -7,6 +7,7 @@ public class ElevatorShooterVelocityCommand extends NRCommand {
 	private double percent;
 	
 	public ElevatorShooterVelocityCommand(double percent) {
+		super(ElevatorShooter.getInstance());
 		this.percent = percent;
 	}
 
