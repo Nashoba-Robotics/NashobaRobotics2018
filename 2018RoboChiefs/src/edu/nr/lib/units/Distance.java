@@ -4,6 +4,7 @@ import edu.nr.lib.Units;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
+import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
 
 public class Distance {
 	
@@ -13,7 +14,8 @@ public class Distance {
 	
 	public enum Unit implements GenericUnit {
 		FOOT, INCH, DRIVE_ROTATION, DRIVE_ROTATION_H, METER, 
-		MAGNETIC_ENCODER_TICK, MAGNETIC_ENCODER_TICK_H, MAGNETIC_ENCODER_TICK_ELEV, MAGNETIC_ENCODER_TICK_ELEV_SHOOTER;
+		MAGNETIC_ENCODER_TICK, MAGNETIC_ENCODER_TICK_H, MAGNETIC_ENCODER_TICK_ELEV, MAGNETIC_ENCODER_TICK_ELEV_SHOOTER, MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS;
+		
 		
 		public static final Unit defaultUnit = INCH;
 		
@@ -38,6 +40,11 @@ public class Distance {
 		 * For an elevator shooter
 		 */
 		private static final double ENCODER_TICK_ELEV_SHOOTER_PER_INCH = ElevatorShooter.ENC_TICK_PER_INCH_ELEVATOR_SHOOTER;
+		
+		/**
+		 * For the intake rollers
+		 */
+		private static final double ENCODER_TICK_INTAKE_ROLLERS_PER_INCH = IntakeRollers.ENC_TICK_PER_INCH_INTAKE_ROLLERS;
 		
 		private static final double FOOT_PER_INCH = 1.0/Units.INCHES_PER_FOOT;
 		private static final double METER_PER_INCH = 1.0/Units.INCHES_PER_METER;
@@ -70,6 +77,9 @@ public class Distance {
 			if(this == Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER) {
 				return val / ENCODER_TICK_ELEV_SHOOTER_PER_INCH;
 			}
+			if(this == Unit.MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS) {
+				return val / ENCODER_TICK_INTAKE_ROLLERS_PER_INCH;
+			}
 			return 0;
 		}
 		
@@ -100,6 +110,9 @@ public class Distance {
 			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER) {
 				return ENCODER_TICK_ELEV_SHOOTER_PER_INCH * val;
+			}
+			if(this == Unit.MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS) {
+				return ENCODER_TICK_INTAKE_ROLLERS_PER_INCH * val;
 			}
 			return 0;
 		}
