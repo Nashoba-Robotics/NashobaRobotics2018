@@ -25,7 +25,7 @@ public class IntakeRollers extends NRSubsystem {
 	private TalonSRX intakeRollersMaster, intakeRollersFollower;
 	private TalonEncoderIntakeRollers intakeRollersEncoder;
 	
-	//TODO: determine for real
+	//TODO: determine ALL for real
 	
 	/**
 	 * The encoder ticks per inch moved on the intake rollers
