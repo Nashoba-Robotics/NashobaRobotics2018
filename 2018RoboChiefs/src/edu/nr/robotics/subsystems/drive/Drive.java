@@ -88,7 +88,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 * The maximum acceleration of the drive base
 	 */
 	public static final Acceleration MAX_ACCELERATION_DRIVE = Acceleration.ZERO; //TODO: Find real drive max acceleration
-	public static final Acceleration MAX_ACCELERATION_DRIVE_H = Acceleration.ZERO; //TODO: Find real drive max acceleration h
+	public static final Acceleration MAX_ACCEL_DRIVE_H = Acceleration.ZERO; //TODO: Find real drive max acceleration h
 	
 	/**
 	 * Voltage percentage at which robot just starts moving
@@ -656,13 +656,13 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		
 		if (distX.equals(Distance.ZERO) && !distY.equals(Distance.ZERO)) {
 			minVel = MAX_SPEED_DRIVE_H.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
-			minAccel = MAX_ACCELERATION_DRIVE_H.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
+			minAccel = MAX_ACCEL_DRIVE_H.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
 		} else if (distY.equals(Distance.ZERO) && !distX.equals(Distance.ZERO)) {
 			minVel = MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
 			minAccel = MAX_ACCELERATION_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
 		} else if (!distX.equals(Distance.ZERO) && !distY.equals(Distance.ZERO)) {
 			minVel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_SPEED_DRIVE_H.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
-			minAccel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACCELERATION_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_ACCELERATION_DRIVE_H.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND));
+			minAccel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACCELERATION_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_ACCEL_DRIVE_H.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND));
 		} else {
 			minVel = 0;
 			minAccel = 0;

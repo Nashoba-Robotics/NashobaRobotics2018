@@ -60,6 +60,7 @@ public class IntakeElevator extends NRSubsystem {
 	/**
 	 * MotionMagic PID values for the intake elevator
 	 */
+	public static double F_POS_INTAKE_ELEVATOR = 1.00 * 1023 / MAX_SPEED_INTAKE_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND);
 	public static double P_POS_INTAKE_ELEVATOR = 0; // TODO: Find intake elevator MagicMotion PID values
 	public static double I_POS_INTAKE_ELEVATOR = 0;
 	public static double D_POS_INTAKE_ELEVATOR = 0;
@@ -175,7 +176,7 @@ public class IntakeElevator extends NRSubsystem {
 			intakeElevTalon.config_kP(VEL_SLOT, P_VEL_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
 			intakeElevTalon.config_kI(VEL_SLOT, I_VEL_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
 			intakeElevTalon.config_kD(VEL_SLOT, D_VEL_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kF(MOTION_MAGIC_SLOT, 0, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kF(MOTION_MAGIC_SLOT, F_POS_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
 			intakeElevTalon.config_kP(MOTION_MAGIC_SLOT, P_POS_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
 			intakeElevTalon.config_kI(MOTION_MAGIC_SLOT, I_POS_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
 			intakeElevTalon.config_kD(MOTION_MAGIC_SLOT, D_POS_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
@@ -194,10 +195,8 @@ public class IntakeElevator extends NRSubsystem {
 			intakeElevTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_INTAKE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			intakeElevTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_INTAKE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	
-			intakeElevTalon
-					.configMotionCruiseVelocity(
-							(int) MAX_SPEED_INTAKE_ELEVATOR.mul(PROFILE_VEL_PERCENT_INTAKE_ELEVATOR)
-									.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND),
+			intakeElevTalon.configMotionCruiseVelocity((int) MAX_SPEED_INTAKE_ELEVATOR.mul(PROFILE_VEL_PERCENT_INTAKE_ELEVATOR).get(
+					Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND),
 							DEFAULT_TIMEOUT);
 			intakeElevTalon.configMotionAcceleration((int) MAX_ACCEL_INTAKE_ELEVATOR.mul(PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR).get(
 					Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
@@ -270,6 +269,12 @@ public class IntakeElevator extends NRSubsystem {
 		if (intakeElevTalon != null) {
 			posSetpoint = position;
 			velSetpoint = Speed.ZERO;
+			intakeElevTalon.configMotionCruiseVelocity((int) MAX_SPEED_INTAKE_ELEVATOR.mul(PROFILE_VEL_PERCENT_INTAKE_ELEVATOR).get(
+					Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND),
+							DEFAULT_TIMEOUT);
+			intakeElevTalon.configMotionAcceleration((int) MAX_ACCEL_INTAKE_ELEVATOR.mul(PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR).get(
+					Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
+					DEFAULT_TIMEOUT);
 			intakeElevTalon.set(ControlMode.MotionMagic, position.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV));
 		}
 	}
