@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.commandbased.NRSubsystem;
-import edu.nr.lib.sensorhistory.TalonEncoderClimber;
+import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Speed;
@@ -21,10 +21,11 @@ public class Climber extends NRSubsystem {
 	private static Climber singleton;
 	
 	private TalonSRX climberTalon;
-	private TalonEncoderClimber climberEncoder;
-
+	private TalonEncoder climberEncoder;
 	
-	public static final double ENC_TICKS_PER_INCH_CLIMBER = 0; //Find encoder ticks per inch for climber
+	public static final double ENC_TICKS_PER_INCH_CLIMBER = 0; //TODO: Find encoder ticks per inch for climber
+	
+	public static final Speed MAX_SPEED_CLIMBER = Speed.ZERO;//TODO: Find max speed of the climber
 	
 	/**
 	 * The voltage ramp rate of the climber. Voltage ramp rate is time it takes
@@ -35,9 +36,17 @@ public class Climber extends NRSubsystem {
 	/**
 	 * Current PID values for the climber
 	 */
+	public static final double F_CURRENT_CLIMBER = 1.00 * 1023 / MAX_SPEED_CLIMBER.get(Distance.Unit.MAGNETIC_ENCODER_TICK_CLIMBER, Time.Unit.HUNDRED_MILLISECOND);
 	public static double P_CURRENT_CLIMBER = 0; // TODO: Find climber current PID values
 	public static double I_CURRENT_CLIMBER = 0;
 	public static double D_CURRENT_CLIMBER = 0;
+	
+	/**
+	 * Position PID values for the climber
+	 */
+	public static double P_POS_CLIMBER = 0; //TODO: Find climber position PID values
+	public static double I_POS_CLIMBER = 0;
+	public static double D_POS_CLIMBER = 0; 
 	
 	/**
 	 * The default current of the climber
@@ -87,6 +96,7 @@ public class Climber extends NRSubsystem {
 	 * The PID slot numbers
 	 */
 	public static final int CURRENT_SLOT = 0;
+	public static final int POS_SLOT = 0;
 	
 	private double currentSetpoint = 0;
 	
@@ -99,8 +109,18 @@ public class Climber extends NRSubsystem {
 			} else {
 				climberTalon.set(ControlMode.Current, 0);
 			}
-	
+				
 			climberTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);
+			climberTalon.config_kF(CURRENT_SLOT, F_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
+			climberTalon.config_kP(CURRENT_SLOT, P_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
+			climberTalon.config_kI(CURRENT_SLOT, I_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
+			climberTalon.config_kD(CURRENT_SLOT, D_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
+			
+			climberTalon.config_kF(POS_SLOT, 0, DEFAULT_TIMEOUT);
+			climberTalon.config_kP(POS_SLOT, P_POS_CLIMBER, DEFAULT_TIMEOUT);
+			climberTalon.config_kI(POS_SLOT, I_POS_CLIMBER, DEFAULT_TIMEOUT);
+			climberTalon.config_kD(POS_SLOT, D_POS_CLIMBER, DEFAULT_TIMEOUT);
+			
 			climberTalon.setNeutralMode(NEUTRAL_MODE_CLIMBER);
 			climberTalon.setInverted(false);
 			climberTalon.setSensorPhase(false);
@@ -116,7 +136,7 @@ public class Climber extends NRSubsystem {
 			climberTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			climberTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	
-			climberEncoder = new TalonEncoderClimber(climberTalon);
+			climberEncoder = new TalonEncoder(climberTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_CLIMBER);
 	
 		}
 
@@ -134,6 +154,16 @@ public class Climber extends NRSubsystem {
 		if (singleton == null) {
 			singleton = new Climber();
 		}
+	}
+	
+	/**
+	 * @return Current position of the climber encoders
+	 */
+	public Distance getPosition() {
+		if (climberTalon != null) {
+			return new Distance(climberTalon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_CLIMBER);
+		}
+		return Distance.ZERO;
 	}
 	
 	/**
@@ -169,6 +199,17 @@ public class Climber extends NRSubsystem {
 	}
 	
 	/**
+	 * Sets the raw position of the climber
+	 * 
+	 * @param pos
+	 */
+	public void setPosition(Distance pos) {
+		if(climberTalon != null) {
+			climberTalon.set(ControlMode.Position, pos.get(Distance.Unit.MAGNETIC_ENCODER_TICK_CLIMBER));
+		}
+	}
+	
+	/**
 	 * @param current 
 	 * 			The amps to set the climberTalon to
 	 */
@@ -189,7 +230,10 @@ public class Climber extends NRSubsystem {
 			SmartDashboard.putNumber("P Current Climber: ", P_CURRENT_CLIMBER);
 			SmartDashboard.putNumber("I Current Climber: ", I_CURRENT_CLIMBER);
 			SmartDashboard.putNumber("D Current Climber: ", D_CURRENT_CLIMBER);
-			SmartDashboard.putNumber("Climber Current:", DEFAULT_CLIMBER_CURRENT);
+			SmartDashboard.putNumber("P Pos Climber: ", P_POS_CLIMBER);
+			SmartDashboard.putNumber("I Pos Climber: ", I_POS_CLIMBER);
+			SmartDashboard.putNumber("D Pos Climber: ", D_POS_CLIMBER);
+			SmartDashboard.putNumber("Climber Set Current:", DEFAULT_CLIMBER_CURRENT);
 		}
 	}
 	
@@ -206,7 +250,10 @@ public class Climber extends NRSubsystem {
 				P_CURRENT_CLIMBER = SmartDashboard.getNumber("P Current Climber: ", P_CURRENT_CLIMBER);
 				I_CURRENT_CLIMBER = SmartDashboard.getNumber("I Current Climber: ", I_CURRENT_CLIMBER);
 				D_CURRENT_CLIMBER = SmartDashboard.getNumber("D Current Climber: ", D_CURRENT_CLIMBER);
-				DEFAULT_CLIMBER_CURRENT = SmartDashboard.getNumber("Climber Current: ", DEFAULT_CLIMBER_CURRENT);
+				P_POS_CLIMBER = SmartDashboard.getNumber("P Pos Climber: ", P_POS_CLIMBER);
+				I_POS_CLIMBER = SmartDashboard.getNumber("I Pos Climber: ", I_POS_CLIMBER);
+				D_POS_CLIMBER = SmartDashboard.getNumber("D Pos Climber: ", D_POS_CLIMBER);
+				DEFAULT_CLIMBER_CURRENT = SmartDashboard.getNumber("Climber Set Current: ", DEFAULT_CLIMBER_CURRENT);
 			}
 		
 	}

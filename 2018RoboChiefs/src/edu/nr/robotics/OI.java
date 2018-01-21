@@ -121,6 +121,11 @@ public class OI implements SmartDashboardSource {
 		return snapDriveJoysticks(driveRight.getY());
 	}
 	
+	public double getElevatorValue() {
+		//return snapDriveJoysticks(); TODO: getElevatorValue()
+		return 0;
+	}
+	
 	public double getDriveSpeedMultiplier() {
 		return driveSpeedMultiplier;
 	}
@@ -151,7 +156,7 @@ public class OI implements SmartDashboardSource {
 	
 	@Override
 	public void smartDashboardInfo() {
-		//driveSpeedMultiplier = SmartDashboard.getNumber("Speed Multiplier", 1);
+
 	}
 	
 	public boolean isTankNonZero() {
@@ -164,6 +169,10 @@ public class OI implements SmartDashboardSource {
 	
 	public boolean isDriveNonZero() {
 		return getDriveLeftXValue() != 0 || getDriveRightXValue() != 0 || getDriveLeftYValue() != 0 || getDriveRightYValue() != 0;
+	}
+	
+	public boolean isElevatorJoystickNonZero() {
+		return getElevatorValue() != 0;
 	}
 	
 	public boolean shouldDumbDrive() {

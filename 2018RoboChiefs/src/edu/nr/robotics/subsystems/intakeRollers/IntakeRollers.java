@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.commandbased.NRSubsystem;
-import edu.nr.lib.sensorhistory.TalonEncoderIntakeRollers;
+import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Speed;
@@ -21,7 +21,7 @@ public class IntakeRollers extends NRSubsystem {
 	private static IntakeRollers singleton;
 	
 	private TalonSRX intakeRollersMaster, intakeRollersFollower;
-	private TalonEncoderIntakeRollers intakeRollersEncoder;
+	private TalonEncoder intakeRollersEncoder;
 	
 	//TODO: determine ALL for real
 	
@@ -139,7 +139,7 @@ public class IntakeRollers extends NRSubsystem {
 	
 			intakeRollersFollower.setNeutralMode(NEUTRAL_MODE_INTAKE_ROLLERS);
 			
-			intakeRollersEncoder = new TalonEncoderIntakeRollers(intakeRollersMaster);
+			intakeRollersEncoder = new TalonEncoder(intakeRollersMaster, Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS);
 		}
 		
 		smartDashboardInit();

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.ctre.CANTalon;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.units.Angle;
@@ -26,13 +25,16 @@ public class TalonEncoder extends TimerTask {
 
 	int maxNumPts = 200;
 	
+	Distance.Unit encoderUnit;
+	
 	TalonSRX talon;
 
 	List<Data> data;
 
-	public TalonEncoder(TalonSRX talon) {
+	public TalonEncoder(TalonSRX talon, Distance.Unit encoderUnit) {
 		this.talon = talon;
-
+		this.encoderUnit = encoderUnit;
+		
 		this.period = defaultPeriod;
 
 		data = new LinkedList<>();
@@ -47,7 +49,7 @@ public class TalonEncoder extends TimerTask {
 		if(data.size() > maxNumPts) {
 			data.remove(0);
 		}
-		data.add(new Data(new Distance(talon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK),
+		data.add(new Data(new Distance(talon.getSelectedSensorPosition(PID_TYPE), encoderUnit),
 				new AngularSpeed(talon.getSelectedSensorVelocity(PID_TYPE), Angle.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), Time.getCurrentTime()));
 	}
 
@@ -61,11 +63,11 @@ public class TalonEncoder extends TimerTask {
 	public Distance getPosition(Time deltaTime) {
 
 		if (deltaTime.equals(Time.ZERO)) {
-			return new Distance(talon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK);
+			return new Distance(talon.getSelectedSensorPosition(PID_TYPE), encoderUnit);
 		}
 
 		if (data.size() == 0) {
-			return new Distance(talon.getSelectedSensorPosition(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK);
+			return new Distance(talon.getSelectedSensorPosition(PID_TYPE), encoderUnit);
 		} else if (data.size() == 1) {
 			return data.get(0).position;
 		}
@@ -101,7 +103,7 @@ public class TalonEncoder extends TimerTask {
 			System.out.println("The timestamps are equal in " + this + ". This is weird and unexpected...");
 			return Distance.ZERO;
 		}
-		return new Distance(interpolate(first.position.get(Distance.Unit.MAGNETIC_ENCODER_TICK), second.position.get(Distance.Unit.MAGNETIC_ENCODER_TICK), timestamp.div(second.timestamp.add(first.timestamp))), Distance.Unit.MAGNETIC_ENCODER_TICK);
+		return new Distance(interpolate(first.position.get(encoderUnit), second.position.get(encoderUnit), timestamp.div(second.timestamp.add(first.timestamp))), encoderUnit);
 
 	}
 

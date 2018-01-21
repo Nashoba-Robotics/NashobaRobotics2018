@@ -12,7 +12,7 @@ public class ClimberCurrentSmartDashboardCommand extends NRCommand {
 	
 	@Override
 	protected void onStart() {
-		Climber.getInstance().setCurrent(Climber.getInstance().DEFAULT_CLIMBER_CURRENT);
+		Climber.getInstance().setCurrent(Climber.DEFAULT_CLIMBER_CURRENT);
 	}
 	
 	@Override

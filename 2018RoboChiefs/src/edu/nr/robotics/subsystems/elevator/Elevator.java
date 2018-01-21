@@ -7,7 +7,7 @@ import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.commandbased.NRSubsystem;
-import edu.nr.lib.sensorhistory.TalonEncoderElev;
+import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Acceleration;
 import edu.nr.lib.units.Distance;
@@ -22,7 +22,7 @@ public class Elevator extends NRSubsystem {
 	private static Elevator singleton;
 
 	private TalonSRX elevTalon, elevTalonFollow;
-	private TalonEncoderElev elevEncoder;
+	private TalonEncoder elevEncoder;
 
 	/**
 	 * The encoder ticks per inch moved on the elevator
@@ -58,6 +58,7 @@ public class Elevator extends NRSubsystem {
 	/**
 	 * MotionMagic PID values for the elevator
 	 */
+	public static double F_POS_ELEVATOR = 1.00 * 1023 / MAX_SPEED_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND);
 	public static double P_POS_ELEVATOR = 0; // TODO: Find elevator MagicMotion PID values
 	public static double I_POS_ELEVATOR = 0;
 	public static double D_POS_ELEVATOR = 0;
@@ -143,6 +144,7 @@ public class Elevator extends NRSubsystem {
 	 */
 	public static final Distance TOP_POSITION_ELEVATOR = Distance.ZERO; // TODO: Find TOP_POSITION_ELEVATOR
 	public static final Distance AUTO_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find AUTO_HEIGHT_ELEVATOR
+	public static final Distance SCORE_LOW_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find SCORE_LOW_HEIGHT_ELEVATOR
 	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find BOTTOM_HEIGHT_ELEVATOR
 
 	private Speed velSetpoint = Speed.ZERO;
@@ -186,16 +188,14 @@ public class Elevator extends NRSubsystem {
 			elevTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			elevTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	
-			elevTalon
-					.configMotionCruiseVelocity(
-							(int) MAX_SPEED_ELEVATOR.mul(PROFILE_VEL_PERCENT_ELEVATOR)
-									.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND),
+			elevTalon.configMotionCruiseVelocity((int) MAX_SPEED_ELEVATOR.mul(PROFILE_VEL_PERCENT_ELEVATOR).get(
+					Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND),
 							DEFAULT_TIMEOUT);
 			elevTalon.configMotionAcceleration((int) MAX_ACCEL_ELEVATOR.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
 					Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 					DEFAULT_TIMEOUT);
 	
-			elevEncoder = new TalonEncoderElev(elevTalon);
+			elevEncoder = new TalonEncoder(elevTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV);
 	
 			elevTalonFollow.setNeutralMode(NEUTRAL_MODE_ELEVATOR);
 		}
@@ -279,6 +279,13 @@ public class Elevator extends NRSubsystem {
 		if (elevTalon != null) {
 			posSetpoint = position;
 			velSetpoint = Speed.ZERO;
+			elevTalon.configMotionCruiseVelocity((int) MAX_SPEED_ELEVATOR.mul(PROFILE_VEL_PERCENT_ELEVATOR).get(
+					Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND),
+							DEFAULT_TIMEOUT);
+			elevTalon.configMotionAcceleration((int) MAX_ACCEL_ELEVATOR.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
+					Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
+					DEFAULT_TIMEOUT);
+	
 			elevTalon.set(ControlMode.MotionMagic, position.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV));
 		}
 	}
