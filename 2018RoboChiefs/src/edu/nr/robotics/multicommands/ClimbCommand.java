@@ -1,4 +1,4 @@
-package multicommands;
+package edu.nr.robotics.multicommands;
 
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.commandbased.NRSubsystem;

@@ -1,4 +1,4 @@
-package multicommands;
+package edu.nr.robotics.multicommands;
 
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandler;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerVelocityCommand;

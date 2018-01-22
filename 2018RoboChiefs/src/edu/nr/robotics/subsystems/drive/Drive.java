@@ -162,6 +162,11 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final double PROFILE_TURN_PERCENT = 0; //TODO: Find Drive turn percent
 	
 	/**
+	 * Percent of the drive while going to intake a cube
+	 */
+	public static final double DRIVE_TO_CUBE_PERCENT = 0;//TODO: Decide on DRIVE_TO_CUBE_PERCENT
+	
+	/**
 	 * The position from the end at which profile position threshold takes effect
 	 */
 	public static final Distance END_THRESHOLD = new Distance(3, Distance.Unit.INCH); //TODO: Find End Threshold
@@ -175,6 +180,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 * Time stopped before motion profiling ends
 	 */
 	public static final Time PROFILE_TIME_THRESHOLD = Time.ZERO; //TODO: Find Drive profile time threshold
+	
+	/**
+	 * The angle within which the turning stops
+	 */
+	public static final Angle DRIVE_ANGLE_THRESHOLD = new Angle(0, Angle.Unit.DEGREE);//TODO: Find ANGLE_THRESHOLD
+
 	
 	/**
 	 * Current ratings based on MAXI Circuit Breaker Model MX5

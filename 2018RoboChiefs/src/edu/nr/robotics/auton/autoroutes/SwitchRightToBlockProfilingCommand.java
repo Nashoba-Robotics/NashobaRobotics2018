@@ -6,7 +6,7 @@ import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.EnableOneDMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnPIDCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import multicommands.DriveToCubeCommand;
+import edu.nr.robotics.multicommands.DriveToCubeCommand;;
 
 public class SwitchRightToBlockProfilingCommand extends CommandGroup {
 	

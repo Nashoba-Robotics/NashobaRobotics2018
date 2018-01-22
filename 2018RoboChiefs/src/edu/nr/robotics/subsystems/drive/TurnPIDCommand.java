@@ -9,8 +9,6 @@ import edu.nr.lib.network.LimelightNetworkTable;
 import edu.nr.lib.units.Angle;
 
 public class TurnPIDCommand extends NRCommand {
-
-	private static final Angle ANGLE_THRESHOLD = new Angle(0.1, Angle.Unit.DEGREE);
 	
 	private TriplePIDOutput out;
 	private Angle angleToTurn;
@@ -55,7 +53,7 @@ public class TurnPIDCommand extends NRCommand {
 		.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 		&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightPosition())).abs()
 		.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-		&& (initialAngle.sub(gyro.getAngleError())).abs().lessThan(ANGLE_THRESHOLD);
+		&& (initialAngle.sub(gyro.getAngleError())).abs().lessThan(Drive.DRIVE_ANGLE_THRESHOLD);
 		return finished;
 	}
 
