@@ -43,7 +43,7 @@ public class StartPosMiddleSwitchNoneCommand extends CommandGroup {
 
 		});
 		
-		addSequential(new ConditionalCommand(new AutoScaleLoopCommandChooser()){
+		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()){
 
 			@Override
 			protected boolean condition() {
