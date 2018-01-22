@@ -15,7 +15,7 @@ public class StartPosMiddleToScaleLeftProfilingCommand extends CommandGroup {
 		
 		addSequential(new EnableOneDMotionProfile(Distance.ZERO, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 		
-		addSequential(new TurnPIDCommand(Drive.getInstance(), Angle.ZERO, Drive.PROFILE_TURN_PERCENT, Drive.ACCEL_PERCENT));
+		addSequential(new TurnPIDCommand(Drive.getInstance(), Angle.ZERO, Drive.PROFILE_TURN_PERCENT, Drive.ACCEL_PERCENT, true));
 		
 	}
 
