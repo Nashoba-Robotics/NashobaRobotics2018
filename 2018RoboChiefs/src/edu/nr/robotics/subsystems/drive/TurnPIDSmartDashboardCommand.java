@@ -44,11 +44,20 @@ private static final Angle ANGLE_THRESHOLD = new Angle(0.1, Angle.Unit.DEGREE);
 	@Override
 	public boolean isFinishedNR() {
 		
-		boolean finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftPosition())).abs()
-		.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-		&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightPosition())).abs()
-		.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-		&& (initialAngle.sub(gyro.getAngleError())).abs().lessThan(ANGLE_THRESHOLD);
+		boolean finished;
+		if (Drive.exact == true) {
+			finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftPosition())).abs()
+					.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+					&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightPosition())).abs()
+					.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+					&& (initialAngle.sub(gyro.getAngleError())).abs().lessThan(ANGLE_THRESHOLD);
+		} else {
+			finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftPosition())).abs()
+					.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+					&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightPosition())).abs()
+					.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+					&& (initialAngle.sub(gyro.getAngleError())).abs().lessThan(ANGLE_THRESHOLD);	
+		}
 		return finished;
 	}
 

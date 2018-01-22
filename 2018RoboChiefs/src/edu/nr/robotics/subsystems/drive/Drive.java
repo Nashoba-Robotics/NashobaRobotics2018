@@ -226,6 +226,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static Distance yProfile;
 	public static double drivePercent;
 	public static Angle angleToTurn;
+	public static boolean exact;
 	
 	private HDriveDiagonalProfiler diagonalProfiler;
 
@@ -733,6 +734,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				SmartDashboard.putNumber("Y Profile Feet: ", 0);
 				SmartDashboard.putNumber("Drive Percent: ", 0);
 				SmartDashboard.putNumber("Angle To Turn", 0);
+				SmartDashboard.putBoolean("Exact Turn", true);
 				
 			}
 			if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {
@@ -792,6 +794,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				yProfile = new Distance(SmartDashboard.getNumber("Y Profile Feet: ", 0), Distance.Unit.FOOT);
 				drivePercent = SmartDashboard.getNumber("Drive Percent: ", 0);
 				angleToTurn = new Angle(SmartDashboard.getNumber("AngleToTurn:", 0), Angle.Unit.DEGREE);
+				exact = SmartDashboard.getBoolean("Exact Turn", exact);
 			}
 		}
 	}

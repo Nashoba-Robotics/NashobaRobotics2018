@@ -90,55 +90,55 @@ public class AutoScaleLoopCommand extends CommandGroup {
 			}
 
 		});
-		
-		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(6)){
+
+		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(6)) {
 
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().scale == Direction.right
 						&& !(((Robot.getInstance().selectedSwitch == Switch.rightOnly
-						|| Robot.getInstance().selectedSwitch == Switch.both)
-						&& FieldData.getInstance().nearSwitch == Direction.right)
-						|| (Robot.getInstance().selectedBlocks == AllianceBlocks.block6
-								|| Robot.getInstance().selectedBlocks == AllianceBlocks.both));
+								|| Robot.getInstance().selectedSwitch == Switch.both)
+								&& FieldData.getInstance().nearSwitch == Direction.right)
+								|| (Robot.getInstance().selectedBlocks == AllianceBlocks.block6
+										|| Robot.getInstance().selectedBlocks == AllianceBlocks.both));
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new ScaleToBlockProfilingCommand(5)){
+
+		addSequential(new ConditionalCommand(new ScaleToBlockProfilingCommand(5)) {
 
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().scale == Direction.right;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(5)){
+
+		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(5)) {
 
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().scale == Direction.right;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new ScaleToBlockProfilingCommand(4)){
+
+		addSequential(new ConditionalCommand(new ScaleToBlockProfilingCommand(4)) {
 
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().scale == Direction.right;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(4)){
+
+		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(4)) {
 
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().scale == Direction.right;
 			}
-			
+
 		});
 	}
 
