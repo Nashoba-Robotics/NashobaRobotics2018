@@ -3,12 +3,10 @@ package edu.nr.robotics;
 
 import edu.nr.lib.commandbased.CancelAllCommand;
 import edu.nr.lib.commandbased.DoNothingCommand;
-import edu.nr.lib.commandbased.*;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.interfaces.Periodic;
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.robotics.auton.AutoChoosers;
-import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
 import edu.nr.robotics.auton.AutoChoosers.AllianceBlocks;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.AutoChoosers.StartPos;
@@ -29,6 +27,7 @@ import edu.nr.robotics.subsystems.drive.CSVSaverEnable;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -51,6 +50,7 @@ public class Robot extends IterativeRobot {
 	public AutoChoosers.Switch selectedSwitch;
 	public AutoChoosers.Scale selectedScale;
 	public AutoChoosers.AllianceBlocks selectedBlocks;
+	double autoWaitTime;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -60,9 +60,9 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		singleton = this;
 		
+		smartDashboardInit();
 		autoChooserInit();
 		OI.init();
-		smartDashboardInit();
 	}
 
 	public void autoChooserInit() {
@@ -97,6 +97,7 @@ public class Robot extends IterativeRobot {
 	public void smartDashboardInit() {
 		SmartDashboard.putData(new CSVSaverEnable());
 		SmartDashboard.putData(new CSVSaverDisable());
+		SmartDashboard.putNumber("Auto Wait Time", 0);
 	}
 	
 	/**
@@ -135,6 +136,8 @@ public class Robot extends IterativeRobot {
 		selectedSwitch = AutoChoosers.autoSwitchChooser.getSelected();
 		selectedScale = AutoChoosers.autoScaleChooser.getSelected();
 		selectedBlocks = AutoChoosers.allianceBlockChooser.getSelected();
+		autoWaitTime = SmartDashboard.getNumber("Auto Wait Time", autoWaitTime);
+		
 		
 		autonomousCommand = getAutoCommand();
 
@@ -142,6 +145,7 @@ public class Robot extends IterativeRobot {
 		
 		// schedule the autonomous command (example)
 		if (autonomousCommand != null)
+			new WaitCommand(autoWaitTime);
 			autonomousCommand.start();
 	}
 
