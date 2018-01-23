@@ -50,7 +50,7 @@ public class Robot extends IterativeRobot {
 	public AutoChoosers.Switch selectedSwitch;
 	public AutoChoosers.Scale selectedScale;
 	public AutoChoosers.AllianceBlocks selectedBlocks;
-	double autoWaitTime;
+	public double autoWaitTime;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -145,7 +145,6 @@ public class Robot extends IterativeRobot {
 		
 		// schedule the autonomous command (example)
 		if (autonomousCommand != null)
-			new WaitCommand(autoWaitTime);
 			autonomousCommand.start();
 	}
 
