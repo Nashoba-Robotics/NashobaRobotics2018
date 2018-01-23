@@ -57,9 +57,16 @@ public class ElevatorShooter extends NRSubsystem {
 	public static double D_VEL_ELEVATOR_SHOOTER = 0;
 
 	/**
-	 * The default velocity percent for the elevator shooter
+	 * The default velocity percents for the elevator shooter
 	 */
-	public static double VEL_PERCENT_ELEVATOR_SHOOTER = 0;//TODO: Find elevator shooter velocity percent
+	public static double VEL_PERCENT_SWITCH_ELEVATOR_SHOOTER = 0;//TODO: Find elevator shooter velocity percents
+	public static double VEL_PERCENT_SCALE_LOW_ELEVATOR_SHOOTER = 0;
+	public static double VEL_PERCENT_SCALE_HIGH_ELEVATOR_SHOOTER = 0;
+	
+	/**
+	 * Time after elevator shooter motors run to wait before stopping them;
+	 */
+	public static Time SHOOT_TIME = Time.ZERO; //TODO: Decide on SHOOT_TIME
 	
 	/**
 	 * The current values of the elevator shooter
@@ -104,6 +111,8 @@ public class ElevatorShooter extends NRSubsystem {
 	public static final int VEL_SLOT = 0;
 
 	private Speed velSetpoint = Speed.ZERO;
+	
+	public static double shootPercent = 0;
 	
 	private ElevatorShooter() {
 		
@@ -228,7 +237,7 @@ public class ElevatorShooter extends NRSubsystem {
 			SmartDashboard.putNumber("P Vel Elevator Shooter: ", P_VEL_ELEVATOR_SHOOTER);
 			SmartDashboard.putNumber("I Vel Elevator Shooter: ", I_VEL_ELEVATOR_SHOOTER);
 			SmartDashboard.putNumber("D Vel Elevator Shooter: ", D_VEL_ELEVATOR_SHOOTER);
-			SmartDashboard.putNumber("Elevator Shooter Vel Percent: ", VEL_PERCENT_ELEVATOR_SHOOTER);
+			SmartDashboard.putNumber("Elevator Shooter Vel Percent: ", shootPercent);
 			
 			SmartDashboard.putData("Elevator Shooter Velocity Command: ", new ElevatorShooterVelocitySmartDashboardCommand());
 		}
@@ -241,7 +250,7 @@ public class ElevatorShooter extends NRSubsystem {
 			SmartDashboard.putNumber("Elevator Shooter Velocity vs Set Velocity: ", velSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 		}
 		if (EnabledSubsystems.ELEVATOR_SHOOTER_SMARTDASHBOARD_DEBUG_ENABLED) {
-			VEL_PERCENT_ELEVATOR_SHOOTER = SmartDashboard.getNumber("Elevator Shooter Vel Percent: ", VEL_PERCENT_ELEVATOR_SHOOTER);
+			shootPercent = SmartDashboard.getNumber("Elevator Shooter Vel Percent: ", shootPercent);
 			VOLTAGE_RAMP_RATE_ELEVATOR_SHOOTER = new Time(
 					SmartDashboard.getNumber("Voltage Ramp Rate Elevator Shooter Seconds: ",
 							VOLTAGE_RAMP_RATE_ELEVATOR_SHOOTER.get(Time.Unit.SECOND)), Time.Unit.SECOND);
