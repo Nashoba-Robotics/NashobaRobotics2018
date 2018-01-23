@@ -143,7 +143,7 @@ public class Elevator extends NRSubsystem {
 	 * extend height
 	 */
 	public static final Distance TOP_POSITION_ELEVATOR = Distance.ZERO; // TODO: Find TOP_POSITION_ELEVATOR
-	public static final Distance AUTO_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find AUTO_HEIGHT_ELEVATOR
+	public static final Distance SCALE_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find AUTO_HEIGHT_ELEVATOR
 	public static final Distance SCORE_LOW_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find SCORE_LOW_HEIGHT_ELEVATOR
 	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find BOTTOM_HEIGHT_ELEVATOR
 

@@ -12,9 +12,9 @@ import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorPositionCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 
-public class ScoreSwitchCommand extends CommandGroup {
+public class PrepareScoreSwitchCommand extends CommandGroup {
 	
-	public ScoreSwitchCommand() {
+	public PrepareScoreSwitchCommand() {
 
 		addSequential(new AnonymousCommandGroup() {
 			
@@ -27,11 +27,7 @@ public class ScoreSwitchCommand extends CommandGroup {
 		});
 		
 		addSequential(new CubeFeedIntakeRollersToElevatorCommand());
-		addSequential(new ElevatorPositionCommand(Elevator.SCORE_LOW_HEIGHT_ELEVATOR));
-		addParallel(new ElevatorShooterVelocityCommand(ElevatorShooter.VEL_PERCENT_SWITCH_ELEVATOR_SHOOTER));
-		addSequential(new WaitCommand(ElevatorShooter.SHOOT_TIME.get(Time.Unit.SECOND)));
-		addSequential(new ElevatorShooterStopCommand());
-		
+		addSequential(new ElevatorPositionCommand(Elevator.SCORE_LOW_HEIGHT_ELEVATOR));		
 	}
 
 }
