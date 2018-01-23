@@ -10,7 +10,7 @@ public class ElevatorShooterVelocitySmartDashboardCommand extends NRCommand {
 
 	@Override
 	protected void onStart() {
-		ElevatorShooter.getInstance().setMotorSpeedPercent(ElevatorShooter.VEL_PERCENT_ELEVATOR_SHOOTER);
+		ElevatorShooter.getInstance().setMotorSpeedPercent(ElevatorShooter.shootPercent);
 	}
 
 	@Override
