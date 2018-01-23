@@ -12,10 +12,13 @@ import edu.nr.robotics.auton.autoroutes.StartPosMiddleToSwitchLeftProfilingComma
 import edu.nr.robotics.auton.autoroutes.SwitchLeftToBlockProfilingCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 
 public class StartPosMiddleSwitchLeftCommand extends CommandGroup {
 
 	public StartPosMiddleSwitchLeftCommand() {
+		
+		addSequential(new WaitCommand(Robot.getInstance().autoWaitTime));
 
 		// Checks
 		addSequential(new ConditionalCommand(new StartPosMiddleToSwitchLeftProfilingCommand()) {

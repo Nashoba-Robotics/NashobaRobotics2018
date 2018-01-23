@@ -9,10 +9,13 @@ import edu.nr.robotics.auton.autoroutes.StartPosLeftToScaleLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosLeftToScaleRightProfilingCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 
 public class StartPosLeftSwitchNoneCommand extends CommandGroup {
 	
 	public StartPosLeftSwitchNoneCommand() {
+		
+		addSequential(new WaitCommand(Robot.getInstance().autoWaitTime));
 		
 		addSequential(new ConditionalCommand(new StartPosLeftToScaleLeftProfilingCommand()){
 
