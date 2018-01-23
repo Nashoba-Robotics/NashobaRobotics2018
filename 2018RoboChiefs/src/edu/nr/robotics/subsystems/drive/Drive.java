@@ -26,6 +26,7 @@ import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
+import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -164,7 +165,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Percent of the drive while going to intake a cube
 	 */
-	public static final double DRIVE_TO_CUBE_PERCENT = 0;//TODO: Decide on DRIVE_TO_CUBE_PERCENT
+	public static final double DRIVE_TO_CUBE_PERCENT = 0; //TODO: Decide on DRIVE_TO_CUBE_PERCENT
+	
+	/**
+	 * Percent of the drive while strafing to portal
+	 */
+	public static final double PORTAL_STRAFE_PERCENT  = 0; //TODO: Decide on portal strafe percent
 	
 	/**
 	 * The position from the end at which profile position threshold takes effect
@@ -250,7 +256,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	
 	private Drive() {
 		if (EnabledSubsystems.DRIVE_ENABLED) {
-
+			
 			leftDrive = CTRECreator.createMasterTalon(RobotMap.LEFT_DRIVE);
 			rightDrive = CTRECreator.createMasterTalon(RobotMap.RIGHT_DRIVE);
 			hDrive = CTRECreator.createMasterTalon(RobotMap.H_DRIVE);

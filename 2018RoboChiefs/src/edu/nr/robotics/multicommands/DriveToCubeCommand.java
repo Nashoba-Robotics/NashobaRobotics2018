@@ -8,8 +8,8 @@ import edu.nr.lib.units.Angle;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
-import edu.nr.robotics.subsystems.sensors.EnableIntakeSensorCommand;
-import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;;
+import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
+import edu.nr.robotics.subsystems.sensors.EnabledSensors;;
 
 public class DriveToCubeCommand extends NRCommand {
 	
@@ -27,7 +27,6 @@ public class DriveToCubeCommand extends NRCommand {
 	@Override
 	protected void onStart() {
 		new EnableLimelightCommand(true).start();
-		new EnableIntakeSensorCommand(true).start();
 		Drive.getInstance().disable();
 		IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_INTAKE_ROLLERS);
 		gyro.reset();
@@ -66,14 +65,12 @@ public class DriveToCubeCommand extends NRCommand {
 	@Override
 	protected void onEnd() {
 		new EnableLimelightCommand(false);
-		new EnableIntakeSensorCommand(false).start();
 		Drive.getInstance().disable();
 		IntakeRollers.getInstance().disable();
 	}
 	
 	@Override
 	protected boolean isFinishedNR() {
-		//TODO: DriveToCubeCommand get intake sensor to finish
-		return false;
+		return !EnabledSensors.intakeSensor.get();
 	}
 }
