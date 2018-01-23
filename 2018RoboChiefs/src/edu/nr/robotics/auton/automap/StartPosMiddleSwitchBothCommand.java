@@ -18,7 +18,7 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 	public StartPosMiddleSwitchBothCommand() {
 
 		addSequential(new WaitCommand(Robot.getInstance().autoWaitTime));
-		
+
 		addSequential(new ConditionalCommand(new StartPosMiddleToSwitchLeftProfilingCommand()) {
 
 			@Override
@@ -33,7 +33,24 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.left
-						&& Robot.getInstance().selectedScale == Scale.yes;
+						&& (Robot.getInstance().selectedScale == Scale.both
+								|| (Robot.getInstance().selectedScale == Scale.leftonly
+										&& FieldData.getInstance().scale == Direction.left)
+								|| (Robot.getInstance().selectedScale == Scale.rightonly
+										&& FieldData.getInstance().scale == Direction.right));
+			}
+
+		});
+
+		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(1)) {
+
+			@Override
+			protected boolean condition() {
+				return Robot.getInstance().selectedScale == Scale.both
+						|| (Robot.getInstance().selectedScale == Scale.leftonly
+								&& FieldData.getInstance().scale == Direction.left)
+						|| (Robot.getInstance().selectedScale == Scale.rightonly
+								&& FieldData.getInstance().scale == Direction.right);
 			}
 
 		});
@@ -43,18 +60,8 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.left
-						&& Robot.getInstance().selectedScale == Scale.yes
-						&& FieldData.getInstance().scale == Direction.left;
-			}
-
-		});
-
-		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(1)) {
-
-			@Override
-			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.left
-						&& Robot.getInstance().selectedScale == Scale.yes
+						&& (Robot.getInstance().selectedScale == Scale.both
+								|| Robot.getInstance().selectedScale == Scale.rightonly)
 						&& FieldData.getInstance().scale == Direction.right;
 			}
 
@@ -74,7 +81,11 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.right
-						&& Robot.getInstance().selectedScale == Scale.yes;
+						&& (Robot.getInstance().selectedScale == Scale.both
+								|| (Robot.getInstance().selectedScale == Scale.leftonly
+										&& FieldData.getInstance().scale == Direction.left)
+								|| (Robot.getInstance().selectedScale == Scale.rightonly
+										&& FieldData.getInstance().scale == Direction.right));
 			}
 
 		});
@@ -84,7 +95,8 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.right
-						&& Robot.getInstance().selectedScale == Scale.yes
+						&& (Robot.getInstance().selectedScale == Scale.both
+								|| Robot.getInstance().selectedScale == Scale.leftonly)
 						&& FieldData.getInstance().scale == Direction.left;
 			}
 
@@ -95,19 +107,24 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.right
-						&& Robot.getInstance().selectedScale == Scale.yes
+						&& (Robot.getInstance().selectedScale == Scale.both
+								|| Robot.getInstance().selectedScale == Scale.rightonly)
 						&& FieldData.getInstance().scale == Direction.right;
 			}
 
 		});
 
-		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()){
+		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return Robot.getInstance().selectedScale == Scale.yes;
+				return Robot.getInstance().selectedScale == Scale.both
+						|| (Robot.getInstance().selectedScale == Scale.leftonly
+								&& FieldData.getInstance().scale == Direction.left)
+						|| (Robot.getInstance().selectedScale == Scale.rightonly
+								&& FieldData.getInstance().scale == Direction.right);
 			}
-			
+
 		});
 	}
 

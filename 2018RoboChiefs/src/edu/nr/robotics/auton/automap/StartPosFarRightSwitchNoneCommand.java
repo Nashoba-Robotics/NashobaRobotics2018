@@ -14,14 +14,16 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 public class StartPosFarRightSwitchNoneCommand extends CommandGroup {
 
 	public StartPosFarRightSwitchNoneCommand() {
-		
+
 		addSequential(new WaitCommand(Robot.getInstance().autoWaitTime));
 
 		addSequential(new ConditionalCommand(new StartPosFarRightToScaleRightProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return Robot.getInstance().selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.right;
+				return (Robot.getInstance().selectedScale == Scale.both
+						|| Robot.getInstance().selectedScale == Scale.rightonly)
+						&& FieldData.getInstance().scale == Direction.right;
 			}
 
 		});
@@ -30,7 +32,9 @@ public class StartPosFarRightSwitchNoneCommand extends CommandGroup {
 
 			@Override
 			protected boolean condition() {
-				return Robot.getInstance().selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.left;
+				return (Robot.getInstance().selectedScale == Scale.both
+						|| Robot.getInstance().selectedScale == Scale.leftonly)
+						&& FieldData.getInstance().scale == Direction.left;
 			}
 
 		});
@@ -39,18 +43,22 @@ public class StartPosFarRightSwitchNoneCommand extends CommandGroup {
 
 			@Override
 			protected boolean condition() {
-				return Robot.getInstance().selectedScale == Scale.no;
+				return Robot.getInstance().selectedScale == Scale.none;
 			}
 
 		});
-		
-		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()){
+
+		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return Robot.getInstance().selectedScale == Scale.yes;
+				return Robot.getInstance().selectedScale == Scale.both
+						|| (Robot.getInstance().selectedScale == Scale.rightonly
+								&& FieldData.getInstance().scale == Direction.right)
+						|| (Robot.getInstance().selectedScale == Scale.leftonly
+								|| FieldData.getInstance().scale == Direction.left);
 			}
-			
+
 		});
 
 	}

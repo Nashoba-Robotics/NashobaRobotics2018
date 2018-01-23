@@ -75,10 +75,12 @@ public class Robot extends IterativeRobot {
 		AutoChoosers.autoSwitchChooser.addDefault("Left Only", Switch.leftOnly);
 		AutoChoosers.autoSwitchChooser.addObject("RightOnly", Switch.rightOnly);
 		AutoChoosers.autoSwitchChooser.addObject("None", Switch.none);
-		AutoChoosers.autoSwitchChooser.addObject("both", Switch.both);
+		AutoChoosers.autoSwitchChooser.addObject("Both", Switch.both);
 		
-		AutoChoosers.autoScaleChooser.addDefault("Scale", Scale.yes);
-		AutoChoosers.autoScaleChooser.addObject("No Scale", Scale.no);
+		AutoChoosers.autoScaleChooser.addDefault("Both", Scale.both);
+		AutoChoosers.autoScaleChooser.addObject("Left Only", Scale.leftonly);
+		AutoChoosers.autoScaleChooser.addObject("Right Only", Scale.rightonly);
+		AutoChoosers.autoScaleChooser.addObject("No Scale", Scale.none);
 		
 		AutoChoosers.allianceBlockChooser.addDefault("None", AllianceBlocks.none);
 		AutoChoosers.allianceBlockChooser.addObject("Block 1", AllianceBlocks.block1);

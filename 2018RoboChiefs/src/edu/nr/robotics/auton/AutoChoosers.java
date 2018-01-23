@@ -25,8 +25,10 @@ public class AutoChoosers {
 	}
 	
 	public enum Scale {
-		yes,
-		no;
+		both,
+		leftonly,
+		rightonly,
+		none;
 	}
 	
 	public enum AllianceBlocks {

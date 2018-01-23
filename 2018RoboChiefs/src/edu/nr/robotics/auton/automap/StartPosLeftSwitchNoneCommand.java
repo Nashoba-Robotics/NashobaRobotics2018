@@ -12,45 +12,53 @@ import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 
 public class StartPosLeftSwitchNoneCommand extends CommandGroup {
-	
+
 	public StartPosLeftSwitchNoneCommand() {
-		
+
 		addSequential(new WaitCommand(Robot.getInstance().autoWaitTime));
-		
-		addSequential(new ConditionalCommand(new StartPosLeftToScaleLeftProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new StartPosLeftToScaleLeftProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return Robot.getInstance().selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.left;
+				return (Robot.getInstance().selectedScale == Scale.both
+						|| Robot.getInstance().selectedScale == Scale.leftonly)
+						&& FieldData.getInstance().scale == Direction.left;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new StartPosLeftToScaleRightProfilingCommand()){
+
+		addSequential(new ConditionalCommand(new StartPosLeftToScaleRightProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return Robot.getInstance().selectedScale == Scale.yes && FieldData.getInstance().scale == Direction.right;
+				return (Robot.getInstance().selectedScale == Scale.both
+						|| Robot.getInstance().selectedScale == Scale.rightonly)
+						&& FieldData.getInstance().scale == Direction.right;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()){
+
+		addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return Robot.getInstance().selectedScale == Scale.no;
+				return Robot.getInstance().selectedScale == Scale.none;
 			}
-			
+
 		});
-		
-		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()){
+
+		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return Robot.getInstance().selectedScale == Scale.yes;
+				return Robot.getInstance().selectedScale == Scale.both
+						|| (Robot.getInstance().selectedScale == Scale.leftonly
+								&& FieldData.getInstance().scale == Direction.left)
+						|| (Robot.getInstance().selectedScale == Scale.rightonly
+								&& FieldData.getInstance().scale == Direction.right);
 			}
-			
+
 		});
 	}
 
