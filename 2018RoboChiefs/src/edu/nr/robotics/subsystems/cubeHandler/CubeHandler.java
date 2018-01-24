@@ -62,6 +62,11 @@ private static CubeHandler singleton;
 	public static double VEL_PERCENT_CUBE_HANDLER = 0;//TODO: Find cube handler velocity percent
 	
 	/**
+	 * The time to run the cube handlers so the cube exits the robot
+	 */
+	public static Time SCORE_TIME = Time.ZERO; //TODO: Find cube handler SCORE_TIME
+	
+	/**
 	 * The current values of the cube handler
 	 */
 	public static final int PEAK_CURRENT_CUBE_HANDLER = 0;// TODO: Find PEAK_CURRENT_CUBE_HANDLER

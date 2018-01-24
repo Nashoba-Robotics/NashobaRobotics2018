@@ -59,9 +59,8 @@ public class ElevatorShooter extends NRSubsystem {
 	/**
 	 * The default velocity percents for the elevator shooter
 	 */
-	public static double VEL_PERCENT_SWITCH_ELEVATOR_SHOOTER = 0;//TODO: Find elevator shooter velocity percents
-	public static double VEL_PERCENT_SCALE_LOW_ELEVATOR_SHOOTER = 0;
-	public static double VEL_PERCENT_SCALE_HIGH_ELEVATOR_SHOOTER = 0;
+	public static double VEL_PERCENT_LOW_ELEVATOR_SHOOTER = 0;//TODO: Find elevator shooter velocity percents
+	public static double VEL_PERCENT_HIGH_ELEVATOR_SHOOTER = 0;
 	
 	/**
 	 * Time after elevator shooter motors run to wait before stopping them;

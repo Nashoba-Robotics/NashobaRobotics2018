@@ -15,19 +15,17 @@ public class CubeFeedIntakeRollersToElevatorCommand extends NRCommand {
 	 * sensor detects that object.
 	 */
 	public CubeFeedIntakeRollersToElevatorCommand() {
-		super(new NRSubsystem[] {IntakeRollers.getInstance(), CubeHandler.getInstance()});
+		super(new NRSubsystem[] {IntakeRollers.getInstance()});
 	}
 	
 	@Override
 	protected void onStart() {
 		IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_INTAKE_ROLLERS);
-		CubeHandler.getInstance().setMotorSpeedPercent(CubeHandler.VEL_PERCENT_CUBE_HANDLER);
 	}
 	
 	@Override
 	protected void onEnd() {
 		IntakeRollers.getInstance().disable();
-		CubeHandler.getInstance().disable();
 	}
 	
 	@Override
