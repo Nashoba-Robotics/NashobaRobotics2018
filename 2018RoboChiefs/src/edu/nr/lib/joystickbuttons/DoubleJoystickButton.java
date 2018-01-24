@@ -1,4 +1,4 @@
-package edu.nr.lib;
+package edu.nr.lib.joystickbuttons;
 
 import edu.wpi.first.wpilibj.buttons.Button;
 

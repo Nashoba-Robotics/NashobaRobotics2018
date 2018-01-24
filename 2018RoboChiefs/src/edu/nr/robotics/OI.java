@@ -2,14 +2,22 @@ package edu.nr.robotics;
 
 import edu.nr.lib.commandbased.CancelAllCommand;
 import edu.nr.lib.interfaces.SmartDashboardSource;
+import edu.nr.lib.joystickbuttons.ConditionalDoubleJoystickButton;
+import edu.nr.lib.joystickbuttons.ConditionalJoystickButton;
+import edu.nr.lib.joystickbuttons.DoubleJoystickButton;
+import edu.nr.lib.joystickbuttons.DoubleJoystickButton.Type;
 import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.multicommands.DriveToCubeCommand;
 import edu.nr.robotics.multicommands.PrepareScorePortalCommand;
+import edu.nr.robotics.multicommands.PrepareScoreScaleCommand;
+import edu.nr.robotics.multicommands.PrepareScoreSwitchCommand;
 import edu.nr.robotics.multicommands.ScorePortalCommand;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandler;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerStopCommand;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerVelocityCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
+import edu.nr.robotics.subsystems.elevator.Elevator;
+import edu.nr.robotics.subsystems.elevator.ElevatorPositionCommand;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ShootCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
@@ -18,6 +26,7 @@ import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersStopCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocityCommand;
 import edu.nr.robotics.subsystems.sensors.EnableFloorSensorCommand;
+import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -63,6 +72,10 @@ public class OI implements SmartDashboardSource {
 	
 	private final Joystick operatorLeft;
 	private final Joystick operatorRight;
+	
+	private JoystickButton intakeToElevatorButton;
+	private JoystickButton elevatorScaleHeightButton;
+	private JoystickButton elevatorSwitchHeightButton;
 		
 	private static final int STICK_LEFT = 0;
 	private static final int STICK_RIGHT = 1;
@@ -101,7 +114,11 @@ public class OI implements SmartDashboardSource {
 	
 	public void initOperatorLeft() {
 	
-		new JoystickButton(operatorLeft, CANCEL_ALL_BUTTON_NUMBER).whenPressed(new CancelAllCommand());;
+		intakeToElevatorButton = new JoystickButton(operatorLeft, INTAKE_TO_ELEVATOR_BUTTON_NUMBER);
+		elevatorScaleHeightButton = new JoystickButton(operatorLeft, ELEVATOR_SCALE_HEIGHT_BUTTON_NUMBER);
+		elevatorSwitchHeightButton = new JoystickButton(operatorLeft, ELEVATOR_SWITCH_HEIGHT_BUTTON_NUMBER);
+		
+		new JoystickButton(operatorLeft, CANCEL_ALL_BUTTON_NUMBER).whenPressed(new CancelAllCommand());
 	
 		new JoystickButton(operatorLeft, FOLD_INTAKE_BUTTON_NUMBER).whenPressed(new IntakeElevatorPositionCommand(IntakeElevator.FOLDED_HEIGHT));	
 		new JoystickButton(operatorLeft, INTAKE_HANDLER_HEIGHT_BUTTON_NUMBER).whenPressed(new IntakeElevatorPositionCommand(IntakeElevator.HANDLER_HEIGHT));
@@ -113,13 +130,18 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(operatorLeft, INTAKE_ROLLERS_BUTTON_NUMBER).whenPressed(new IntakeRollersVelocityCommand(IntakeRollers.VEL_PERCENT_INTAKE_ROLLERS));
 		new JoystickButton(operatorLeft, INTAKE_ROLLERS_BUTTON_NUMBER).whenReleased(new IntakeRollersStopCommand());
 		
-		new JoystickButton(operatorLeft, INTAKE_TO_ELEVATOR_BUTTON_NUMBER);
-		new JoystickButton(operatorLeft, INTAKE_TO_PORTAL_BUTTON_NUMBER).whenPressed(new PrepareScorePortalCommand());
+		new ConditionalDoubleJoystickButton(intakeToElevatorButton, elevatorScaleHeightButton, Type.And,
+				!EnabledSensors.intakeSensor.get()).whenPressed(new PrepareScoreScaleCommand());;
+		new ConditionalDoubleJoystickButton(intakeToElevatorButton, elevatorSwitchHeightButton, Type.And,
+				!EnabledSensors.intakeSensor.get()).whenPressed(new PrepareScoreSwitchCommand());
 		
-		new JoystickButton(operatorLeft, ELEVATOR_CLIMB_HEIGHT_BUTTON_NUMBER);
-		new JoystickButton(operatorLeft, ELEVATOR_SCALE_HEIGHT_BUTTON_NUMBER);
-		new JoystickButton(operatorLeft, ELEVATOR_SWITCH_HEIGHT_BUTTON_NUMBER);
-		new JoystickButton(operatorLeft, ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER);
+		new ConditionalJoystickButton(new JoystickButton(operatorLeft, INTAKE_TO_PORTAL_BUTTON_NUMBER), 
+				!EnabledSensors.intakeSensor.get()).whenPressed(new PrepareScorePortalCommand());
+		
+		new JoystickButton(operatorLeft, ELEVATOR_CLIMB_HEIGHT_BUTTON_NUMBER).whenPressed(new ElevatorPositionCommand(Elevator.CLIMB_HEIGHT_ELEVATOR));
+		new ConditionalJoystickButton(elevatorScaleHeightButton, !intakeToElevatorButton.get()).whenPressed(new ElevatorPositionCommand(Elevator.SCALE_HEIGHT_ELEVATOR));
+		new ConditionalJoystickButton(elevatorSwitchHeightButton, !intakeToElevatorButton.get()).whenPressed(new ElevatorPositionCommand(Elevator.SWITCH_HEIGHT_ELEVATOR));
+		new JoystickButton(operatorLeft, ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER).whenPressed(new ElevatorPositionCommand(Elevator.BOTTOM_HEIGHT_ELEVATOR));
 		
 		new JoystickButton(operatorLeft, SHOOT_CUBE_BUTTON_NUMBER).whenPressed(new ShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
 		new JoystickButton(operatorLeft, PLACE_CUBE_BUTTON_NUMBER).whenPressed(new ShootCommand(ElevatorShooter.VEL_PERCENT_LOW_ELEVATOR_SHOOTER));

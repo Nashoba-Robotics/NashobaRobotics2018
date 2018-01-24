@@ -10,6 +10,8 @@ import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 
 public class CubeFeedIntakeRollersToCubeHandlerCommand extends NRCommand {
 
+	private boolean finished;
+	
 	/**
 	 * If the IntakeElevator and Elevator are at the right height, the cube will be pushed to the back until the cube handler
 	 * sensor detects that cube.
@@ -20,8 +22,17 @@ public class CubeFeedIntakeRollersToCubeHandlerCommand extends NRCommand {
 	
 	@Override
 	protected void onStart() {
-		IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_INTAKE_ROLLERS);
-		CubeHandler.getInstance().setMotorSpeedPercent(CubeHandler.VEL_PERCENT_CUBE_HANDLER);
+		
+		if ((IntakeElevator.getInstance().getPosition().sub(IntakeElevator.HANDLER_HEIGHT)).abs().greaterThan(IntakeElevator.PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR)) {
+			finished = true;
+		} else if (Elevator.getInstance().getPosition().sub(Elevator.SWITCH_HEIGHT_ELEVATOR.sub(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR)).greaterThan(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR)) {
+			finished = true;
+		} else if (EnabledSensors.intakeSensor.get()) {
+			finished = true;
+		} else {
+			IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_INTAKE_ROLLERS);
+			CubeHandler.getInstance().setMotorSpeedPercent(CubeHandler.VEL_PERCENT_CUBE_HANDLER);
+		}
 	}
 	
 	@Override
@@ -32,14 +43,12 @@ public class CubeFeedIntakeRollersToCubeHandlerCommand extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		if ((IntakeElevator.getInstance().getPosition().sub(IntakeElevator.HANDLER_HEIGHT)).abs().greaterThan(IntakeElevator.PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR)) {
-			return true;
+		if (!EnabledSensors.cubeHandlerSensor.get()) {
+			finished = true;
+		} else {
+			finished = false;
 		}
-		if (Elevator.getInstance().getPosition().sub(Elevator.SWITCH_HEIGHT_ELEVATOR.sub(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR)).greaterThan(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR)) {
-			return true;
-		}
-		
-		return !EnabledSensors.cubeHandlerSensor.get();
+		return finished;
 	}
 	
 }

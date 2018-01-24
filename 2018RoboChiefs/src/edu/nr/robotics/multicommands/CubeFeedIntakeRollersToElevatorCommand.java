@@ -10,6 +10,8 @@ import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 
 public class CubeFeedIntakeRollersToElevatorCommand extends NRCommand {
 
+	private boolean finished;
+	
 	/**
 	 * If the IntakeElevator and Elevator are at the right height, the cube will be pushed to the elevator until the elevator
 	 * sensor detects that object.
@@ -20,7 +22,16 @@ public class CubeFeedIntakeRollersToElevatorCommand extends NRCommand {
 	
 	@Override
 	protected void onStart() {
-		IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_INTAKE_ROLLERS);
+		
+		if ((IntakeElevator.getInstance().getPosition().sub(IntakeElevator.HANDLER_HEIGHT)).abs().greaterThan(IntakeElevator.PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR)) {
+			finished = true;
+		} else if ((Elevator.getInstance().getPosition().sub(Elevator.BOTTOM_HEIGHT_ELEVATOR)).abs().greaterThan(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR)) {
+			finished = true;
+		} else if (EnabledSensors.intakeSensor.get()) {
+			finished = true;
+		} else {
+			IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_INTAKE_ROLLERS);
+		}
 	}
 	
 	@Override
@@ -30,14 +41,13 @@ public class CubeFeedIntakeRollersToElevatorCommand extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		if ((IntakeElevator.getInstance().getPosition().sub(IntakeElevator.HANDLER_HEIGHT)).abs().greaterThan(IntakeElevator.PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR)) {
-			return true;
-		}
-		if ((Elevator.getInstance().getPosition().sub(Elevator.BOTTOM_HEIGHT_ELEVATOR)).abs().greaterThan(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR)) {
-			return true;
+		if (!EnabledSensors.elevatorSensor.get()) {
+			finished = true;
+		} else {
+			finished = false;
 		}
 		
-		return !EnabledSensors.elevatorSensor.get();
+		return finished;
 	}
 	
 	

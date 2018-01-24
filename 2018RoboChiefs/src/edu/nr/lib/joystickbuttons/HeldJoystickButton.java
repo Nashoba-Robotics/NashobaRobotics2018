@@ -1,4 +1,4 @@
-package edu.nr.lib;
+package edu.nr.lib.joystickbuttons;
 
 import edu.nr.lib.units.Time;
 import edu.wpi.first.wpilibj.GenericHID;
