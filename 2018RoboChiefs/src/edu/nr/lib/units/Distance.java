@@ -26,13 +26,13 @@ public class Distance {
 		/**
 		 * For a drive subsystem
 		 */
-		private static final double DRIVE_ROTATION_PER_INCH = 1/(Drive.WHEEL_DIAMETER_INCHES * Math.PI);
+		private static final double DRIVE_ROTATION_PER_INCH = 1/(Drive.EFFECTIVE_WHEEL_DIAMETER_INCHES * Math.PI);
 		private static final double MAGNETIC_ENCODER_TICK_PER_INCH = Units.MAGNETIC_NATIVE_UNITS_PER_REV * DRIVE_ROTATION_PER_INCH / Units.NATIVE_UNITS_PER_TICK;
 		
 		/**
 		 * For an h drive
 		 */
-		private static final double DRIVE_ROTATION_H_PER_INCH = 1/(Drive.WHEEL_DIAMETER_INCHES_H * Math.PI);
+		private static final double DRIVE_ROTATION_H_PER_INCH = 1/(Drive.EFFECTIVE_WHEEL_DIAMETER_INCHES_H * Math.PI);
 		private static final double MAGNETIC_ENCODER_TICK_H_PER_INCH = Units.MAGNETIC_NATIVE_UNITS_PER_REV * DRIVE_ROTATION_H_PER_INCH / Units.NATIVE_UNITS_PER_TICK;
 		
 		/**

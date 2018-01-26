@@ -3,6 +3,7 @@ package edu.nr.robotics.subsystems.drive;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.NRMath;
@@ -27,7 +28,6 @@ import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
-import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -49,34 +49,46 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final double ENC_TO_H_WHEEL_GEARING = 0; //TODO: Find gearing between encoder and H drive wheel
 	
 	/**
+	 * The real, not the effective, wheel diameter
+	 */
+	
+	public static final double REAL_WHEEL_DIAMETER_INCHES = 0; //TODO: Find real wheel diameter
+	
+	/**
+	 * the real, not the effective, wheel diameter
+	 */
+	
+	public static final double REAL_WHEEL_DIAMETER_INCHES_H = 0; //TODO: Find real wheel H diameter 
+	
+	/**
 	 * The diameter of the drive wheels in inches
 	 */
-	public static final double WHEEL_DIAMETER_INCHES = 0; //TODO: Find real drive wheel diameter
+	public static final double EFFECTIVE_WHEEL_DIAMETER_INCHES = 0; //TODO: Find effective drive wheel diameter //TODO: Find slope of set distance vs real distance
 	
 	/**
 	 * The diameter of the H-drive wheel in inches
 	 */
-	public static final double WHEEL_DIAMETER_INCHES_H = 0;//TODO: Find real drive H-wheel diameter
+	public static final double EFFECTIVE_WHEEL_DIAMETER_INCHES_H = 0;//TODO: Find effective drive H-wheel diameter //TODO: Find slope of set distance H vs real distance H
 	
 	/**
 	 * The diameter of the drive wheels
 	 */
-	public static final Distance REAL_WHEEL_DIAMETER = new Distance(WHEEL_DIAMETER_INCHES, Distance.Unit.INCH);
+	public static final Distance REAL_WHEEL_DIAMETER = new Distance(REAL_WHEEL_DIAMETER_INCHES, Distance.Unit.INCH);
 	
 	/**
 	 * The diameter of the H drive wheel 
 	 */
-	public static final Distance REAL_WHEEL_DIAMETER_H = new Distance(WHEEL_DIAMETER_INCHES_H, Distance.Unit.INCH);
+	public static final Distance REAL_WHEEL_DIAMETER_H = new Distance(REAL_WHEEL_DIAMETER_INCHES_H, Distance.Unit.INCH);
 	
 	/**
 	 * Wheel diameter that accounts for gearing and slippage on the carpet
 	 */
-	public static final double EFFECTIVE_WHEEL_DIAMETER = WHEEL_DIAMETER_INCHES / ENC_TO_WHEEL_GEARING; //TODO: Find slope of set distance vs real distance
+	public static final Distance EFFECTIVE_WHEEL_DIAMETER = new Distance(EFFECTIVE_WHEEL_DIAMETER_INCHES / ENC_TO_WHEEL_GEARING, Distance.Unit.INCH);
 	
 	/**
 	 * H Wheel diameter that accounts for gearing and slippage on the carpet
 	 */
-	public static final double EFFECTIVE_WHEEL_DIAMETER_H = WHEEL_DIAMETER_INCHES_H / ENC_TO_H_WHEEL_GEARING; //TODO: Find slope of set distance H vs real distance H
+	public static final Distance EFFECTIVE_WHEEL_DIAMETER_H = new Distance(EFFECTIVE_WHEEL_DIAMETER_INCHES_H / ENC_TO_H_WHEEL_GEARING, Distance.Unit.INCH); 
 	
 	/**
 	 * The maximum speed of the drive base
@@ -202,8 +214,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	private static final int PEAK_DRIVE_CURRENT_DURATION = 1000; //In milliseconds
 	private static final int CONTINUOUS_CURRENT_LIMIT = 40; //In amps
 	
-	public static final double VELOCITY_MEASUREMENT_PERIOD_DRIVE = 0; //TODO: Find measurement period of velocity
-	public static final double VELOCITY_MEASUREMENT_WINDOW_DRIVE = 0; //TODO: Find this
+	public static final VelocityMeasPeriod VELOCITY_MEASUREMENT_PERIOD_DRIVE = VelocityMeasPeriod.Period_10Ms; //TODO: Find measurement period of velocity
+	public static final int VELOCITY_MEASUREMENT_WINDOW_DRIVE = 32; //TODO: Find this
 	
 	/**
 	 * Voltage level considered 100% for calculation
@@ -297,6 +309,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			leftDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
 			leftDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
 			
+			leftDrive.configVelocityMeasurementPeriod(VELOCITY_MEASUREMENT_PERIOD_DRIVE, NO_TIMEOUT);
+			leftDrive.configVelocityMeasurementWindow(VELOCITY_MEASUREMENT_WINDOW_DRIVE, NO_TIMEOUT);
+			
 			leftDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			leftDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			
@@ -323,6 +338,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			rightDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
 			rightDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
 			
+			rightDrive.configVelocityMeasurementPeriod(VELOCITY_MEASUREMENT_PERIOD_DRIVE, NO_TIMEOUT);
+			rightDrive.configVelocityMeasurementWindow(VELOCITY_MEASUREMENT_WINDOW_DRIVE, NO_TIMEOUT);
+			
 			rightDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			rightDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			
@@ -348,6 +366,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			hDrive.configPeakCurrentLimit(PEAK_DRIVE_CURRENT, NO_TIMEOUT);
 			hDrive.configPeakCurrentDuration(PEAK_DRIVE_CURRENT_DURATION, NO_TIMEOUT);
 			hDrive.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT, NO_TIMEOUT);
+			
+			hDrive.configVelocityMeasurementPeriod(VELOCITY_MEASUREMENT_PERIOD_DRIVE, NO_TIMEOUT);
+			hDrive.configVelocityMeasurementWindow(VELOCITY_MEASUREMENT_WINDOW_DRIVE, NO_TIMEOUT);
 			
 			hDrive.configClosedloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			hDrive.configOpenloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
