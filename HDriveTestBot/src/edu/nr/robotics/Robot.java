@@ -8,6 +8,7 @@ import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveForwardCommand;
 import edu.nr.robotics.subsystems.drive.DriveForwardCommandH;
+import edu.nr.robotics.subsystems.drive.DriveToCubeCommand;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnPIDCommand;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -56,6 +57,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Drive Forward H", new DriveForwardCommandH());
 		SmartDashboard.putData("Motion Profile", new EnableMotionProfile());
 		SmartDashboard.putData("Turn PID Command", new TurnPIDCommand(Drive.getInstance()));
+		SmartDashboard.putData("Drive To Cube", new DriveToCubeCommand());
 	}
 
 	public void AutoChooserInit() {

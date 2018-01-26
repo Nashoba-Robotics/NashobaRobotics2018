@@ -6,6 +6,7 @@ import edu.nr.lib.commandbased.DoNothingCommand;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.interfaces.Periodic;
 import edu.nr.lib.interfaces.SmartDashboardSource;
+import edu.nr.lib.network.LimelightNetworkTable;
 import edu.nr.robotics.auton.AutoChoosers;
 import edu.nr.robotics.auton.AutoChoosers.AllianceBlocks;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
@@ -63,6 +64,7 @@ public class Robot extends IterativeRobot {
 		smartDashboardInit();
 		autoChooserInit();
 		OI.init();
+		LimelightNetworkTable.getInstance().lightLED(false);
 	}
 
 	public void autoChooserInit() {
@@ -132,6 +134,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		
+		LimelightNetworkTable.getInstance().lightLED(false);
+		
 		FieldData.getInstance().getFieldData();
 		
 		selectedStartPos = AutoChoosers.autoStartPosChooser.getSelected();
@@ -160,13 +165,10 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopInit() {
+		
+		LimelightNetworkTable.getInstance().lightLED(false);
+
 		new CancelAllCommand().start();
-		// This makes sure that the autonomous stops running when
-		// teleop starts running. If you want the autonomous to
-		// continue until interrupted by another command, remove
-		// this line or comment it out.
-		if (autonomousCommand != null)
-			autonomousCommand.cancel();
 	}
 
 	/**

@@ -64,9 +64,9 @@ public class LimelightNetworkTable extends TimerTask {
 	@Override
 	public void run() {
 		if (enabled) {
-			horizOffsetAngle = new Angle(limelightTable.getEntry("tx").getDouble(Double.MAX_VALUE), Angle.Unit.DEGREE);
-			vertOffsetAngle = new Angle(limelightTable.getEntry("ty").getDouble(Double.MAX_VALUE), Angle.Unit.DEGREE);
-			pipelineLatency = new Time(limelightTable.getEntry("tl").getDouble(Double.MAX_VALUE), Time.Unit.MILLISECOND);
+			horizOffsetAngle = new Angle(limelightTable.getEntry("tx").getDouble(0), Angle.Unit.DEGREE);
+			vertOffsetAngle = new Angle(limelightTable.getEntry("ty").getDouble(0), Angle.Unit.DEGREE);
+			pipelineLatency = new Time(limelightTable.getEntry("tl").getDouble(0), Time.Unit.MILLISECOND);
 		}
 	}
 	

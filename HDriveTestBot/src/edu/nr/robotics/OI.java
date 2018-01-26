@@ -2,7 +2,9 @@ package edu.nr.robotics;
 
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.robotics.subsystems.drive.Drive;
+import edu.nr.robotics.subsystems.drive.DriveToCubeCommand;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -17,11 +19,13 @@ public class OI implements SmartDashboardSource {
 	private static final double JOYSTICK_DEAD_ZONE = 0.15;
 	private static final int JOYSTICK_LEFT = 0;
 	private static final int JOYSTICK_RIGHT = 1;
+	private static final int OPERATOR_RIGHT = 3;
 	
 	public static final double DRIVE_SPEED_MULTIPLIER = 1;
 	
 	private final Joystick stickLeft;
 	private final Joystick stickRight;
+	private final Joystick operatorRight;
 	
 	public SendableChooser<Drive.DriveMode> DriveMode = new SendableChooser<>();
 	
@@ -33,6 +37,8 @@ public void smartDashboardInfo() {
 		
 		stickLeft = new Joystick(JOYSTICK_LEFT);
 		stickRight = new Joystick(JOYSTICK_RIGHT);
+		
+		operatorRight = new Joystick(OPERATOR_RIGHT);
 		
 		initDriveLeft();
 		initDriveRight();
@@ -48,6 +54,7 @@ public void smartDashboardInfo() {
 	}
 
 	private void initDriveLeft() {	
+		new JoystickButton(operatorRight, 12).whenPressed(new DriveToCubeCommand());
 	}
 	
 	private void initDriveH() {

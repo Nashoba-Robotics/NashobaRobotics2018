@@ -1,20 +1,18 @@
-package edu.nr.robotics.multicommands;
+package edu.nr.robotics.subsystems.drive;
 
 import edu.nr.lib.NRMath;
 import edu.nr.lib.commandbased.NRCommand;
-import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.network.LimelightNetworkTable;
 import edu.nr.lib.units.Angle;
 import edu.nr.robotics.subsystems.drive.Drive;
-import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
-import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
-import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
-import edu.nr.robotics.subsystems.sensors.EnabledSensors;;
+import edu.nr.robotics.subsystems.EnableLimelightCommand;
 
 public class DriveToCubeCommand extends NRCommand {
 	
-	public Angle STOP_LIMELIGHT_TRACKING_ANGLE = Angle.ZERO; //TODO; Find STOP_LIMELIGHT_TRACKING_ANGLE
+	public Angle STOP_LIMELIGHT_TRACKING_ANGLE = new Angle(-13, Angle.Unit.DEGREE);
+	public static final double DRIVE_TO_CUBE_PERCENT = 0.2;
+	public static final Angle DRIVE_ANGLE_THRESHOLD = new Angle(1, Angle.Unit.DEGREE);
 	
 	private boolean stoppedTracking = false;
 	private boolean hasStartedForward = false;
@@ -22,7 +20,7 @@ public class DriveToCubeCommand extends NRCommand {
 	private GyroCorrection gyro;
 	
 	public DriveToCubeCommand() {
-		super(new NRSubsystem[] {Drive.getInstance(), IntakeElevator.getInstance()});
+		super(Drive.getInstance());
 		gyro = new GyroCorrection();
 	}
 	
@@ -31,8 +29,6 @@ public class DriveToCubeCommand extends NRCommand {
 		hasStartedForward = false;
 		stoppedTracking = false;
 		new EnableLimelightCommand(true).start();
-		IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_INTAKE_ROLLERS);
-		Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 		gyro.reset();
 	}
 	
@@ -51,8 +47,8 @@ public class DriveToCubeCommand extends NRCommand {
 		else {
 			headingAdjustment = NRMath.powWithSign(-LimelightNetworkTable.getInstance().getHorizOffset().get(Angle.Unit.DEGREE) 
 					* Drive.kP_thetaOneD, 2);
-			if (Math.abs(headingAdjustment) < Drive.MIN_PROFILE_TURN_PERCENT) {
-				headingAdjustment = Drive.MIN_PROFILE_TURN_PERCENT * Math.signum(headingAdjustment);
+			if (Math.abs(headingAdjustment) < 0.05) {
+				headingAdjustment = 0.05 * Math.signum(headingAdjustment);
 			}
 		}
 		
@@ -61,9 +57,15 @@ public class DriveToCubeCommand extends NRCommand {
 		outputLeft = -headingAdjustment;
 		outputRight = headingAdjustment;
 		
-		if (LimelightNetworkTable.getInstance().getHorizOffset().abs().lessThan(Drive.DRIVE_ANGLE_THRESHOLD)) {
-			outputLeft += Drive.DRIVE_TO_CUBE_PERCENT;
-			outputRight += Drive.DRIVE_TO_CUBE_PERCENT;
+		if (LimelightNetworkTable.getInstance().getHorizOffset().abs().lessThan(DRIVE_ANGLE_THRESHOLD) &&
+				!LimelightNetworkTable.getInstance().getHorizOffset().abs().equals(Angle.ZERO) &&
+				!hasStartedForward) {
+			hasStartedForward = true;
+		}
+		
+		if (hasStartedForward) {
+			outputLeft += DRIVE_TO_CUBE_PERCENT;
+			outputRight += DRIVE_TO_CUBE_PERCENT;
 		}
 		
 		Drive.getInstance().pidWrite(outputLeft, outputRight, 0);
@@ -72,12 +74,10 @@ public class DriveToCubeCommand extends NRCommand {
 	@Override
 	protected void onEnd() {
 		new EnableLimelightCommand(false);
-		Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
-		IntakeRollers.getInstance().setMotorSpeedPercent(0);
 	}
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return !EnabledSensors.intakeSensor.get();
+		return false;
 	}
 }

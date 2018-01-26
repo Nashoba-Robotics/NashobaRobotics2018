@@ -1,5 +1,6 @@
 package edu.nr.robotics.subsystems.drive;
 
+import edu.nr.lib.NRMath;
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.interfaces.TriplePIDOutput;
@@ -28,7 +29,10 @@ public class TurnPIDSmartDashboardCommand extends NRCommand {
 	@Override
 	public void onExecute() {
 		
-		double headingAdjustment = gyro.getTurnValue(kP_theta);	
+		double headingAdjustment = NRMath.powWithSign(gyro.getTurnValue(kP_theta), 2);
+		if (Math.abs(headingAdjustment) < 0.03) {
+			headingAdjustment = 0.03 * Math.signum(headingAdjustment);
+		}
 		
 		double outputLeft, outputRight;
 		

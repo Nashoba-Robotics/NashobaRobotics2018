@@ -20,6 +20,7 @@ import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerHDriveMain;
 import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotorHDrive;
 import edu.nr.lib.motionprofiling.OneDimensionalTrajectoryRamped;
 import edu.nr.lib.motionprofiling.RampedDiagonalHTrajectory;
+import edu.nr.lib.network.LimelightNetworkTable;
 import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.sensorhistory.TalonEncoderH;
 import edu.nr.lib.talons.CTRECreator;
@@ -56,7 +57,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final Speed MAX_SPEED_H = new Speed(2.299 * 5, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Acceleration MAX_ACC_H = new Acceleration(1.802 * 5, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	
-	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(0.1, Distance.Unit.INCH);
+	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(1, Distance.Unit.INCH);
 	public static final Time PROFILE_TIME_THRESHOLD = new Time(0.1, Time.Unit.SECOND);
 	
 	public static final double PROFILE_ACCEL_PERCENT = 0.5;
@@ -220,6 +221,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			CheesyDriveCalculationConstants.createDriveTypeCalculations();
 			smartDashboardInit();
 			
+			LimelightNetworkTable.getInstance();
 		}
 		
 		if (EnabledSubsystems.DUMB_DRIVE_ENABLED) {
@@ -548,6 +550,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 
 	public void periodic() {
+
 	}
 
 	public void disable() {
