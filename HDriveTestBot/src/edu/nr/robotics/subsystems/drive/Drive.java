@@ -500,7 +500,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
 			SmartDashboard.putNumber("Gyro Yaw", NavX.getInstance().getYaw().get(Angle.Unit.DEGREE));
 		} else {
-			SmartDashboard.putNumber("Gyro Yaw", Pigeon.getPigeon(getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE));
+			SmartDashboard.putNumber("Gyro Yaw", (-Pigeon.getPigeon(getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE)) % 360);
 		}
 		
 		P_LEFT = SmartDashboard.getNumber("Left P Value: ", P_LEFT);

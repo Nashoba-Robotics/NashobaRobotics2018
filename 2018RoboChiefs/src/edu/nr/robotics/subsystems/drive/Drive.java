@@ -13,6 +13,7 @@ import edu.nr.lib.gyro.Gyro;
 import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.gyro.NavX;
 import edu.nr.lib.gyro.Pigeon;
+import edu.nr.lib.gyro.ResetGyroCommand;
 import edu.nr.lib.interfaces.TriplePIDOutput;
 import edu.nr.lib.interfaces.TriplePIDSource;
 import edu.nr.lib.motionprofiling.HDriveDiagonalProfiler;
@@ -723,6 +724,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 * What should be displayed when Drive class initialized
 	 */
 	private void smartDashboardInit() {
+		if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_BASIC_ENABLED) {
+			SmartDashboard.putData(new ResetGyroCommand());
+		}
 		if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {
 			
 			SmartDashboard.putNumber("Left P Value: ", P_LEFT);
@@ -747,9 +751,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				SmartDashboard.putString("Drive Current", getLeftCurrent() + " : " + getRightCurrent() + " : " + getHCurrent());
 				
 				if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
-					SmartDashboard.putNumber("Gyro Yaw", NavX.getInstance().getYaw().get(Angle.Unit.DEGREE));
+					SmartDashboard.putNumber("Gyro Yaw", (-NavX.getInstance().getYaw().get(Angle.Unit.DEGREE)) % 360);
 				} else {
-					SmartDashboard.putNumber("Gyro Yaw", Pigeon.getPigeon(getInstance().getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE));
+					SmartDashboard.putNumber("Gyro Yaw", (-Pigeon.getPigeon(getInstance().getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE)) % 360);
 				}
 				
 				SmartDashboard.putString("Drive Left Velocity: ", getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
