@@ -13,6 +13,7 @@ import edu.nr.lib.gyro.Gyro;
 import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.gyro.NavX;
 import edu.nr.lib.gyro.Pigeon;
+import edu.nr.lib.gyro.ResetGyroCommand;
 import edu.nr.lib.interfaces.TriplePIDOutput;
 import edu.nr.lib.interfaces.TriplePIDSource;
 import edu.nr.lib.motionprofiling.HDriveDiagonalProfiler;
@@ -447,6 +448,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	public void smartDashboardInit() {
+		
+		SmartDashboard.putData(new ResetGyroCommand());
+		
 		SmartDashboard.putNumber("Left P Value: ", P_LEFT);
 		SmartDashboard.putNumber("Left I Value: ", I_LEFT);
 		SmartDashboard.putNumber("Left D Value: ", D_LEFT);

@@ -4,6 +4,7 @@ package edu.nr.robotics;
 import edu.nr.lib.commandbased.CancelAllCommand;
 import edu.nr.lib.commandbased.DoNothingCommand;
 import edu.nr.lib.commandbased.NRSubsystem;
+import edu.nr.lib.gyro.ResetGyroCommand;
 import edu.nr.lib.interfaces.Periodic;
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.lib.network.LimelightNetworkTable;
@@ -64,7 +65,7 @@ public class Robot extends IterativeRobot {
 		smartDashboardInit();
 		autoChooserInit();
 		OI.init();
-		LimelightNetworkTable.getInstance().lightLED(false);
+		LimelightNetworkTable.getInstance();
 	}
 
 	public void autoChooserInit() {
@@ -136,6 +137,7 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		
 		LimelightNetworkTable.getInstance().lightLED(false);
+		new ResetGyroCommand().start();
 		
 		FieldData.getInstance().getFieldData();
 		

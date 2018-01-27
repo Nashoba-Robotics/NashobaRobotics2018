@@ -1,6 +1,7 @@
 package edu.nr.robotics;
 
 import edu.nr.lib.commandbased.CancelAllCommand;
+import edu.nr.lib.gyro.ResetGyroCommand;
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.lib.joystickbuttons.ConditionalDoubleJoystickButton;
 import edu.nr.lib.joystickbuttons.ConditionalJoystickButton;
@@ -55,9 +56,12 @@ public class OI implements SmartDashboardSource {
 	private static final int ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER = -1;
 	private static final int SHOOT_CUBE_BUTTON_NUMBER = -1;
 	private static final int PLACE_CUBE_BUTTON_NUMBER = -1;
+	
 	private static final int ACQUIRE_CUBE_BUTTON_NUMBER = -1;
 	private static final int SCORE_IN_PORTAL_BUTTON_NUMBER = -1;
+	
 	private static final int ENABLE_SCALE_STOPPING_BUTTON_NUMBER = -1;
+	private static final int RESET_GYRO_BUTTON_NUMBER = -1;
 	//private static final int CLIMB_BUTTON_NUMBER = -1;
 	//TODO: Find how we want to control elevator
 	
@@ -106,6 +110,7 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(driveLeft, ENABLE_SCALE_STOPPING_BUTTON_NUMBER).whenPressed(new EnableFloorSensorCommand(true));
 		new JoystickButton(driveLeft, ENABLE_SCALE_STOPPING_BUTTON_NUMBER).whenReleased(new EnableFloorSensorCommand(false));
 
+		new JoystickButton(driveLeft, RESET_GYRO_BUTTON_NUMBER).whenPressed(new ResetGyroCommand());
 	}
 	
 	public void initDriveRight() {

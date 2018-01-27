@@ -21,6 +21,6 @@ public class ResetGyroCommand extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return false;
+		return true;
 	}
 }
