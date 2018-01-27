@@ -172,7 +172,7 @@ public class OI implements SmartDashboardSource {
 	}
 
 	public double getArcadeTurnValue() {
-		return -snapDriveJoysticks(driveRight.getX()) * getTurnAdjust();
+		return snapDriveJoysticks(driveRight.getX());
 	}
 	
 	public double getArcadeHValue() {

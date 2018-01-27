@@ -11,12 +11,10 @@ public class TurnPIDSmartDashboardCommand extends NRCommand {
 	private TriplePIDOutput out;
 	private Angle initialAngle;
 	private GyroCorrection gyro;
-	private double kP_theta;
 	
-	public TurnPIDSmartDashboardCommand(TriplePIDOutput out, double kP_theta) {
+	public TurnPIDSmartDashboardCommand() {
 		super(Drive.getInstance());
-		this.out = out;
-		this.kP_theta = kP_theta;
+		this.out = Drive.getInstance();
 	}
 	
 	@Override
@@ -29,7 +27,7 @@ public class TurnPIDSmartDashboardCommand extends NRCommand {
 	@Override
 	public void onExecute() {
 		
-		double headingAdjustment = NRMath.powWithSign(gyro.getTurnValue(kP_theta), 2);
+		double headingAdjustment = NRMath.powWithSign(gyro.getTurnValue(Drive.kP_thetaOneD), 2);
 		if (Math.abs(headingAdjustment) < 0.03) {
 			headingAdjustment = 0.03 * Math.signum(headingAdjustment);
 		}

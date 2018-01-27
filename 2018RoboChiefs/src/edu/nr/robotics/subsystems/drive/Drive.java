@@ -740,6 +740,28 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			SmartDashboard.putNumber("H P Value: ", P_H);
 			SmartDashboard.putNumber("H I Value: ", I_H);
 			SmartDashboard.putNumber("H D Value: ", D_H);
+			
+			SmartDashboard.putNumber("kVOneD Value: ", kVOneD);
+			SmartDashboard.putNumber("kAOneD Value: ", kAOneD);
+			SmartDashboard.putNumber("kPOneD Value: ", kPOneD);
+			SmartDashboard.putNumber("kIOneD Value: ", kIOneD);
+			SmartDashboard.putNumber("kDOneD Value: ", kDOneD);
+			SmartDashboard.putNumber("kP_thetaOneD Value: ", kP_thetaOneD);
+			
+			SmartDashboard.putNumber("kVOneDH Value: ", kVOneDH);
+			SmartDashboard.putNumber("kAOneDH Value: ", kAOneDH);
+			SmartDashboard.putNumber("kPOneDH Value: ", kPOneDH);
+			SmartDashboard.putNumber("kIOneDH Value: ", kIOneDH);
+			SmartDashboard.putNumber("kDOneDH Value: ", kDOneDH);
+			
+			SmartDashboard.putNumber("Drive Ramp Rate: ", DRIVE_RAMP_RATE.get(Time.Unit.SECOND));
+			SmartDashboard.putNumber("H Drive Ramp Rate: ", H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND));
+			
+			SmartDashboard.putNumber("X Profile Feet: ", 0);
+			SmartDashboard.putNumber("Y Profile Feet: ", 0);
+			SmartDashboard.putNumber("Drive Percent: ", 0);
+			SmartDashboard.putNumber("Angle To Turn", 0);
+			SmartDashboard.putBoolean("Exact Turn", true);
 		}
 	}
 	
@@ -760,27 +782,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				SmartDashboard.putString("Drive Right Velocity: ", getRightVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 				SmartDashboard.putString("Drive H Velocity: ", getHVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + hMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 			
-				SmartDashboard.putNumber("kVOneD Value: ", kVOneD);
-				SmartDashboard.putNumber("kAOneD Value: ", kAOneD);
-				SmartDashboard.putNumber("kPOneD Value: ", kPOneD);
-				SmartDashboard.putNumber("kIOneD Value: ", kIOneD);
-				SmartDashboard.putNumber("kDOneD Value: ", kDOneD);
-				SmartDashboard.putNumber("kP_thetaOneD Value: ", kP_thetaOneD);
-				
-				SmartDashboard.putNumber("kVOneDH Value: ", kVOneDH);
-				SmartDashboard.putNumber("kAOneDH Value: ", kAOneDH);
-				SmartDashboard.putNumber("kPOneDH Value: ", kPOneDH);
-				SmartDashboard.putNumber("kIOneDH Value: ", kIOneDH);
-				SmartDashboard.putNumber("kDOneDH Value: ", kDOneDH);
-				
-				SmartDashboard.putNumber("Drive Ramp Rate: ", DRIVE_RAMP_RATE.get(Time.Unit.SECOND));
-				SmartDashboard.putNumber("H Drive Ramp Rate: ", H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND));
-				
-				SmartDashboard.putNumber("X Profile Feet: ", 0);
-				SmartDashboard.putNumber("Y Profile Feet: ", 0);
-				SmartDashboard.putNumber("Drive Percent: ", 0);
-				SmartDashboard.putNumber("Angle To Turn", 0);
-				SmartDashboard.putBoolean("Exact Turn", true);
 				
 			}
 			if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {

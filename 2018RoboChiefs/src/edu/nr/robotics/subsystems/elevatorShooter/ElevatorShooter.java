@@ -237,8 +237,6 @@ public class ElevatorShooter extends NRSubsystem {
 			SmartDashboard.putNumber("I Vel Elevator Shooter: ", I_VEL_ELEVATOR_SHOOTER);
 			SmartDashboard.putNumber("D Vel Elevator Shooter: ", D_VEL_ELEVATOR_SHOOTER);
 			SmartDashboard.putNumber("Elevator Shooter Vel Percent: ", shootPercent);
-			
-			SmartDashboard.putData("Elevator Shooter Velocity Command: ", new ElevatorShooterVelocitySmartDashboardCommand());
 		}
 	}
 	

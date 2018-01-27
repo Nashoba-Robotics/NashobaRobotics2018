@@ -235,7 +235,6 @@ private CubeHandler() {
 			SmartDashboard.putNumber("I Vel Cube Handler: ", I_VEL_CUBE_HANDLER);
 			SmartDashboard.putNumber("D Vel Cube Handler: ", D_VEL_CUBE_HANDLER);
 			SmartDashboard.putNumber("Cube Handler Vel Percent: ", VEL_PERCENT_CUBE_HANDLER);
-			SmartDashboard.putData("Cube Handler Velocity Command: ", new CubeHandlerVelocitySmartDashboardCommand());
 		}
 	}
 	

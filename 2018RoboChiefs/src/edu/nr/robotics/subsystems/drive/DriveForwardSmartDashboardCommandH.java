@@ -10,10 +10,6 @@ public class DriveForwardSmartDashboardCommandH extends NRCommand {
 	GyroCorrection gyro;
 
 	public DriveForwardSmartDashboardCommandH() {
-		this(Drive.yProfile, Drive.drivePercent);
-	}
-	
-	public DriveForwardSmartDashboardCommandH(Distance distance, double percent) {
 		super(Drive.getInstance());
 		gyro = new GyroCorrection();
 	}
@@ -27,17 +23,17 @@ public class DriveForwardSmartDashboardCommandH extends NRCommand {
 	@Override
 	public void onExecute() {
 		double turnValue = gyro.getTurnValue(Drive.kP_thetaOneD);
-		Drive.getInstance().setMotorSpeedInPercent(-turnValue, turnValue, Drive.drivePercent);
+		Drive.getInstance().setMotorSpeedInPercent(-turnValue, turnValue, Drive.drivePercent * Drive.yProfile.signum());
 	}
 	
 	@Override
 	public void onEnd() {
-		Drive.getInstance().disable();
+		Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 	}
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return (Drive.getInstance().getHPosition().sub(initialPosition)).abs().greaterThan(Drive.yProfile);	
+		return (Drive.getInstance().getHPosition().sub(initialPosition)).abs().greaterThan(Drive.yProfile.abs());	
 		
 	}
 	

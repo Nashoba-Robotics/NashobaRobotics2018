@@ -39,7 +39,7 @@ public class DriveForwardBasicCommandH extends NRCommand {
 	
 	@Override
 	public void onEnd() {
-		Drive.getInstance().disable();
+		Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);;
 	}
 	
 	@Override

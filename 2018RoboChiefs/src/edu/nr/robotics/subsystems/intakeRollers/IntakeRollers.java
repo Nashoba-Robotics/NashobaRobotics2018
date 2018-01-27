@@ -231,8 +231,6 @@ public class IntakeRollers extends NRSubsystem {
 			SmartDashboard.putNumber("I Vel Intake Rollers: ", I_VEL_INTAKE_ROLLERS);
 			SmartDashboard.putNumber("D Vel Intake Rollers: ", D_VEL_INTAKE_ROLLERS);
 			SmartDashboard.putNumber("Intake Rollers Vel Percent: ", VEL_PERCENT_INTAKE_ROLLERS);
-			
-			SmartDashboard.putData("Intake Rollers Velocity Command: ", new IntakeRollersVelocitySmartDashboardCommand());
 		}
 	}
 	
