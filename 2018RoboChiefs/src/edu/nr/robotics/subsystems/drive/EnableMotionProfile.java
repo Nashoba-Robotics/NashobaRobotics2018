@@ -3,10 +3,11 @@ package edu.nr.robotics.subsystems.drive;
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.motionprofiling.HDriveDiagonalProfiler;
 import edu.nr.lib.units.Distance;
+import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class EnableOneDMotionProfileSmartDashboardCommand extends NRCommand {
+public class EnableMotionProfile extends NRCommand {
 	
 	Distance initialLeftPosition;
 	Distance initialRightPosition;
@@ -15,15 +16,24 @@ public class EnableOneDMotionProfileSmartDashboardCommand extends NRCommand {
 	Distance tempRightPosition = Distance.ZERO;
 	Distance tempHPosition = Distance.ZERO;
 	
-	private final Distance END_THRESHOLD = new Distance(3, Distance.Unit.INCH);
+	Distance dist;
+	Distance distH;
+	double maxVelPercent;
+	double maxAccelPercent;
 	
-	public EnableOneDMotionProfileSmartDashboardCommand() {
+	private final Distance END_THRESHOLD = Drive.END_THRESHOLD;
+	
+	public EnableMotionProfile(Distance dist, Distance distH, double maxVelPercent, double maxAccelPercent) {
 		super(Drive.getInstance());
+		this.dist = dist;
+		this.distH = distH;
+		this.maxVelPercent = maxVelPercent;
+		this.maxAccelPercent = maxAccelPercent;
 	}
 	
 	@Override
 	public void onStart() {
-		Drive.getInstance().enableMotionProfiler(Drive.xProfile, Drive.yProfile, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT);
+		Drive.getInstance().enableMotionProfiler(dist, distH, maxVelPercent, maxAccelPercent);
 		initialLeftPosition = Drive.getInstance().getLeftPosition();
 		initialRightPosition = Drive.getInstance().getRightPosition();
 		initialHPosition = Drive.getInstance().getHPosition();
@@ -31,16 +41,17 @@ public class EnableOneDMotionProfileSmartDashboardCommand extends NRCommand {
 
 	@Override
 	public void onExecute() {
-		// System.out.println("1D Profiler enabled: " +
-		// Drive.getInstance().isOneDProfilerEnabled());
-		Drive.getInstance().setPIDSourceType(PIDSourceType.kRate);
-		SmartDashboard.putString("Motion Profiler V Left", Drive.getInstance().pidGetLeft() + ":" + HDriveDiagonalProfiler.velocityGoal);
-		SmartDashboard.putString("Motion Profiler V Right", Drive.getInstance().pidGetRight() + ":" + HDriveDiagonalProfiler.velocityGoal);
-		SmartDashboard.putString("Motion Profiler V H", Drive.getInstance().pidGetH() + ":" + HDriveDiagonalProfiler.velocityGoalH);
-		Drive.getInstance().setPIDSourceType(PIDSourceType.kDisplacement);
-		SmartDashboard.putString("Motion Profiler X Left", new Distance(Drive.getInstance().pidGetLeft(), Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(HDriveDiagonalProfiler.positionGoal + HDriveDiagonalProfiler.initialPositionLeft, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(HDriveDiagonalProfiler.errorLeft, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH));
-		SmartDashboard.putString("Motion Profiler X Right", new Distance(Drive.getInstance().pidGetRight(), Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(HDriveDiagonalProfiler.positionGoal + HDriveDiagonalProfiler.initialPositionRight, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(HDriveDiagonalProfiler.errorRight, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH));
-		SmartDashboard.putString("Motion Profiler X H", new Distance(Drive.getInstance().pidGetH(), Distance.Unit.MAGNETIC_ENCODER_TICK_H).get(Distance.Unit.INCH) + ":" + new Distance(HDriveDiagonalProfiler.positionGoalH + HDriveDiagonalProfiler.initialPositionH, Distance.Unit.MAGNETIC_ENCODER_TICK_H).get(Distance.Unit.INCH) + ":" + new Distance(HDriveDiagonalProfiler.errorH, Distance.Unit.MAGNETIC_ENCODER_TICK_H).get(Distance.Unit.INCH));
+		if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {	
+			Drive.getInstance().setPIDSourceType(PIDSourceType.kRate);
+			SmartDashboard.putString("Motion Profiler V Left", Drive.getInstance().pidGetLeft() + ":" + HDriveDiagonalProfiler.velocityGoal);
+			SmartDashboard.putString("Motion Profiler V Right", Drive.getInstance().pidGetRight() + ":" + HDriveDiagonalProfiler.velocityGoal);
+			SmartDashboard.putString("Motion Profiler V H", Drive.getInstance().pidGetH() + ":" + HDriveDiagonalProfiler.velocityGoalH);
+			Drive.getInstance().setPIDSourceType(PIDSourceType.kDisplacement);
+			SmartDashboard.putString("Motion Profiler X Left", new Distance(Drive.getInstance().pidGetLeft(), Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(HDriveDiagonalProfiler.positionGoal + HDriveDiagonalProfiler.initialPositionLeft, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(HDriveDiagonalProfiler.errorLeft, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH));
+			SmartDashboard.putString("Motion Profiler X Right", new Distance(Drive.getInstance().pidGetRight(), Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(HDriveDiagonalProfiler.positionGoal + HDriveDiagonalProfiler.initialPositionRight, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(HDriveDiagonalProfiler.errorRight, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH));
+			SmartDashboard.putString("Motion Profiler X H", new Distance(Drive.getInstance().pidGetH(), Distance.Unit.MAGNETIC_ENCODER_TICK_H).get(Distance.Unit.INCH) + ":" + new Distance(HDriveDiagonalProfiler.positionGoalH + HDriveDiagonalProfiler.initialPositionH, Distance.Unit.MAGNETIC_ENCODER_TICK_H).get(Distance.Unit.INCH) + ":" + new Distance(HDriveDiagonalProfiler.errorH, Distance.Unit.MAGNETIC_ENCODER_TICK_H).get(Distance.Unit.INCH));
+	
+		}
 	}
 
 	@Override

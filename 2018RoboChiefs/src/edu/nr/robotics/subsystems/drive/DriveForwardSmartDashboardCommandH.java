@@ -22,7 +22,7 @@ public class DriveForwardSmartDashboardCommandH extends NRCommand {
 	
 	@Override
 	public void onExecute() {
-		double turnValue = gyro.getTurnValue(Drive.kP_thetaOneD);
+		double turnValue = gyro.getTurnValue(Drive.kP_thetaOneD, false);
 		Drive.getInstance().setMotorSpeedInPercent(-turnValue, turnValue, Drive.drivePercent * Drive.yProfile.signum());
 	}
 	

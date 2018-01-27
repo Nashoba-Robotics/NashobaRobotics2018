@@ -429,7 +429,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	public Distance getHPosition() {
 		if(hDrive != null){
-			return new Distance(rightDrive.getSelectedSensorPosition(PID_TYPE), Unit.MAGNETIC_ENCODER_TICK);
+			return new Distance(hDrive.getSelectedSensorPosition(PID_TYPE), Unit.MAGNETIC_ENCODER_TICK_H);
 		}
 		else{
 			return Distance.ZERO;
@@ -760,8 +760,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			SmartDashboard.putNumber("X Profile Feet: ", 0);
 			SmartDashboard.putNumber("Y Profile Feet: ", 0);
 			SmartDashboard.putNumber("Drive Percent: ", 0);
-			SmartDashboard.putNumber("Angle To Turn", 0);
-			SmartDashboard.putBoolean("Exact Turn", true);
+			SmartDashboard.putNumber("Angle To Turn: ", 0);
+			SmartDashboard.putBoolean("Exact Turn: ", true);
 		}
 	}
 	
@@ -840,8 +840,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				xProfile = new Distance(SmartDashboard.getNumber("X Profile Feet: ", 0), Distance.Unit.FOOT);
 				yProfile = new Distance(SmartDashboard.getNumber("Y Profile Feet: ", 0), Distance.Unit.FOOT);
 				drivePercent = SmartDashboard.getNumber("Drive Percent: ", 0);
-				angleToTurn = new Angle(SmartDashboard.getNumber("AngleToTurn:", 0), Angle.Unit.DEGREE);
-				exact = SmartDashboard.getBoolean("Exact Turn", exact);
+				angleToTurn = new Angle(SmartDashboard.getNumber("Angle To Turn: ", 0), Angle.Unit.DEGREE);
+				exact = SmartDashboard.getBoolean("Exact Turn: ", exact);
 			}
 		}
 	}

@@ -37,7 +37,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 			hValue = NRMath.powWithSign(hValue, 3);
 			
 			if (Math.abs(rotateValue) < 0.05 && (Math.abs(moveValue) > 0.05 || Math.abs(hValue) > 0.05)) {
-				rotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD);
+				rotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD, false);
 			} else {
 				gyroCorrection.clearInitialValue();
 			}
@@ -78,7 +78,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 			cheesyHValue = NRMath.powWithSign(cheesyHValue, 3);
 			
 			if (Math.abs(cheesyRotateValue) < 0.05 && (Math.abs(cheesyMoveValue) > 0.05 || Math.abs(cheesyHValue) > 0.05)) {
-				cheesyRotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD);
+				cheesyRotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD, false);
 			} else {
 				gyroCorrection.clearInitialValue();
 			}

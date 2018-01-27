@@ -38,9 +38,9 @@ public class TurnPIDCommand extends NRCommand {
 	@Override
 	public void onExecute() {
 		
-		double headingAdjustment = NRMath.powWithSign(gyro.getTurnValue(kP_theta), 2);
-		if (Math.abs(headingAdjustment) < 0.03) {
-			headingAdjustment = 0.03 * Math.signum(headingAdjustment);
+		double headingAdjustment = NRMath.powWithSign(gyro.getTurnValue(kP_theta, true), 2);
+		if (Math.abs(headingAdjustment) < Drive.MIN_PROFILE_TURN_PERCENT) {
+			headingAdjustment = Drive.MIN_PROFILE_TURN_PERCENT * Math.signum(headingAdjustment);
 		}
 		
 		double outputLeft, outputRight;

@@ -42,11 +42,11 @@ public class DriveToCubeCommand extends NRCommand {
 		double headingAdjustment;
 		
 		if (stoppedTracking) {
-			headingAdjustment = gyro.getTurnValue(Drive.kP_thetaOneD);
+			headingAdjustment = gyro.getTurnValue(Drive.kP_thetaOneD, false);
 		}
 		else if (LimelightNetworkTable.getInstance().getVertOffsetAngle().lessThan(STOP_LIMELIGHT_TRACKING_ANGLE)) {
 			stoppedTracking = true;
-			headingAdjustment = gyro.getTurnValue(Drive.kP_thetaOneD);
+			headingAdjustment = gyro.getTurnValue(Drive.kP_thetaOneD, false);
 		}
 		else {
 			headingAdjustment = NRMath.powWithSign(-LimelightNetworkTable.getInstance().getHorizOffset().get(Angle.Unit.DEGREE) 

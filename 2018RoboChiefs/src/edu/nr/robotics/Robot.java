@@ -31,7 +31,7 @@ import edu.nr.robotics.subsystems.drive.CSVSaverDisable;
 import edu.nr.robotics.subsystems.drive.CSVSaverEnable;
 import edu.nr.robotics.subsystems.drive.DriveForwardBasicSmartDashboardCommand;
 import edu.nr.robotics.subsystems.drive.DriveForwardSmartDashboardCommandH;
-import edu.nr.robotics.subsystems.drive.EnableOneDMotionProfileSmartDashboardCommand;
+import edu.nr.robotics.subsystems.drive.EnableMotionProfileSmartDashboardCommand;
 import edu.nr.robotics.subsystems.drive.TurnPIDSmartDashboardCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorDeltaPositionSmartDashboardCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorMoveBasicSmartDashboardCommand;
@@ -119,7 +119,7 @@ public class Robot extends IterativeRobot {
 		//Drive
 		if(EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {
 			SmartDashboard.putData(new DriveForwardBasicSmartDashboardCommand());
-			SmartDashboard.putData(new EnableOneDMotionProfileSmartDashboardCommand());
+			SmartDashboard.putData(new EnableMotionProfileSmartDashboardCommand());
 			SmartDashboard.putData(new DriveForwardSmartDashboardCommandH());
 			SmartDashboard.putData(new TurnPIDSmartDashboardCommand());
 		}

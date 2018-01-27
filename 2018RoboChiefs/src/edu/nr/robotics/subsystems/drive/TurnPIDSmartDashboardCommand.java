@@ -27,9 +27,9 @@ public class TurnPIDSmartDashboardCommand extends NRCommand {
 	@Override
 	public void onExecute() {
 		
-		double headingAdjustment = NRMath.powWithSign(gyro.getTurnValue(Drive.kP_thetaOneD), 2);
-		if (Math.abs(headingAdjustment) < 0.03) {
-			headingAdjustment = 0.03 * Math.signum(headingAdjustment);
+		double headingAdjustment = NRMath.powWithSign(gyro.getTurnValue(Drive.kP_thetaOneD, true), 2);
+		if (Math.abs(headingAdjustment) < Drive.MIN_PROFILE_TURN_PERCENT) {
+			headingAdjustment = Drive.MIN_PROFILE_TURN_PERCENT * Math.signum(headingAdjustment);
 		}
 		
 		double outputLeft, outputRight;
@@ -52,11 +52,7 @@ public class TurnPIDSmartDashboardCommand extends NRCommand {
 					.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& (initialAngle.sub(gyro.getAngleError())).abs().lessThan(Drive.DRIVE_ANGLE_THRESHOLD);
 		} else {
-			finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftPosition())).abs()
-					.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-					&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightPosition())).abs()
-					.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-					&& (initialAngle.sub(gyro.getAngleError())).abs().lessThan(Drive.DRIVE_ANGLE_THRESHOLD);	
+			finished = (initialAngle.sub(gyro.getAngleError())).abs().lessThan(Drive.DRIVE_ANGLE_THRESHOLD);	
 		}
 		return finished;
 	}
