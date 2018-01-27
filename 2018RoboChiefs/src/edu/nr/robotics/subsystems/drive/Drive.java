@@ -120,12 +120,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The amount of time drive can go from 0 to 12 volts
 	 */
-	private static Time DRIVE_RAMP_RATE = Time.ZERO; //TODO: Find drive ramp rate
+	public static Time DRIVE_RAMP_RATE = Time.ZERO; //TODO: Find drive ramp rate
 	
 	/**
 	 * The amount of time h drive can go from 0 to 12 volts
 	 */
-	private static Time H_DRIVE_RAMP_RATE = Time.ZERO; //TODO: Find h drive ramp rate
+	public static Time H_DRIVE_RAMP_RATE = Time.ZERO; //TODO: Find h drive ramp rate
 	
 	
 	/**
@@ -602,6 +602,18 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
 			}	
 		}
+	}
+	
+	public void SetVoltageRamp(Time time) {
+		leftDrive.configClosedloopRamp(time.get(Time.Unit.SECOND), NO_TIMEOUT);
+		rightDrive.configClosedloopRamp(time.get(Time.Unit.SECOND), NO_TIMEOUT);
+		leftDrive.configOpenloopRamp(time.get(Time.Unit.SECOND), NO_TIMEOUT);
+		rightDrive.configOpenloopRamp(time.get(Time.Unit.SECOND), NO_TIMEOUT);
+	}
+	
+	public void SetVoltageRampH(Time time) {
+		hDrive.configClosedloopRamp(time.get(Time.Unit.SECOND), NO_TIMEOUT);
+		hDrive.configOpenloopRamp(time.get(Time.Unit.SECOND), NO_TIMEOUT);
 	}
 	
 	public void tankDrive(double left, double right, double strafe) {

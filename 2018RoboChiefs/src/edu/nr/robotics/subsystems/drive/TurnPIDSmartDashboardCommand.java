@@ -27,7 +27,7 @@ public class TurnPIDSmartDashboardCommand extends NRCommand {
 	@Override
 	public void onExecute() {
 		
-		double headingAdjustment = NRMath.powWithSign(gyro.getTurnValue(Drive.kP_thetaOneD, true), 2);
+		double headingAdjustment = gyro.getTurnValue(Drive.kP_thetaOneD, true);
 		if (Math.abs(headingAdjustment) < Drive.MIN_PROFILE_TURN_PERCENT) {
 			headingAdjustment = Drive.MIN_PROFILE_TURN_PERCENT * Math.signum(headingAdjustment);
 		}

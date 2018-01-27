@@ -5,8 +5,6 @@ import java.util.TimerTask;
 
 import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Time;
-import edu.nr.robotics.subsystems.drive.Drive;
-import edu.nr.robotics.subsystems.drive.DriveJoystickCommand;
 import edu.wpi.first.networktables.*;
 
 /**
@@ -17,7 +15,7 @@ import edu.wpi.first.networktables.*;
  */
 public class LimelightNetworkTable extends TimerTask {
 	
-	NetworkTableInstance limelightInstance = NetworkTableInstance.create();
+	NetworkTableInstance limelightInstance;
 	
 	private static final Time DEFAULT_PERIOD = new Time(10, Time.Unit.MILLISECOND);
 	private static final boolean DEFAULT_LED_LIGHT = false;
@@ -25,9 +23,9 @@ public class LimelightNetworkTable extends TimerTask {
 	
 	private static final Time IMAGE_CAPTURE_LATENCY = new Time(11, Time.Unit.MILLISECOND);
 	
-	private volatile Angle horizOffsetAngle = Angle.ZERO;
-	private volatile Angle vertOffsetAngle = Angle.ZERO;
-	private volatile Time pipelineLatency = Time.ZERO;
+	private Angle horizOffsetAngle = Angle.ZERO;
+	private Angle vertOffsetAngle = Angle.ZERO;
+	private Time pipelineLatency = Time.ZERO;
 	
 	private boolean enabled = false;
 	
@@ -54,9 +52,11 @@ public class LimelightNetworkTable extends TimerTask {
 	}
 	
 	private LimelightNetworkTable() {
+		limelightInstance = NetworkTableInstance.create();
 		timer = new Timer();
 		timer.scheduleAtFixedRate(this, 0, (long) DEFAULT_PERIOD.get(Time.Unit.MILLISECOND));
-		limelightTable = limelightInstance.getTable("limelight");
+		limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
+		//limelightTable = limelightInstance.getTable("limelight");
 		lightLED(DEFAULT_LED_LIGHT);
 		setPipeline(DEFAULT_PIPELINE);
 	}
@@ -86,7 +86,7 @@ public class LimelightNetworkTable extends TimerTask {
 	
 	/**
 	 * 
-	 * @return Limelight horizontal offset angle or Double.MAX_VALUE
+	 * @return Limelight horizontal offset angle or 0
 	 */
 	public Angle getHorizOffset() {
 		return horizOffsetAngle;

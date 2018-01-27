@@ -7,6 +7,7 @@ import edu.nr.lib.joystickbuttons.ConditionalDoubleJoystickButton;
 import edu.nr.lib.joystickbuttons.ConditionalJoystickButton;
 import edu.nr.lib.joystickbuttons.DoubleJoystickButton;
 import edu.nr.lib.joystickbuttons.DoubleJoystickButton.Type;
+import edu.nr.lib.units.Angle;
 import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.multicommands.DriveToCubeCommand;
 import edu.nr.robotics.multicommands.PrepareScorePortalCommand;
@@ -17,6 +18,7 @@ import edu.nr.robotics.subsystems.cubeHandler.CubeHandler;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerStopCommand;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerVelocityCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
+import edu.nr.robotics.subsystems.drive.TurnPIDCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorPositionCommand;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
@@ -59,6 +61,7 @@ public class OI implements SmartDashboardSource {
 	
 	private static final int ACQUIRE_CUBE_BUTTON_NUMBER = -1;
 	private static final int SCORE_IN_PORTAL_BUTTON_NUMBER = -1;
+	private static final int HALF_TURN_BUTTON_NUMBER = 2;
 	
 	private static final int ENABLE_SCALE_STOPPING_BUTTON_NUMBER = -1;
 	private static final int RESET_GYRO_BUTTON_NUMBER = -1;
@@ -111,10 +114,13 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(driveLeft, ENABLE_SCALE_STOPPING_BUTTON_NUMBER).whenReleased(new EnableFloorSensorCommand(false));
 
 		new JoystickButton(driveLeft, RESET_GYRO_BUTTON_NUMBER).whenPressed(new ResetGyroCommand());
+		
 	}
 	
 	public void initDriveRight() {
 		new JoystickButton(driveRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenPressed(new DriveToCubeCommand());
+		
+		new JoystickButton(driveLeft, HALF_TURN_BUTTON_NUMBER).whenPressed(new TurnPIDCommand(Drive.getInstance(), new Angle(180, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
 	}
 	
 	public void initOperatorLeft() {

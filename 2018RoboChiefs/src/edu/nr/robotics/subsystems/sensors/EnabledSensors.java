@@ -14,8 +14,8 @@ public class EnabledSensors {
 	
 	public static boolean limelightEnabled = false;
 	public static boolean portalSensorEnabled = false;
-	public static boolean floorSensorEnabled = false;
+	public static volatile boolean floorSensorEnabled = false;
 	
-	public static boolean floorTapeSeen = false;
+	public static volatile boolean floorTapeSeen = false;
 	
 }

@@ -15,16 +15,14 @@ public class TurnPIDCommand extends NRCommand {
 	private Angle angleToTurn;
 	private Angle initialAngle;
 	private GyroCorrection gyro;
-	private double kP_theta;
 	private double turnPercent;
 	private boolean exact;
 	
-	public TurnPIDCommand(TriplePIDOutput out, Angle angleToTurn, double turnPercent, double kP_theta, boolean exact) {
+	public TurnPIDCommand(TriplePIDOutput out, Angle angleToTurn, double turnPercent, boolean exact) {
 		super(Drive.getInstance());
 		this.out = out;
 		this.angleToTurn = angleToTurn;
 		this.turnPercent = turnPercent;
-		this.kP_theta = kP_theta;
 		this.exact = exact;
 	}
 	
@@ -38,7 +36,7 @@ public class TurnPIDCommand extends NRCommand {
 	@Override
 	public void onExecute() {
 		
-		double headingAdjustment = NRMath.powWithSign(gyro.getTurnValue(kP_theta, true), 2);
+		double headingAdjustment = gyro.getTurnValue(Drive.kP_thetaOneD, true);
 		if (Math.abs(headingAdjustment) < Drive.MIN_PROFILE_TURN_PERCENT) {
 			headingAdjustment = Drive.MIN_PROFILE_TURN_PERCENT * Math.signum(headingAdjustment);
 		}

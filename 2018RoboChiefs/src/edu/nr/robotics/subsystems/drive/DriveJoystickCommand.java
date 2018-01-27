@@ -1,10 +1,11 @@
 package edu.nr.robotics.subsystems.drive;
 
-import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.NRMath;
 import edu.nr.lib.commandbased.JoystickCommand;
+import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.robotics.OI;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
+import edu.nr.robotics.subsystems.sensors.RunSensors;
 
 public class DriveJoystickCommand extends JoystickCommand {
 
@@ -12,6 +13,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 
 	public DriveJoystickCommand() {
 		super(Drive.getInstance());
+		new RunSensors();
 	}
 	
 	@Override
@@ -21,10 +23,6 @@ public class DriveJoystickCommand extends JoystickCommand {
 
 	@Override
 	public void onExecute() {
-		
-		if (EnabledSensors.floorSensorEnabled && !EnabledSensors.floorSensor.get()) {
-			EnabledSensors.floorTapeSeen = true;	
-		}
 		
 		switch (OI.driveMode) {
 		case arcadeDrive:
