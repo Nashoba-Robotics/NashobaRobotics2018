@@ -5,6 +5,7 @@ import edu.nr.lib.NRMath;
 import edu.nr.lib.commandbased.JoystickCommand;
 import edu.nr.robotics.OI;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
+import edu.nr.robotics.subsystems.sensors.RunSensors;
 
 public class DriveJoystickCommand extends JoystickCommand {
 
@@ -12,6 +13,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 
 	public DriveJoystickCommand() {
 		super(Drive.getInstance());
+		new RunSensors();
 	}
 	
 	@Override
@@ -21,10 +23,6 @@ public class DriveJoystickCommand extends JoystickCommand {
 
 	@Override
 	public void onExecute() {
-		
-		if (EnabledSensors.floorSensorEnabled && !EnabledSensors.floorSensor.get()) {
-			EnabledSensors.floorTapeSeen = true;	
-		}
 		
 		switch (OI.driveMode) {
 		case arcadeDrive:
@@ -37,7 +35,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 			hValue = NRMath.powWithSign(hValue, 3);
 			
 			if (Math.abs(rotateValue) < 0.05 && (Math.abs(moveValue) > 0.05 || Math.abs(hValue) > 0.05)) {
-				rotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD);
+				rotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD, false);
 			} else {
 				gyroCorrection.clearInitialValue();
 			}
@@ -78,7 +76,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 			cheesyHValue = NRMath.powWithSign(cheesyHValue, 3);
 			
 			if (Math.abs(cheesyRotateValue) < 0.05 && (Math.abs(cheesyMoveValue) > 0.05 || Math.abs(cheesyHValue) > 0.05)) {
-				cheesyRotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD);
+				cheesyRotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD, false);
 			} else {
 				gyroCorrection.clearInitialValue();
 			}

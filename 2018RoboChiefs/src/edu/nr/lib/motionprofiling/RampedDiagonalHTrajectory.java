@@ -55,8 +55,8 @@ public class RampedDiagonalHTrajectory implements OneDimensionalTrajectory {
 	 */
 	public RampedDiagonalHTrajectory(double goalPositionDeltaX, double goalPositionDeltaY, double velMax, double accelMax) {
 		this.endPosition = Math.hypot(goalPositionDeltaX, goalPositionDeltaY);
-		this.endPositionX = goalPositionDeltaX;
-		this.endPositionY = goalPositionDeltaY;
+		this.endPositionX = Math.abs(goalPositionDeltaX);
+		this.endPositionY = Math.abs(goalPositionDeltaY);
 		this.startPosition = 0;
 		this.directionX = Math.signum(goalPositionDeltaX);
 		this.directionY = Math.signum(goalPositionDeltaY);
@@ -155,8 +155,7 @@ public class RampedDiagonalHTrajectory implements OneDimensionalTrajectory {
 		} else if (time < timeRamp + timeAccel) {
 			return (rampFunc(timeRamp) + accelMaxUsed * (time - timeRamp));
 		} else if (time < 2 * timeRamp + timeAccel) {
-			return (rampFunc(timeRamp) + (accelMaxUsed * timeAccel) + xyRefRampFunc(time - timeAccel - timeRamp))
-					* directionX;
+			return (rampFunc(timeRamp) + (accelMaxUsed * timeAccel) + xyRefRampFunc(time - timeAccel - timeRamp));
 		} else if (time < 2 * timeRamp + timeAccel + timeCruise) {
 			return (velMaxUsed);
 		} else if (time < 3 * timeRamp + timeAccel + timeCruise) {
@@ -178,8 +177,7 @@ public class RampedDiagonalHTrajectory implements OneDimensionalTrajectory {
 		} else if (time < timeRamp + timeAccel) {
 			return (integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (time - timeRamp)
 					+ 0.5 * (time - timeRamp)
-							* ((rampFunc(timeRamp) + accelMaxUsed * (time - timeRamp)) - rampFunc(timeRamp)))
-					* directionX;
+							* ((rampFunc(timeRamp) + accelMaxUsed * (time - timeRamp)) - rampFunc(timeRamp)));
 		} else if (time < 2 * timeRamp + timeAccel) {
 			return (integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel)
 					+ 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp))
@@ -196,8 +194,7 @@ public class RampedDiagonalHTrajectory implements OneDimensionalTrajectory {
 					+ integXYRefRampFunc(0, timeRamp) + (velMaxUsed - xyRefRampFunc(timeRamp)) * (timeRamp)
 					+ velMaxUsed * (timeCruise) + integXYRefRampFunc(0, timeRamp)
 					- integXYRefRampFunc(0, (3 * timeRamp) + timeCruise + timeAccel - time)
-					+ (velMaxUsed - xyRefRampFunc(timeRamp)) * (time - timeCruise - (2 * timeRamp) - timeAccel))
-					* directionX;
+					+ (velMaxUsed - xyRefRampFunc(timeRamp)) * (time - timeCruise - (2 * timeRamp) - timeAccel));
 		} else if (time < 3 * timeRamp + 2 * timeAccel + timeCruise) {
 			return (integRampFunc(0, timeRamp) + rampFunc(timeRamp) * (timeAccel)
 					+ 0.5 * (timeAccel) * ((rampFunc(timeRamp) + accelMaxUsed * (timeAccel)) - rampFunc(timeRamp))
@@ -261,7 +258,7 @@ public class RampedDiagonalHTrajectory implements OneDimensionalTrajectory {
 	public ArrayList<Double> loadPosPointsH(double period) {
 		posPointsH.clear();
 		for (int time = 0; time < Math.round(totalTime * 100); time += period) {
-			posPoints.add(getGoalPosition(time / 100.0) * endPositionY / endPosition * directionY);
+			posPointsH.add(getGoalPosition(time / 100.0) * endPositionY / endPosition * directionY);
 		}
 		return posPointsH;
 	}

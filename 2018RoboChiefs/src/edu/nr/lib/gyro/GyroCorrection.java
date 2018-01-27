@@ -1,5 +1,6 @@
 package edu.nr.lib.gyro;
 
+import edu.nr.lib.NRMath;
 import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.units.Angle;
 import edu.nr.robotics.subsystems.drive.Drive;
@@ -7,7 +8,7 @@ import edu.nr.robotics.subsystems.drive.Drive;
 public class GyroCorrection
 {
 	public static final double DEFAULT_KP_THETA = 0.05;
-	public double MAX_ANGLE_CORRECTION_SPEED = 0.2;
+	public double MAX_ANGLE_CORRECTION_SPEED = 1.0;
 	protected boolean initialized = false;
 	
 	private Angle initialAngle;
@@ -39,7 +40,7 @@ public class GyroCorrection
 	 * @param kP_theta The factor the angle should be changed by.
 	 * @return A speed, on a scale from -1 to 1, from -{@value #MAX_ANGLE_CORRECTION_SPEED} to {@value #MAX_ANGLE_CORRECTION_SPEED}.
 	 */
-	public double getTurnValue(double kP_theta)
+	public double getTurnValue(double kP_theta, boolean ramped)
 	{
 		if(initialized == false)
 		{
@@ -47,12 +48,23 @@ public class GyroCorrection
 			initialized = true;
 		}
 		
-		double turn = -getAngleError().get(Angle.Unit.DEGREE) * kP_theta;
-    	if(turn < 0)
+		double turn;
+		
+		if (ramped) {
+			if (getAngleError().abs().lessThan(new Angle(180, Angle.Unit.DEGREE))) {
+				turn = ((-Math.cos(getAngleError().get(Angle.Unit.RADIAN) / 2) * (1 - Drive.MIN_PROFILE_TURN_PERCENT)) + 1 + Drive.MIN_PROFILE_TURN_PERCENT) * -getAngleError().signum();
+			} else {
+				turn = -getAngleError().signum();
+			}
+		} else {
+			turn = -getAngleError().get(Angle.Unit.DEGREE) * kP_theta;
+		}
+    			
+		if(turn < 0)
     		turn = Math.max(-MAX_ANGLE_CORRECTION_SPEED, turn);
     	else
     		turn = Math.min(MAX_ANGLE_CORRECTION_SPEED, turn);
-    	
+    	    	
     	return turn;
 	}
 	
@@ -60,9 +72,9 @@ public class GyroCorrection
 	 * Calls {@link #getTurnValue(double)} with the default value of {@value #DEFAULT_KP_THETA}.
 	 * @return
 	 */
-	public double getTurnValue()
+	public double getTurnValue(boolean ramped)
 	{
-		return this.getTurnValue(DEFAULT_KP_THETA);
+		return this.getTurnValue(DEFAULT_KP_THETA, ramped);
 	}
 	
 	/**

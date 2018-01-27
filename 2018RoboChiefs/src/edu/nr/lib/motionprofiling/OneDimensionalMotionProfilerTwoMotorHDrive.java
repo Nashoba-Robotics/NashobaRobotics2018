@@ -98,7 +98,7 @@ public class OneDimensionalMotionProfilerTwoMotorHDrive extends TimerTask implem
 				accelGoal = 0;
 			}
 			
-			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
+			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta, false);
 			
 			source.setPIDSourceType(PIDSourceType.kDisplacement);
 			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;			

@@ -4,7 +4,7 @@ import edu.nr.lib.units.Distance;
 import edu.nr.robotics.Robot;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveForwardBasicCommand;
-import edu.nr.robotics.subsystems.drive.EnableOneDMotionProfile;
+import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
@@ -20,7 +20,7 @@ public class DriveOverBaselineAutoCommand extends CommandGroup {
 	public DriveOverBaselineAutoCommand() {
 
 		
-		addSequential(new ConditionalCommand(new DriveForwardBasicCommand(DISTANCE_TO_GET_OVER_BASELINE), new EnableOneDMotionProfile(DISTANCE_TO_GET_OVER_BASELINE, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
+		addSequential(new ConditionalCommand(new DriveForwardBasicCommand(DISTANCE_TO_GET_OVER_BASELINE), new EnableMotionProfile(DISTANCE_TO_GET_OVER_BASELINE, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
 			
 			@Override
 			protected boolean condition() {

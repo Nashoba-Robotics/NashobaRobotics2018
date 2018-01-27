@@ -95,7 +95,7 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 				accelGoal = 0;
 			}
 			
-			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
+			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta, false);
 			
 			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;

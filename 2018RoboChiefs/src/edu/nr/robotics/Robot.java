@@ -23,8 +23,22 @@ import edu.nr.robotics.auton.automap.StartPosMiddleSwitchRightCommand;
 import edu.nr.robotics.auton.automap.StartPosRightSwitchBothCommand;
 import edu.nr.robotics.auton.automap.StartPosRightSwitchNoneCommand;
 import edu.nr.robotics.auton.automap.StartPosRightSwitchRightCommand;
+import edu.nr.robotics.subsystems.EnabledSubsystems;
+import edu.nr.robotics.subsystems.climber.ClimberCurrentSmartDashboardCommand;
+import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerVelocitySmartDashboardCommand;
 import edu.nr.robotics.subsystems.drive.CSVSaverDisable;
 import edu.nr.robotics.subsystems.drive.CSVSaverEnable;
+import edu.nr.robotics.subsystems.drive.DriveForwardBasicSmartDashboardCommand;
+import edu.nr.robotics.subsystems.drive.DriveForwardSmartDashboardCommandH;
+import edu.nr.robotics.subsystems.drive.EnableMotionProfileSmartDashboardCommand;
+import edu.nr.robotics.subsystems.drive.TurnPIDSmartDashboardCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorDeltaPositionSmartDashboardCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorMoveBasicSmartDashboardCommand;
+import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterVelocitySmartDashboardCommand;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorDeltaPositionSmartDashboardCommand;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorMoveBasicSmartDashboardCommand;
+import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocitySmartDashboardCommand;
+import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -64,7 +78,6 @@ public class Robot extends IterativeRobot {
 		smartDashboardInit();
 		autoChooserInit();
 		OI.init();
-		LimelightNetworkTable.getInstance().lightLED(false);
 	}
 
 	public void autoChooserInit() {
@@ -102,6 +115,46 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData(new CSVSaverEnable());
 		SmartDashboard.putData(new CSVSaverDisable());
 		SmartDashboard.putNumber("Auto Wait Time", 0);
+		
+		//Climber
+		if (EnabledSubsystems.CLIMBER_SMARTDASHBOARD_DEBUG_ENABLED) {
+			SmartDashboard.putData(new ClimberCurrentSmartDashboardCommand());
+		}
+		
+		//Cube Handler
+		if (EnabledSubsystems.CUBE_HANDLER_SMARTDASHBOARD_DEBUG_ENABLED) {
+			SmartDashboard.putData(new CubeHandlerVelocitySmartDashboardCommand());
+		}
+		
+		//Drive
+		if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {
+			SmartDashboard.putData(new DriveForwardBasicSmartDashboardCommand());
+			SmartDashboard.putData(new DriveForwardSmartDashboardCommandH());
+			SmartDashboard.putData(new EnableMotionProfileSmartDashboardCommand());
+			SmartDashboard.putData(new TurnPIDSmartDashboardCommand());
+		}
+
+		//Elevator
+		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
+			SmartDashboard.putData(new ElevatorDeltaPositionSmartDashboardCommand());
+			SmartDashboard.putData(new ElevatorMoveBasicSmartDashboardCommand());
+		}
+			
+		//Elevator Shooter
+		if (EnabledSubsystems.ELEVATOR_SHOOTER_SMARTDASHBOARD_DEBUG_ENABLED) {
+			SmartDashboard.putData(new ElevatorShooterVelocitySmartDashboardCommand());
+		}
+			
+		//Intake Elevator
+		if (EnabledSubsystems.INTAKE_ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
+			SmartDashboard.putData(new IntakeElevatorDeltaPositionSmartDashboardCommand());
+			SmartDashboard.putData(new IntakeElevatorMoveBasicSmartDashboardCommand());
+		}
+
+		//Intake Rollers
+		if (EnabledSubsystems.INTAKE_ROLLERS_SMARTDASHBOARD_DEBUG_ENABLED) {
+			SmartDashboard.putData(new IntakeRollersVelocitySmartDashboardCommand());
+		}
 	}
 	
 	/**

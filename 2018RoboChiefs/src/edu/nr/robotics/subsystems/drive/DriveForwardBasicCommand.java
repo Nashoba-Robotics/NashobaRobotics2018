@@ -33,16 +33,16 @@ public class DriveForwardBasicCommand extends NRCommand {
 	
 	@Override
 	public void onExecute() {
-		double turnValue = gyro.getTurnValue(Drive.kP_thetaOneD);
-		Drive.getInstance().setMotorSpeedInPercent(percent - turnValue, percent + turnValue, 0);
+		double turnValue = gyro.getTurnValue(Drive.kP_thetaOneD, false);
+		Drive.getInstance().setMotorSpeedInPercent(percent * distance.signum() - turnValue, percent * distance.signum() + turnValue, 0);
 	}
 	
 	public void onEnd() {
-		Drive.getInstance().disable();
+		Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 	}
 	
 	@Override
 	public boolean isFinishedNR() {
-		return (Drive.getInstance().getLeftPosition().sub(initialPosition)).abs().greaterThan(distance);
+		return (Drive.getInstance().getLeftPosition().sub(initialPosition)).abs().greaterThan(distance.abs());
 	}
 }

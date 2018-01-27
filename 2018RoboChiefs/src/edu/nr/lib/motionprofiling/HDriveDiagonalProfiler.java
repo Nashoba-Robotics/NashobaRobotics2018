@@ -121,6 +121,7 @@ public class HDriveDiagonalProfiler extends TimerTask implements SmartDashboardS
 		velPointsH = trajectory.loadVelPointsH(period);
 		accelPointsH = trajectory.loadAccelPointsH(period);
 		enabled = true;
+		//System.out.println("trajectory loaded " + enabled);
 	}
 
 	public void reset() {
@@ -151,6 +152,9 @@ public class HDriveDiagonalProfiler extends TimerTask implements SmartDashboardS
 
 	@Override
 	public void run() {
+		//System.out.println("is enabled: " + enabled);
+		//System.out.println("position size: " + posPoints.size() + " vel size: " + velPoints.size() + " accel size: " + accelPoints.size() + " pos H size: " + posPointsH.size() + " vel H size: " + velPointsH.size() + " acc H size: " + accelPointsH.size());
+		
 		if (enabled && posPoints.size() > 0 && velPoints.size() > 0 && accelPoints.size() > 0 && posPointsH.size() > 0
 				&& velPointsH.size() > 0 && accelPointsH.size() > 0) {
 			double dt = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - prevTime;
@@ -176,16 +180,18 @@ public class HDriveDiagonalProfiler extends TimerTask implements SmartDashboardS
 				accelGoalH = 0;
 			}
 
-			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
+			//System.out.println("Position Goal: " + positionGoal + "    Position Goal H: " + positionGoalH);
+			
+			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta, false);
 
 			source.setPIDSourceType(PIDSourceType.kDisplacement);
-			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;
+			errorLeft = (positionGoal - source.pidGetRight() + initialPositionRight + positionGoal - source.pidGetLeft() + initialPositionLeft) / 2;
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;
 			double errorIntegralLeft = (errorLeft - errorLastLeft) * dt / 2;
 			double prelimOutputLeft = velocityGoal * kv + accelGoal * ka + errorLeft * kp + errorIntegralLeft * ki
 					+ errorDerivLeft * kd;
 			errorLastLeft = errorLeft;
-
+			
 			double outputLeft = 0;
 
 			if (prelimOutputLeft > 0.0) {
@@ -203,13 +209,13 @@ public class HDriveDiagonalProfiler extends TimerTask implements SmartDashboardS
 			}
 
 			source.setPIDSourceType(PIDSourceType.kDisplacement);
-			errorRight = positionGoal - source.pidGetRight() + initialPositionRight;
+			errorRight = (positionGoal - source.pidGetRight() + initialPositionRight + positionGoal - source.pidGetLeft() + initialPositionLeft) / 2;
 			double errorDerivRight = (errorRight - errorLastRight) / dt;
 			double errorIntegralRight = (errorRight - errorLastRight) * dt / 2;
 			double prelimOutputRight = velocityGoal * kv + accelGoal * ka + errorRight * kp + errorIntegralRight * ki 
 					+ errorDerivRight * kd;
 			errorLastRight = errorRight;
-
+			
 			double outputRight = 0;
 
 			if (prelimOutputRight > 0.0) {
@@ -235,7 +241,7 @@ public class HDriveDiagonalProfiler extends TimerTask implements SmartDashboardS
 			errorLastH = errorH;
 			
 			out.pidWrite(outputLeft, outputRight, outputH);
-
+			
 			loopIteration++;
 		}
 	}

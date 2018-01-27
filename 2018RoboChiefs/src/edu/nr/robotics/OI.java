@@ -6,6 +6,7 @@ import edu.nr.lib.joystickbuttons.ConditionalDoubleJoystickButton;
 import edu.nr.lib.joystickbuttons.ConditionalJoystickButton;
 import edu.nr.lib.joystickbuttons.DoubleJoystickButton;
 import edu.nr.lib.joystickbuttons.DoubleJoystickButton.Type;
+import edu.nr.lib.units.Angle;
 import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.multicommands.DriveToCubeCommand;
 import edu.nr.robotics.multicommands.PrepareScorePortalCommand;
@@ -16,6 +17,7 @@ import edu.nr.robotics.subsystems.cubeHandler.CubeHandler;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerStopCommand;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerVelocityCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
+import edu.nr.robotics.subsystems.drive.TurnPIDCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorPositionCommand;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
@@ -41,23 +43,25 @@ public class OI implements SmartDashboardSource {
 	private static final double JOYSTICK_DEAD_ZONE = 0.15;
 	
 	//TODO: Find button numbers
-	private static final int CANCEL_ALL_BUTTON_NUMBER = -1;
-	private static final int FOLD_INTAKE_BUTTON_NUMBER = -1;
-	private static final int INTAKE_HANDLER_HEIGHT_BUTTON_NUMBER = -1;
-	private static final int INTAKE_BOTTOM_HEIGHT_BUTTON_NUMBER = -1;
-	private static final int CUBE_HANDLER_BUTTON_NUMBER = -1;
-	private static final int INTAKE_ROLLERS_BUTTON_NUMBER = -1;
-	private static final int INTAKE_TO_ELEVATOR_BUTTON_NUMBER = -1;
-	private static final int INTAKE_TO_PORTAL_BUTTON_NUMBER = -1;
-	private static final int ELEVATOR_CLIMB_HEIGHT_BUTTON_NUMBER = -1;
-	private static final int ELEVATOR_SCALE_HEIGHT_BUTTON_NUMBER = -1;
-	private static final int ELEVATOR_SWITCH_HEIGHT_BUTTON_NUMBER = -1;
-	private static final int ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER = -1;
-	private static final int SHOOT_CUBE_BUTTON_NUMBER = -1;
-	private static final int PLACE_CUBE_BUTTON_NUMBER = -1;
-	private static final int ACQUIRE_CUBE_BUTTON_NUMBER = -1;
-	private static final int SCORE_IN_PORTAL_BUTTON_NUMBER = -1;
-	private static final int ENABLE_SCALE_STOPPING_BUTTON_NUMBER = -1;
+	private static final int CANCEL_ALL_BUTTON_NUMBER = 1;
+	private static final int FOLD_INTAKE_BUTTON_NUMBER = 5;
+	private static final int INTAKE_HANDLER_HEIGHT_BUTTON_NUMBER = 2;
+	private static final int INTAKE_BOTTOM_HEIGHT_BUTTON_NUMBER = 3;
+	private static final int CUBE_HANDLER_BUTTON_NUMBER = 4;
+	private static final int INTAKE_ROLLERS_BUTTON_NUMBER = 5;
+	private static final int INTAKE_TO_ELEVATOR_BUTTON_NUMBER = 6;
+	private static final int INTAKE_TO_PORTAL_BUTTON_NUMBER = 7;
+	private static final int ELEVATOR_CLIMB_HEIGHT_BUTTON_NUMBER = 8;
+	private static final int ELEVATOR_SCALE_HEIGHT_BUTTON_NUMBER = 9;
+	private static final int ELEVATOR_SWITCH_HEIGHT_BUTTON_NUMBER = 10;
+	private static final int ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER = 11;
+	private static final int SHOOT_CUBE_BUTTON_NUMBER = 3;
+	private static final int PLACE_CUBE_BUTTON_NUMBER = 4;
+	private static final int ACQUIRE_CUBE_BUTTON_NUMBER = 12;
+	private static final int SCORE_IN_PORTAL_BUTTON_NUMBER = 1;
+	private static final int ENABLE_SCALE_STOPPING_BUTTON_NUMBER = 1;
+	
+	private static final int HALF_TURN_BUTTON_NUMBER = 2;
 	//private static final int CLIMB_BUTTON_NUMBER = -1;
 	//TODO: Find how we want to control elevator
 	
@@ -105,11 +109,16 @@ public class OI implements SmartDashboardSource {
 		
 		new JoystickButton(driveLeft, ENABLE_SCALE_STOPPING_BUTTON_NUMBER).whenPressed(new EnableFloorSensorCommand(true));
 		new JoystickButton(driveLeft, ENABLE_SCALE_STOPPING_BUTTON_NUMBER).whenReleased(new EnableFloorSensorCommand(false));
-
+		
+		new JoystickButton(operatorLeft, SHOOT_CUBE_BUTTON_NUMBER).whenPressed(new ShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
+		new JoystickButton(operatorLeft, PLACE_CUBE_BUTTON_NUMBER).whenPressed(new ShootCommand(ElevatorShooter.VEL_PERCENT_LOW_ELEVATOR_SHOOTER));
+	
+		new JoystickButton(operatorLeft, FOLD_INTAKE_BUTTON_NUMBER).whenPressed(new IntakeElevatorPositionCommand(IntakeElevator.FOLDED_HEIGHT));	
 	}
 	
 	public void initDriveRight() {
-		new JoystickButton(driveRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenPressed(new DriveToCubeCommand());
+		
+		new JoystickButton(driveRight, HALF_TURN_BUTTON_NUMBER).whenPressed(new TurnPIDCommand(Drive.getInstance(), new Angle(180, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
 	}
 	
 	public void initOperatorLeft() {
@@ -118,9 +127,7 @@ public class OI implements SmartDashboardSource {
 		elevatorScaleHeightButton = new JoystickButton(operatorLeft, ELEVATOR_SCALE_HEIGHT_BUTTON_NUMBER);
 		elevatorSwitchHeightButton = new JoystickButton(operatorLeft, ELEVATOR_SWITCH_HEIGHT_BUTTON_NUMBER);
 		
-		new JoystickButton(operatorLeft, CANCEL_ALL_BUTTON_NUMBER).whenPressed(new CancelAllCommand());
-	
-		new JoystickButton(operatorLeft, FOLD_INTAKE_BUTTON_NUMBER).whenPressed(new IntakeElevatorPositionCommand(IntakeElevator.FOLDED_HEIGHT));	
+		
 		new JoystickButton(operatorLeft, INTAKE_HANDLER_HEIGHT_BUTTON_NUMBER).whenPressed(new IntakeElevatorPositionCommand(IntakeElevator.HANDLER_HEIGHT));
 		new JoystickButton(operatorLeft, INTAKE_BOTTOM_HEIGHT_BUTTON_NUMBER).whenPressed(new IntakeElevatorPositionCommand(IntakeElevator.INTAKE_HEIGHT));
 		
@@ -143,11 +150,13 @@ public class OI implements SmartDashboardSource {
 		new ConditionalJoystickButton(elevatorSwitchHeightButton, !intakeToElevatorButton.get()).whenPressed(new ElevatorPositionCommand(Elevator.SWITCH_HEIGHT_ELEVATOR));
 		new JoystickButton(operatorLeft, ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER).whenPressed(new ElevatorPositionCommand(Elevator.BOTTOM_HEIGHT_ELEVATOR));
 		
-		new JoystickButton(operatorLeft, SHOOT_CUBE_BUTTON_NUMBER).whenPressed(new ShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
-		new JoystickButton(operatorLeft, PLACE_CUBE_BUTTON_NUMBER).whenPressed(new ShootCommand(ElevatorShooter.VEL_PERCENT_LOW_ELEVATOR_SHOOTER));
+		
 	}
 	
 	public void initOperatorRight() {
+		new JoystickButton(operatorRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenPressed(new DriveToCubeCommand());
+		
+		new JoystickButton(operatorRight, CANCEL_ALL_BUTTON_NUMBER).whenPressed(new CancelAllCommand());
 		
 	}
 	
@@ -163,11 +172,11 @@ public class OI implements SmartDashboardSource {
 	}
 	
 	public double getArcadeMoveValue() {
-		return snapDriveJoysticks(driveLeft.getY()); //* (driveLeft.getRawButton(DRIVE_REVERSE_BUTTON_NUMBER) ? 1 : -1);
+		return -snapDriveJoysticks(driveLeft.getY()); //* (driveLeft.getRawButton(DRIVE_REVERSE_BUTTON_NUMBER) ? 1 : -1);
 	}
 
 	public double getArcadeTurnValue() {
-		return -snapDriveJoysticks(driveRight.getX()) * getTurnAdjust();
+		return -snapDriveJoysticks(driveRight.getX());
 	}
 	
 	public double getArcadeHValue() {

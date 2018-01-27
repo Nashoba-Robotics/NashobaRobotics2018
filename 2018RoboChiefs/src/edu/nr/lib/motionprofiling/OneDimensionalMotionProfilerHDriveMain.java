@@ -98,7 +98,7 @@ public class OneDimensionalMotionProfilerHDriveMain extends TimerTask implements
 			double outputH = velocityGoal * kv + accelGoal * ka + errorH * kp + errorIntegralH * ki + errorDerivH * kd;
 			errorHLast = errorH;
 						
-			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
+			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta, false);
 			
 			double outputLeft, outputRight;
 			

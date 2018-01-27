@@ -77,7 +77,7 @@ public class TwoDimensionalMotionProfilerBasic extends TimerTask implements TwoD
 			double positionGoalRight = trajectory.getRightGoalPosition(currentTimeSinceStart);
 			double accelGoalRight = trajectory.getRightGoalAccel(currentTimeSinceStart);
 
-			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta);
+			double headingAdjustment = gyroCorrection.getTurnValue(kp_theta, false);
 			
 			double errorLeft = positionGoalLeft - source.pidGetLeft() + initialPositionLeft;			
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;

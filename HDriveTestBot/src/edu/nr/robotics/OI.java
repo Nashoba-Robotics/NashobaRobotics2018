@@ -29,7 +29,7 @@ public class OI implements SmartDashboardSource {
 	
 	public SendableChooser<Drive.DriveMode> DriveMode = new SendableChooser<>();
 	
-public void smartDashboardInfo() {
+	public void smartDashboardInfo() {
 		
 	}
 		

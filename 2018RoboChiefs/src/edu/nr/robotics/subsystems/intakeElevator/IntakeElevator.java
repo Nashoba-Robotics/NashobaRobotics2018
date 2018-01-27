@@ -342,9 +342,6 @@ public class IntakeElevator extends NRSubsystem {
 			SmartDashboard.putNumber("D Vel Intake Elevator: ", D_VEL_INTAKE_ELEVATOR);
 			SmartDashboard.putNumber("Profile Vel Percent Intake Elevator: ", PROFILE_VEL_PERCENT_INTAKE_ELEVATOR);
 			SmartDashboard.putNumber("Profile Accel Percent Intake Elevator: ", PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR);
-			
-			SmartDashboard.putData("Intake Elevator Delta Pos Command: ", new IntakeElevatorDeltaPositionSmartDashboardCommand());
-			SmartDashboard.putData("Intake Elevator Move Basic Command: ", new IntakeElevatorMoveBasicSmartDashboardCommand());
 		}
 	}
 	
