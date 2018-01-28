@@ -43,7 +43,11 @@ public class StartPosRightSwitchNoneCommand extends CommandGroup {
 
 			@Override
 			protected boolean condition() {
-				return Robot.getInstance().selectedScale == Scale.none;
+				return Robot.getInstance().selectedScale == Scale.none
+						|| (Robot.getInstance().selectedScale == Scale.leftonly
+						&& FieldData.getInstance().scale == Direction.right)
+						|| (Robot.getInstance().selectedScale == Scale.rightonly)
+						&& FieldData.getInstance().scale == Direction.left;
 			}
 
 		});

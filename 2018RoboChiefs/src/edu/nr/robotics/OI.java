@@ -62,6 +62,8 @@ public class OI implements SmartDashboardSource {
 	private static final int ENABLE_SCALE_STOPPING_BUTTON_NUMBER = 1;
 	
 	private static final int HALF_TURN_BUTTON_NUMBER = 2;
+	private static final int QUARTER_TURN_LEFT_BUTTON_NUMBER = 3;
+	private static final int QUARTER_TURN_RIGHT_BUTTON_NUMBER = 4;
 	//private static final int CLIMB_BUTTON_NUMBER = -1;
 	//TODO: Find how we want to control elevator
 	
@@ -119,6 +121,8 @@ public class OI implements SmartDashboardSource {
 	public void initDriveRight() {
 		
 		new JoystickButton(driveRight, HALF_TURN_BUTTON_NUMBER).whenPressed(new TurnPIDCommand(Drive.getInstance(), new Angle(180, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
+		new JoystickButton(driveRight, QUARTER_TURN_LEFT_BUTTON_NUMBER).whenPressed(new TurnPIDCommand(Drive.getInstance(), new Angle(-90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
+		new JoystickButton(driveRight, QUARTER_TURN_RIGHT_BUTTON_NUMBER).whenPressed(new TurnPIDCommand(Drive.getInstance(), new Angle(90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
 	}
 	
 	public void initOperatorLeft() {

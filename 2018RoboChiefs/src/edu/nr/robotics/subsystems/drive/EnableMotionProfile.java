@@ -54,6 +54,7 @@ public class EnableMotionProfile extends NRCommand {
 	@Override
 	public void onEnd() {
 		Drive.getInstance().disableProfiler();
+		Drive.getInstance().disable();
 	}
 
 	@Override
