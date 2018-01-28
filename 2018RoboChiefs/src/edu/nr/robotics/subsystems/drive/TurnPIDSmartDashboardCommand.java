@@ -42,6 +42,11 @@ public class TurnPIDSmartDashboardCommand extends NRCommand {
 	}
 	
 	@Override
+	public void onEnd() {
+		Drive.getInstance().disable();
+	}
+	
+	@Override
 	public boolean isFinishedNR() {
 		
 		boolean finished;

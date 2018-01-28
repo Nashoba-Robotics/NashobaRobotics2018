@@ -51,7 +51,7 @@ public class GyroCorrection
 		
 		if (ramped) {
 			if (getAngleError().abs().lessThan(new Angle(180, Angle.Unit.DEGREE))) {
-				turn = ((-Math.cos(getAngleError().get(Angle.Unit.RADIAN) / 2) * (1 - Drive.MIN_PROFILE_TURN_PERCENT)) + 1 + Drive.MIN_PROFILE_TURN_PERCENT) * -getAngleError().signum();	
+				turn = ((-Math.cos(getAngleError().get(Angle.Unit.RADIAN) / ((Drive.DRIVE_STOP_ANGLE.get(Angle.Unit.DEGREE) / 90) * 3)) * (1 - Drive.MIN_PROFILE_TURN_PERCENT)) + 1 + Drive.MIN_PROFILE_TURN_PERCENT) * -getAngleError().signum();	
 			} else {
 				turn = -getAngleError().signum();
 			}

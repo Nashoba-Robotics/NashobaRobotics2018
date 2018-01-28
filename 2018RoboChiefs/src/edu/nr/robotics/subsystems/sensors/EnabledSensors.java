@@ -1,6 +1,7 @@
 package edu.nr.robotics.subsystems.sensors;
 
 import edu.nr.robotics.RobotMap;
+import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class EnabledSensors {
@@ -16,6 +17,6 @@ public class EnabledSensors {
 	public static boolean portalSensorEnabled = false;
 	public static volatile boolean floorSensorEnabled = false;
 	
-	public static volatile boolean floorTapeSeen = false;
+	public static Counter counter = new Counter(floorSensor);
 	
 }

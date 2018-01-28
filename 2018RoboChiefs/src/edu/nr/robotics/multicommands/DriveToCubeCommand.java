@@ -6,11 +6,14 @@ import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.network.LimelightNetworkTable;
 import edu.nr.lib.units.Angle;
+import edu.nr.lib.units.Distance;
+import edu.nr.lib.units.Time;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
 import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
-import edu.nr.robotics.subsystems.sensors.EnabledSensors;;
+import edu.nr.robotics.subsystems.sensors.EnabledSensors;
+import edu.wpi.first.wpilibj.Timer;;
 
 public class DriveToCubeCommand extends NRCommand {
 	
@@ -61,7 +64,13 @@ public class DriveToCubeCommand extends NRCommand {
 		outputLeft = -headingAdjustment;
 		outputRight = headingAdjustment;
 		
-		if (LimelightNetworkTable.getInstance().getHorizOffset().abs().lessThan(Drive.DRIVE_ANGLE_THRESHOLD)) {
+		if (LimelightNetworkTable.getInstance().getHorizOffset().abs().lessThan(Drive.DRIVE_ANGLE_THRESHOLD)
+				&& !LimelightNetworkTable.getInstance().getHorizOffset().abs().equals(Angle.ZERO) 
+				&& !hasStartedForward) {
+			hasStartedForward = true;
+		}
+		
+		if (hasStartedForward = true) {
 			outputLeft += Drive.DRIVE_TO_CUBE_PERCENT;
 			outputRight += Drive.DRIVE_TO_CUBE_PERCENT;
 		}

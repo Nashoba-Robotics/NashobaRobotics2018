@@ -9,6 +9,7 @@ public class AutoChoosers {
 	public static SendableChooser<AutoChoosers.Scale> autoScaleChooser = new SendableChooser<>();
 	public static SendableChooser<AutoChoosers.AllianceBlocks> allianceBlockChooser = new SendableChooser<>();
 	public static ProfilingMethod chosen = ProfilingMethod.basic;
+	public static boolean strafe = false;
 	
 	public enum StartPos {
 		left,
