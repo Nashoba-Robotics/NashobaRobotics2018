@@ -15,7 +15,10 @@ public class DriveOverBaselineAutoCommand extends CommandGroup {
 	 * 
 	 * It needs to be 120 but can be 288 - robotLength. 196 Gets back of robot to back of switch
 	 */
-	public static final Distance DISTANCE_TO_GET_OVER_BASELINE = new Distance(196, Distance.Unit.INCH); //TODO: Put in distance to baseline
+	public static final Distance DISTANCE_TO_GET_OVER_BASELINE = new Distance(140, Distance.Unit.INCH);
+	//196 for next to open space
+	//140 for next to scale
+	
 	
 	public DriveOverBaselineAutoCommand() {
 

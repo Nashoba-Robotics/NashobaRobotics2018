@@ -62,6 +62,8 @@ public class OI implements SmartDashboardSource {
 	private static final int ACQUIRE_CUBE_BUTTON_NUMBER = -1;
 	private static final int SCORE_IN_PORTAL_BUTTON_NUMBER = -1;
 	private static final int HALF_TURN_BUTTON_NUMBER = 2;
+	private static final int QUARTER_TURN_LEFT_BUTTON_NUMBER = 3;
+	private static final int QUARTER_TURN_RIGHT_BUTTON_NUMBER = 4;
 	
 	private static final int ENABLE_SCALE_STOPPING_BUTTON_NUMBER = -1;
 	private static final int RESET_GYRO_BUTTON_NUMBER = -1;
@@ -120,7 +122,9 @@ public class OI implements SmartDashboardSource {
 	public void initDriveRight() {
 		new JoystickButton(driveRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenPressed(new DriveToCubeCommand());
 		
-		new JoystickButton(driveLeft, HALF_TURN_BUTTON_NUMBER).whenPressed(new TurnPIDCommand(Drive.getInstance(), new Angle(180, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
+		new JoystickButton(driveRight, HALF_TURN_BUTTON_NUMBER).whenPressed(new TurnPIDCommand(Drive.getInstance(), new Angle(180, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
+		new JoystickButton(driveRight, QUARTER_TURN_LEFT_BUTTON_NUMBER).whenPressed(new TurnPIDCommand(Drive.getInstance(), new Angle(-90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
+		new JoystickButton(driveRight, QUARTER_TURN_RIGHT_BUTTON_NUMBER).whenPressed(new TurnPIDCommand(Drive.getInstance(), new Angle(90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
 	}
 	
 	public void initOperatorLeft() {

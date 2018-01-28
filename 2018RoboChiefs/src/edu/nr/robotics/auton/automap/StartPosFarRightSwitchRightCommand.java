@@ -96,7 +96,11 @@ public class StartPosFarRightSwitchRightCommand extends CommandGroup {
 			@Override
 			protected boolean condition() {
 				return FieldData.getInstance().nearSwitch == Direction.left
-						&& Robot.getInstance().selectedScale == Scale.none;
+						&& (Robot.getInstance().selectedScale == Scale.none
+								|| (Robot.getInstance().selectedScale == Scale.leftonly
+										&& FieldData.getInstance().scale == Direction.right)
+								|| (Robot.getInstance().selectedScale == Scale.rightonly
+										&& FieldData.getInstance().scale == Direction.left));
 			}
 
 		});
