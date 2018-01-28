@@ -28,6 +28,7 @@ public class StartPosLeftSwitchNoneCommand extends CommandGroup {
 
 		});
 
+		
 		addSequential(new ConditionalCommand(new StartPosLeftToScaleRightProfilingCommand()) {
 
 			@Override
@@ -39,6 +40,7 @@ public class StartPosLeftSwitchNoneCommand extends CommandGroup {
 
 		});
 
+		
 		addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()) {
 
 			@Override
@@ -52,6 +54,7 @@ public class StartPosLeftSwitchNoneCommand extends CommandGroup {
 
 		});
 
+		
 		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()) {
 
 			@Override
@@ -64,6 +67,7 @@ public class StartPosLeftSwitchNoneCommand extends CommandGroup {
 			}
 
 		});
+		
 	}
 
 }

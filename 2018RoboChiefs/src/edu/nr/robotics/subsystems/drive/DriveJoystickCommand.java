@@ -5,7 +5,6 @@ import edu.nr.lib.NRMath;
 import edu.nr.lib.commandbased.JoystickCommand;
 import edu.nr.robotics.OI;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
-import edu.nr.robotics.subsystems.sensors.RunSensors;
 
 public class DriveJoystickCommand extends JoystickCommand {
 
@@ -13,7 +12,6 @@ public class DriveJoystickCommand extends JoystickCommand {
 
 	public DriveJoystickCommand() {
 		super(Drive.getInstance());
-		new RunSensors();
 	}
 	
 	@Override
@@ -40,7 +38,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 				gyroCorrection.clearInitialValue();
 			}
 			
-			if (EnabledSensors.floorTapeSeen) {
+			if (EnabledSensors.floorSensorEnabled && EnabledSensors.counter.get() > 0) {
 				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 			} else {
 				Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier(), hValue * OI.getInstance().getDriveSpeedMultiplier());
@@ -59,7 +57,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 			left = NRMath.powWithSign(left, 3);
 			hDrive = NRMath.powWithSign(hDrive, 3);
 			
-			if (EnabledSensors.floorTapeSeen) {
+			if (EnabledSensors.floorSensorEnabled && EnabledSensors.counter.get() > 0) {
 				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 			} else {
 				Drive.getInstance().tankDrive(OI.getInstance().getDriveSpeedMultiplier() * left, -OI.getInstance().getDriveSpeedMultiplier() * right, OI.getInstance().getDriveSpeedMultiplier() * hDrive);
@@ -81,7 +79,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 				gyroCorrection.clearInitialValue();
 			}
 			
-			if (EnabledSensors.floorTapeSeen) {
+			if (EnabledSensors.floorSensorEnabled && EnabledSensors.counter.get() > 0) {
 				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 			} else {
 				Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue, cheesyHValue);

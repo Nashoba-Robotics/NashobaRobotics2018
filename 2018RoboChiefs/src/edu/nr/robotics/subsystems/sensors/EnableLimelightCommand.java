@@ -3,6 +3,7 @@ package edu.nr.robotics.subsystems.sensors;
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.network.LimelightNetworkTable;
 import edu.nr.lib.network.LimelightNetworkTable.Pipeline;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 
 public class EnableLimelightCommand extends NRCommand {
 

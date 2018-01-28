@@ -82,6 +82,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 * H Wheel diameter that accounts for gearing and slippage on the carpet
 	 */
 	public static final Distance EFFECTIVE_WHEEL_DIAMETER_H = new Distance(EFFECTIVE_WHEEL_DIAMETER_INCHES_H / ENC_TO_H_WHEEL_GEARING, Distance.Unit.INCH);	
+	
 	/**
 	 * The maximum speed of the drive base
 	 */
@@ -196,6 +197,11 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	public static final Angle DRIVE_ANGLE_THRESHOLD = new Angle(1, Angle.Unit.DEGREE);
 
+	/**
+	 * The angle the robot turns to once disabled at full turn speed. Used for GyroCorrection ramped mode
+	 */
+	public static final Angle DRIVE_STOP_ANGLE = new Angle(45, Angle.Unit.DEGREE);
+	
 	/**
 	 * Current ratings based on MAXI Circuit Breaker Model MX5
 	 */

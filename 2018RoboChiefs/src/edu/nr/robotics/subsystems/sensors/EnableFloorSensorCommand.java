@@ -6,8 +6,6 @@ import edu.nr.robotics.subsystems.drive.Drive;
 
 public class EnableFloorSensorCommand extends NRCommand {
 	
-	private static final Time FLOOR_SENSOR_RAMP_RATE = new Time(0.05, Time.Unit.SECOND);
-	
 	private boolean bool;
 	
 	public EnableFloorSensorCommand(boolean bool) {
@@ -16,13 +14,8 @@ public class EnableFloorSensorCommand extends NRCommand {
 
 	@Override
 	protected void onStart() {
-		EnabledSensors.floorTapeSeen = false;
 		EnabledSensors.floorSensorEnabled = bool;
-		if (bool) {
-			Drive.getInstance().setVoltageRamp(FLOOR_SENSOR_RAMP_RATE);
-		} else {
-			Drive.getInstance().setVoltageRamp(Drive.DRIVE_RAMP_RATE);
-		}
+		EnabledSensors.counter.reset();
 	}
 	
 	@Override

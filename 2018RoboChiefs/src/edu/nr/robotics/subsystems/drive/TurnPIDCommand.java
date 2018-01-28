@@ -4,6 +4,8 @@ import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.interfaces.TriplePIDOutput;
 import edu.nr.lib.units.Angle;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TurnPIDCommand extends NRCommand {
 	
@@ -13,6 +15,8 @@ public class TurnPIDCommand extends NRCommand {
 	private GyroCorrection gyro;
 	private double turnPercent;
 	private boolean exact;
+	
+	double startTime;
 	
 	public TurnPIDCommand(TriplePIDOutput out, Angle angleToTurn, double turnPercent, boolean exact) {
 		super(Drive.getInstance());
@@ -27,10 +31,11 @@ public class TurnPIDCommand extends NRCommand {
 		gyro = new GyroCorrection(angleToTurn, turnPercent, Drive.getInstance());
 		out.pidWrite(0, 0, 0);
 		initialAngle = gyro.getAngleError().sub(angleToTurn);
+		startTime = Timer.getFPGATimestamp();
 	}
 	
 	@Override
-	public void onExecute() {
+	public void onExecute() {		
 		
 		double headingAdjustment = gyro.getTurnValue(Drive.kP_thetaOneD, true);
 		if (Math.abs(headingAdjustment) < Drive.MIN_PROFILE_TURN_PERCENT) {
@@ -43,7 +48,12 @@ public class TurnPIDCommand extends NRCommand {
 		outputRight = headingAdjustment;
 		
 		out.pidWrite(outputLeft, outputRight, 0);
-		
+				
+	}
+	
+	@Override
+	public void onEnd() {
+		Drive.getInstance().disable();
 	}
 	
 	@Override

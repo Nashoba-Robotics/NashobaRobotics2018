@@ -4,16 +4,19 @@ import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.network.LimelightNetworkTable;
 import edu.nr.lib.units.Angle;
+import edu.nr.lib.units.Distance;
+import edu.nr.lib.units.Time;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
+import edu.wpi.first.wpilibj.Timer;
 
 public class DriveToCubeCommand extends NRCommand {
 	
-	public Angle STOP_LIMELIGHT_TRACKING_ANGLE = new Angle(-10, Angle.Unit.DEGREE);
+	public Angle STOP_LIMELIGHT_TRACKING_ANGLE = new Angle(-14, Angle.Unit.DEGREE);
 	
 	private boolean stoppedTracking = false;
 	private boolean hasStartedForward = false;
-	
+		
 	private GyroCorrection gyro;
 	
 	public DriveToCubeCommand() {
@@ -81,14 +84,14 @@ public class DriveToCubeCommand extends NRCommand {
 
 	@Override
 	protected void onEnd() {
-		new EnableLimelightCommand(false);
 		Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
+		new EnableLimelightCommand(false);
 		//IntakeRollers.getInstance().setMotorSpeedPercent(0);
 	}
 	
 	@Override
 	protected boolean isFinishedNR() {
 		//return !EnabledSensors.intakeSensor.get();
-		return false;
+		return stoppedTracking;
 	}
 }

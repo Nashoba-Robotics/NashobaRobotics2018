@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.command.ConditionalCommand;
 public class AutoScaleLoopCommand extends CommandGroup {
 
 	public AutoScaleLoopCommand() {
+		
 		addSequential(new ConditionalCommand(new ScaleToBlockProfilingCommand(1)) {
 
 			@Override
