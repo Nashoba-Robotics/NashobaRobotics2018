@@ -9,7 +9,7 @@ import edu.nr.lib.joystickbuttons.DoubleJoystickButton;
 import edu.nr.lib.joystickbuttons.DoubleJoystickButton.Type;
 import edu.nr.lib.units.Angle;
 import edu.nr.robotics.FieldData.Direction;
-import edu.nr.robotics.multicommands.DriveToCubeCommand;
+import edu.nr.robotics.multicommands.DriveToCubeCommandAdvanced;
 import edu.nr.robotics.multicommands.PrepareScorePortalCommand;
 import edu.nr.robotics.multicommands.PrepareScoreScaleCommand;
 import edu.nr.robotics.multicommands.PrepareScoreSwitchCommand;
@@ -120,7 +120,7 @@ public class OI implements SmartDashboardSource {
 	}
 	
 	public void initDriveRight() {
-		new JoystickButton(driveRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenPressed(new DriveToCubeCommand());
+		new JoystickButton(driveRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenPressed(new DriveToCubeCommandAdvanced());
 		
 		new JoystickButton(driveRight, HALF_TURN_BUTTON_NUMBER).whenPressed(new TurnPIDCommand(Drive.getInstance(), new Angle(180, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
 		new JoystickButton(driveRight, QUARTER_TURN_LEFT_BUTTON_NUMBER).whenPressed(new TurnPIDCommand(Drive.getInstance(), new Angle(-90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));

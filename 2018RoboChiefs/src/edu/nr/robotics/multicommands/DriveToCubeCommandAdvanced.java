@@ -15,7 +15,7 @@ import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.wpi.first.wpilibj.Timer;;
 
-public class DriveToCubeCommand extends NRCommand {
+public class DriveToCubeCommandAdvanced extends NRCommand {
 	
 	public Angle STOP_LIMELIGHT_TRACKING_ANGLE = Angle.ZERO; //TODO; Find STOP_LIMELIGHT_TRACKING_ANGLE
 	
@@ -24,7 +24,7 @@ public class DriveToCubeCommand extends NRCommand {
 	
 	private GyroCorrection gyro;
 	
-	public DriveToCubeCommand() {
+	public DriveToCubeCommandAdvanced() {
 		super(new NRSubsystem[] {Drive.getInstance(), IntakeElevator.getInstance()});
 		gyro = new GyroCorrection();
 	}
@@ -49,6 +49,7 @@ public class DriveToCubeCommand extends NRCommand {
 		}
 		else if (LimelightNetworkTable.getInstance().getVertOffsetAngle().lessThan(STOP_LIMELIGHT_TRACKING_ANGLE)) {
 			stoppedTracking = true;
+			gyro.reset();
 			headingAdjustment = gyro.getTurnValue(Drive.kP_thetaOneD, false);
 		}
 		else {

@@ -82,20 +82,20 @@ public class Robot extends IterativeRobot {
 
 	public void autoChooserInit() {
 		
-		AutoChoosers.autoStartPosChooser.addDefault("Left", StartPos.left);
-		AutoChoosers.autoStartPosChooser.addObject("Middle", StartPos.middle);
-		AutoChoosers.autoStartPosChooser.addObject("Right", StartPos.right);
-		AutoChoosers.autoStartPosChooser.addObject("Far Right", StartPos.farRight);
+		AutoChoosers.autoStartPosChooser.addDefault("Start Pos Left", StartPos.left);
+		AutoChoosers.autoStartPosChooser.addObject("Start Pos Middle", StartPos.middle);
+		AutoChoosers.autoStartPosChooser.addObject("Start Pos Right", StartPos.right);
+		AutoChoosers.autoStartPosChooser.addObject("Start Pos Far Right", StartPos.farRight);
 		
-		AutoChoosers.autoSwitchChooser.addDefault("None", Switch.none);
-		AutoChoosers.autoSwitchChooser.addObject("Left Only", Switch.leftOnly);
-		AutoChoosers.autoSwitchChooser.addObject("Right Only", Switch.rightOnly);
-		AutoChoosers.autoSwitchChooser.addObject("Both", Switch.both);
+		AutoChoosers.autoSwitchChooser.addDefault("Switch None", Switch.none);
+		AutoChoosers.autoSwitchChooser.addObject("Switch Left Only", Switch.leftOnly);
+		AutoChoosers.autoSwitchChooser.addObject("Switch Right Only", Switch.rightOnly);
+		AutoChoosers.autoSwitchChooser.addObject("Switch Both", Switch.both);
 		
-		AutoChoosers.autoScaleChooser.addDefault("Both", Scale.both);
-		AutoChoosers.autoScaleChooser.addObject("Left Only", Scale.leftonly);
-		AutoChoosers.autoScaleChooser.addObject("Right Only", Scale.rightonly);
-		AutoChoosers.autoScaleChooser.addObject("No Scale", Scale.none);
+		AutoChoosers.autoScaleChooser.addDefault("Scale None", Scale.none);
+		AutoChoosers.autoScaleChooser.addObject("Scale Left Only", Scale.leftonly);
+		AutoChoosers.autoScaleChooser.addObject("Scale Right Only", Scale.rightonly);
+		AutoChoosers.autoScaleChooser.addObject("Scale Both", Scale.both);
 		
 		AutoChoosers.allianceBlockChooser.addDefault("None", AllianceBlocks.none);
 		AutoChoosers.allianceBlockChooser.addObject("Block 1", AllianceBlocks.block1);
