@@ -28,7 +28,7 @@ public class GyroCorrection
 		this(Angle.ZERO);
 	}
 	
-	public GyroCorrection(Angle angle, double MAX_ANGLE_CORRECTION_SPEED, Drive drive) {
+	public GyroCorrection(Angle angle, double MAX_ANGLE_CORRECTION_SPEED) {
 		this(angle);
 		this.MAX_ANGLE_CORRECTION_SPEED = MAX_ANGLE_CORRECTION_SPEED;
 		

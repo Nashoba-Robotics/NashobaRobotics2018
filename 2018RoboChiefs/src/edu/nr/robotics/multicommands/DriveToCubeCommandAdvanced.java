@@ -53,8 +53,10 @@ public class DriveToCubeCommandAdvanced extends NRCommand {
 			headingAdjustment = gyro.getTurnValue(Drive.kP_thetaOneD, false);
 		}
 		else {
-			headingAdjustment = NRMath.powWithSign(-LimelightNetworkTable.getInstance().getHorizOffset().get(Angle.Unit.DEGREE) 
-					* Drive.kP_thetaOneD, 2);
+			headingAdjustment = ((-Math.cos(LimelightNetworkTable.getInstance().getHorizOffset().get(Angle.Unit.RADIAN) 
+					/ ((Drive.DRIVE_STOP_ANGLE.get(Angle.Unit.DEGREE) / 90) * 3)) 
+					* (1 - Drive.MIN_PROFILE_TURN_PERCENT)) + 1 + Drive.MIN_PROFILE_TURN_PERCENT) 
+					* -LimelightNetworkTable.getInstance().getHorizOffset().signum();
 			if (Math.abs(headingAdjustment) < Drive.MIN_PROFILE_TURN_PERCENT) {
 				headingAdjustment = Drive.MIN_PROFILE_TURN_PERCENT * Math.signum(headingAdjustment);
 			}

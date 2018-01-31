@@ -203,7 +203,7 @@ public class Robot extends IterativeRobot {
 		
 		autonomousCommand = getAutoCommand();
 
-		System.out.println("Initializing auto command: " + autonomousCommand);
+		System.out.println("Start Pos: " + selectedStartPos + " Switch: " + selectedSwitch + " Scale: " + selectedScale);
 		
 		// schedule the autonomous command (example)
 		if (autonomousCommand != null)
@@ -221,9 +221,9 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		
-		LimelightNetworkTable.getInstance().lightLED(false);
-
 		new CancelAllCommand().start();
+		
+		LimelightNetworkTable.getInstance().lightLED(false);
 	}
 
 	/**

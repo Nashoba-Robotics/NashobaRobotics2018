@@ -16,7 +16,7 @@ public class StartPosFarRightToScaleLeftProfilingCommand extends CommandGroup {
 		
 		addSequential(new TurnPIDCommand(Drive.getInstance(), new Angle(-90,Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, true));
 		
-		addSequential(new EnableMotionProfile(FieldMeasurements.PLATFORM_ZONE_WIDTH, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+		addSequential(new EnableMotionProfile(FieldMeasurements.PLATFORM_ZONE_WIDTH_SHORT, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 		
 		addSequential(new TurnPIDCommand(Drive.getInstance(), new Angle(180, Angle.Unit.DEGREE).sub(FieldMeasurements.PLATFORM_ZONE_TO_SCALE), Drive.MAX_PROFILE_TURN_PERCENT, true));
 		

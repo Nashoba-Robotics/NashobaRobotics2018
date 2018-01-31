@@ -28,7 +28,7 @@ public class TurnPIDCommand extends NRCommand {
 	
 	@Override
 	public void onStart() {
-		gyro = new GyroCorrection(angleToTurn, turnPercent, Drive.getInstance());
+		gyro = new GyroCorrection(angleToTurn, turnPercent);
 		out.pidWrite(0, 0, 0);
 		initialAngle = gyro.getAngleError().sub(angleToTurn);
 	}

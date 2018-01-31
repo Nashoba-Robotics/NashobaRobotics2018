@@ -220,6 +220,16 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	private static final int PEAK_DRIVE_CURRENT_DURATION = 1000; //In milliseconds
 	private static final int CONTINUOUS_CURRENT_LIMIT = 40; //In amps
 	
+	/**
+	 * When Driving into an object, the current when the driving stops
+	 */
+	public static final double SWITCH_CURRENT_LIMIT = 0; //TODO: Find Switch Current Limit
+	
+	/**
+	 * the drive percent while driving into the switch
+	 */
+	public static final double SWITCH_DRIVE_PERCENT = 0; //TODO: determine switch drive percent
+	
 	public static final VelocityMeasPeriod VELOCITY_MEASUREMENT_PERIOD_DRIVE = VelocityMeasPeriod.Period_10Ms; //TODO: Find measurement period of velocity
 	public static final int VELOCITY_MEASUREMENT_WINDOW_DRIVE = 32; //TODO: Find this
 	

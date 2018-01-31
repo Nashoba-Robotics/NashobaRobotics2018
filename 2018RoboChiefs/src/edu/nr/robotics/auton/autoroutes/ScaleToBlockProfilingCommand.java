@@ -6,6 +6,7 @@ import edu.nr.robotics.multicommands.DriveToCubeCommandAdvanced;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnPIDCommand;
+import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
@@ -13,11 +14,11 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 
 	public ScaleToBlockProfilingCommand(int block) {
 
-		addSequential(new EnableMotionProfile(FieldMeasurements.PLATFORM_ZONE_TO_SCALE_DIAGONAL, Distance.ZERO,
+		addSequential(new EnableMotionProfile(FieldMeasurements.PLATFORM_ZONE_TO_SCALE_DIAGONAL.negate(), Distance.ZERO,
 				Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 
 		addSequential(new ConditionalCommand(new TurnPIDCommand(Drive.getInstance(),
-				(FieldMeasurements.PLATFORM_ZONE_TO_SCALE.add(FieldMeasurements.PLATFORM_ZONE_TO_CUBE)).negate(),
+				(FieldMeasurements.PLATFORM_ZONE_TO_SCALE.add(FieldMeasurements.PLATFORM_ZONE_TO_CUBE)),
 				Drive.MAX_PROFILE_TURN_PERCENT, true)) {
 
 			@Override
@@ -26,6 +27,8 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 			}
 
 		});
+		
+		addSequential(new EnableLimelightCommand(true));
 		
 		addSequential(new ConditionalCommand(new TurnPIDCommand(Drive.getInstance(),
 				FieldMeasurements.PLATFORM_ZONE_TO_SCALE.add(FieldMeasurements.PLATFORM_ZONE_TO_CUBE).negate(),
@@ -46,7 +49,6 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 			}
 			
 		});
-
 		
 		addSequential(new ConditionalCommand(new TurnPIDCommand(Drive.getInstance(), FieldMeasurements.PLATFORM_ZONE_TO_SCALE.negate(), Drive.MAX_PROFILE_TURN_PERCENT, true)) {
 
@@ -58,6 +60,8 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 		});
 				
 		addSequential(new DriveToCubeCommandAdvanced());
+		
+		addSequential(new EnableLimelightCommand(false));
 	}
 
 }
