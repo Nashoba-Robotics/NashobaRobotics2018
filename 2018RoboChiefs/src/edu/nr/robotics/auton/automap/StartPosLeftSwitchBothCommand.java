@@ -28,6 +28,7 @@ public class StartPosLeftSwitchBothCommand extends CommandGroup {
 
 		});
 
+		
 		addSequential(new ConditionalCommand(new SwitchLeftToBlockProfilingCommand()) {
 
 			@Override
@@ -113,6 +114,7 @@ public class StartPosLeftSwitchBothCommand extends CommandGroup {
 
 		});
 
+		
 		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()) {
 
 			@Override

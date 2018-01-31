@@ -65,6 +65,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 			break;
 			
 		case cheesyDrive:
+			
 			double cheesyMoveValue = OI.getInstance().getArcadeMoveValue();
 			double cheesyRotateValue = OI.getInstance().getArcadeTurnValue();
 			double cheesyHValue = OI.getInstance().getArcadeHValue();

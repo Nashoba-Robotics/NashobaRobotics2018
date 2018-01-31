@@ -19,7 +19,7 @@ public class TurnPIDSmartDashboardCommand extends NRCommand {
 	
 	@Override
 	public void onStart() {
-		gyro = new GyroCorrection(Drive.angleToTurn, Drive.drivePercent, Drive.getInstance());
+		gyro = new GyroCorrection(Drive.angleToTurn, Drive.drivePercent);
 		out.pidWrite(0, 0, 0);
 		initialAngle = gyro.getAngleError().sub(Drive.angleToTurn);
 	}

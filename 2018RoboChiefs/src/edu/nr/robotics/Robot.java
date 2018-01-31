@@ -7,11 +7,14 @@ import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.interfaces.Periodic;
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.lib.network.LimelightNetworkTable;
+import edu.nr.lib.units.Angle;
+import edu.nr.lib.units.Distance;
 import edu.nr.robotics.auton.AutoChoosers;
 import edu.nr.robotics.auton.AutoChoosers.AllianceBlocks;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.AutoChoosers.StartPos;
 import edu.nr.robotics.auton.AutoChoosers.Switch;
+import edu.nr.robotics.auton.FieldMeasurements;
 import edu.nr.robotics.auton.automap.StartPosFarRightSwitchNoneCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchBothCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchLeftCommand;
@@ -28,6 +31,8 @@ import edu.nr.robotics.subsystems.climber.ClimberCurrentSmartDashboardCommand;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerVelocitySmartDashboardCommand;
 import edu.nr.robotics.subsystems.drive.CSVSaverDisable;
 import edu.nr.robotics.subsystems.drive.CSVSaverEnable;
+import edu.nr.robotics.subsystems.drive.Drive;
+import edu.nr.robotics.subsystems.drive.DriveCurrentCommand;
 import edu.nr.robotics.subsystems.drive.DriveForwardBasicSmartDashboardCommand;
 import edu.nr.robotics.subsystems.drive.DriveForwardSmartDashboardCommandH;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfileSmartDashboardCommand;
@@ -82,27 +87,27 @@ public class Robot extends IterativeRobot {
 
 	public void autoChooserInit() {
 		
-		AutoChoosers.autoStartPosChooser.addDefault("Left", StartPos.left);
-		AutoChoosers.autoStartPosChooser.addObject("Middle", StartPos.middle);
-		AutoChoosers.autoStartPosChooser.addObject("Right", StartPos.right);
-		AutoChoosers.autoStartPosChooser.addObject("Far Right", StartPos.farRight);
+		AutoChoosers.autoStartPosChooser.addDefault("Start Pos Left", StartPos.left);
+		AutoChoosers.autoStartPosChooser.addObject("Start Pos Middle", StartPos.middle);
+		AutoChoosers.autoStartPosChooser.addObject("Start Pos Right", StartPos.right);
+		AutoChoosers.autoStartPosChooser.addObject("Start Pos Far Right", StartPos.farRight);
 		
-		AutoChoosers.autoSwitchChooser.addDefault("Left Only", Switch.leftOnly);
-		AutoChoosers.autoSwitchChooser.addObject("RightOnly", Switch.rightOnly);
-		AutoChoosers.autoSwitchChooser.addObject("None", Switch.none);
-		AutoChoosers.autoSwitchChooser.addObject("Both", Switch.both);
+		AutoChoosers.autoSwitchChooser.addDefault("Switch None", Switch.none);
+		AutoChoosers.autoSwitchChooser.addObject("Switch Left Only", Switch.leftOnly);
+		AutoChoosers.autoSwitchChooser.addObject("Switch Right Only", Switch.rightOnly);
+		AutoChoosers.autoSwitchChooser.addObject("Switch Both", Switch.both);
 		
-		AutoChoosers.autoScaleChooser.addDefault("Both", Scale.both);
-		AutoChoosers.autoScaleChooser.addObject("Left Only", Scale.leftonly);
-		AutoChoosers.autoScaleChooser.addObject("Right Only", Scale.rightonly);
-		AutoChoosers.autoScaleChooser.addObject("No Scale", Scale.none);
+		AutoChoosers.autoScaleChooser.addDefault("Scale None", Scale.none);
+		AutoChoosers.autoScaleChooser.addObject("Scale Left Only", Scale.leftonly);
+		AutoChoosers.autoScaleChooser.addObject("Scale Right Only", Scale.rightonly);
+		AutoChoosers.autoScaleChooser.addObject("Scale Both", Scale.both);
 		
 		AutoChoosers.allianceBlockChooser.addDefault("None", AllianceBlocks.none);
 		AutoChoosers.allianceBlockChooser.addObject("Block 1", AllianceBlocks.block1);
 		AutoChoosers.allianceBlockChooser.addObject("Block 6", AllianceBlocks.block6);
 		AutoChoosers.allianceBlockChooser.addObject("Both", AllianceBlocks.both);
 		
-		SmartDashboard.putData("Auto StartPosition", AutoChoosers.autoStartPosChooser);
+		SmartDashboard.putData("Auto Start Position", AutoChoosers.autoStartPosChooser);
 		SmartDashboard.putData("Auto Switch", AutoChoosers.autoSwitchChooser);
 		SmartDashboard.putData("Auto Scale", AutoChoosers.autoScaleChooser);
 		SmartDashboard.putData("Alliance Partner Blocks", AutoChoosers.allianceBlockChooser);
@@ -197,11 +202,10 @@ public class Robot extends IterativeRobot {
 		selectedScale = AutoChoosers.autoScaleChooser.getSelected();
 		selectedBlocks = AutoChoosers.allianceBlockChooser.getSelected();
 		autoWaitTime = SmartDashboard.getNumber("Auto Wait Time", autoWaitTime);
-		
-		
+				
 		autonomousCommand = getAutoCommand();
 
-		System.out.println("Initializing auto command: " + autonomousCommand);
+		System.out.println("Start Pos: " + selectedStartPos + " Switch: " + selectedSwitch + " Scale: " + selectedScale);
 		
 		// schedule the autonomous command (example)
 		if (autonomousCommand != null)
@@ -219,9 +223,11 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopInit() {
 		
+		new CancelAllCommand().start();
+		
 		LimelightNetworkTable.getInstance().lightLED(false);
 
-		new CancelAllCommand().start();
+		
 	}
 
 	/**

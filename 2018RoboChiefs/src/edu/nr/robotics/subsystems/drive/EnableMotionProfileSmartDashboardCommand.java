@@ -45,7 +45,7 @@ public class EnableMotionProfileSmartDashboardCommand extends NRCommand {
 	@Override
 	public void onEnd() {
 		Drive.getInstance().disableProfiler();
-		Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
+		Drive.getInstance().disable();
 	}
 
 	@Override

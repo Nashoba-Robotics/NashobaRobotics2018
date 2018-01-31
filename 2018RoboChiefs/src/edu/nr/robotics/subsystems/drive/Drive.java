@@ -154,12 +154,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Percent driving during profiling
 	 */
-	public static final double PROFILE_DRIVE_PERCENT = 0.9;
+	public static final double PROFILE_DRIVE_PERCENT = 0.95;
 	
 	/**
 	 * Percent accelerating during profiling
 	 */
-	public static final double ACCEL_PERCENT = 0.7;
+	public static final double ACCEL_PERCENT = 0.9;
 	
 	/**
 	 * Max and min speed of turn during
@@ -208,6 +208,16 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	private static final int PEAK_DRIVE_CURRENT = 80; //In amps
 	private static final int PEAK_DRIVE_CURRENT_DURATION = 1000; //In milliseconds
 	private static final int CONTINUOUS_CURRENT_LIMIT = 40; //In amps
+	
+	/**
+	 * When driving into the switch, the current when the driving stops. In amps.
+	 */
+	public static final double SWITCH_CURRENT_LIMIT = 30;
+	
+	/**
+	 * The percent at which to drive into the switch
+	 */
+	public static final double SWITCH_DRIVE_PERCENT = 0.2;
 	
 	public static final VelocityMeasPeriod VELOCITY_MEASUREMENT_PERIOD_DRIVE = VelocityMeasPeriod.Period_10Ms;
 	public static final int VELOCITY_MEASUREMENT_WINDOW_DRIVE = 32;

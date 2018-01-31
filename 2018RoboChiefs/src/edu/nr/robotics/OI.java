@@ -8,7 +8,7 @@ import edu.nr.lib.joystickbuttons.DoubleJoystickButton;
 import edu.nr.lib.joystickbuttons.DoubleJoystickButton.Type;
 import edu.nr.lib.units.Angle;
 import edu.nr.robotics.FieldData.Direction;
-import edu.nr.robotics.multicommands.DriveToCubeCommand;
+import edu.nr.robotics.multicommands.DriveToCubeCommandAdvanced;
 import edu.nr.robotics.multicommands.PrepareScorePortalCommand;
 import edu.nr.robotics.multicommands.PrepareScoreScaleCommand;
 import edu.nr.robotics.multicommands.PrepareScoreSwitchCommand;
@@ -158,7 +158,7 @@ public class OI implements SmartDashboardSource {
 	}
 	
 	public void initOperatorRight() {
-		new JoystickButton(operatorRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenPressed(new DriveToCubeCommand());
+		new JoystickButton(operatorRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenPressed(new DriveToCubeCommandAdvanced());
 		
 		new JoystickButton(operatorRight, CANCEL_ALL_BUTTON_NUMBER).whenPressed(new CancelAllCommand());
 		

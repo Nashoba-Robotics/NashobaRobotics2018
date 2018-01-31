@@ -1,6 +1,5 @@
 package edu.nr.lib.gyro;
 
-import edu.nr.lib.NRMath;
 import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.units.Angle;
 import edu.nr.robotics.subsystems.drive.Drive;
@@ -29,7 +28,7 @@ public class GyroCorrection
 		this(Angle.ZERO);
 	}
 	
-	public GyroCorrection(Angle angle, double MAX_ANGLE_CORRECTION_SPEED, Drive drive) {
+	public GyroCorrection(Angle angle, double MAX_ANGLE_CORRECTION_SPEED) {
 		this(angle);
 		this.MAX_ANGLE_CORRECTION_SPEED = MAX_ANGLE_CORRECTION_SPEED;
 		
