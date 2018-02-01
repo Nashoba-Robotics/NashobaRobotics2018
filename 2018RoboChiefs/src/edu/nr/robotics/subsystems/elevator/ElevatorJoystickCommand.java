@@ -17,12 +17,15 @@ public class ElevatorJoystickCommand extends JoystickCommand {
 
 	@Override
 	protected void onExecute() {
-		
+		Elevator.getInstance().setMotorSpeedPercent(OI.getInstance().getElevatorJoystickValue());
+		if (!OI.getInstance().isElevatorNonZero()) {
+			Elevator.getInstance().setPosition(Elevator.getInstance().getPosition());
+		}
 	}
 	
 	@Override
 	protected boolean shouldSwitchToJoystick() {
-		return false;
+		return OI.getInstance().isElevatorNonZero();
 	}
 
 	@Override
