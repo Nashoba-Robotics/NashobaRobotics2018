@@ -13,7 +13,9 @@ import edu.nr.robotics.auton.AutoChoosers.AllianceBlocks;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.AutoChoosers.StartPos;
 import edu.nr.robotics.auton.AutoChoosers.Switch;
+import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
 import edu.nr.robotics.auton.automap.StartPosFarRightSwitchNoneCommand;
+import edu.nr.robotics.auton.automap.StartPosFarRightSwitchRightCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchBothCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchLeftCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchNoneCommand;
@@ -252,13 +254,13 @@ public class Robot extends IterativeRobot {
 	
 	public Command getAutoCommand() {
 		if (selectedStartPos == AutoChoosers.StartPos.left) {
-			if (selectedSwitch == AutoChoosers.Switch.none) {
+			if (selectedSwitch == AutoChoosers.Switch.none || selectedSwitch == AutoChoosers.Switch.rightOnly) {
 				return (new StartPosLeftSwitchNoneCommand());
 			} else if (selectedSwitch == AutoChoosers.Switch.leftOnly) {
 				return new StartPosLeftSwitchLeftCommand();			
 			} else if (selectedSwitch == AutoChoosers.Switch.both) {
 				return new StartPosLeftSwitchBothCommand();		
-			}	
+			}
 		} else if (selectedStartPos == AutoChoosers.StartPos.middle) {
 			if (selectedSwitch == AutoChoosers.Switch.none) {
 				return (new StartPosMiddleSwitchNoneCommand());		
@@ -270,7 +272,7 @@ public class Robot extends IterativeRobot {
 				return (new StartPosMiddleSwitchBothCommand());
 			}
 		} else if (selectedStartPos == AutoChoosers.StartPos.right) {
-			if (selectedSwitch == AutoChoosers.Switch.none) {
+			if (selectedSwitch == AutoChoosers.Switch.none || selectedSwitch == AutoChoosers.Switch.leftOnly) {
 				return (new StartPosRightSwitchNoneCommand());	
 			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly){
 				return (new StartPosRightSwitchRightCommand());
@@ -278,11 +280,11 @@ public class Robot extends IterativeRobot {
 				return (new StartPosRightSwitchBothCommand());
 			}
 		} else if (selectedStartPos == AutoChoosers.StartPos.farRight) {
-			if (selectedSwitch == AutoChoosers.Switch.none) {
+			if (selectedSwitch == AutoChoosers.Switch.none || selectedSwitch == AutoChoosers.Switch.leftOnly) {
 				return (new StartPosFarRightSwitchNoneCommand());
-			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly){
-				return (new StartPosRightSwitchRightCommand());
+			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly || selectedSwitch == AutoChoosers.Switch.both){
+				return (new StartPosFarRightSwitchRightCommand());
 			}
-		} return new DoNothingCommand();
+		} return new DriveOverBaselineAutoCommand();
 	}
 }

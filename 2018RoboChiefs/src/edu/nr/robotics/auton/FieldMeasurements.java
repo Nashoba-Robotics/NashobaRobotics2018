@@ -45,19 +45,19 @@ public class FieldMeasurements {
 	
 	public static final Distance PLATFORM_ZONE_WIDTH_START_POS = FIELD_WIDTH.sub(BEN_FOOT_LENGTH.mul(2)).sub(ROBOT_WIDTH);
 
-	public static final Distance START_POS_TO_CUBE_2_Y = new Distance(113, Distance.Unit.INCH).sub(PIVOT_POINT_FIELD_EDGE_Y);
-	public static final Distance START_POS_TO_CUBE_3_Y = new Distance(142, Distance.Unit.INCH).sub(PIVOT_POINT_FIELD_EDGE_Y);
+	public static final Distance PIVOT_POINT_TO_CUBE_2_Y = new Distance(113, Distance.Unit.INCH).sub(PIVOT_POINT_FIELD_EDGE_Y);
+	public static final Distance PIVOT_POINT_TO_CUBE_3_Y = new Distance(142, Distance.Unit.INCH).sub(PIVOT_POINT_FIELD_EDGE_Y);
 	
 	public static final Distance CUBE_1_TO_PIVOT_POINT_DIAGONAL = NRMath.hypot(
 			SWITCH_EDGE_TO_FIELD_EDGE_Y.sub(PIVOT_POINT_FIELD_EDGE_Y).add(BLOCK_WIDTH.mul(0.5)),
 			new Distance(45, Distance.Unit.INCH).add(BLOCK_WIDTH.mul(0.5)));
 	
 	public static final Distance CUBE_2_TO_PIVOT_POINT_DIAGONAL = NRMath.hypot(
-			START_POS_TO_CUBE_2_Y.sub(PIVOT_POINT_FIELD_EDGE_Y).add(BLOCK_WIDTH.mul(0.5)),
+			PIVOT_POINT_TO_CUBE_2_Y.add(BLOCK_WIDTH.mul(0.5)),
 			new Distance(45, Distance.Unit.INCH).add(BLOCK_WIDTH.mul(0.5)));
 	
 	public static final Distance CUBE_3_TO_PIVOT_POINT_DIAGONAL = NRMath.hypot(
-			START_POS_TO_CUBE_3_Y.sub(PIVOT_POINT_FIELD_EDGE_Y).add(BLOCK_WIDTH.mul(0.5)),
+			PIVOT_POINT_TO_CUBE_3_Y.add(BLOCK_WIDTH.mul(0.5)),
 			new Distance(45, Distance.Unit.INCH).add(BLOCK_WIDTH.mul(0.5)));
 
 	//Distances For Middle Start Position
@@ -90,11 +90,11 @@ public class FieldMeasurements {
 			Angle.Unit.RADIAN);
 	public static final Angle PIVOT_POINT_TO_CUBE_2 = new Angle(
 			Math.atan((new Distance(45, Distance.Unit.INCH).add(BLOCK_WIDTH.mul(0.5)))
-					.div((START_POS_TO_CUBE_2_Y.sub(PIVOT_POINT_FIELD_EDGE_Y).add(BLOCK_WIDTH.mul(0.5))))),
+					.div((PIVOT_POINT_TO_CUBE_2_Y.add(BLOCK_WIDTH.mul(0.5))))),
 			Angle.Unit.RADIAN);
 	public static final Angle PIVOT_POINT_TO_CUBE_3 = new Angle(
 			Math.atan((new Distance(45, Distance.Unit.INCH).add(BLOCK_WIDTH.mul(0.5))
-					.div((START_POS_TO_CUBE_3_Y.sub(PIVOT_POINT_FIELD_EDGE_Y).add(BLOCK_WIDTH.mul(0.5)))))),
+					.div((PIVOT_POINT_TO_CUBE_3_Y.add(BLOCK_WIDTH.mul(0.5)))))),
 			Angle.Unit.RADIAN);
 
 	// Platform Zone Y direction to diagonal of scale

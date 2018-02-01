@@ -4,6 +4,7 @@ import edu.nr.robotics.FieldData;
 import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.Robot;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
+import edu.nr.robotics.auton.AutoChoosers;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
 import edu.nr.robotics.auton.autoroutes.BlockToScaleProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosMiddleToScaleLeftProfilingCommand;
@@ -117,6 +118,23 @@ public class StartPosMiddleSwitchLeftCommand extends CommandGroup {
 			}
 
 		});
+		
+		addSequential(new ConditionalCommand(new AutoSwitchLoopCommand()) {
+
+			@Override
+			protected boolean condition() {
+				return ((Robot.getInstance().selectedSwitch == AutoChoosers.Switch.leftOnly
+						|| Robot.getInstance().selectedSwitch == AutoChoosers.Switch.both)
+						&& FieldData.getInstance().nearSwitch == Direction.left)
+						&& !(Robot.getInstance().selectedScale == Scale.both
+								|| (Robot.getInstance().selectedScale == Scale.leftonly
+										&& FieldData.getInstance().scale == Direction.left)
+								|| (Robot.getInstance().selectedScale == Scale.rightonly
+										&& FieldData.getInstance().scale == Direction.right));
+			}
+
+		});
+
 
 	}
 
