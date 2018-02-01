@@ -31,6 +31,7 @@ import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocityCommand;
 import edu.nr.robotics.subsystems.sensors.EnableFloorSensorCommand;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Joystick.AxisType;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -82,6 +83,8 @@ public class OI implements SmartDashboardSource {
 	private final Joystick operatorLeft;
 	private final Joystick operatorRight;
 	
+	private final Joystick elevatorStick;
+	
 	private JoystickButton intakeToElevatorButton;
 	private JoystickButton elevatorScaleHeightButton;
 	private JoystickButton elevatorSwitchHeightButton;
@@ -100,6 +103,8 @@ public class OI implements SmartDashboardSource {
 		operatorLeft = new Joystick(STICK_OPERATOR_LEFT);
 		operatorRight = new Joystick(STICK_OPERATOR_RIGHT);
 
+		elevatorStick = operatorRight; //TODO: find what it is
+		
 		initDriveLeft();
 		initDriveRight();
 		
@@ -217,6 +222,10 @@ public class OI implements SmartDashboardSource {
 		return snapDriveJoysticks(driveRight.getY());
 	}
 	
+	public double getElevatorJoystickValue() {
+		return snapDriveJoysticks(elevatorStick.getY());
+	}
+	
 	public double getDriveSpeedMultiplier() {
 		return driveSpeedMultiplier;
 	}
@@ -260,6 +269,10 @@ public class OI implements SmartDashboardSource {
 	
 	public boolean isDriveNonZero() {
 		return getDriveLeftXValue() != 0 || getDriveRightXValue() != 0 || getDriveLeftYValue() != 0 || getDriveRightYValue() != 0;
+	}
+	
+	public boolean isElevatorNonZero() {
+		return getElevatorJoystickValue() != 0;
 	}
 	
 	public boolean shouldDumbDrive() {
