@@ -2,26 +2,35 @@ package edu.nr.robotics.subsystems.drive;
 
 import edu.nr.lib.NRMath;
 import edu.nr.lib.commandbased.NRCommand;
+import edu.nr.lib.gyro.Gyro;
 import edu.nr.lib.gyro.GyroCorrection;
+import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.TriplePIDOutput;
+import edu.nr.lib.network.LimelightNetworkTable;
 import edu.nr.lib.units.Angle;
 
-public class TurnPIDSmartDashboardCommand extends NRCommand {
-		
+public class TurnCommand extends NRCommand {
+	
 	private TriplePIDOutput out;
+	private Angle angleToTurn;
 	private Angle initialAngle;
 	private GyroCorrection gyro;
+	private double turnPercent;
+	private boolean exact;
 	
-	public TurnPIDSmartDashboardCommand() {
+	public TurnCommand(TriplePIDOutput out, Angle angleToTurn, double turnPercent, boolean exact) {
 		super(Drive.getInstance());
-		this.out = Drive.getInstance();
+		this.out = out;
+		this.angleToTurn = angleToTurn;
+		this.turnPercent = turnPercent;
+		this.exact = exact;
 	}
 	
 	@Override
 	public void onStart() {
-		gyro = new GyroCorrection(Drive.angleToTurn, Drive.drivePercent);
+		gyro = new GyroCorrection(angleToTurn, turnPercent);
 		out.pidWrite(0, 0, 0);
-		initialAngle = gyro.getAngleError().sub(Drive.angleToTurn);
+		initialAngle = gyro.getAngleError().sub(angleToTurn);
 	}
 	
 	@Override
@@ -50,13 +59,13 @@ public class TurnPIDSmartDashboardCommand extends NRCommand {
 	public boolean isFinishedNR() {
 		
 		boolean finished;
-		if (Drive.exact == true) {
+		if (exact == true){
 			finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftPosition())).abs()
 					.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightPosition())).abs()
 					.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& (initialAngle.sub(gyro.getAngleError())).abs().lessThan(Drive.DRIVE_ANGLE_THRESHOLD);
-		} else {
+		} else{
 			finished = (initialAngle.sub(gyro.getAngleError())).abs().lessThan(Drive.DRIVE_ANGLE_THRESHOLD);	
 		}
 		return finished;
