@@ -6,13 +6,13 @@ import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.interfaces.TriplePIDOutput;
 import edu.nr.lib.units.Angle;
 
-public class TurnPIDSmartDashboardCommand extends NRCommand {
+public class TurnSmartDashboardCommand extends NRCommand {
 		
 	private TriplePIDOutput out;
 	private Angle initialAngle;
 	private GyroCorrection gyro;
 
-	public TurnPIDSmartDashboardCommand() {
+	public TurnSmartDashboardCommand() {
 		super(Drive.getInstance());
 		this.out = Drive.getInstance();
 	}

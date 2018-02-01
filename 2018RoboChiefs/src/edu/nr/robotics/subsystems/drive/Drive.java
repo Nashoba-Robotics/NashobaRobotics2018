@@ -200,7 +200,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The angle the robot turns to once disabled at full turn speed. Used for GyroCorrection ramped mode
 	 */
-	public static final Angle DRIVE_STOP_ANGLE = new Angle(45, Angle.Unit.DEGREE);
+	public static final Angle DRIVE_STOP_ANGLE = new Angle(50, Angle.Unit.DEGREE);
 	
 	/**
 	 * Current ratings based on MAXI Circuit Breaker Model MX5

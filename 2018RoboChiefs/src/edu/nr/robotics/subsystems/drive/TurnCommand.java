@@ -7,7 +7,7 @@ import edu.nr.lib.units.Angle;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class TurnPIDCommand extends NRCommand {
+public class TurnCommand extends NRCommand {
 	
 	private TriplePIDOutput out;
 	private Angle angleToTurn;
@@ -18,7 +18,7 @@ public class TurnPIDCommand extends NRCommand {
 	
 	double startTime;
 	
-	public TurnPIDCommand(TriplePIDOutput out, Angle angleToTurn, double turnPercent, boolean exact) {
+	public TurnCommand(TriplePIDOutput out, Angle angleToTurn, double turnPercent, boolean exact) {
 		super(Drive.getInstance());
 		this.out = out;
 		this.angleToTurn = angleToTurn;
