@@ -26,7 +26,7 @@ public class BlockToScaleProfilingCommand extends CommandGroup {
 			
 		});
 		
-		addSequential(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_TO_PLATFORM_ZONE_DIAGONAL, Distance.ZERO, 
+		addSequential(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_TO_PLATFORM_ZONE_DIAGONAL.negate(), Distance.ZERO, 
 				Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
 
 				@Override

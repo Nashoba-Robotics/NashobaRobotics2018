@@ -154,12 +154,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Percent driving during profiling
 	 */
-	public static final double PROFILE_DRIVE_PERCENT = 0.95;
+	public static final double PROFILE_DRIVE_PERCENT = 0.9;
 	
 	/**
 	 * Percent accelerating during profiling
 	 */
-	public static final double ACCEL_PERCENT = 0.9;
+	public static final double ACCEL_PERCENT = 0.7;
 	
 	/**
 	 * Max and min speed of turn during

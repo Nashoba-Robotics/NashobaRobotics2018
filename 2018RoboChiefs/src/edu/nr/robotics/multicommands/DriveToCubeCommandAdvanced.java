@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class DriveToCubeCommandAdvanced extends NRCommand {
 	
-	public Angle STOP_LIMELIGHT_TRACKING_ANGLE = new Angle(-14, Angle.Unit.DEGREE);
+	public Angle STOP_LIMELIGHT_TRACKING_ANGLE = new Angle(-12, Angle.Unit.DEGREE);
 	
 	private boolean stoppedTracking = false;
 	private boolean hasStartedForward = false;
