@@ -32,6 +32,6 @@ public class ClimbCommand extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return Elevator.getInstance().getPosition().lessThan(Elevator.TOP_POSITION_ELEVATOR.sub(CLIMB_HEIGHT));
+		return Elevator.getInstance().getPosition().lessThan(Elevator.TOP_HEIGHT_ELEVATOR.sub(CLIMB_HEIGHT));
 	}
 }

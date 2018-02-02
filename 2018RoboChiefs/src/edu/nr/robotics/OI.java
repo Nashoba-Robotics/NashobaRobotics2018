@@ -181,7 +181,7 @@ public class OI implements SmartDashboardSource {
 	}
 	
 	public double getArcadeMoveValue() {
-		return -snapDriveJoysticks(driveLeft.getY()); //* (driveLeft.getRawButton(DRIVE_REVERSE_BUTTON_NUMBER) ? 1 : -1);
+		return -snapDriveJoysticks(driveLeft.getY());//* (driveLeft.getRawButton(DRIVE_REVERSE_BUTTON_NUMBER) ? 1 : -1);
 	}
 
 	public double getArcadeTurnValue() {

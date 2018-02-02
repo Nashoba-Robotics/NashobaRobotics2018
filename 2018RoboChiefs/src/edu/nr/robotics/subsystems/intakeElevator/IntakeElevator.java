@@ -2,6 +2,8 @@ package edu.nr.robotics.subsystems.intakeElevator;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -151,6 +153,8 @@ public class IntakeElevator extends NRSubsystem {
 	public static final Distance HANDLER_HEIGHT = Distance.ZERO; // TODO: Find HANDLER_HEIGHT
 	
 	public static final Distance INTAKE_HEIGHT = Distance.ZERO; // TODO: Find INTAKE_HEIGHT
+	
+	public static final Distance BOTTOM_HEIGHT = Distance.ZERO;
 
 	
 	public Speed velSetpoint = Speed.ZERO;
@@ -202,6 +206,9 @@ public class IntakeElevator extends NRSubsystem {
 					Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 					DEFAULT_TIMEOUT);
 	
+			intakeElevTalon.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, DEFAULT_TIMEOUT);
+			intakeElevTalon.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, DEFAULT_TIMEOUT);
+			
 			intakeElevEncoder = new TalonEncoder(intakeElevTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV);
 	
 			smartDashboardInit();
@@ -374,7 +381,12 @@ public class IntakeElevator extends NRSubsystem {
 	}
 	
 	public void periodic() {
-
+		if(intakeElevTalon.getSensorCollection().isFwdLimitSwitchClosed()) {
+			intakeElevTalon.getSensorCollection().setQuadraturePosition((int)(FOLDED_HEIGHT.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV)), DEFAULT_TIMEOUT);
+		}
+		if(intakeElevTalon.getSensorCollection().isFwdLimitSwitchClosed()) {
+			intakeElevTalon.getSensorCollection().setQuadraturePosition((int)(BOTTOM_HEIGHT.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV)), DEFAULT_TIMEOUT);
+		}
 	}
 
 	public void disable() {

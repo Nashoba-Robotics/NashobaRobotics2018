@@ -20,8 +20,8 @@ public class StartPosLeftSwitchLeftCommand extends CommandGroup {
 	public StartPosLeftSwitchLeftCommand() {
 
 		addSequential(new WaitCommand(Robot.getInstance().autoWaitTime));
-/*
-		addSequential(new ConditionalCommand(new StartPosLeftToSwitchLeftProfilingCommand()) {
+
+		/*addSequential(new ConditionalCommand(new StartPosLeftToSwitchLeftProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
