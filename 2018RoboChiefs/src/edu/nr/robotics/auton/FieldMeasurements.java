@@ -29,7 +29,7 @@ public class FieldMeasurements {
 	
 	public static final Distance BASELINE_TO_SCALE_X = new Distance(254, Distance.Unit.INCH);
 
-	public static final Distance BASELINE_TO_SWITCH_X = new Distance(168, Distance.Unit.INCH).sub(ROBOT_LENGTH.mul(2));
+	public static final Distance BASELINE_TO_SWITCH_X = new Distance(168, Distance.Unit.INCH).sub(ROBOT_LENGTH.mul(0.5));
 	public static final Distance BASELINE_TO_SWITCH_Y = Distance.ZERO;
 
 	public static final Distance SWITCH_TO_PIVOT_POINT_X = new Distance(88, Distance.Unit.INCH);
@@ -99,4 +99,10 @@ public class FieldMeasurements {
 
 	// Platform Zone Y direction to diagonal of scale
 	public static final Angle PIVOT_POINT_TO_SCALE = new Angle(62, Angle.Unit.DEGREE);
+	
+	//For switch strafing
+	public static final Distance CUBE_1_AND_2_TO_SWITCH_Y = ROBOT_WIDTH.mul(0.5);
+	public static final Distance CUBE_3_TO_SWITCH_Y = new Distance(28, Distance.Unit.INCH).add(ROBOT_WIDTH.mul(0.5));
+	public static final Distance CUBE_TO_PLATFORM_ZONE_X = new Distance(27, Distance.Unit.INCH).sub(ROBOT_LENGTH.mul(0.5));
+	
 }

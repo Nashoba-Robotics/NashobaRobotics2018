@@ -10,7 +10,7 @@ import edu.nr.robotics.auton.autoroutes.BlockToScaleProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosLeftToScaleLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosLeftToScaleRightProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosLeftToSwitchLeftProfilingCommand;
-import edu.nr.robotics.auton.autoroutes.SwitchLeftToBlockProfilingCommand;
+import edu.nr.robotics.auton.autoroutes.PivotSwitchLeftToBlockProfilingCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
@@ -30,7 +30,7 @@ public class StartPosLeftSwitchLeftCommand extends CommandGroup {
 
 		});
 
-		addSequential(new ConditionalCommand(new SwitchLeftToBlockProfilingCommand()) {
+		addSequential(new ConditionalCommand(new PivotSwitchLeftToBlockProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
