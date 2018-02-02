@@ -1,7 +1,10 @@
 package edu.nr.robotics.subsystems.elevator;
 
+import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -142,11 +145,11 @@ public class Elevator extends NRSubsystem {
 	 * The positions of the elevator at each limit switch and at the default
 	 * extend height
 	 */
-	public static final Distance TOP_POSITION_ELEVATOR = Distance.ZERO; // TODO: Find TOP_POSITION_ELEVATOR
+	public static final Distance TOP_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find TOP_POSITION_ELEVATOR
 	public static final Distance CLIMB_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find CLIMB_HEIGHT_ELEVATOR
 	public static final Distance SCALE_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find AUTO_HEIGHT_ELEVATOR
 	public static final Distance SWITCH_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find SCORE_LOW_HEIGHT_ELEVATOR
-	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find BOTTOM_HEIGHT_ELEVATOR
+	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO;
 
 	private Speed velSetpoint = Speed.ZERO;
 	private Distance posSetpoint = Distance.ZERO;
@@ -195,6 +198,9 @@ public class Elevator extends NRSubsystem {
 			elevTalon.configMotionAcceleration((int) MAX_ACCEL_ELEVATOR.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
 					Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 					DEFAULT_TIMEOUT);
+			
+			elevTalon.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, DEFAULT_TIMEOUT);
+			elevTalon.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, DEFAULT_TIMEOUT);
 	
 			elevEncoder = new TalonEncoder(elevTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV);
 	
@@ -384,6 +390,12 @@ public class Elevator extends NRSubsystem {
 
 	@Override
 	public void periodic() {
+		if(elevTalon.getSensorCollection().isFwdLimitSwitchClosed()) {
+			elevTalon.getSensorCollection().setQuadraturePosition((int) TOP_HEIGHT_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
+		}
+		if (elevTalon.getSensorCollection().isRevLimitSwitchClosed()) {
+			elevTalon.getSensorCollection().setQuadraturePosition((int) BOTTOM_HEIGHT_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
+		}
 
 	}
 

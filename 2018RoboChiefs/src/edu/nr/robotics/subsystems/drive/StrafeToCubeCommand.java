@@ -1,6 +1,7 @@
 package edu.nr.robotics.subsystems.drive;
 
 import edu.nr.lib.commandbased.NRCommand;
+import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.network.LimelightNetworkTable;
 import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
@@ -8,24 +9,33 @@ import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 public class StrafeToCubeCommand extends NRCommand {
 
 	private Direction direction;
+	private GyroCorrection gyro;
 	
 	public StrafeToCubeCommand(Direction direction) {
 		this.direction = direction;
+		gyro = new GyroCorrection();
 	}
 	
 	@Override
 	protected void onStart() {
+		gyro.reset();
 		new EnableLimelightCommand(true).start();
-		if (direction == Direction.left) {
-			Drive.getInstance().arcadeDrive(0, 0, -Drive.SENSOR_STRAFE_PERCENT);
+	}
+	
+	@Override
+	protected void onExecute() {
+		double turnValue = gyro.getTurnValue(Drive.kP_thetaOneD, false);
+		if (direction == Direction.left) {	
+			Drive.getInstance().setMotorSpeedInPercent(-turnValue, turnValue, -Drive.SENSOR_STRAFE_PERCENT);
 		} else {
-			Drive.getInstance().arcadeDrive(0, 0, Drive.SENSOR_STRAFE_PERCENT);
+			Drive.getInstance().setMotorSpeedInPercent(-turnValue, turnValue, Drive.SENSOR_STRAFE_PERCENT);
 		}
 	}
 	
 	@Override
 	protected void onEnd() {
 		Drive.getInstance().disable();
+		new EnableLimelightCommand(false).start();
 	}
 	
 	@Override
