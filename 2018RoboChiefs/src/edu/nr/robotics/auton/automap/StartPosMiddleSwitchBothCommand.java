@@ -8,8 +8,8 @@ import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.autoroutes.BlockToScaleProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosMiddleToSwitchLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosMiddleToSwitchRightProfilingCommand;
-import edu.nr.robotics.auton.autoroutes.SwitchLeftToBlockProfilingCommand;
-import edu.nr.robotics.auton.autoroutes.SwitchRightToBlockProfilingCommand;
+import edu.nr.robotics.auton.autoroutes.PivotSwitchLeftToBlockProfilingCommand;
+import edu.nr.robotics.auton.autoroutes.PivotSwitchRightToBlockProfilingCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
@@ -29,7 +29,7 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 
 		});
 
-		addSequential(new ConditionalCommand(new SwitchLeftToBlockProfilingCommand()) {
+		addSequential(new ConditionalCommand(new PivotSwitchLeftToBlockProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
@@ -77,7 +77,7 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 
 		});
 
-		addSequential(new ConditionalCommand(new SwitchRightToBlockProfilingCommand()) {
+		addSequential(new ConditionalCommand(new PivotSwitchRightToBlockProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {

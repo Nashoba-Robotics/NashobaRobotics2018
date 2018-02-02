@@ -97,4 +97,10 @@ public class FieldMeasurements {
 	
 	//Platform zone y direction to diagonal of scale
 	public static final Angle PIVOT_POINT_TO_SCALE = new Angle(62, Angle.Unit.DEGREE);
+	
+	//For switch strafing
+	public static final Distance CUBE_1_AND_2_TO_SWITCH_Y = ROBOT_WIDTH.mul(0.5);
+	public static final Distance CUBE_3_TO_SWITCH_Y = new Distance(28, Distance.Unit.INCH).add(ROBOT_WIDTH.mul(0.5));
+	public static final Distance CUBE_TO_PLATFORM_ZONE_X = new Distance(27, Distance.Unit.INCH).sub(ROBOT_LENGTH.mul(0.5));
+	
 }

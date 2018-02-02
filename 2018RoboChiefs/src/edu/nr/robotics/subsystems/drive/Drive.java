@@ -173,9 +173,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final double DRIVE_TO_CUBE_PERCENT = 0.4;
 	
 	/**
-	 * Percent of the drive while strafing to portal
+	 * Percent of the drive while strafing to portal or cube
 	 */
-	public static final double PORTAL_STRAFE_PERCENT  = 0.2;
+	public static final double SENSOR_STRAFE_PERCENT  = 0.2;
 	
 	/**
 	 * The position from the end at which profile position threshold takes effect

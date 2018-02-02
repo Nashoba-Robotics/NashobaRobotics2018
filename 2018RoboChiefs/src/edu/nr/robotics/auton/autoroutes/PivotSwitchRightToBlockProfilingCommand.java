@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.nr.robotics.auton.FieldMeasurements;
 import edu.nr.robotics.multicommands.DriveToCubeCommandAdvanced;;
 
-public class SwitchRightToBlockProfilingCommand extends CommandGroup {
+public class PivotSwitchRightToBlockProfilingCommand extends CommandGroup {
 	
-	public SwitchRightToBlockProfilingCommand() {
+	public PivotSwitchRightToBlockProfilingCommand() {
 		
 		addSequential(new EnableMotionProfile((FieldMeasurements.SWITCH_EDGE_TO_FIELD_EDGE_Y.sub(FieldMeasurements.PIVOT_POINT_TO_FIELD_EDGE_Y).sub(FieldMeasurements.ROBOT_LENGTH.mul(0.5))).negate(), 
 				Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
