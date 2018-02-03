@@ -382,11 +382,13 @@ public class IntakeElevator extends NRSubsystem {
 	
 	@Override
 	public void periodic() {
-		if(intakeElevTalon.getSensorCollection().isFwdLimitSwitchClosed()) {
-			intakeElevTalon.getSensorCollection().setQuadraturePosition((int) FOLDED_HEIGHT.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
-		}
-		if (intakeElevTalon.getSensorCollection().isRevLimitSwitchClosed()) {
-			intakeElevTalon.getSensorCollection().setQuadraturePosition((int) BOTTOM_HEIGHT.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
+		if (EnabledSubsystems.INTAKE_ELEVATOR_ENABLED) {
+			if(intakeElevTalon.getSensorCollection().isFwdLimitSwitchClosed()) {
+				intakeElevTalon.getSensorCollection().setQuadraturePosition((int) FOLDED_HEIGHT.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
+			}
+			if (intakeElevTalon.getSensorCollection().isRevLimitSwitchClosed()) {
+				intakeElevTalon.getSensorCollection().setQuadraturePosition((int) BOTTOM_HEIGHT.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
+			}	
 		}
 
 	}

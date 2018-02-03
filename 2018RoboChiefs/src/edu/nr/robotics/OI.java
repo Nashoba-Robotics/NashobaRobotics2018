@@ -5,15 +5,16 @@ import edu.nr.lib.gyro.ResetGyroCommand;
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.lib.joystickbuttons.ConditionalDoubleJoystickButton;
 import edu.nr.lib.joystickbuttons.ConditionalJoystickButton;
-import edu.nr.lib.joystickbuttons.DoubleJoystickButton;
 import edu.nr.lib.joystickbuttons.DoubleJoystickButton.Type;
 import edu.nr.lib.units.Angle;
 import edu.nr.robotics.FieldData.Direction;
+import edu.nr.robotics.multicommands.ClimbButtonCommand;
 import edu.nr.robotics.multicommands.DriveToCubeCommandAdvanced;
 import edu.nr.robotics.multicommands.PrepareScorePortalCommand;
 import edu.nr.robotics.multicommands.PrepareScoreScaleCommand;
 import edu.nr.robotics.multicommands.PrepareScoreSwitchCommand;
 import edu.nr.robotics.multicommands.ScorePortalCommand;
+import edu.nr.robotics.subsystems.climber.ClimberCoastCommand;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandler;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerStopCommand;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerVelocityCommand;
@@ -31,10 +32,7 @@ import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocityCommand;
 import edu.nr.robotics.subsystems.sensors.EnableFloorSensorCommand;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Joystick.AxisType;
-import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -68,8 +66,8 @@ public class OI implements SmartDashboardSource {
 	
 	private static final int ENABLE_SCALE_STOPPING_BUTTON_NUMBER = -1;
 	private static final int RESET_GYRO_BUTTON_NUMBER = -1;
-	//private static final int CLIMB_BUTTON_NUMBER = -1;
-	//TODO: Find how we want to control elevator
+	private static final int CLIMB_BUTTON_NUMBER = -1;
+	private static final int CLIMB_COAST_BUTTON_NUMBER= -1;
 	
 	private double driveSpeedMultiplier = 1;
 	
@@ -130,6 +128,8 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(driveRight, HALF_TURN_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(), new Angle(180, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
 		new JoystickButton(driveRight, QUARTER_TURN_LEFT_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(), new Angle(-90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
 		new JoystickButton(driveRight, QUARTER_TURN_RIGHT_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(), new Angle(90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
+	
+		new JoystickButton(driveRight, CLIMB_COAST_BUTTON_NUMBER).whenPressed(new ClimberCoastCommand(true));
 	}
 	
 	public void initOperatorLeft() {
@@ -165,6 +165,8 @@ public class OI implements SmartDashboardSource {
 		
 		new JoystickButton(operatorLeft, SHOOT_CUBE_BUTTON_NUMBER).whenPressed(new ShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
 		new JoystickButton(operatorLeft, PLACE_CUBE_BUTTON_NUMBER).whenPressed(new ShootCommand(ElevatorShooter.VEL_PERCENT_LOW_ELEVATOR_SHOOTER));
+	
+		new JoystickButton(operatorLeft, CLIMB_BUTTON_NUMBER).whenPressed(new ClimbButtonCommand());
 	}
 	
 	public void initOperatorRight() {
@@ -223,9 +225,9 @@ public class OI implements SmartDashboardSource {
 	}
 	
 	public double getElevatorJoystickValue() {
-		return snapDriveJoysticks(elevatorStick.getY());
+		return snapDriveJoysticks(elevatorStick.getX());
 	}
-	
+		
 	public double getDriveSpeedMultiplier() {
 		return driveSpeedMultiplier;
 	}

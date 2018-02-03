@@ -390,13 +390,14 @@ public class Elevator extends NRSubsystem {
 
 	@Override
 	public void periodic() {
-		if(elevTalon.getSensorCollection().isFwdLimitSwitchClosed()) {
-			elevTalon.getSensorCollection().setQuadraturePosition((int) TOP_HEIGHT_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
+		if (EnabledSubsystems.ELEVATOR_ENABLED) {
+			if (elevTalon.getSensorCollection().isFwdLimitSwitchClosed()) {
+				elevTalon.getSensorCollection().setQuadraturePosition((int) TOP_HEIGHT_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
+			}
+			if (elevTalon.getSensorCollection().isRevLimitSwitchClosed()) {
+				elevTalon.getSensorCollection().setQuadraturePosition((int) BOTTOM_HEIGHT_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
+			}
 		}
-		if (elevTalon.getSensorCollection().isRevLimitSwitchClosed()) {
-			elevTalon.getSensorCollection().setQuadraturePosition((int) BOTTOM_HEIGHT_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
-		}
-
 	}
 
 	@Override

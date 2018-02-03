@@ -2,7 +2,6 @@
 package edu.nr.robotics;
 
 import edu.nr.lib.commandbased.CancelAllCommand;
-import edu.nr.lib.commandbased.DoNothingCommand;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.gyro.ResetGyroCommand;
 import edu.nr.lib.interfaces.Periodic;
@@ -27,6 +26,7 @@ import edu.nr.robotics.auton.automap.StartPosRightSwitchBothCommand;
 import edu.nr.robotics.auton.automap.StartPosRightSwitchNoneCommand;
 import edu.nr.robotics.auton.automap.StartPosRightSwitchRightCommand;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
+import edu.nr.robotics.subsystems.climber.ClimberCoastCommand;
 import edu.nr.robotics.subsystems.climber.ClimberCurrentSmartDashboardCommand;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerVelocitySmartDashboardCommand;
 import edu.nr.robotics.subsystems.drive.CSVSaverDisable;
@@ -193,6 +193,7 @@ public class Robot extends IterativeRobot {
 		
 		LimelightNetworkTable.getInstance().lightLED(false);
 		new ResetGyroCommand().start();
+		new ClimberCoastCommand(false).start();
 		
 		FieldData.getInstance().getFieldData();
 		
@@ -224,6 +225,8 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		
 		new CancelAllCommand().start();
+		
+		new ClimberCoastCommand(false).start();
 		
 		LimelightNetworkTable.getInstance().lightLED(false);
 	}

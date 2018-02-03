@@ -54,6 +54,11 @@ public class Climber extends NRSubsystem {
 	public static double DEFAULT_CLIMBER_CURRENT = 0; //TODO: Find default climber current
 	
 	/**
+	 * The current the climber needs to draw for the elevator to start moving
+	 */
+	public static double MIN_MOVE_ELEV_CURRENT = 0; //TODO: Find current required to start moving the elevator
+	
+	/**
 	 * The current values of the climber
 	 */
 	public static final int PEAK_CURRENT_CLIMBER = 0;// TODO: Find PEAK_CURRENT_CLIMBER
@@ -220,6 +225,16 @@ public class Climber extends NRSubsystem {
 		}
 	}
 	
+	public void setCoastMode(boolean bool) {
+		if (climberTalon != null) {
+			if (bool) {
+				climberTalon.setNeutralMode(NeutralMode.Coast);	
+			} else {
+				climberTalon.setNeutralMode(NeutralMode.Brake);
+			}
+		}
+	}
+	
 	/**
 	 * What is put on SmartDashboard when it's initialized
 	 */
@@ -265,7 +280,9 @@ public class Climber extends NRSubsystem {
 
 	@Override
 	public void disable() {
-		climberTalon.set(ControlMode.PercentOutput, 0);
+		if (EnabledSubsystems.CLIMBER_ENABLED) {
+			climberTalon.set(ControlMode.PercentOutput, 0);	
+		}
 	}
 
 }
