@@ -29,6 +29,7 @@ import edu.nr.robotics.auton.automap.StartPosRightSwitchBothCommand;
 import edu.nr.robotics.auton.automap.StartPosRightSwitchNoneCommand;
 import edu.nr.robotics.auton.automap.StartPosRightSwitchRightCommand;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
+import edu.nr.robotics.subsystems.climber.ClimberCoastCommand;
 import edu.nr.robotics.subsystems.climber.ClimberCurrentSmartDashboardCommand;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerVelocitySmartDashboardCommand;
 import edu.nr.robotics.subsystems.drive.CSVSaverDisable;
@@ -199,6 +200,8 @@ public class Robot extends IterativeRobot {
 		
 		FieldData.getInstance().getFieldData();
 		
+		new ClimberCoastCommand(false).start();
+		
 		selectedStartPos = AutoChoosers.autoStartPosChooser.getSelected();
 		selectedSwitch = AutoChoosers.autoSwitchChooser.getSelected();
 		selectedScale = AutoChoosers.autoScaleChooser.getSelected();
@@ -226,6 +229,8 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		
 		new CancelAllCommand().start();
+		
+		new ClimberCoastCommand(false).start();;
 		
 		LimelightNetworkTable.getInstance().lightLED(false);
 

@@ -8,6 +8,7 @@ import edu.nr.lib.joystickbuttons.DoubleJoystickButton;
 import edu.nr.lib.joystickbuttons.DoubleJoystickButton.Type;
 import edu.nr.lib.units.Angle;
 import edu.nr.robotics.FieldData.Direction;
+import edu.nr.robotics.multicommands.ClimbButtonCommand;
 import edu.nr.robotics.multicommands.DriveToCubeCommandAdvanced;
 import edu.nr.robotics.multicommands.PrepareScorePortalCommand;
 import edu.nr.robotics.multicommands.PrepareScoreScaleCommand;
@@ -65,8 +66,9 @@ public class OI implements SmartDashboardSource {
 	private static final int HALF_TURN_BUTTON_NUMBER = 2;
 	private static final int QUARTER_TURN_LEFT_BUTTON_NUMBER = 3;
 	private static final int QUARTER_TURN_RIGHT_BUTTON_NUMBER = 4;
-	//private static final int CLIMB_BUTTON_NUMBER = -1;
-	//TODO: Find how we want to control elevator
+	
+	private static final int CLIMB_BUTTON_NUMBER = 11;
+	private static final int CLIMB_COAST_BUTTON_NUMBER = 5;
 	
 	private double driveSpeedMultiplier = 1;
 	
@@ -125,6 +127,8 @@ public class OI implements SmartDashboardSource {
 	
 	public void initDriveRight() {
 		
+		new JoystickButton(driveRight, CLIMB_COAST_BUTTON_NUMBER).whenPressed(new ClimberCoastCommand());
+		
 		new JoystickButton(driveRight, HALF_TURN_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(), new Angle(180, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
 		new JoystickButton(driveRight, QUARTER_TURN_LEFT_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(), new Angle(-90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
 		new JoystickButton(driveRight, QUARTER_TURN_RIGHT_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(), new Angle(90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
@@ -159,6 +163,7 @@ public class OI implements SmartDashboardSource {
 		new ConditionalJoystickButton(elevatorSwitchHeightButton, !intakeToElevatorButton.get()).whenPressed(new ElevatorPositionCommand(Elevator.SWITCH_HEIGHT_ELEVATOR));
 		new JoystickButton(operatorLeft, ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER).whenPressed(new ElevatorPositionCommand(Elevator.BOTTOM_HEIGHT_ELEVATOR));
 		
+		new JoystickButton(operatorLeft, CLIMB_BUTTON_NUMBER).whenPressed(new ClimbButtonCommand());
 		
 	}
 	
@@ -221,9 +226,9 @@ public class OI implements SmartDashboardSource {
 	}
 	
 	public double getElevatorJoystickValue() {
-		return snapDriveJoysticks(elevatorStick.getY());
+		return snapDriveJoysticks(elevatorStick.getX());
 	}
-	
+		
 	public double getDriveSpeedMultiplier() {
 		return driveSpeedMultiplier;
 	}
@@ -272,7 +277,7 @@ public class OI implements SmartDashboardSource {
 	public boolean isElevatorNonZero() {
 		return getElevatorJoystickValue() != 0;
 	}
-	
+		
 	public boolean shouldDumbDrive() {
 		//TODO: Find how we want to switch to dumb drive
 		return false;

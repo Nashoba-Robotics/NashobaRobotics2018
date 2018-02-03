@@ -7,22 +7,29 @@ import edu.nr.robotics.subsystems.climber.Climber;
 import edu.nr.robotics.subsystems.climber.ClimberHoldPositionCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 
-public class ClimbCommand extends NRCommand {
+public class ClimbButtonCommand extends NRCommand {
 
-	public static final Distance CLIMB_HEIGHT = Distance.ZERO;//TODO: Find climb height
-
-	public ClimbCommand() {
+	private boolean isClimberTaut;
+	
+	public static final Distance CLIMB_HEIGHT = Distance.ZERO; //TODO: Find climb height
+	
+	public ClimbButtonCommand() {
 		super(new NRSubsystem[] {Climber.getInstance(), Elevator.getInstance()});
 	}
 
 	@Override
 	protected void onStart() {
+		isClimberTaut = false;
 		Climber.getInstance().setCurrent(Climber.DEFAULT_CLIMBER_CURRENT);
 	}
 
 	@Override
 	protected void onExecute() {
-		Elevator.getInstance().setMotorSpeed(Climber.getInstance().getVelocity());
+		if (isClimberTaut) {
+			Elevator.getInstance().setMotorSpeed(Climber.getInstance().getVelocity());
+		} else if (Climber.getInstance().getCurrent() >= Climber.MIN_ELEV_CURRENT) {
+			isClimberTaut = true;
+		}
 	}
 
 	@Override
@@ -32,6 +39,6 @@ public class ClimbCommand extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return Elevator.getInstance().getPosition().lessThan(Elevator.TOP_HEIGHT_ELEVATOR.sub(CLIMB_HEIGHT));
+		return Elevator.getInstance().getPosition().lessThan(Elevator.CLIMB_HEIGHT_ELEVATOR.sub(CLIMB_HEIGHT));
 	}
 }

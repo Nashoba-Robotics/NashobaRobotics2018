@@ -18,6 +18,10 @@ public abstract class JoystickCommand extends NRCommand {
 		super(s);
 	}
 	
+	public JoystickCommand(NRSubsystem[] s) {
+		super(s);
+	}
+	
 	/**
 	 * This is checked by NRSubsystem to decide if the subsystem should switch back to joystick control.
 	 * This is checked every getPeriodOfCheckingForSwitchToJoystick() milliseconds.
