@@ -14,9 +14,9 @@ public class ScorePortalCommand extends CommandGroup {
 	public ScorePortalCommand(Direction direction) {
 		
 		addSequential(new StrafeToPortalCommand(direction));
-		addParallel(new CubeHandlerVelocityCommand(CubeHandler.VEL_PERCENT_CUBE_HANDLER));
-		addSequential(new WaitCommand(CubeHandler.SCORE_TIME.get(Time.Unit.SECOND)));
-		addSequential(new CubeHandlerStopCommand());
+		//addParallel(new CubeHandlerVelocityCommand(CubeHandler.VEL_PERCENT_CUBE_HANDLER));
+		//addSequential(new WaitCommand(CubeHandler.SCORE_TIME.get(Time.Unit.SECOND)));
+		//addSequential(new CubeHandlerStopCommand());
 		
 	}
 }

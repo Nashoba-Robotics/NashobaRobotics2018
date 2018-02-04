@@ -21,6 +21,6 @@ public class EnabledSensors {
 		
 	public static Counter floorCounter = new Counter(floorSensor);
 	
-	public static boolean portalReached = false;
+	public static volatile boolean portalReached = false;
 	
 }

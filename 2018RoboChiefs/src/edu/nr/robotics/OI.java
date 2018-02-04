@@ -61,7 +61,7 @@ public class OI implements SmartDashboardSource {
 	private static final int SHOOT_CUBE_BUTTON_NUMBER = 3;
 	private static final int PLACE_CUBE_BUTTON_NUMBER = 4;
 	private static final int ACQUIRE_CUBE_BUTTON_NUMBER = 12;
-	private static final int SCORE_IN_PORTAL_BUTTON_NUMBER = 1;
+	private static final int SCORE_IN_PORTAL_BUTTON_NUMBER = 12;
 	private static final int ENABLE_SCALE_STOPPING_BUTTON_NUMBER = 1;
 	
 	private static final int HALF_TURN_BUTTON_NUMBER = 2;
@@ -73,7 +73,7 @@ public class OI implements SmartDashboardSource {
 	
 	private double driveSpeedMultiplier = 1;
 	
-	private Direction portalStrafeDirection = Direction.left;
+	private Direction portalStrafeDirection = Direction.right;
 	
 	private static OI singleton;
 
@@ -115,7 +115,6 @@ public class OI implements SmartDashboardSource {
 	}
 	
 	public void initDriveLeft() {
-		new JoystickButton(driveLeft, SCORE_IN_PORTAL_BUTTON_NUMBER).whenPressed(new ScorePortalCommand(portalStrafeDirection));
 		
 		new JoystickButton(driveLeft, ENABLE_SCALE_STOPPING_BUTTON_NUMBER).whenPressed(new EnableFloorSensorCommand(true));
 		new JoystickButton(driveLeft, ENABLE_SCALE_STOPPING_BUTTON_NUMBER).whenReleased(new EnableFloorSensorCommand(false));
@@ -141,6 +140,7 @@ public class OI implements SmartDashboardSource {
 		elevatorScaleHeightButton = new JoystickButton(operatorLeft, ELEVATOR_SCALE_HEIGHT_BUTTON_NUMBER);
 		elevatorSwitchHeightButton = new JoystickButton(operatorLeft, ELEVATOR_SWITCH_HEIGHT_BUTTON_NUMBER);
 		
+		new JoystickButton(operatorLeft, SCORE_IN_PORTAL_BUTTON_NUMBER).whenPressed(new ScorePortalCommand(portalStrafeDirection));
 		
 		new JoystickButton(operatorLeft, INTAKE_HANDLER_HEIGHT_BUTTON_NUMBER).whenPressed(new IntakeElevatorPositionCommand(IntakeElevator.HANDLER_HEIGHT));
 		new JoystickButton(operatorLeft, INTAKE_BOTTOM_HEIGHT_BUTTON_NUMBER).whenPressed(new IntakeElevatorPositionCommand(IntakeElevator.INTAKE_HEIGHT));

@@ -29,6 +29,7 @@ import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
+import edu.nr.robotics.subsystems.sensors.RunSensors;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -176,7 +177,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Percent of the drive while strafing to portal or cube
 	 */
-	public static final double SENSOR_STRAFE_PERCENT  = 0.2;
+	public static final double SENSOR_STRAFE_PERCENT  = 0.1;
 	
 	/**
 	 * The position from the end at which profile position threshold takes effect
@@ -384,6 +385,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			CheesyDriveCalculationConstants.createDriveTypeCalculations();
 			
 			LimelightNetworkTable.getInstance();
+			
+			new RunSensors();
 			
 			smartDashboardInit();
 		}
