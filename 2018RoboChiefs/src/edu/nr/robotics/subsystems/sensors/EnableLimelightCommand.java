@@ -3,7 +3,6 @@ package edu.nr.robotics.subsystems.sensors;
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.network.LimelightNetworkTable;
 import edu.nr.lib.network.LimelightNetworkTable.Pipeline;
-import edu.wpi.first.wpilibj.command.WaitCommand;
 
 public class EnableLimelightCommand extends NRCommand {
 
@@ -17,11 +16,13 @@ public class EnableLimelightCommand extends NRCommand {
 	protected void onStart() {
 		EnabledSensors.limelightEnabled = bool;
 		LimelightNetworkTable.getInstance().setPipeline(Pipeline.PowerCube);
-		if LimelightNetworkTable.getInstance().
-		LimelightNetworkTable.getInstance().lightLED(bool);
 		if (bool) {
+			//if (LimelightNetworkTable.getInstance().getLED() == 1)
+			//	LimelightNetworkTable.getInstance().lightLED(true);
 			LimelightNetworkTable.getInstance().enable();
 		} else {
+			if (LimelightNetworkTable.getInstance().getLED() == 0)
+				LimelightNetworkTable.getInstance().lightLED(false);
 			LimelightNetworkTable.getInstance().disable();
 		}
 	}
