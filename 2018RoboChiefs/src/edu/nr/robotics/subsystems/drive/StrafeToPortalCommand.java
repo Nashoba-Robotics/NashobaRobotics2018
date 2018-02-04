@@ -11,6 +11,7 @@ public class StrafeToPortalCommand extends NRCommand {
 	GyroCorrection gyro;
 	
 	public StrafeToPortalCommand(Direction direction) {
+		super(Drive.getInstance());
 		this.direction = direction;
 		gyro = new GyroCorrection();
 	}
@@ -37,7 +38,7 @@ public class StrafeToPortalCommand extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return EnabledSensors.portalSensorLeft.get() && EnabledSensors.portalSensorRight.get();
+		return EnabledSensors.portalSensorLeft1.get() && EnabledSensors.portalSensorRight1.get();
 	}
 
 }

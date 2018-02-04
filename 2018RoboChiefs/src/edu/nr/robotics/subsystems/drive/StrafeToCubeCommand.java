@@ -13,6 +13,7 @@ public class StrafeToCubeCommand extends NRCommand {
 	GyroCorrection gyro;
 	
 	public StrafeToCubeCommand(Direction direction) {
+		super(Drive.getInstance());
 		this.direction = direction;
 		gyro = new GyroCorrection();
 	}

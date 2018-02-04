@@ -14,6 +14,7 @@ import edu.nr.robotics.multicommands.PrepareScorePortalCommand;
 import edu.nr.robotics.multicommands.PrepareScoreScaleCommand;
 import edu.nr.robotics.multicommands.PrepareScoreSwitchCommand;
 import edu.nr.robotics.multicommands.ScorePortalCommand;
+import edu.nr.robotics.subsystems.climber.ClimberCoastCommand;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandler;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerStopCommand;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerVelocityCommand;
@@ -127,7 +128,7 @@ public class OI implements SmartDashboardSource {
 	
 	public void initDriveRight() {
 		
-		new JoystickButton(driveRight, CLIMB_COAST_BUTTON_NUMBER).whenPressed(new ClimberCoastCommand());
+		new JoystickButton(driveRight, CLIMB_COAST_BUTTON_NUMBER).whenPressed(new ClimberCoastCommand(true));
 		
 		new JoystickButton(driveRight, HALF_TURN_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(), new Angle(180, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
 		new JoystickButton(driveRight, QUARTER_TURN_LEFT_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(), new Angle(-90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));

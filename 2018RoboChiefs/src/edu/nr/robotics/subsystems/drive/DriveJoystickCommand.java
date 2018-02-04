@@ -38,7 +38,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 				gyroCorrection.clearInitialValue();
 			}
 			
-			if (EnabledSensors.floorSensorEnabled && EnabledSensors.counter.get() > 0) {
+			if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
 				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 			} else {
 				Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier(), hValue * OI.getInstance().getDriveSpeedMultiplier());
@@ -57,7 +57,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 			left = NRMath.powWithSign(left, 3);
 			hDrive = NRMath.powWithSign(hDrive, 3);
 			
-			if (EnabledSensors.floorSensorEnabled && EnabledSensors.counter.get() > 0) {
+			if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
 				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 			} else {
 				Drive.getInstance().tankDrive(OI.getInstance().getDriveSpeedMultiplier() * left, -OI.getInstance().getDriveSpeedMultiplier() * right, OI.getInstance().getDriveSpeedMultiplier() * hDrive);
@@ -80,7 +80,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 				gyroCorrection.clearInitialValue();
 			}
 			
-			if (EnabledSensors.floorSensorEnabled && EnabledSensors.counter.get() > 0) {
+			if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
 				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 			} else {
 				Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue, cheesyHValue);

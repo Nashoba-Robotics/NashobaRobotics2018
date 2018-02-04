@@ -1,7 +1,7 @@
 package edu.nr.robotics.subsystems.sensors;
 
-import java.util.TimerTask;
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class RunSensors extends TimerTask {
 
@@ -12,13 +12,14 @@ public class RunSensors extends TimerTask {
 		timer = new Timer();
 		timer.scheduleAtFixedRate(this, 0, defaultPeriod);
 	}
-
+	
 	@Override
 	public void run() {
 		
-		if (EnabledSensors.floorSensorEnabled) {
-			if (!EnabledSensors.floorTapeSeen && !EnabledSensors.floorSensor.get()) {
-				EnabledSensors.floorTapeSeen = true;
+		if(EnabledSensors.portalSensorEnabled) {
+			if (!EnabledSensors.portalReached && EnabledSensors.portalSensorLeft1.get() && EnabledSensors.portalSensorLeft2.get()
+					&& EnabledSensors.portalSensorRight1.get() && EnabledSensors.portalSensorRight2.get()) {
+				EnabledSensors.portalReached = true;
 			}
 		}
 	}

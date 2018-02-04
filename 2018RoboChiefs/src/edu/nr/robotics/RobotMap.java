@@ -19,10 +19,12 @@ public class RobotMap {
 	public static final int CLIMBER_TALON = -1;
 	
 	public static final int INTAKE_SENSOR_PORT = 5;
-	public static final int ELEVATOR_SENSOR_PORT = 1;
-	public static final int PORTAL_SENSOR_LEFT_PORT = 2;
-	public static final int PORTAL_SENSOR_RIGHT_PORT = 3;
-	public static final int CUBE_HANDLER_SENSOR_PORT = 4;
+	public static final int ELEVATOR_SENSOR_PORT = 7;
+	public static final int PORTAL_SENSOR_LEFT_1_PORT = 1;
+	public static final int PORTAL_SENSOR_LEFT_2_PORT = 2;
+	public static final int PORTAL_SENSOR_RIGHT_1_PORT = 3;
+	public static final int PORTAL_SENSOR_RIGHT_2_PORT = 4;
+	public static final int CUBE_HANDLER_SENSOR_PORT = 6;
 	public static final int FLOOR_SENSOR_PORT = 0;
 	
 }

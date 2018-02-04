@@ -86,6 +86,8 @@ public class Robot extends IterativeRobot {
 		smartDashboardInit();
 		autoChooserInit();
 		OI.init();
+		
+		LimelightNetworkTable.getInstance().lightLED(false);
 	}
 
 	public void autoChooserInit() {
@@ -230,11 +232,9 @@ public class Robot extends IterativeRobot {
 		
 		new CancelAllCommand().start();
 		
-		new ClimberCoastCommand(false).start();;
+		new ClimberCoastCommand(false).start();
 		
 		LimelightNetworkTable.getInstance().lightLED(false);
-
-		
 	}
 
 	/**

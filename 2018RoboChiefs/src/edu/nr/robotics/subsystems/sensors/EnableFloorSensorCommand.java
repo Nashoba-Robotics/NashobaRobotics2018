@@ -15,7 +15,7 @@ public class EnableFloorSensorCommand extends NRCommand {
 	@Override
 	protected void onStart() {
 		EnabledSensors.floorSensorEnabled = bool;
-		EnabledSensors.counter.reset();
+		EnabledSensors.floorCounter.reset();
 	}
 	
 	@Override
