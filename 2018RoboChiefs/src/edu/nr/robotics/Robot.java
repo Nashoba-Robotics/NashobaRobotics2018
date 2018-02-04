@@ -80,6 +80,7 @@ public class Robot extends IterativeRobot {
 		autoChooserInit();
 		OI.init();
 		LimelightNetworkTable.getInstance();
+		LimelightNetworkTable.getInstance().lightLED(false);
 	}
 
 	public void autoChooserInit() {

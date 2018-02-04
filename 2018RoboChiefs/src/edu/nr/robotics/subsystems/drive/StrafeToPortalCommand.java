@@ -3,6 +3,7 @@ package edu.nr.robotics.subsystems.drive;
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.robotics.FieldData.Direction;
+import edu.nr.robotics.subsystems.sensors.EnablePortalSensorsCommand;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 
 public class StrafeToPortalCommand extends NRCommand {
@@ -12,13 +13,14 @@ public class StrafeToPortalCommand extends NRCommand {
 
 	
 	public StrafeToPortalCommand(Direction direction) {
-		
+		super(Drive.getInstance());
 		this.direction = direction;
 		gyro = new GyroCorrection();
 	}
 	
 	@Override
 	protected void onStart() {
+		new EnablePortalSensorsCommand(true).start();
 		gyro.reset();
 	}
 	
@@ -34,12 +36,13 @@ public class StrafeToPortalCommand extends NRCommand {
 	
 	@Override
 	protected void onEnd() {
+		new EnablePortalSensorsCommand(false).start();
 		Drive.getInstance().disable();
 	}
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return EnabledSensors.portalSensorLeft.get() && EnabledSensors.portalSensorRight.get();
+		return EnabledSensors.portalReached;
 	}
 
 }

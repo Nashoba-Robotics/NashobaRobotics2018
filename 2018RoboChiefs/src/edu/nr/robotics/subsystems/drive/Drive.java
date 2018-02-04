@@ -29,6 +29,7 @@ import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
+import edu.nr.robotics.subsystems.sensors.RunSensors;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -398,6 +399,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			CheesyDriveCalculationConstants.createDriveTypeCalculations();
 			
 			LimelightNetworkTable.getInstance();
+			
+			new RunSensors();
 			
 		}
 	}

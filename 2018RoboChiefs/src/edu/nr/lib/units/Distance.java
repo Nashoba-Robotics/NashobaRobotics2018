@@ -38,7 +38,7 @@ public class Distance {
 		/**
 		 * For an elevator
 		 */
-		private static final double ENCODER_TICK_ELEV_PER_INCH = Elevator.ENC_TICK_PER_INCH_ELEVATOR;
+		private static final double ENCODER_TICK_ELEV_PER_INCH = Elevator.ENC_TICK_PER_INCH_CARRIAGE;
 		private static final double ENCODER_TICK_INTAKE_ELEV_PER_INCH = IntakeElevator.ENC_TICK_PER_INCH_INTAKE_ELEVATOR;
 		
 		/**

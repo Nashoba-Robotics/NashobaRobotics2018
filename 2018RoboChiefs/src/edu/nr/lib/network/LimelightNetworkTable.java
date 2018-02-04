@@ -121,4 +121,8 @@ public class LimelightNetworkTable extends TimerTask {
 			limelightTable.getEntry("pipeline").setDouble(0);
 		}
 	}
+	
+	public double getLED() {
+		return limelightTable.getEntry("ledMode").getDouble(-1);
+	}
 }
