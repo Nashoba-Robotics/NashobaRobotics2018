@@ -254,6 +254,8 @@ public class ElevatorShooter extends NRSubsystem {
 			P_VEL_ELEVATOR_SHOOTER = SmartDashboard.getNumber("P Vel Elevator Shooter: ", P_VEL_ELEVATOR_SHOOTER);
 			I_VEL_ELEVATOR_SHOOTER = SmartDashboard.getNumber("I Vel Elevator Shooter: ", I_VEL_ELEVATOR_SHOOTER);
 			D_VEL_ELEVATOR_SHOOTER = SmartDashboard.getNumber("D Vel Elevator Shooter: ", D_VEL_ELEVATOR_SHOOTER);
+			
+			SmartDashboard.putNumber("Elevator Shooter Encoder Ticks: ", elevShooterTalon.getSelectedSensorPosition(PID_TYPE));
 		}
 	}
 

@@ -30,7 +30,7 @@ public class Elevator extends NRSubsystem {
 	/**
 	 * The encoder ticks per inch moved on the elevator
 	 */
-	public static final double ENC_TICK_PER_INCH_ELEVATOR = 0; // TODO: Find ENC_TICK_PER_INCH_ELEVATOR
+	public static final double ENC_TICK_PER_INCH_CARRIAGE = 0; // TODO: Find ENC_TICK_PER_INCH_CARRIAGE
 
 	/**
 	 * The max speed of the elevator
@@ -140,6 +140,11 @@ public class Elevator extends NRSubsystem {
 	 */
 	public static final int VEL_SLOT = 0;
 	public static final int MOTION_MAGIC_SLOT = 1;
+	
+	/**
+	 * the max speed ratio of the carriage to the hook
+	 */
+	public static final double HOOK_TO_CARRIAGE_RATIO = 0; //TODO: Find  Carriage to hook ratio
 
 	/**
 	 * The positions of the elevator at each limit switch and at the default
@@ -305,7 +310,7 @@ public class Elevator extends NRSubsystem {
 	}
 
 	/**
-	 * @param speed to set motor in
+	 * @param speed to set elevator carriage in
 	 */
 	public void setMotorSpeed(Speed speed) {
 
@@ -385,6 +390,8 @@ public class Elevator extends NRSubsystem {
 					PROFILE_VEL_PERCENT_ELEVATOR);
 			PROFILE_ACCEL_PERCENT_ELEVATOR = SmartDashboard.getNumber("Profile Accel Percent Elevator: ",
 					PROFILE_ACCEL_PERCENT_ELEVATOR);
+			
+			SmartDashboard.putNumber("Elevator Encoder Ticks: ", elevTalon.getSelectedSensorPosition(PID_TYPE));
 		}
 	}
 

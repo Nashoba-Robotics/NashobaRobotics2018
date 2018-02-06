@@ -26,7 +26,7 @@ public class ClimbButtonCommand extends NRCommand {
 	@Override
 	protected void onExecute() {
 		if (isClimberTaut) {
-			Elevator.getInstance().setMotorSpeed(Climber.getInstance().getVelocity());	
+			Elevator.getInstance().setMotorSpeed(Climber.getInstance().getVelocity().mul(Elevator.HOOK_TO_CARRIAGE_RATIO));	
 		} else if (Climber.getInstance().getCurrent() >= Climber.DEFAULT_CLIMBER_CURRENT) {
 			isClimberTaut = true;
 		}

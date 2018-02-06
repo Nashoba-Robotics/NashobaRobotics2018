@@ -269,6 +269,8 @@ public class Climber extends NRSubsystem {
 				I_POS_CLIMBER = SmartDashboard.getNumber("I Pos Climber: ", I_POS_CLIMBER);
 				D_POS_CLIMBER = SmartDashboard.getNumber("D Pos Climber: ", D_POS_CLIMBER);
 				DEFAULT_CLIMBER_CURRENT = SmartDashboard.getNumber("Climber Set Current: ", DEFAULT_CLIMBER_CURRENT);
+				
+				SmartDashboard.putNumber("Climber Encoder Ticks: ", climberTalon.getSelectedSensorPosition(PID_TYPE));
 			}
 		
 	}

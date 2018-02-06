@@ -248,6 +248,8 @@ public class IntakeRollers extends NRSubsystem {
 			P_VEL_INTAKE_ROLLERS = SmartDashboard.getNumber("P Vel Intake Rollers: ", P_VEL_INTAKE_ROLLERS);
 			I_VEL_INTAKE_ROLLERS = SmartDashboard.getNumber("I Vel Intake Rollers: ", I_VEL_INTAKE_ROLLERS);
 			D_VEL_INTAKE_ROLLERS = SmartDashboard.getNumber("D Vel Intake Rollers: ", D_VEL_INTAKE_ROLLERS);
+			
+			SmartDashboard.putNumber("Intake Rollers Encoder Ticks: ", intakeRollersMaster.getSelectedSensorPosition(PID_TYPE));
 		}
 	}
 	
