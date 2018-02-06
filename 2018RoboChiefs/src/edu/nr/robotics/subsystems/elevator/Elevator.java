@@ -390,6 +390,8 @@ public class Elevator extends NRSubsystem {
 					PROFILE_VEL_PERCENT_ELEVATOR);
 			PROFILE_ACCEL_PERCENT_ELEVATOR = SmartDashboard.getNumber("Profile Accel Percent Elevator: ",
 					PROFILE_ACCEL_PERCENT_ELEVATOR);
+			
+			SmartDashboard.putNumber("Elevator Encoder Ticks: ", elevTalon.getSelectedSensorPosition(PID_TYPE));
 		}
 	}
 

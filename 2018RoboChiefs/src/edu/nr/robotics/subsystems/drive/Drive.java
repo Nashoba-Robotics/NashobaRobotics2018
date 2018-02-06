@@ -827,6 +827,10 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				SmartDashboard.putNumber("Drive Right Position", getRightPosition().get(Distance.Unit.INCH));
 				SmartDashboard.putNumber("Drive H Position", getHPosition().get(Distance.Unit.INCH));
 				
+				SmartDashboard.putNumber("Drive Left Encoder Position", leftDrive.getSelectedSensorPosition(PID_TYPE));
+				SmartDashboard.putNumber("Drive Right Encoder Position", rightDrive.getSelectedSensorPosition(PID_TYPE));
+				SmartDashboard.putNumber("Drive H Encoder Position", hDrive.getSelectedSensorPosition(PID_TYPE));
+				
 				leftDrive.config_kP(SLOT_0, SmartDashboard.getNumber("Left P Value: ", P_LEFT), NO_TIMEOUT);
 				leftDrive.config_kI(SLOT_0, SmartDashboard.getNumber("Left I Value: ", I_LEFT), NO_TIMEOUT);
 				leftDrive.config_kD(SLOT_0, SmartDashboard.getNumber("Left D Value: ", D_LEFT), NO_TIMEOUT);

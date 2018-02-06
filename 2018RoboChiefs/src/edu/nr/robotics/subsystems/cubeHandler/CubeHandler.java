@@ -251,6 +251,8 @@ private CubeHandler() {
 			P_VEL_CUBE_HANDLER = SmartDashboard.getNumber("P Vel Cube Handler: ", P_VEL_CUBE_HANDLER);
 			I_VEL_CUBE_HANDLER = SmartDashboard.getNumber("I Vel Cube Handler: ", I_VEL_CUBE_HANDLER);
 			D_VEL_CUBE_HANDLER = SmartDashboard.getNumber("D Vel Cube Handler: ", D_VEL_CUBE_HANDLER);
+			
+			SmartDashboard.putNumber("Cube Handler Encoder Ticks: ", cubeHandlerTalon.getSelectedSensorPosition(PID_TYPE));
 		}
 	}
 	
