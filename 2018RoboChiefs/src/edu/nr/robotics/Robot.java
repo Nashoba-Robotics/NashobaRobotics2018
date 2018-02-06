@@ -7,6 +7,7 @@ import edu.nr.lib.gyro.ResetGyroCommand;
 import edu.nr.lib.interfaces.Periodic;
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.lib.network.LimelightNetworkTable;
+import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.auton.AutoChoosers;
 import edu.nr.robotics.auton.AutoChoosers.AllianceBlocks;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
@@ -42,6 +43,7 @@ import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorDeltaPositionSmar
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorMoveBasicSmartDashboardCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocitySmartDashboardCommand;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -196,7 +198,38 @@ public class Robot extends IterativeRobot {
 		new ClimberCoastCommand(false).start();
 		
 		FieldData.getInstance().getFieldData();
-		
+
+		SmartDashboard.putBoolean("Near Switch Left: ",
+				(FieldData.getInstance().nearSwitch == Direction.left
+						&& FieldData.getInstance().alliance == Alliance.Blue)
+						|| (FieldData.getInstance().nearSwitch == Direction.right
+								&& FieldData.getInstance().alliance == Alliance.Red));
+		SmartDashboard.putBoolean("Near Switch Right: ",
+				(FieldData.getInstance().nearSwitch == Direction.left
+						&& FieldData.getInstance().alliance == Alliance.Red)
+						|| (FieldData.getInstance().nearSwitch == Direction.right
+								&& FieldData.getInstance().alliance == Alliance.Blue));
+		SmartDashboard.putBoolean("Scale Left: ",
+				(FieldData.getInstance().scale == Direction.left
+						&& FieldData.getInstance().alliance == Alliance.Blue)
+						|| (FieldData.getInstance().scale == Direction.right
+								&& FieldData.getInstance().alliance == Alliance.Red));
+		SmartDashboard.putBoolean("Scale Right: ",
+				(FieldData.getInstance().scale == Direction.left
+						&& FieldData.getInstance().alliance == Alliance.Red)
+						|| (FieldData.getInstance().scale == Direction.right
+								&& FieldData.getInstance().alliance == Alliance.Blue));
+		SmartDashboard.putBoolean("Far Switch Left: ",
+				(FieldData.getInstance().farSwitch == Direction.left
+						&& FieldData.getInstance().alliance == Alliance.Blue)
+						|| (FieldData.getInstance().farSwitch == Direction.right
+								&& FieldData.getInstance().alliance == Alliance.Red));
+		SmartDashboard.putBoolean("Far Switch Right: ",
+				(FieldData.getInstance().farSwitch == Direction.left
+						&& FieldData.getInstance().alliance == Alliance.Red)
+						|| (FieldData.getInstance().farSwitch == Direction.right
+								&& FieldData.getInstance().alliance == Alliance.Blue));
+
 		selectedStartPos = AutoChoosers.autoStartPosChooser.getSelected();
 		selectedSwitch = AutoChoosers.autoSwitchChooser.getSelected();
 		selectedScale = AutoChoosers.autoScaleChooser.getSelected();

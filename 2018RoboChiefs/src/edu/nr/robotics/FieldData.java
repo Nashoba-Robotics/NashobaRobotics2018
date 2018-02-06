@@ -1,6 +1,7 @@
 package edu.nr.robotics;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class FieldData {
 	
@@ -9,13 +10,10 @@ public class FieldData {
 		left, right;
 	}
 	
-	public enum Color {
-		red, blue;
-	}
-	
 	public Direction nearSwitch;
 	public Direction farSwitch;
 	public Direction scale;
+	public Alliance alliance;
 	
 	public static FieldData singleton;
 	
@@ -51,5 +49,7 @@ public class FieldData {
 		} else if (gsm.charAt(0) == 'r' || gsm.charAt(0) == 'R'){
 			farSwitch = Direction.right;
 		}
+		
+		alliance = DriverStation.getInstance().getAlliance();
 	}
 }
