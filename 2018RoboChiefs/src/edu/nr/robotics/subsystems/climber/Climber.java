@@ -36,7 +36,7 @@ public class Climber extends NRSubsystem {
 	/**
 	 * Current PID values for the climber
 	 */
-	public static final double F_CURRENT_CLIMBER = 1.00 * 1023 / MAX_SPEED_CLIMBER.get(Distance.Unit.MAGNETIC_ENCODER_TICK_CLIMBER, Time.Unit.HUNDRED_MILLISECOND);
+	public static final double F_CURRENT_CLIMBER = 0;
 	public static double P_CURRENT_CLIMBER = 0; // TODO: Find climber current PID values
 	public static double I_CURRENT_CLIMBER = 0;
 	public static double D_CURRENT_CLIMBER = 0;
@@ -44,6 +44,7 @@ public class Climber extends NRSubsystem {
 	/**
 	 * Position PID values for the climber
 	 */
+	public static final double F_POS_CLIMBER = 1.00 * 1023 / MAX_SPEED_CLIMBER.get(Distance.Unit.MAGNETIC_ENCODER_TICK_CLIMBER, Time.Unit.HUNDRED_MILLISECOND);
 	public static double P_POS_CLIMBER = 0; //TODO: Find climber position PID values
 	public static double I_POS_CLIMBER = 0;
 	public static double D_POS_CLIMBER = 0; 
@@ -121,7 +122,7 @@ public class Climber extends NRSubsystem {
 			climberTalon.config_kI(CURRENT_SLOT, I_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
 			climberTalon.config_kD(CURRENT_SLOT, D_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
 			
-			climberTalon.config_kF(POS_SLOT, 0, DEFAULT_TIMEOUT);
+			climberTalon.config_kF(POS_SLOT, F_POS_CLIMBER, DEFAULT_TIMEOUT);
 			climberTalon.config_kP(POS_SLOT, P_POS_CLIMBER, DEFAULT_TIMEOUT);
 			climberTalon.config_kI(POS_SLOT, I_POS_CLIMBER, DEFAULT_TIMEOUT);
 			climberTalon.config_kD(POS_SLOT, D_POS_CLIMBER, DEFAULT_TIMEOUT);

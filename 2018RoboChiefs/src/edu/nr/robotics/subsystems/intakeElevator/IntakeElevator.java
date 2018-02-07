@@ -382,6 +382,14 @@ public class IntakeElevator extends NRSubsystem {
 		}
 	}
 	
+	public boolean isFwdLimitSwitchClosed() {
+		return intakeElevTalon.getSensorCollection().isFwdLimitSwitchClosed();
+	}
+	
+	public boolean isRevLimitSwitchClosed() {
+		return intakeElevTalon.getSensorCollection().isRevLimitSwitchClosed();
+	}
+	
 	@Override
 	public void periodic() {
 		if (EnabledSubsystems.INTAKE_ELEVATOR_ENABLED) {

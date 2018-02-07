@@ -142,7 +142,7 @@ public class Elevator extends NRSubsystem {
 	public static final int MOTION_MAGIC_SLOT = 1;
 	
 	/**
-	 * the max speed ratio of the carriage to the hook
+	 * The max speed ratio of the carriage to the hook
 	 */
 	public static final double HOOK_TO_CARRIAGE_RATIO = 0; //TODO: Find  Carriage to hook ratio
 
@@ -393,6 +393,10 @@ public class Elevator extends NRSubsystem {
 			
 			SmartDashboard.putNumber("Elevator Encoder Ticks: ", elevTalon.getSelectedSensorPosition(PID_TYPE));
 		}
+	}
+	
+	public boolean isRevLimitSwitchClosed() {
+		return elevTalon.getSensorCollection().isRevLimitSwitchClosed();
 	}
 
 	@Override

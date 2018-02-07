@@ -31,6 +31,7 @@ import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersStopCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocityCommand;
 import edu.nr.robotics.subsystems.sensors.EnableFloorSensorCommand;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
+import edu.nr.robotics.testSequence.SystemTestSequenceCommand;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
@@ -68,6 +69,8 @@ public class OI implements SmartDashboardSource {
 	private static final int RESET_GYRO_BUTTON_NUMBER = -1;
 	private static final int CLIMB_BUTTON_NUMBER = -1;
 	private static final int CLIMB_COAST_BUTTON_NUMBER= -1;
+	
+	private static final int TEST_SEQUENCE_BUTTON_NUMBER = -1;
 	
 	private double driveSpeedMultiplier = 1;
 	
@@ -119,6 +122,8 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(driveLeft, ENABLE_SCALE_STOPPING_BUTTON_NUMBER).whenReleased(new EnableFloorSensorCommand(false));
 
 		new JoystickButton(driveLeft, RESET_GYRO_BUTTON_NUMBER).whenPressed(new ResetGyroCommand());
+		
+		new JoystickButton(driveLeft, TEST_SEQUENCE_BUTTON_NUMBER).whenPressed(new SystemTestSequenceCommand());
 		
 	}
 	
