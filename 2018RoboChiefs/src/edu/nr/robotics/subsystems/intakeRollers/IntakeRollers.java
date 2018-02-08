@@ -66,9 +66,9 @@ public class IntakeRollers extends NRSubsystem {
 	/**
 	 * The current values of the elevator shooter
 	 */
-	public static final int PEAK_CURRENT_INTAKE_ROLLERS = 0;
-	public static final int PEAK_CURRENT_DURATION_INTAKE_ROLLERS = 0;	
-	public static final int CONTINUOUS_CURRENT_LIMIT_INTAKE_ROLLERS = 0;
+	public static final int PEAK_CURRENT_INTAKE_ROLLERS = 80;
+	public static final int PEAK_CURRENT_DURATION_INTAKE_ROLLERS = 1000;	
+	public static final int CONTINUOUS_CURRENT_LIMIT_INTAKE_ROLLERS = 40;
 	
 	/**
 	 * The rate of velocity measurements on the elevator shooter encoder

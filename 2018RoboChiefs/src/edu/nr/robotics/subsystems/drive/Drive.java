@@ -175,7 +175,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Max and min speed of turn during
 	 */
-	public static final double MAX_PROFILE_TURN_PERCENT = 0; //TODO: Find Drive turn percents
+	public static final double MAX_PROFILE_TURN_PERCENT = 1.0;
 	public static final double MIN_PROFILE_TURN_PERCENT = 0; 
 	
 	/**
@@ -196,17 +196,17 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Position error in motion profiling that talon needs to be within for 2 * profile position threshold for profile to stop
 	 */
-	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(0, Distance.Unit.INCH); //TODO: Find Drive profile position threshold
+	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(1, Distance.Unit.INCH);
 	
 	/**
 	 * Time stopped before motion profiling ends
 	 */
-	public static final Time PROFILE_TIME_THRESHOLD = Time.ZERO; //TODO: Find Drive profile time threshold
+	public static final Time PROFILE_TIME_THRESHOLD = new Time(10, Time.Unit.MILLISECOND);
 	
 	/**
 	 * The angle within which the turning stops
 	 */
-	public static final Angle DRIVE_ANGLE_THRESHOLD = new Angle(0, Angle.Unit.DEGREE);//TODO: Find ANGLE_THRESHOLD
+	public static final Angle DRIVE_ANGLE_THRESHOLD = new Angle(1, Angle.Unit.DEGREE);
 	
 	/**
 	 * The angle the robot turns to once disabled at full turn speed. Used for GyroCorrection ramped mode.

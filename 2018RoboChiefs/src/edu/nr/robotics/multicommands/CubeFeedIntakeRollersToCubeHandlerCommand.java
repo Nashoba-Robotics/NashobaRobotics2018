@@ -27,9 +27,8 @@ public class CubeFeedIntakeRollersToCubeHandlerCommand extends NRCommand {
 			finished = true;
 		} else if (Elevator.getInstance().getPosition().sub(Elevator.SWITCH_HEIGHT_ELEVATOR.sub(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR)).greaterThan(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR)) {
 			finished = true;
-		} else if (EnabledSensors.intakeSensor.get()) {
-			finished = true;
 		} else {
+			finished = false;
 			IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_INTAKE_ROLLERS);
 			CubeHandler.getInstance().setMotorSpeedPercent(CubeHandler.VEL_PERCENT_CUBE_HANDLER);
 		}
