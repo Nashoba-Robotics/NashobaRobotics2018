@@ -81,7 +81,8 @@ public class RobotDiagram implements Sendable {
 	@Override
 	public void initSendable(SendableBuilder builder) {
 		//this.tableInstance = builder; dunno
-		if (builder  != null) {
+		if (builder != null) {
+			builder.getEntry("Match Time");
 			builder.getEntry("Match Time").setDouble(DriverStation.getInstance().getMatchTime());
 			builder.getEntry("Is Auto").setBoolean(Robot.getInstance().isAutonomous());
 			
