@@ -287,7 +287,8 @@ public class IntakeElevator extends NRSubsystem {
 	 */
 	public void setMotorSpeedPercent(double percent) {
 		if (intakeElevTalon != null) {
-			setMotorSpeed(MAX_SPEED_INTAKE_ELEVATOR.mul(percent));
+			//setMotorSpeed(MAX_SPEED_INTAKE_ELEVATOR.mul(percent));
+			intakeElevTalon.set(ControlMode.PercentOutput, percent);
 		}
 	}
 	

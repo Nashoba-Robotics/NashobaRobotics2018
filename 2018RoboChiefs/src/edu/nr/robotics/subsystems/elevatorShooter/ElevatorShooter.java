@@ -199,7 +199,10 @@ public class ElevatorShooter extends NRSubsystem {
 	 * @param percent velocity
 	 */
 	public void setMotorSpeedPercent(double percent) {
-		setMotorSpeed(MAX_SPEED_ELEVATOR_SHOOTER.mul(percent));
+		if (elevShooterTalon != null) {
+			//setMotorSpeed(MAX_SPEED_ELEVATOR_SHOOTER.mul(percent));
+			elevShooterTalon.set(ControlMode.PercentOutput, percent);	
+		}
 	}
 
 	/**

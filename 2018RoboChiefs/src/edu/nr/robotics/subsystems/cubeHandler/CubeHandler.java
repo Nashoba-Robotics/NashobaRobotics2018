@@ -197,7 +197,10 @@ private static CubeHandler singleton;
 	 * @param percent velocity
 	 */
 	public void setMotorSpeedPercent(double percent) {
-		setMotorSpeed(MAX_SPEED_CUBE_HANDLER.mul(percent));
+		if (cubeHandlerTalon != null) {
+			//setMotorSpeed(MAX_SPEED_CUBE_HANDLER.mul(percent));
+			cubeHandlerTalon.set(ControlMode.PercentOutput, percent);
+		}
 	}
 
 	/**

@@ -306,7 +306,10 @@ public class Elevator extends NRSubsystem {
 	 * @param percent velocity
 	 */
 	public void setMotorSpeedPercent(double percent) {
-		setMotorSpeed(MAX_SPEED_ELEVATOR.mul(percent));
+		if (elevTalon != null) {
+			//setMotorSpeed(MAX_SPEED_ELEVATOR.mul(percent));
+			elevTalon.set(ControlMode.PercentOutput, percent);			
+		}
 	}
 
 	/**

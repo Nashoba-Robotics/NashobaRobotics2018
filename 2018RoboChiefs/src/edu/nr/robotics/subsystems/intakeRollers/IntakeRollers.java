@@ -196,7 +196,10 @@ public class IntakeRollers extends NRSubsystem {
 	 * @param percent velocity
 	 */
 	public void setMotorSpeedPercent(double percent) {
-		setMotorSpeed(INTAKE_ROLLERS_MAX_SPEED.mul(percent));
+		if (intakeRollersMaster != null) {
+			//setMotorSpeed(INTAKE_ROLLERS_MAX_SPEED.mul(percent));
+			intakeRollersMaster.set(ControlMode.PercentOutput, percent);			
+		}
 	}
 	
 	/**
