@@ -101,9 +101,9 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		talon.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
-		carriageTalon.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
+		//carriageTalon.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
 		intakeRoller1.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
-		intakeRoller2.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
+		//intakeRoller2.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
 	}
 
 	/**
