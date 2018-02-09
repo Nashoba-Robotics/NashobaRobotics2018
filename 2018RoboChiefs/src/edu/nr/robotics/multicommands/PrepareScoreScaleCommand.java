@@ -23,5 +23,6 @@ public class PrepareScoreScaleCommand extends CommandGroup {
 		
 		addSequential(new CubeFeedIntakeRollersToElevatorCommand());
 		addSequential(new ElevatorPositionCommand(Elevator.SCALE_HEIGHT_ELEVATOR));
+		addSequential(new IntakeElevatorPositionCommand(IntakeElevator.INTAKE_HEIGHT)); //TODO: Where to put intake
 	}
 }

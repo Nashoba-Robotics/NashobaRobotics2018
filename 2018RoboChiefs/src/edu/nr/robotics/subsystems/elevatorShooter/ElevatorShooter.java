@@ -70,9 +70,9 @@ public class ElevatorShooter extends NRSubsystem {
 	/**
 	 * The current values of the elevator shooter
 	 */
-	public static final int PEAK_CURRENT_ELEVATOR_SHOOTER = 0;// TODO: Find PEAK_CURRENT_ELEVATOR_SHOOTER
-	public static final int PEAK_CURRENT_DURATION_ELEVATOR_SHOOTER = 0; // TODO: Find PEAK_CURRENT_DURATION_ELEVATOR_SHOOTER
-	public static final int CONTINUOUS_CURRENT_LIMIT_ELEVATOR_SHOOTER = 0; // TODO: Find CONTINUOUS_CURRENT_LIMIT_ELEVATOR_SHOOTER
+	public static final int PEAK_CURRENT_ELEVATOR_SHOOTER = 80;
+	public static final int PEAK_CURRENT_DURATION_ELEVATOR_SHOOTER = 1000;
+	public static final int CONTINUOUS_CURRENT_LIMIT_ELEVATOR_SHOOTER = 40;
 
 	/**
 	 * The rate of velocity measurements on the elevator shooter encoder
@@ -199,7 +199,10 @@ public class ElevatorShooter extends NRSubsystem {
 	 * @param percent velocity
 	 */
 	public void setMotorSpeedPercent(double percent) {
-		setMotorSpeed(MAX_SPEED_ELEVATOR_SHOOTER.mul(percent));
+		if (elevShooterTalon != null) {
+			//setMotorSpeed(MAX_SPEED_ELEVATOR_SHOOTER.mul(percent));
+			elevShooterTalon.set(ControlMode.PercentOutput, percent);	
+		}
 	}
 
 	/**

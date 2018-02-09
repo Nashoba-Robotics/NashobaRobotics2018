@@ -26,5 +26,6 @@ public class PrepareScorePortalCommand extends CommandGroup {
 		});
 		
 		addSequential(new CubeFeedIntakeRollersToCubeHandlerCommand());
+		addSequential(new IntakeElevatorPositionCommand(IntakeElevator.INTAKE_HEIGHT));//TODO: Where to put intake
 	}
 }

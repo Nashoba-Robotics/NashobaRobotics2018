@@ -99,9 +99,9 @@ public class Elevator extends NRSubsystem {
 	/**
 	 * The current values of the elevator
 	 */
-	public static final int PEAK_CURRENT_ELEVATOR = 0;// TODO: Find PEAK_CURRENT_ELEVATOR
-	public static final int PEAK_CURRENT_DURATION_ELEVATOR = 0; // TODO: Find PEAK_CURRENT_DURATION_ELEVATOR
-	public static final int CONTINUOUS_CURRENT_LIMIT_ELEVATOR = 0; // TODO: Find CONTINUOUS_CURRENT_LIMIT_ELEVATOR
+	public static final int PEAK_CURRENT_ELEVATOR = 80;
+	public static final int PEAK_CURRENT_DURATION_ELEVATOR = 1000;
+	public static final int CONTINUOUS_CURRENT_LIMIT_ELEVATOR = 40;
 
 	/**
 	 * The rate of velocity measurements on the elevator encoder
@@ -306,7 +306,10 @@ public class Elevator extends NRSubsystem {
 	 * @param percent velocity
 	 */
 	public void setMotorSpeedPercent(double percent) {
-		setMotorSpeed(MAX_SPEED_ELEVATOR.mul(percent));
+		if (elevTalon != null) {
+			//setMotorSpeed(MAX_SPEED_ELEVATOR.mul(percent));
+			elevTalon.set(ControlMode.PercentOutput, percent);			
+		}
 	}
 
 	/**

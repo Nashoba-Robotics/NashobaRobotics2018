@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/user/java/lib/CTRE_Phoenix.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/user/java/lib/CTRE_Phoenix-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/user/java/lib/navx_frc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/user/java/lib/Pathfinder-Java.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/user/java/lib/sf2-frc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/java/current/lib/cscore.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/java/current/lib/cscore-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/java/current/lib/ntcore.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/java/current/lib/ntcore-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/java/current/lib/opencv.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/java/current/lib/opencv-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/java/current/lib/WPILib.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/java/current/lib/WPILib-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/java/current/lib/wpiutil.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Nashoba Robotics/wpilib/java/current/lib/wpiutil-sources.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

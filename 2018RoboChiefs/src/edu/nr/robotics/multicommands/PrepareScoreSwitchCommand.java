@@ -27,7 +27,8 @@ public class PrepareScoreSwitchCommand extends CommandGroup {
 		});
 		
 		addSequential(new CubeFeedIntakeRollersToElevatorCommand());
-		addSequential(new ElevatorPositionCommand(Elevator.SWITCH_HEIGHT_ELEVATOR));		
+		addSequential(new ElevatorPositionCommand(Elevator.SWITCH_HEIGHT_ELEVATOR));
+		addSequential(new IntakeElevatorPositionCommand(IntakeElevator.INTAKE_HEIGHT));//TODO: Decide where to put intake after
 	}
 
 }

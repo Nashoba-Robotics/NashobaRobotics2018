@@ -22,6 +22,8 @@ public class DriveToCubeCommandAdvanced extends NRCommand {
 	private boolean stoppedTracking = false;
 	private boolean hasStartedForward = false;
 	
+	boolean finished = false;
+	
 	private GyroCorrection gyro;
 	
 	public DriveToCubeCommandAdvanced() {
@@ -37,6 +39,12 @@ public class DriveToCubeCommandAdvanced extends NRCommand {
 		IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_INTAKE_ROLLERS);
 		Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 		gyro.reset();
+		
+		if ((IntakeElevator.getInstance().getPosition().sub(IntakeElevator.INTAKE_HEIGHT)).abs().greaterThan(IntakeElevator.PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR)) {
+			finished = true;
+		} else {
+			finished = false;
+		}
 	}
 	
 	@Override
@@ -90,6 +98,6 @@ public class DriveToCubeCommandAdvanced extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return !EnabledSensors.intakeSensor.get();
+		return !EnabledSensors.intakeSensor.get() || finished;
 	}
 }

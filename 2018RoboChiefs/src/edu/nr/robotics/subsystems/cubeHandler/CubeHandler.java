@@ -69,9 +69,9 @@ private static CubeHandler singleton;
 	/**
 	 * The current values of the cube handler
 	 */
-	public static final int PEAK_CURRENT_CUBE_HANDLER = 0;// TODO: Find PEAK_CURRENT_CUBE_HANDLER
-	public static final int PEAK_CURRENT_DURATION_CUBE_HANDLER = 0; // TODO: Find PEAK_CURRENT_DURATION_CUBE_HANDLER
-	public static final int CONTINUOUS_CURRENT_LIMIT_CUBE_HANDLER = 0; // TODO: Find CONTINUOUS_CURRENT_LIMIT_CUBE_HANDLER
+	public static final int PEAK_CURRENT_CUBE_HANDLER = 80;
+	public static final int PEAK_CURRENT_DURATION_CUBE_HANDLER = 1000;
+	public static final int CONTINUOUS_CURRENT_LIMIT_CUBE_HANDLER = 40;
 
 	/**
 	 * The rate of velocity measurements on the cube handler encoder
@@ -111,7 +111,7 @@ private static CubeHandler singleton;
 	private Speed velSetpoint = Speed.ZERO;
 
 	
-private CubeHandler() {
+	private CubeHandler() {
 		
 		if(EnabledSubsystems.CUBE_HANDLER_ENABLED) {
 		
@@ -197,7 +197,10 @@ private CubeHandler() {
 	 * @param percent velocity
 	 */
 	public void setMotorSpeedPercent(double percent) {
-		setMotorSpeed(MAX_SPEED_CUBE_HANDLER.mul(percent));
+		if (cubeHandlerTalon != null) {
+			//setMotorSpeed(MAX_SPEED_CUBE_HANDLER.mul(percent));
+			cubeHandlerTalon.set(ControlMode.PercentOutput, percent);
+		}
 	}
 
 	/**

@@ -54,10 +54,7 @@ public class IntakeElevator extends NRSubsystem {
 	 * The voltage ramp rate of the intake elevator. Voltage ramp rate is time it takes
 	 * to go from 0V to 12V
 	 */
-	public static Time VOLTAGE_RAMP_RATE_INTAKE_ELEVATOR = Time.ZERO; // TODO: Test for
-																// intake elevator
-																// voltage ramp
-																// rate
+	public static Time VOLTAGE_RAMP_RATE_INTAKE_ELEVATOR = Time.ZERO; // TODO: Test for intake elevator voltage ramp rate
 
 	/**
 	 * MotionMagic PID values for the intake elevator
@@ -77,14 +74,12 @@ public class IntakeElevator extends NRSubsystem {
 	/**
 	 * The default profiling velocity percent of the intake elevator
 	 */
-	public static double PROFILE_VEL_PERCENT_INTAKE_ELEVATOR = 0; // TODO: Decide on
-															// PROFILE_VEL_PERCENT_INTAKE_ELEVATOR
+	public static double PROFILE_VEL_PERCENT_INTAKE_ELEVATOR = 0; // TODO: Decide on PROFILE_VEL_PERCENT_INTAKE_ELEVATOR
 
 	/**
 	 * The default profiling acceleration of the intake elevator
 	 */
-	public static double PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR = 0; // TODO: Decide on
-																// PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR
+	public static double PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR = 0; // TODO: Decide on PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR
 
 	/**
 	 * The distance from the end of the intake elevator profile at which the stopping
@@ -97,15 +92,15 @@ public class IntakeElevator extends NRSubsystem {
 	 * PROFILE_TIME_POS_THRESHOLD_INTAKE_ELEVATOR before stopping profile
 	 */
 	public static final Distance PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR = Distance.ZERO; // TODO: Decide on PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR
-	public static final Time PROFILE_DELTA_TIME_THRESHOLD_INTAKE_ELEVATOR = Time.ZERO; // TODO: Decide on PROFILE_DELTA_TIME_THRESHOLD_INTAKE_ELEVATOR
+	public static final Time PROFILE_DELTA_TIME_THRESHOLD_INTAKE_ELEVATOR = new Time(10, Time.Unit.MILLISECOND);
 
 	/**
 	 * The current values of the intake elevator
 	 */
-	public static final int PEAK_CURRENT_INTAKE_ELEVATOR = 0;// TODO: Find PEAK_CURRENT_INTAKE_ELEVATOR
-	public static final int PEAK_CURRENT_DURATION_INTAKE_ELEVATOR = 0; // TODO: Find PEAK_CURRENT_DURATION_INTAKE_ELEVATOR
-	public static final int CONTINUOUS_CURRENT_LIMIT_INTAKE_ELEVATOR = 0; // TODO: Find CONTINUOUS_CURRENT_LIMIT_INTAKE_ELEVATOR
-
+	public static final int PEAK_CURRENT_INTAKE_ELEVATOR = 80;
+	public static final int PEAK_CURRENT_DURATION_INTAKE_ELEVATOR = 1000;
+	public static final int CONTINUOUS_CURRENT_LIMIT_INTAKE_ELEVATOR = 40;
+	
 	/**
 	 * The rate of velocity measurements on the intake elevator encoder
 	 */
@@ -292,7 +287,8 @@ public class IntakeElevator extends NRSubsystem {
 	 */
 	public void setMotorSpeedPercent(double percent) {
 		if (intakeElevTalon != null) {
-			setMotorSpeed(MAX_SPEED_INTAKE_ELEVATOR.mul(percent));
+			//setMotorSpeed(MAX_SPEED_INTAKE_ELEVATOR.mul(percent));
+			intakeElevTalon.set(ControlMode.PercentOutput, percent);
 		}
 	}
 	
