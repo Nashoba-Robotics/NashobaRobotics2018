@@ -104,6 +104,9 @@ public class Robot extends TimedRobot {
 		//carriageTalon.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
 		intakeRoller1.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
 		//intakeRoller2.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
+	
+		SmartDashboard.putNumber("Talon 1 Current: ", talon.getOutputCurrent());
+		SmartDashboard.putNumber("Talon 2 Current: ", intakeRoller1.getOutputCurrent());
 	}
 
 	/**
