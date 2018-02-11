@@ -122,6 +122,11 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	public static final Time PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR = new Time(0.1, Time.Unit.SECOND); // TODO: Decide on PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR
 
 	/**
+	 * Time multiplier for the ramp of the ramped trajectory
+	 */
+	public static final double RAMPED_PROFILE_TIME_MULT_ELEVATOR = 1000;
+	
+	/**
 	 * The current values of the elevator
 	 */
 	public static final int PEAK_CURRENT_ELEVATOR = 80;
@@ -448,14 +453,18 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 		
 		if (dist.greaterThan(Distance.ZERO)) {
 		
+			kA_UP = 0; //TODO: Find kA-position function up
+			
 			basicProfiler = new OneDimensionalMotionProfilerBasic(this, this, kV_UP, kA_UP, kP_UP, kD_UP);
 			basicProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(
 					dist.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV),
 					MAX_SPEED_ELEVATOR_UP.mul(PROFILE_VEL_PERCENT_ELEVATOR).get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
 							Time.Unit.HUNDRED_MILLISECOND),
 					MAX_ACCEL_ELEVATOR_UP.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
-							Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
+							Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), RAMPED_PROFILE_TIME_MULT_ELEVATOR));
 		} else {
+			
+			kA_DOWN = 0; //TODO: Find kA-position function down
 			
 			basicProfiler = new OneDimensionalMotionProfilerBasic(this, this, kV_DOWN, kA_DOWN, kP_DOWN, kD_DOWN);
 			basicProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(
@@ -463,7 +472,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 					MAX_SPEED_ELEVATOR_DOWN.mul(PROFILE_VEL_PERCENT_ELEVATOR).get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
 							Time.Unit.HUNDRED_MILLISECOND),
 					MAX_ACCEL_ELEVATOR_DOWN.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
-							Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
+							Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), RAMPED_PROFILE_TIME_MULT_ELEVATOR));
 		}
 				
 		basicProfiler.enable();

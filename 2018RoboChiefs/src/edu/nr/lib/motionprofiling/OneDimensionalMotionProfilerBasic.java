@@ -92,7 +92,7 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 			
 			double output = velocityGoal * kv + error * kp + errorDeriv * kd;
 			
-			if (accelGoal > 0) {
+			if ((accelGoal > 0 && velocityGoal > 0) || (accelGoal < 0 && velocityGoal < 0)) {
 				output += accelGoal * ka;
 			}
 			
