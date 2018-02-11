@@ -8,29 +8,27 @@ import edu.nr.robotics.subsystems.drive.Drive;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ElevatorProfileBasicTrajectory extends NRCommand {
+public class ElevatorProfileBasicCommand extends NRCommand {
 	
 	
 	Distance initialPosition;
 	Distance tempPosition = Distance.ZERO;
 	
-	Distance dist;
+	Distance position;
 	double maxVelPercent;
 	double maxAccelPercent;
 	
-	private final Distance END_THRESHOLD = Elevator.PROFILE_END_POS_THRESHOLD_ELEVATOR;
-	
-	public ElevatorProfileBasicTrajectory(Distance dist, double MaxVelPercent, double MaxAccelPercent) {
+	public ElevatorProfileBasicCommand(Distance position, double maxVelPercent, double maxAccelPercent) {
 		super(Elevator.getInstance());
-		this.dist = dist;
+		this.position = position;
 		this.maxVelPercent = maxVelPercent;
 		this.maxAccelPercent = maxAccelPercent;
 	}
 	
 	@Override
 	public void onStart() {
-		Elevator.getInstance().enableMotionProfiler(dist, maxVelPercent, maxAccelPercent);
 		initialPosition = Elevator.getInstance().getPosition();
+		Elevator.getInstance().enableMotionProfiler(position.sub(initialPosition), maxVelPercent, maxAccelPercent);
 	}
 	
 	@Override
@@ -56,7 +54,7 @@ public class ElevatorProfileBasicTrajectory extends NRCommand {
 				.sub(Elevator.getInstance().getPosition())).abs().lessThan(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR)
 				&& (Elevator.getInstance().getHistoricalPosition(Elevator.PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR.mul(2))
 						.sub(Elevator.getInstance().getPosition())).abs().lessThan(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR)
-				&& (initialPosition.add(dist).sub(Elevator.getInstance().getPosition())).abs().lessThan(Elevator.PROFILE_END_POS_THRESHOLD_ELEVATOR);
+				&& (initialPosition.add(position).sub(Elevator.getInstance().getPosition())).abs().lessThan(Elevator.PROFILE_END_POS_THRESHOLD_ELEVATOR);
 		return finished;
 	}
 

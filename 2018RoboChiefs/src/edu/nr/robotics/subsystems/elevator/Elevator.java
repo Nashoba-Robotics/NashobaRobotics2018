@@ -149,7 +149,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	public static final int MOTION_MAGIC_SLOT = 1;
 	
 	public static final double kV = 1 / MAX_SPEED_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND);
-	public static final double kA = 1 / MAX_ACCEL_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
+	public static double kA = 0;
 	public static double kP = 0;
 	public static double kD = 0;
 	
@@ -379,6 +379,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 						Time.Unit.HUNDRED_MILLISECOND),
 				MAX_ACCEL_ELEVATOR.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
 						Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
+		basicProfiler.enable();
 	}
 	
 	public void disableProfiler() {
@@ -418,8 +419,9 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 			SmartDashboard.putNumber("Elevator Profile Delta Inches: ", 0);
 			SmartDashboard.putNumber("Voltage Ramp Rate Elevator Seconds: ",
 					VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND));
-			SmartDashboard.putNumber("Elevator KP: ", kP);
-			SmartDashboard.putNumber("Elevator KD: ", kD);
+			SmartDashboard.putNumber("Elevator kA: ", kA);
+			SmartDashboard.putNumber("Elevator kP: ", kP);
+			SmartDashboard.putNumber("Elevator kD: ", kD);
 			SmartDashboard.putNumber("F Pos Elevator: ", F_POS_ELEVATOR);
 			SmartDashboard.putNumber("P Pos Elevator: ", P_POS_ELEVATOR);
 			SmartDashboard.putNumber("I Pos Elevator: ", I_POS_ELEVATOR);
@@ -465,6 +467,10 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 					PROFILE_VEL_PERCENT_ELEVATOR);
 			PROFILE_ACCEL_PERCENT_ELEVATOR = SmartDashboard.getNumber("Profile Accel Percent Elevator: ",
 					PROFILE_ACCEL_PERCENT_ELEVATOR);
+			
+			kA = SmartDashboard.getNumber("Elevator kA: ", kA);
+			kP = SmartDashboard.getNumber("Elevator kP: ", kP);
+			kD = SmartDashboard.getNumber("Elevator kD: ", kD);
 			
 			SmartDashboard.putNumber("Elevator Encoder Ticks: ", elevTalon.getSelectedSensorPosition(PID_TYPE));
 		}
