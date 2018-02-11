@@ -107,11 +107,11 @@ public class OI implements SmartDashboardSource {
 
 		elevatorStick = operatorRight; //TODO: find what it is
 		
-		initDriveLeft();
-		initDriveRight();
+		//initDriveLeft();
+		//initDriveRight();
 		
-		initOperatorLeft();
-		initOperatorRight();
+		//initOperatorLeft();
+		//initOperatorRight();
 		
 		SmartDashboardSource.sources.add(this);
 	}

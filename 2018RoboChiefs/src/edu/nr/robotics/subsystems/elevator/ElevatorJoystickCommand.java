@@ -19,7 +19,7 @@ public class ElevatorJoystickCommand extends JoystickCommand {
 	protected void onExecute() {
 		Elevator.getInstance().setMotorSpeedPercent(OI.getInstance().getElevatorJoystickValue());
 		if (!OI.getInstance().isElevatorNonZero()) {
-			Elevator.getInstance().setPosition(Elevator.getInstance().getPosition());
+			//Elevator.getInstance().setPosition(Elevator.getInstance().getPosition());
 		}
 		
 	}
