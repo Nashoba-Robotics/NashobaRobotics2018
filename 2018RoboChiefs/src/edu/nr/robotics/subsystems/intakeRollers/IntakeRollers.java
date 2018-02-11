@@ -20,7 +20,7 @@ public class IntakeRollers extends NRSubsystem {
 	
 	private static IntakeRollers singleton;
 	
-	private TalonSRX intakeRollersMaster, intakeRollersFollower;
+	private TalonSRX intakeRollers, intakeRollersFollower;
 	private TalonEncoder intakeRollersEncoder;
 	
 	//TODO: determine ALL for real
@@ -111,38 +111,40 @@ public class IntakeRollers extends NRSubsystem {
 
 		if(EnabledSubsystems.INTAKE_ROLLERS_ENABLED) {
 		
-			intakeRollersMaster = CTRECreator.createMasterTalon(RobotMap.INTAKE_ROLLERS_MASTER);
+			intakeRollers = CTRECreator.createMasterTalon(RobotMap.INTAKE_ROLLERS_MASTER);
 			intakeRollersFollower = CTRECreator.createFollowerTalon(RobotMap.INTAKE_ROLLERS_FOLLOW, RobotMap.INTAKE_ROLLERS_MASTER);
 	
 			if (EnabledSubsystems.INTAKE_ROLLERS_DUMB_ENABLED) {
-				intakeRollersMaster.set(ControlMode.PercentOutput, 0);
+				intakeRollers.set(ControlMode.PercentOutput, 0);
 			} else {
-				intakeRollersMaster.set(ControlMode.Velocity, 0);
+				intakeRollers.set(ControlMode.Velocity, 0);
 			}
 	
-			intakeRollersMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);
-			intakeRollersMaster.config_kF(VEL_SLOT, 0, DEFAULT_TIMEOUT);
-			intakeRollersMaster.config_kP(VEL_SLOT, P_VEL_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
-			intakeRollersMaster.config_kI(VEL_SLOT, I_VEL_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
-			intakeRollersMaster.config_kD(VEL_SLOT, D_VEL_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
-			intakeRollersMaster.setNeutralMode(NEUTRAL_MODE_INTAKE_ROLLERS);
-			intakeRollersMaster.setInverted(false);
-			intakeRollersMaster.setSensorPhase(false);
+			intakeRollers.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);
+			intakeRollers.config_kF(VEL_SLOT, 0, DEFAULT_TIMEOUT);
+			intakeRollers.config_kP(VEL_SLOT, P_VEL_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
+			intakeRollers.config_kI(VEL_SLOT, I_VEL_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
+			intakeRollers.config_kD(VEL_SLOT, D_VEL_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
+			intakeRollers.setNeutralMode(NEUTRAL_MODE_INTAKE_ROLLERS);
+			intakeRollers.setInverted(false);
+			intakeRollers.setSensorPhase(false);
 	
-			intakeRollersMaster.enableVoltageCompensation(true);
-			intakeRollersMaster.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
+			intakeRollers.enableVoltageCompensation(true);
+			intakeRollers.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
 	
-			intakeRollersMaster.enableCurrentLimit(true);
-			intakeRollersMaster.configPeakCurrentLimit(PEAK_CURRENT_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
-			intakeRollersMaster.configPeakCurrentDuration(PEAK_CURRENT_DURATION_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
-			intakeRollersMaster.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
+			intakeRollers.enableCurrentLimit(true);
+			intakeRollers.configPeakCurrentLimit(PEAK_CURRENT_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
+			intakeRollers.configPeakCurrentDuration(PEAK_CURRENT_DURATION_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
+			intakeRollers.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
 	
-			intakeRollersMaster.configClosedloopRamp(VOLTAGE_RAMP_RATE_INTAKE_ROLLERS.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
-			intakeRollersMaster.configOpenloopRamp(VOLTAGE_RAMP_RATE_INTAKE_ROLLERS.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
+			intakeRollers.configClosedloopRamp(VOLTAGE_RAMP_RATE_INTAKE_ROLLERS.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
+			intakeRollers.configOpenloopRamp(VOLTAGE_RAMP_RATE_INTAKE_ROLLERS.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	
 			intakeRollersFollower.setNeutralMode(NEUTRAL_MODE_INTAKE_ROLLERS);
 			
-			intakeRollersEncoder = new TalonEncoder(intakeRollersMaster, Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS);
+			intakeRollers.selectProfileSlot(VEL_SLOT, DEFAULT_TIMEOUT);
+			
+			intakeRollersEncoder = new TalonEncoder(intakeRollers, Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS);
 		}
 		
 		smartDashboardInit();
@@ -164,8 +166,8 @@ public class IntakeRollers extends NRSubsystem {
 	 * @return The current velocity of the intake rollers encoder
 	 */
 	public Speed getVelocity() {
-		if (intakeRollersMaster != null)
-			return new Speed(intakeRollersMaster.getSelectedSensorVelocity(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER,
+		if (intakeRollers != null)
+			return new Speed(intakeRollers.getSelectedSensorVelocity(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER,
 				Time.Unit.HUNDRED_MILLISECOND);
 		return Speed.ZERO;
 	}
@@ -178,7 +180,7 @@ public class IntakeRollers extends NRSubsystem {
 	 * @return old velocity of the intake rollers master
 	 */
 	public Speed getHistoricalVelocity(Time timePassed) {
-		if (intakeRollersMaster != null)
+		if (intakeRollers != null)
 			return new Speed(intakeRollersEncoder.getVelocity(timePassed));
 		return Speed.ZERO;
 	}
@@ -187,8 +189,8 @@ public class IntakeRollers extends NRSubsystem {
 	 * @return The current of the intake rollers master
 	 */
 	public double getCurrent() {
-		if (intakeRollersMaster != null)
-			return intakeRollersMaster.getOutputCurrent();
+		if (intakeRollers != null)
+			return intakeRollers.getOutputCurrent();
 		return 0;
 	}
 	
@@ -196,9 +198,9 @@ public class IntakeRollers extends NRSubsystem {
 	 * @param percent velocity
 	 */
 	public void setMotorSpeedPercent(double percent) {
-		if (intakeRollersMaster != null) {
+		if (intakeRollers != null) {
 			//setMotorSpeed(INTAKE_ROLLERS_MAX_SPEED.mul(percent));
-			intakeRollersMaster.set(ControlMode.PercentOutput, percent);			
+			intakeRollers.set(ControlMode.PercentOutput, percent);			
 		}
 	}
 	
@@ -207,20 +209,20 @@ public class IntakeRollers extends NRSubsystem {
 	 */
 	public void setMotorSpeed(Speed speed) {
 
-		if (intakeRollersMaster != null) {
+		if (intakeRollers != null) {
 
 			velSetpoint = speed;
-			intakeRollersMaster.config_kF(VEL_SLOT,
+			intakeRollers.config_kF(VEL_SLOT,
 					((VOLTAGE_VELOCITY_SLOPE_INTAKE_ROLLERS * velSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
 							+ MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ROLLERS) * 1023.0)
 							/ velSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER,
 									Time.Unit.HUNDRED_MILLISECOND),
 					DEFAULT_TIMEOUT);
 	
-			if (intakeRollersMaster.getControlMode() == ControlMode.PercentOutput) {
-				intakeRollersMaster.set(intakeRollersMaster.getControlMode(), velSetpoint.div(INTAKE_ROLLERS_MAX_SPEED));
+			if (intakeRollers.getControlMode() == ControlMode.PercentOutput) {
+				intakeRollers.set(intakeRollers.getControlMode(), velSetpoint.div(INTAKE_ROLLERS_MAX_SPEED));
 			} else {
-				intakeRollersMaster.set(intakeRollersMaster.getControlMode(),
+				intakeRollers.set(intakeRollers.getControlMode(),
 						velSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER, Time.Unit.HUNDRED_MILLISECOND));
 			}
 		}
@@ -255,7 +257,11 @@ public class IntakeRollers extends NRSubsystem {
 			I_VEL_INTAKE_ROLLERS = SmartDashboard.getNumber("I Vel Intake Rollers: ", I_VEL_INTAKE_ROLLERS);
 			D_VEL_INTAKE_ROLLERS = SmartDashboard.getNumber("D Vel Intake Rollers: ", D_VEL_INTAKE_ROLLERS);
 			
-			SmartDashboard.putNumber("Intake Rollers Encoder Ticks: ", intakeRollersMaster.getSelectedSensorPosition(PID_TYPE));
+			intakeRollers.config_kP(VEL_SLOT, P_VEL_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
+			intakeRollers.config_kI(VEL_SLOT, I_VEL_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
+			intakeRollers.config_kD(VEL_SLOT, D_VEL_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
+			
+			SmartDashboard.putNumber("Intake Ro1llers Encoder Ticks: ", intakeRollers.getSelectedSensorPosition(PID_TYPE));
 		}
 	}
 	

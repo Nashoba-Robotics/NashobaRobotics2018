@@ -123,6 +123,8 @@ private static CubeHandler singleton;
 				cubeHandlerTalon.set(ControlMode.Velocity, 0);
 			}
 	
+			cubeHandlerTalon.selectProfileSlot(VEL_SLOT, DEFAULT_TIMEOUT);
+			
 			cubeHandlerTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);
 			cubeHandlerTalon.config_kF(VEL_SLOT, 0, DEFAULT_TIMEOUT);
 			cubeHandlerTalon.config_kP(VEL_SLOT, P_VEL_CUBE_HANDLER, DEFAULT_TIMEOUT);
@@ -254,6 +256,10 @@ private static CubeHandler singleton;
 			P_VEL_CUBE_HANDLER = SmartDashboard.getNumber("P Vel Cube Handler: ", P_VEL_CUBE_HANDLER);
 			I_VEL_CUBE_HANDLER = SmartDashboard.getNumber("I Vel Cube Handler: ", I_VEL_CUBE_HANDLER);
 			D_VEL_CUBE_HANDLER = SmartDashboard.getNumber("D Vel Cube Handler: ", D_VEL_CUBE_HANDLER);
+			
+			cubeHandlerTalon.config_kP(VEL_SLOT, P_VEL_CUBE_HANDLER, DEFAULT_TIMEOUT);
+			cubeHandlerTalon.config_kI(VEL_SLOT, I_VEL_CUBE_HANDLER, DEFAULT_TIMEOUT);
+			cubeHandlerTalon.config_kD(VEL_SLOT, D_VEL_CUBE_HANDLER, DEFAULT_TIMEOUT);
 			
 			SmartDashboard.putNumber("Cube Handler Encoder Ticks: ", cubeHandlerTalon.getSelectedSensorPosition(PID_TYPE));
 		}
