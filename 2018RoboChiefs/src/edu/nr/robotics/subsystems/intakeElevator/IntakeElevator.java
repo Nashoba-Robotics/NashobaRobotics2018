@@ -33,22 +33,26 @@ public class IntakeElevator extends NRSubsystem {
 	/**
 	 * The max speed of the intake elevator
 	 */
-	public static final Speed MAX_SPEED_INTAKE_ELEVATOR = Speed.ZERO; // TODO: Find MAX_SPEED_INTAKE_ELEVATOR
+	public static final Speed MAX_SPEED_INTAKE_ELEVATOR_UP = Speed.ZERO; // TODO: Find MAX_SPEED_INTAKE_ELEVATOR_UP
+	public static final Speed MAX_SPEED_INTAKE_ELEVATOR_DOWN = Speed.ZERO; // TODO: Find MAX_SPEED_INTAKE_ELEVATOR_DOWN
 
 	/**
 	 * The max acceleration of the intake elevator
 	 */
-	public static final Acceleration MAX_ACCEL_INTAKE_ELEVATOR = Acceleration.ZERO; // TODO: Find MAX_ACCEL_INTAKE_ELEVATOR
-
+	public static final Acceleration MAX_ACCEL_INTAKE_ELEVATOR_UP = Acceleration.ZERO; // TODO: Find MAX_ACCEL_INTAKE_ELEVATOR_UP
+	public static final Acceleration MAX_ACCEL_INTAKE_ELEVATOR_DOWN = Acceleration.ZERO; // TODO: Find MAX_ACCEL_INTAKE_ELEVATOR_DOWN
+	
 	/**
 	 * The minimum voltage needed to move the intake elevator
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR = 0; // TODO: Find Elevator voltage velocity curve
-
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0; // TODO: Find Elevator voltage velocity curve up
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0; // TODO: Find Elevator voltage velocity curve down
+	
 	/**
 	 * The slope of voltage over velocity in feet per second
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR = 0;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR_UP = 0;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR_DOWN = 0;
 
 	/**
 	 * The voltage ramp rate of the intake elevator. Voltage ramp rate is time it takes
@@ -59,17 +63,26 @@ public class IntakeElevator extends NRSubsystem {
 	/**
 	 * MotionMagic PID values for the intake elevator
 	 */
-	public static double F_POS_INTAKE_ELEVATOR = 0;
-	public static double P_POS_INTAKE_ELEVATOR = 0; // TODO: Find intake elevator MagicMotion FPID values
-	public static double I_POS_INTAKE_ELEVATOR = 0;
-	public static double D_POS_INTAKE_ELEVATOR = 0;
-
+	public static double F_POS_INTAKE_ELEVATOR_UP = 0;
+	public static double P_POS_INTAKE_ELEVATOR_UP = 0; // TODO: Find intake elevator MagicMotion FPID UP values
+	public static double I_POS_INTAKE_ELEVATOR_UP = 0;
+	public static double D_POS_INTAKE_ELEVATOR_UP = 0;
+	
+	public static double F_POS_INTAKE_ELEVATOR_DOWN = 0;
+	public static double P_POS_INTAKE_ELEVATOR_DOWN = 0; // TODO: Find intake elevator MagicMotion FPID DOWN values
+	public static double I_POS_INTAKE_ELEVATOR_DOWN = 0;
+	public static double D_POS_INTAKE_ELEVATOR_DOWN = 0;
+	
 	/**
 	 * Velocity PID values for the intake elevator
 	 */
-	public static double P_VEL_INTAKE_ELEVATOR = 0; // TODO: Find intake elevator velocity PID values
-	public static double I_VEL_INTAKE_ELEVATOR = 0;
-	public static double D_VEL_INTAKE_ELEVATOR = 0;
+	public static double P_VEL_INTAKE_ELEVATOR_UP = 0; // TODO: Find intake elevator velocity PID UP values
+	public static double I_VEL_INTAKE_ELEVATOR_UP = 0;
+	public static double D_VEL_INTAKE_ELEVATOR_UP = 0;
+	
+	public static double P_VEL_INTAKE_ELEVATOR_DOWN = 0; // TODO: Find intake elevator velocity PID DOWN values
+	public static double I_VEL_INTAKE_ELEVATOR_DOWN = 0;
+	public static double D_VEL_INTAKE_ELEVATOR_DOWN = 0;
 
 	/**
 	 * The default profiling velocity percent of the intake elevator
@@ -136,9 +149,12 @@ public class IntakeElevator extends NRSubsystem {
 	/**
 	 * The PID slot numbers
 	 */
-	public static final int VEL_SLOT = 0;
-	public static final int MOTION_MAGIC_SLOT = 1;
+	public static final int VEL_UP_SLOT = 0;
+	public static final int MOTION_MAGIC_UP_SLOT = 1;
 
+	public static final int VEL_DOWN_SLOT = 2;
+	public static final int MOTION_MAGIC_DOWN_SLOT = 3;
+	
 	/**
 	 * The positions of the intake elevator at each limit switch and at the default
 	 * extend height
@@ -171,14 +187,24 @@ public class IntakeElevator extends NRSubsystem {
 			}
 	
 			intakeElevTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kF(VEL_SLOT, 0, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kP(VEL_SLOT, P_VEL_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kI(VEL_SLOT, I_VEL_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kD(VEL_SLOT, D_VEL_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kF(MOTION_MAGIC_SLOT, F_POS_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kP(MOTION_MAGIC_SLOT, P_POS_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kI(MOTION_MAGIC_SLOT, I_POS_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kD(MOTION_MAGIC_SLOT, D_POS_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kF(VEL_UP_SLOT, 0, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kP(VEL_UP_SLOT, P_VEL_INTAKE_ELEVATOR_UP, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kI(VEL_UP_SLOT, I_VEL_INTAKE_ELEVATOR_UP, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kD(VEL_UP_SLOT, D_VEL_INTAKE_ELEVATOR_UP, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kF(MOTION_MAGIC_UP_SLOT, F_POS_INTAKE_ELEVATOR_UP, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kP(MOTION_MAGIC_UP_SLOT, P_POS_INTAKE_ELEVATOR_UP, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kI(MOTION_MAGIC_UP_SLOT, I_POS_INTAKE_ELEVATOR_UP, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kD(MOTION_MAGIC_UP_SLOT, D_POS_INTAKE_ELEVATOR_UP, DEFAULT_TIMEOUT);
+			
+			intakeElevTalon.config_kF(VEL_DOWN_SLOT, 0, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kP(VEL_DOWN_SLOT, P_VEL_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kI(VEL_DOWN_SLOT, I_VEL_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kD(VEL_DOWN_SLOT, D_VEL_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kF(MOTION_MAGIC_DOWN_SLOT, F_POS_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kP(MOTION_MAGIC_DOWN_SLOT, P_POS_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kI(MOTION_MAGIC_DOWN_SLOT, I_POS_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kD(MOTION_MAGIC_DOWN_SLOT, D_POS_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
+			
 			intakeElevTalon.setNeutralMode(NEUTRAL_MODE_INTAKE_ELEVATOR);
 			intakeElevTalon.setInverted(false);
 			intakeElevTalon.setSensorPhase(false);
@@ -194,10 +220,10 @@ public class IntakeElevator extends NRSubsystem {
 			intakeElevTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_INTAKE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			intakeElevTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_INTAKE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	
-			intakeElevTalon.configMotionCruiseVelocity((int) MAX_SPEED_INTAKE_ELEVATOR.mul(PROFILE_VEL_PERCENT_INTAKE_ELEVATOR).get(
+			intakeElevTalon.configMotionCruiseVelocity((int) MAX_SPEED_INTAKE_ELEVATOR_UP.mul(PROFILE_VEL_PERCENT_INTAKE_ELEVATOR).get(
 					Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND),
 							DEFAULT_TIMEOUT);
-			intakeElevTalon.configMotionAcceleration((int) MAX_ACCEL_INTAKE_ELEVATOR.mul(PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR).get(
+			intakeElevTalon.configMotionAcceleration((int) MAX_ACCEL_INTAKE_ELEVATOR_UP.mul(PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR).get(
 					Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 					DEFAULT_TIMEOUT);
 			
@@ -271,13 +297,27 @@ public class IntakeElevator extends NRSubsystem {
 		if (intakeElevTalon != null) {
 			posSetpoint = position;
 			velSetpoint = Speed.ZERO;
-			intakeElevTalon.selectProfileSlot(MOTION_MAGIC_SLOT, DEFAULT_TIMEOUT);
-			intakeElevTalon.configMotionCruiseVelocity((int) MAX_SPEED_INTAKE_ELEVATOR.mul(PROFILE_VEL_PERCENT_INTAKE_ELEVATOR).get(
+			
+			if (position.sub(getPosition()).greaterThan(Distance.ZERO)) {
+				intakeElevTalon.selectProfileSlot(MOTION_MAGIC_UP_SLOT, DEFAULT_TIMEOUT);
+			
+				intakeElevTalon.configMotionCruiseVelocity((int) MAX_SPEED_INTAKE_ELEVATOR_UP.mul(PROFILE_VEL_PERCENT_INTAKE_ELEVATOR).get(
 					Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND),
 							DEFAULT_TIMEOUT);
-			intakeElevTalon.configMotionAcceleration((int) MAX_ACCEL_INTAKE_ELEVATOR.mul(PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR).get(
+				intakeElevTalon.configMotionAcceleration((int) MAX_ACCEL_INTAKE_ELEVATOR_UP.mul(PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR).get(
 					Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 					DEFAULT_TIMEOUT);
+			} else {
+				
+				intakeElevTalon.selectProfileSlot(MOTION_MAGIC_DOWN_SLOT, DEFAULT_TIMEOUT);
+				
+				intakeElevTalon.configMotionCruiseVelocity((int) MAX_SPEED_INTAKE_ELEVATOR_DOWN.mul(PROFILE_VEL_PERCENT_INTAKE_ELEVATOR).get(
+					Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND),
+							DEFAULT_TIMEOUT);
+				intakeElevTalon.configMotionAcceleration((int) MAX_ACCEL_INTAKE_ELEVATOR_DOWN.mul(PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR).get(
+					Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
+					DEFAULT_TIMEOUT);
+			}
 			intakeElevTalon.set(ControlMode.MotionMagic, position.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV));
 		}
 	}
@@ -301,19 +341,37 @@ public class IntakeElevator extends NRSubsystem {
 		if (intakeElevTalon != null) {
 			velSetpoint = speed;
 			posSetpoint = Distance.ZERO;
-			intakeElevTalon.selectProfileSlot(VEL_SLOT, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kF(VEL_SLOT,
-				((VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR * velSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
-						+ MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR) * 1023.0)
-						/ velSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV,
-								Time.Unit.HUNDRED_MILLISECOND),
-				DEFAULT_TIMEOUT);
-
-			if (intakeElevTalon.getControlMode() == ControlMode.PercentOutput) {
-				intakeElevTalon.set(intakeElevTalon.getControlMode(), velSetpoint.div(MAX_SPEED_INTAKE_ELEVATOR));
+			
+			if (speed.greaterThan(Speed.ZERO)) {
+				intakeElevTalon.selectProfileSlot(VEL_UP_SLOT, DEFAULT_TIMEOUT);
+				intakeElevTalon.config_kF(VEL_UP_SLOT,
+					((VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR_UP * velSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
+							+ MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP) * 1023.0)
+							/ velSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV,
+									Time.Unit.HUNDRED_MILLISECOND),
+					DEFAULT_TIMEOUT);
+	
+				if (intakeElevTalon.getControlMode() == ControlMode.PercentOutput) {
+					intakeElevTalon.set(intakeElevTalon.getControlMode(), velSetpoint.div(MAX_SPEED_INTAKE_ELEVATOR_UP));
+				} else {
+					intakeElevTalon.set(intakeElevTalon.getControlMode(),
+						velSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND));
+				}
 			} else {
-				intakeElevTalon.set(intakeElevTalon.getControlMode(),
-					velSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND));
+				intakeElevTalon.selectProfileSlot(VEL_DOWN_SLOT, DEFAULT_TIMEOUT);
+				intakeElevTalon.config_kF(VEL_DOWN_SLOT,
+					((VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR_DOWN * velSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
+							+ MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN) * 1023.0)
+							/ velSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV,
+									Time.Unit.HUNDRED_MILLISECOND),
+					DEFAULT_TIMEOUT);
+	
+				if (intakeElevTalon.getControlMode() == ControlMode.PercentOutput) {
+					intakeElevTalon.set(intakeElevTalon.getControlMode(), velSetpoint.div(MAX_SPEED_INTAKE_ELEVATOR_DOWN));
+				} else {
+					intakeElevTalon.set(intakeElevTalon.getControlMode(),
+						velSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND));
+				}
 			}
 		}
 	}
@@ -339,13 +397,23 @@ public class IntakeElevator extends NRSubsystem {
 			SmartDashboard.putNumber("Intake Elevator Profile Delta Inches: ", 0);
 			SmartDashboard.putNumber("Voltage Ramp Rate Intake Elevator Seconds: ",
 					VOLTAGE_RAMP_RATE_INTAKE_ELEVATOR.get(Time.Unit.SECOND));
-			SmartDashboard.putNumber("F Pos Intake Elevator: ", F_POS_INTAKE_ELEVATOR);
-			SmartDashboard.putNumber("P Pos Intake Elevator: ", P_POS_INTAKE_ELEVATOR);
-			SmartDashboard.putNumber("I Pos Intake Elevator: ", I_POS_INTAKE_ELEVATOR);
-			SmartDashboard.putNumber("D Pos Intake Elevator: ", D_POS_INTAKE_ELEVATOR);
-			SmartDashboard.putNumber("P Vel Intake Elevator: ", P_VEL_INTAKE_ELEVATOR);
-			SmartDashboard.putNumber("I Vel Intake Elevator: ", I_VEL_INTAKE_ELEVATOR);
-			SmartDashboard.putNumber("D Vel Intake Elevator: ", D_VEL_INTAKE_ELEVATOR);
+			
+			SmartDashboard.putNumber("F Pos Intake Elevator Up: ", F_POS_INTAKE_ELEVATOR_UP);
+			SmartDashboard.putNumber("P Pos Intake Elevator Up: ", P_POS_INTAKE_ELEVATOR_UP);
+			SmartDashboard.putNumber("I Pos Intake Elevator Up: ", I_POS_INTAKE_ELEVATOR_UP);
+			SmartDashboard.putNumber("D Pos Intake Elevator Up: ", D_POS_INTAKE_ELEVATOR_UP);
+			SmartDashboard.putNumber("P Vel Intake Elevator Up: ", P_VEL_INTAKE_ELEVATOR_UP);
+			SmartDashboard.putNumber("I Vel Intake Elevator Up: ", I_VEL_INTAKE_ELEVATOR_UP);
+			SmartDashboard.putNumber("D Vel Intake Elevator Up: ", D_VEL_INTAKE_ELEVATOR_UP);
+			
+			SmartDashboard.putNumber("F Pos Intake Elevator Down: ", F_POS_INTAKE_ELEVATOR_DOWN);
+			SmartDashboard.putNumber("P Pos Intake Elevator Down: ", P_POS_INTAKE_ELEVATOR_DOWN);
+			SmartDashboard.putNumber("I Pos Intake Elevator Down: ", I_POS_INTAKE_ELEVATOR_DOWN);
+			SmartDashboard.putNumber("D Pos Intake Elevator Down: ", D_POS_INTAKE_ELEVATOR_DOWN);
+			SmartDashboard.putNumber("P Vel Intake Elevator Down: ", P_VEL_INTAKE_ELEVATOR_DOWN);
+			SmartDashboard.putNumber("I Vel Intake Elevator Down: ", I_VEL_INTAKE_ELEVATOR_DOWN);
+			SmartDashboard.putNumber("D Vel Intake Elevator Down: ", D_VEL_INTAKE_ELEVATOR_DOWN);
+			
 			SmartDashboard.putNumber("Profile Vel Percent Intake Elevator: ", PROFILE_VEL_PERCENT_INTAKE_ELEVATOR);
 			SmartDashboard.putNumber("Profile Accel Percent Intake Elevator: ", PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR);
 		}
@@ -366,25 +434,42 @@ public class IntakeElevator extends NRSubsystem {
 		if (EnabledSubsystems.INTAKE_ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
 			profileDeltaPos = new Distance(SmartDashboard.getNumber("Intake Elevator Profile Delta Inches: ", 0),
 					Distance.Unit.INCH);
-			F_POS_INTAKE_ELEVATOR = SmartDashboard.getNumber("F Pos Intake Elevator: ", F_POS_INTAKE_ELEVATOR);
-			P_POS_INTAKE_ELEVATOR = SmartDashboard.getNumber("P Pos Intake Elevator: ", P_POS_INTAKE_ELEVATOR);
-			I_POS_INTAKE_ELEVATOR = SmartDashboard.getNumber("I Pos Intake Elevator: ", I_POS_INTAKE_ELEVATOR);
-			D_POS_INTAKE_ELEVATOR = SmartDashboard.getNumber("D Pos Intake Elevator: ", D_POS_INTAKE_ELEVATOR);
-			P_VEL_INTAKE_ELEVATOR = SmartDashboard.getNumber("P Vel Intake Elevator: ", P_VEL_INTAKE_ELEVATOR);
-			I_VEL_INTAKE_ELEVATOR = SmartDashboard.getNumber("I Vel Intake Elevator: ", I_VEL_INTAKE_ELEVATOR);
-			D_VEL_INTAKE_ELEVATOR = SmartDashboard.getNumber("D Vel Intake Elevator: ", D_VEL_INTAKE_ELEVATOR);
+			F_POS_INTAKE_ELEVATOR_UP = SmartDashboard.getNumber("F Pos Intake Elevator Up: ", F_POS_INTAKE_ELEVATOR_UP);
+			P_POS_INTAKE_ELEVATOR_UP = SmartDashboard.getNumber("P Pos Intake Elevator Up: ", P_POS_INTAKE_ELEVATOR_UP);
+			I_POS_INTAKE_ELEVATOR_UP = SmartDashboard.getNumber("I Pos Intake Elevator Up: ", I_POS_INTAKE_ELEVATOR_UP);
+			D_POS_INTAKE_ELEVATOR_UP = SmartDashboard.getNumber("D Pos Intake Elevator Up: ", D_POS_INTAKE_ELEVATOR_UP);
+			P_VEL_INTAKE_ELEVATOR_UP = SmartDashboard.getNumber("P Vel Intake Elevator Up: ", P_VEL_INTAKE_ELEVATOR_UP);
+			I_VEL_INTAKE_ELEVATOR_UP = SmartDashboard.getNumber("I Vel Intake Elevator Up: ", I_VEL_INTAKE_ELEVATOR_UP);
+			D_VEL_INTAKE_ELEVATOR_UP = SmartDashboard.getNumber("D Vel Intake Elevator Up: ", D_VEL_INTAKE_ELEVATOR_UP);
+			
+			F_POS_INTAKE_ELEVATOR_DOWN = SmartDashboard.getNumber("F Pos Intake Elevator Down: ", F_POS_INTAKE_ELEVATOR_DOWN);
+			P_POS_INTAKE_ELEVATOR_DOWN = SmartDashboard.getNumber("P Pos Intake Elevator Down: ", P_POS_INTAKE_ELEVATOR_DOWN);
+			I_POS_INTAKE_ELEVATOR_DOWN = SmartDashboard.getNumber("I Pos Intake Elevator Down: ", I_POS_INTAKE_ELEVATOR_DOWN);
+			D_POS_INTAKE_ELEVATOR_DOWN = SmartDashboard.getNumber("D Pos Intake Elevator Down: ", D_POS_INTAKE_ELEVATOR_DOWN);
+			P_VEL_INTAKE_ELEVATOR_DOWN = SmartDashboard.getNumber("P Vel Intake Elevator Down: ", P_VEL_INTAKE_ELEVATOR_DOWN);
+			I_VEL_INTAKE_ELEVATOR_DOWN = SmartDashboard.getNumber("I Vel Intake Elevator Down: ", I_VEL_INTAKE_ELEVATOR_DOWN);
+			D_VEL_INTAKE_ELEVATOR_DOWN = SmartDashboard.getNumber("D Vel Intake Elevator Down: ", D_VEL_INTAKE_ELEVATOR_DOWN);
+			
 			PROFILE_VEL_PERCENT_INTAKE_ELEVATOR = SmartDashboard.getNumber("Profile Vel Percent Intake Elevator: ",
 					PROFILE_VEL_PERCENT_INTAKE_ELEVATOR);
 			PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR = SmartDashboard.getNumber("Profile Accel Percent Elevator: ",
 					PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR);
 			
-			intakeElevTalon.config_kF(MOTION_MAGIC_SLOT, F_POS_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kP(MOTION_MAGIC_SLOT, P_POS_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kI(MOTION_MAGIC_SLOT, I_POS_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kD(MOTION_MAGIC_SLOT, D_POS_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kP(VEL_SLOT, P_VEL_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kI(VEL_SLOT, I_VEL_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
-			intakeElevTalon.config_kD(VEL_SLOT, D_VEL_INTAKE_ELEVATOR, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kF(MOTION_MAGIC_UP_SLOT, F_POS_INTAKE_ELEVATOR_UP, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kP(MOTION_MAGIC_UP_SLOT, P_POS_INTAKE_ELEVATOR_UP, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kI(MOTION_MAGIC_UP_SLOT, I_POS_INTAKE_ELEVATOR_UP, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kD(MOTION_MAGIC_UP_SLOT, D_POS_INTAKE_ELEVATOR_UP, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kP(VEL_UP_SLOT, P_VEL_INTAKE_ELEVATOR_UP, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kI(VEL_UP_SLOT, I_VEL_INTAKE_ELEVATOR_UP, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kD(VEL_UP_SLOT, D_VEL_INTAKE_ELEVATOR_UP, DEFAULT_TIMEOUT);
+			
+			intakeElevTalon.config_kF(MOTION_MAGIC_DOWN_SLOT, F_POS_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kP(MOTION_MAGIC_DOWN_SLOT, P_POS_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kI(MOTION_MAGIC_DOWN_SLOT, I_POS_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kD(MOTION_MAGIC_DOWN_SLOT, D_POS_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kP(VEL_DOWN_SLOT, P_VEL_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kI(VEL_DOWN_SLOT, I_VEL_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
+			intakeElevTalon.config_kD(VEL_DOWN_SLOT, D_VEL_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
 			
 			SmartDashboard.putNumber("Intake Elevator Encoder Ticks: ", intakeElevTalon.getSelectedSensorPosition(PID_TYPE));
 		}
