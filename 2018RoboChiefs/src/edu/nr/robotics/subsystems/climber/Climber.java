@@ -44,8 +44,8 @@ public class Climber extends NRSubsystem {
 	/**
 	 * Position PID values for the climber
 	 */
-	public static final double F_POS_CLIMBER = 1.00 * 1023 / MAX_SPEED_CLIMBER.get(Distance.Unit.MAGNETIC_ENCODER_TICK_CLIMBER, Time.Unit.HUNDRED_MILLISECOND);
-	public static double P_POS_CLIMBER = 0; //TODO: Find climber position PID values
+	public static double F_POS_CLIMBER = 0;
+	public static double P_POS_CLIMBER = 0; //TODO: Find climber position FPID values
 	public static double I_POS_CLIMBER = 0;
 	public static double D_POS_CLIMBER = 0; 
 	
@@ -211,6 +211,7 @@ public class Climber extends NRSubsystem {
 	 */
 	public void setPosition(Distance pos) {
 		if(climberTalon != null) {
+			climberTalon.selectProfileSlot(POS_SLOT, DEFAULT_TIMEOUT);
 			climberTalon.set(ControlMode.Position, pos.get(Distance.Unit.MAGNETIC_ENCODER_TICK_CLIMBER));
 		}
 	}
@@ -221,6 +222,7 @@ public class Climber extends NRSubsystem {
 	 */
 	public void setCurrent(double current) {
 		if (climberTalon != null) {
+			climberTalon.selectProfileSlot(CURRENT_SLOT, DEFAULT_TIMEOUT);
 			currentSetpoint = current;
 			climberTalon.set(ControlMode.Current, current);
 		}
@@ -246,6 +248,7 @@ public class Climber extends NRSubsystem {
 			SmartDashboard.putNumber("P Current Climber: ", P_CURRENT_CLIMBER);
 			SmartDashboard.putNumber("I Current Climber: ", I_CURRENT_CLIMBER);
 			SmartDashboard.putNumber("D Current Climber: ", D_CURRENT_CLIMBER);
+			SmartDashboard.putNumber("F Pos Climber: ", F_POS_CLIMBER);
 			SmartDashboard.putNumber("P Pos Climber: ", P_POS_CLIMBER);
 			SmartDashboard.putNumber("I Pos Climber: ", I_POS_CLIMBER);
 			SmartDashboard.putNumber("D Pos Climber: ", D_POS_CLIMBER);
@@ -266,9 +269,20 @@ public class Climber extends NRSubsystem {
 				P_CURRENT_CLIMBER = SmartDashboard.getNumber("P Current Climber: ", P_CURRENT_CLIMBER);
 				I_CURRENT_CLIMBER = SmartDashboard.getNumber("I Current Climber: ", I_CURRENT_CLIMBER);
 				D_CURRENT_CLIMBER = SmartDashboard.getNumber("D Current Climber: ", D_CURRENT_CLIMBER);
+				F_POS_CLIMBER = SmartDashboard.getNumber("F Pos Climber: ", F_POS_CLIMBER);
 				P_POS_CLIMBER = SmartDashboard.getNumber("P Pos Climber: ", P_POS_CLIMBER);
 				I_POS_CLIMBER = SmartDashboard.getNumber("I Pos Climber: ", I_POS_CLIMBER);
 				D_POS_CLIMBER = SmartDashboard.getNumber("D Pos Climber: ", D_POS_CLIMBER);
+				
+				climberTalon.config_kP(CURRENT_SLOT, P_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
+				climberTalon.config_kI(CURRENT_SLOT, I_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
+				climberTalon.config_kD(CURRENT_SLOT, D_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
+				
+				climberTalon.config_kF(POS_SLOT, F_POS_CLIMBER, DEFAULT_TIMEOUT);
+				climberTalon.config_kP(POS_SLOT, P_POS_CLIMBER, DEFAULT_TIMEOUT);
+				climberTalon.config_kI(POS_SLOT, I_POS_CLIMBER, DEFAULT_TIMEOUT);
+				climberTalon.config_kD(POS_SLOT, D_POS_CLIMBER, DEFAULT_TIMEOUT);
+				
 				DEFAULT_CLIMBER_CURRENT = SmartDashboard.getNumber("Climber Set Current: ", DEFAULT_CLIMBER_CURRENT);
 				
 				SmartDashboard.putNumber("Climber Encoder Ticks: ", climberTalon.getSelectedSensorPosition(PID_TYPE));

@@ -145,6 +145,8 @@ public class ElevatorShooter extends NRSubsystem {
 			elevShooterTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR_SHOOTER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			elevShooterTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR_SHOOTER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	
+			elevShooterTalon.selectProfileSlot(VEL_SLOT, DEFAULT_TIMEOUT);
+			
 			elevShooterEncoder = new TalonEncoder(elevShooterTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV);
 		}
 		
@@ -257,6 +259,10 @@ public class ElevatorShooter extends NRSubsystem {
 			P_VEL_ELEVATOR_SHOOTER = SmartDashboard.getNumber("P Vel Elevator Shooter: ", P_VEL_ELEVATOR_SHOOTER);
 			I_VEL_ELEVATOR_SHOOTER = SmartDashboard.getNumber("I Vel Elevator Shooter: ", I_VEL_ELEVATOR_SHOOTER);
 			D_VEL_ELEVATOR_SHOOTER = SmartDashboard.getNumber("D Vel Elevator Shooter: ", D_VEL_ELEVATOR_SHOOTER);
+			
+			elevShooterTalon.config_kP(VEL_SLOT, P_VEL_ELEVATOR_SHOOTER, DEFAULT_TIMEOUT);
+			elevShooterTalon.config_kI(VEL_SLOT, I_VEL_ELEVATOR_SHOOTER, DEFAULT_TIMEOUT);
+			elevShooterTalon.config_kD(VEL_SLOT, D_VEL_ELEVATOR_SHOOTER, DEFAULT_TIMEOUT);
 			
 			SmartDashboard.putNumber("Elevator Shooter Encoder Ticks: ", elevShooterTalon.getSelectedSensorPosition(PID_TYPE));
 		}
