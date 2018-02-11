@@ -15,12 +15,12 @@ public class ElevatorMoveBasicSmartDashboardCommand extends NRCommand {
 	@Override
 	protected void onStart() {
 		initialPos = Elevator.getInstance().getPosition();
-		Elevator.getInstance().setMotorSpeedPercent(Math.abs(Elevator.PROFILE_VEL_PERCENT_ELEVATOR) * Elevator.profileDeltaPos.signum());
+		Elevator.getInstance().setMotorSpeedPercent(Math.abs(Elevator.PROFILE_VEL_PERCENT_ELEVATOR) * Elevator.profilePos.signum());
 	}
 
 	@Override
 	protected boolean isFinishedNR() {
-		return (Elevator.getInstance().getPosition().sub(initialPos.add(Elevator.profileDeltaPos))).abs()
+		return (Elevator.getInstance().getPosition().sub(initialPos.add(Elevator.profilePos))).abs()
 				.lessThan(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR);
 	}
 

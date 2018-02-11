@@ -419,7 +419,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public synchronized static void init() {
 		if (singleton == null) {
 			singleton = new Drive();
-			singleton.setJoystickCommand(new DriveJoystickCommand());
+			if (EnabledSubsystems.DRIVE_ENABLED)
+				singleton.setJoystickCommand(new DriveJoystickCommand());
 		}
 	}
 	

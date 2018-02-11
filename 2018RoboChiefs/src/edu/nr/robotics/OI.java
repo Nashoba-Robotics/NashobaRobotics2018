@@ -111,7 +111,7 @@ public class OI implements SmartDashboardSource {
 		//initDriveRight();
 		
 		//initOperatorLeft();
-		//initOperatorRight();
+		initOperatorRight();
 		
 		SmartDashboardSource.sources.add(this);
 	}
@@ -231,7 +231,7 @@ public class OI implements SmartDashboardSource {
 	}
 	
 	public double getElevatorJoystickValue() {
-		return snapDriveJoysticks(elevatorStick.getX());
+		return snapDriveJoysticks(-elevatorStick.getX());
 	}
 		
 	public double getDriveSpeedMultiplier() {

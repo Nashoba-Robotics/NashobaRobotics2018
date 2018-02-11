@@ -21,7 +21,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	double startPosition;
 
 	double pow = 2;
-	double timeMult = 5;
+	double timeMult = 1000;
 
 	ArrayList<Double> posPoints;
 	ArrayList<Double> velPoints;

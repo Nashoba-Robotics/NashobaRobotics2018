@@ -1,9 +1,11 @@
 package edu.nr.robotics.subsystems.intakeElevator;
 
 import edu.nr.lib.commandbased.JoystickCommand;
+import edu.nr.lib.units.Distance;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 
 public class IntakeElevatorJoystickCommand extends JoystickCommand {
+	
 	
 	/**
 	 * Takes intake elevator joystick percent values and sets the elevator to those percents.
@@ -14,13 +16,17 @@ public class IntakeElevatorJoystickCommand extends JoystickCommand {
 	}
 
 	@Override
+	protected void onStart() {
+	}
+	
+	@Override
 	protected void onExecute() {
-		IntakeElevator.getInstance().setPosition(IntakeElevator.getInstance().getPosition());
+		IntakeElevator.getInstance().setMotorSpeedPercent(0.01);
 	}
 	
 	@Override
 	protected boolean shouldSwitchToJoystick() {
-		return IntakeElevator.getInstance().getCurrentCommand() != null;
+		return IntakeElevator.getInstance().getCurrentCommand() == null;
 	}
 
 	@Override
