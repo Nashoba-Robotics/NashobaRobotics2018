@@ -22,8 +22,8 @@ public class ElevatorProfileBasicSmartDashboardCommand extends NRCommand {
 	public ElevatorProfileBasicSmartDashboardCommand() {
 		super(Elevator.getInstance());
 		this.position = Elevator.profileDeltaPos;
-		maxVelPercent = Elevator.MAX_SPEED_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND);
-		maxAccelPercent = Elevator.MAX_ACCEL_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
+		maxVelPercent = Elevator.MAX_SPEED_ELEVATOR_UP.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND);
+		maxAccelPercent = Elevator.MAX_ACCEL_ELEVATOR_UP.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
 	}
 	
 	@Override
