@@ -264,7 +264,7 @@ public class Climber extends NRSubsystem {
 			if (EnabledSubsystems.CLIMBER_SMARTDASHBOARD_BASIC_ENABLED) {
 				SmartDashboard.putString("Climber Current vs Set Current: ", getCurrent() + " : " + currentSetpoint);
 			}
-			if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
+			if (EnabledSubsystems.CLIMBER_SMARTDASHBOARD_DEBUG_ENABLED) {
 				VOLTAGE_RAMP_RATE_CLIMBER = new Time(SmartDashboard.getNumber("Voltage Ramp Rate Climber Seconds: ", VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND)), Time.Unit.SECOND);
 				P_CURRENT_CLIMBER = SmartDashboard.getNumber("P Current Climber: ", P_CURRENT_CLIMBER);
 				I_CURRENT_CLIMBER = SmartDashboard.getNumber("I Current Climber: ", I_CURRENT_CLIMBER);
@@ -284,7 +284,6 @@ public class Climber extends NRSubsystem {
 				climberTalon.config_kD(POS_SLOT, D_POS_CLIMBER, DEFAULT_TIMEOUT);
 				
 				DEFAULT_CLIMBER_CURRENT = SmartDashboard.getNumber("Climber Set Current: ", DEFAULT_CLIMBER_CURRENT);
-				
 				SmartDashboard.putNumber("Climber Encoder Ticks: ", climberTalon.getSelectedSensorPosition(PID_TYPE));
 			}
 		

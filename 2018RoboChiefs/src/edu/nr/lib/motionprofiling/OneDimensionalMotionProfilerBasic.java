@@ -20,14 +20,19 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 	private double prevTime;
 	private double startTime;
 	
+	public static double positionGoal;
+	public static double velocityGoal;
+	public static double accelGoal;
+	
 	private boolean enabled = false;
 	private PIDOutput out;
 	private PIDSource source;
 	
 	private double ka, kp, kd, kv;
-	private double errorLast;
+	public static double errorLast;
+	public static double error;
 	
-	private double initialPosition;
+	public static double initialPosition;
 	
 	private ArrayList<Double> posPoints;
 	private ArrayList<Double> velPoints;
@@ -67,10 +72,6 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 	public void run() {
 		if(enabled) {
 			double dt = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - prevTime;
-						
-			double positionGoal;
-			double velocityGoal;
-			double accelGoal;
 
 			if (loopIteration < posPoints.size()) {
 				positionGoal = posPoints.get(loopIteration);
@@ -82,7 +83,7 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 				accelGoal = 0;
 			}
 			
-			double error = trajectory.getGoalPosition(edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime) - source.pidGet() + initialPosition;
+			error = trajectory.getGoalPosition(edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime) - source.pidGet() + initialPosition;
 						
 			double errorDeriv = (error - errorLast) / dt;
 			
