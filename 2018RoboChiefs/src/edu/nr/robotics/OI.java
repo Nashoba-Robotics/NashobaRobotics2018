@@ -42,7 +42,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  */
 public class OI implements SmartDashboardSource {
 	
-	private static final double JOYSTICK_DEAD_ZONE = 0.15;
+	public static final double JOYSTICK_DEAD_ZONE = 0.15;
 	
 	//TODO: Find button numbers
 	private static final int CANCEL_ALL_BUTTON_NUMBER = -1;
