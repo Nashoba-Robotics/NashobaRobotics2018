@@ -35,11 +35,11 @@ public class ElevatorProfileBasicTrajectory extends NRCommand {
 	
 	@Override
 	public void onExecute() {
-		if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {	
-			Drive.getInstance().setPIDSourceType(PIDSourceType.kRate);
-			SmartDashboard.putString("Motion Profiler V", Drive.getInstance().pidGetH() + ":" + OneDimensionalMotionProfilerBasic.velocityGoal);
-			Drive.getInstance().setPIDSourceType(PIDSourceType.kDisplacement);
-			SmartDashboard.putString("Motion Profiler X", new Distance(Drive.getInstance().pidGetLeft(), Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerBasic.positionGoal + OneDimensionalMotionProfilerBasic.initialPosition, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerBasic.error, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH));
+		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {	
+			Elevator.getInstance().setPIDSourceType(PIDSourceType.kRate);
+			SmartDashboard.putString("Motion Profiler V", Elevator.getInstance().pidGet() + ":" + OneDimensionalMotionProfilerBasic.velocityGoal);
+			Elevator.getInstance().setPIDSourceType(PIDSourceType.kDisplacement);
+			SmartDashboard.putString("Motion Profiler X", new Distance(Elevator.getInstance().pidGet(), Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerBasic.positionGoal + OneDimensionalMotionProfilerBasic.initialPosition, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerBasic.error, Distance.Unit.MAGNETIC_ENCODER_TICK).get(Distance.Unit.INCH));
 	
 		}
 	}
