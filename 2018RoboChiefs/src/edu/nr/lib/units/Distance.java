@@ -45,12 +45,7 @@ public class Distance {
 		 * For an elevator shooter
 		 */
 		private static final double ENCODER_TICK_ELEV_SHOOTER_PER_INCH = ElevatorShooter.ENC_TICK_PER_INCH_ELEVATOR_SHOOTER;
-		
-		/**
-		 * For a cube handler
-		 */
-		private static final double ENCODER_TICK_CUBE_HANDLER_PER_INCH = CubeHandler.ENC_TICK_PER_INCH_CUBE_HANDLER;
-		
+			
 		/**
 		 * For the intake rollers
 		 */
@@ -95,9 +90,6 @@ public class Distance {
 			if(this == Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER) {
 				return val / ENCODER_TICK_ELEV_SHOOTER_PER_INCH;
 			}
-			if(this == Unit.MAGNETIC_ENCODER_TICK_CUBE_HANDLER) {
-					return val / ENCODER_TICK_CUBE_HANDLER_PER_INCH;
-			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS) {
 				return val / ENCODER_TICK_INTAKE_ROLLERS_PER_INCH;
 			}
@@ -137,9 +129,6 @@ public class Distance {
 			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER) {
 				return ENCODER_TICK_ELEV_SHOOTER_PER_INCH * val;
-			}
-			if(this == Unit.MAGNETIC_ENCODER_TICK_CUBE_HANDLER) {
-				return ENCODER_TICK_CUBE_HANDLER_PER_INCH * val;
 			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS) {
 				return ENCODER_TICK_INTAKE_ROLLERS_PER_INCH * val;

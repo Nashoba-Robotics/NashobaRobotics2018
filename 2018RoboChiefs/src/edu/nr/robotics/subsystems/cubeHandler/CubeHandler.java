@@ -21,40 +21,12 @@ public class CubeHandler extends NRSubsystem {
 private static CubeHandler singleton;
 	
 	private TalonSRX cubeHandlerTalon;
-	private TalonEncoder cubeHandlerEncoder;
-	
-	/**
-	 * The encoder ticks per inch moved on the cube handler
-	 */
-	public static final double ENC_TICK_PER_INCH_CUBE_HANDLER = 0; //TODO: Find ENC_TICK_PER_INCH_CUBE_HANDLER
-	
-	/**
-	 * The max speed of the cube handler
-	 */
-	public static final Speed MAX_SPEED_CUBE_HANDLER = Speed.ZERO; // TODO: Find MAX_SPEED_CUBE_HANDLER
-	
-	/**
-	 * The minimum voltage needed to move the cube handler
-	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_CUBE_HANDLER = 0; // TODO: Find CubeHandler voltage velocity curve
-
-	/**
-	 * The slope of voltage over velocity in feet per second
-	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_CUBE_HANDLER = 0;
-	
+		
 	/**
 	 * The voltage ramp rate of the cube handler. Voltage ramp rate is time it takes
 	 * to go from 0V to 12V
 	 */
 	public static Time VOLTAGE_RAMP_RATE_CUBE_HANDLER = Time.ZERO; // TODO: Test for cube handler voltage ramp rate
-
-	/**
-	 * Velocity PID values for the cube handler
-	 */
-	public static double P_VEL_CUBE_HANDLER = 0; // TODO: Find cube handler velocity PID values
-	public static double I_VEL_CUBE_HANDLER = 0;
-	public static double D_VEL_CUBE_HANDLER = 0;
 
 	/**
 	 * The default velocity percent for the cube handler
@@ -74,16 +46,6 @@ private static CubeHandler singleton;
 	public static final int CONTINUOUS_CURRENT_LIMIT_CUBE_HANDLER = 40;
 
 	/**
-	 * The rate of velocity measurements on the cube handler encoder
-	 */
-	public static final VelocityMeasPeriod VELOCITY_MEASUREMENT_PERIOD_CUBE_HANDLER = VelocityMeasPeriod.Period_10Ms;
-
-	/**
-	 * The number of measurements the cube handler encoder averages to return a value
-	 */
-	public static final double VELOCITY_MEASUREMENT_WINDOW_CUBE_HANDLER = 32;
-
-	/**
 	 * The 100% voltage that is used as a base calculation for all PercentOutputs
 	 */
 	public static final double VOLTAGE_COMPENSATION_LEVEL_CUBE_HANDLER = 12;
@@ -94,45 +56,18 @@ private static CubeHandler singleton;
 	public static final NeutralMode NEUTRAL_MODE_CUBE_HANDLER = NeutralMode.Coast;
 
 	/**
-	 * The PID type of the cube handler. 0 = Primary, 1 = Cascade
-	 */
-	public static final int PID_TYPE = 0;
-
-	/**
 	 * The default timeout of the cube handler functions in ms
 	 */
 	public static final int DEFAULT_TIMEOUT = 0;
-
-	/**
-	 * The PID slot numbers
-	 */
-	public static final int VEL_SLOT = 0;
-
-	private Speed velSetpoint = Speed.ZERO;
-
 	
 	private CubeHandler() {
 		
 		if(EnabledSubsystems.CUBE_HANDLER_ENABLED) {
 		
 			cubeHandlerTalon = CTRECreator.createMasterTalon(RobotMap.CUBE_HANDLER_TALON);
-	
-			if (EnabledSubsystems.CUBE_HANDLER_DUMB_ENABLED) {
-				cubeHandlerTalon.set(ControlMode.PercentOutput, 0);
-			} else {
-				cubeHandlerTalon.set(ControlMode.Velocity, 0);
-			}
-	
-			cubeHandlerTalon.selectProfileSlot(VEL_SLOT, DEFAULT_TIMEOUT);
-			
-			cubeHandlerTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);
-			cubeHandlerTalon.config_kF(VEL_SLOT, 0, DEFAULT_TIMEOUT);
-			cubeHandlerTalon.config_kP(VEL_SLOT, P_VEL_CUBE_HANDLER, DEFAULT_TIMEOUT);
-			cubeHandlerTalon.config_kI(VEL_SLOT, I_VEL_CUBE_HANDLER, DEFAULT_TIMEOUT);
-			cubeHandlerTalon.config_kD(VEL_SLOT, D_VEL_CUBE_HANDLER, DEFAULT_TIMEOUT);
+				
 			cubeHandlerTalon.setNeutralMode(NEUTRAL_MODE_CUBE_HANDLER);
 			cubeHandlerTalon.setInverted(false);
-			cubeHandlerTalon.setSensorPhase(false);
 	
 			cubeHandlerTalon.enableVoltageCompensation(true);
 			cubeHandlerTalon.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL_CUBE_HANDLER, DEFAULT_TIMEOUT);
@@ -145,7 +80,6 @@ private static CubeHandler singleton;
 			cubeHandlerTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_CUBE_HANDLER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			cubeHandlerTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_CUBE_HANDLER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	
-			cubeHandlerEncoder = new TalonEncoder(cubeHandlerTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_CUBE_HANDLER);
 		}
 		
 		smartDashboardInit();
@@ -164,29 +98,6 @@ private static CubeHandler singleton;
 	}
 	
 	/**
-	 * @return The current velocity of the cube handler encoders
-	 */
-	public Speed getVelocity() {
-		if (cubeHandlerTalon != null)
-			return new Speed(cubeHandlerTalon.getSelectedSensorVelocity(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_CUBE_HANDLER,
-				Time.Unit.HUNDRED_MILLISECOND);
-		return Speed.ZERO;
-	}
-	
-	/**
-	 * Gets the historical velocity of the cube handler talon
-	 * 
-	 * @param timePassed
-	 *            How long ago to look
-	 * @return old velocity of the cube handler talon
-	 */
-	public Speed getHistoricalVelocity(Time timePassed) {
-		if (cubeHandlerTalon != null)
-			return new Speed(cubeHandlerEncoder.getVelocity(timePassed));
-		return Speed.ZERO;
-	}
-	
-	/**
 	 * @return The current of the cube handler talon
 	 */
 	public double getCurrent() {
@@ -200,32 +111,7 @@ private static CubeHandler singleton;
 	 */
 	public void setMotorSpeedPercent(double percent) {
 		if (cubeHandlerTalon != null) {
-			//setMotorSpeed(MAX_SPEED_CUBE_HANDLER.mul(percent));
 			cubeHandlerTalon.set(ControlMode.PercentOutput, percent);
-		}
-	}
-
-	/**
-	 * @param speed to set motor in
-	 */
-	public void setMotorSpeed(Speed speed) {
-
-		if (cubeHandlerTalon != null) {
-
-			velSetpoint = speed;
-			cubeHandlerTalon.config_kF(VEL_SLOT,
-					((VOLTAGE_PERCENT_VELOCITY_SLOPE_CUBE_HANDLER * velSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
-							+ MIN_MOVE_VOLTAGE_PERCENT_CUBE_HANDLER) * 1023.0)
-							/ velSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_CUBE_HANDLER,
-									Time.Unit.HUNDRED_MILLISECOND),
-					DEFAULT_TIMEOUT);
-	
-			if (cubeHandlerTalon.getControlMode() == ControlMode.PercentOutput) {
-				cubeHandlerTalon.set(cubeHandlerTalon.getControlMode(), velSetpoint.div(MAX_SPEED_CUBE_HANDLER));
-			} else {
-				cubeHandlerTalon.set(cubeHandlerTalon.getControlMode(),
-						velSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_CUBE_HANDLER, Time.Unit.HUNDRED_MILLISECOND));
-			}
 		}
 	}
 	
@@ -236,9 +122,6 @@ private static CubeHandler singleton;
 		if (EnabledSubsystems.CUBE_HANDLER_SMARTDASHBOARD_DEBUG_ENABLED) {
 			SmartDashboard.putNumber("Voltage Ramp Rate Cube Handler Seconds: ",
 					VOLTAGE_RAMP_RATE_CUBE_HANDLER.get(Time.Unit.SECOND));
-			SmartDashboard.putNumber("P Vel Cube Handler: ", P_VEL_CUBE_HANDLER);
-			SmartDashboard.putNumber("I Vel Cube Handler: ", I_VEL_CUBE_HANDLER);
-			SmartDashboard.putNumber("D Vel Cube Handler: ", D_VEL_CUBE_HANDLER);
 			SmartDashboard.putNumber("Cube Handler Vel Percent: ", VEL_PERCENT_CUBE_HANDLER);
 		}
 	}
@@ -247,21 +130,13 @@ private static CubeHandler singleton;
 	public void smartDashboardInfo() {
 		if (EnabledSubsystems.CUBE_HANDLER_SMARTDASHBOARD_BASIC_ENABLED) {
 			SmartDashboard.putNumber("Cube Handler Current: ", getCurrent());
-			SmartDashboard.putNumber("Cube Handler Velocity vs Set Velocity: ", velSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 		}
 		if (EnabledSubsystems.CUBE_HANDLER_SMARTDASHBOARD_DEBUG_ENABLED) {
 			VOLTAGE_RAMP_RATE_CUBE_HANDLER = new Time(
 					SmartDashboard.getNumber("Voltage Ramp Rate Cube Handler Seconds: ",
 							VOLTAGE_RAMP_RATE_CUBE_HANDLER.get(Time.Unit.SECOND)), Time.Unit.SECOND);
-			P_VEL_CUBE_HANDLER = SmartDashboard.getNumber("P Vel Cube Handler: ", P_VEL_CUBE_HANDLER);
-			I_VEL_CUBE_HANDLER = SmartDashboard.getNumber("I Vel Cube Handler: ", I_VEL_CUBE_HANDLER);
-			D_VEL_CUBE_HANDLER = SmartDashboard.getNumber("D Vel Cube Handler: ", D_VEL_CUBE_HANDLER);
 			
-			cubeHandlerTalon.config_kP(VEL_SLOT, P_VEL_CUBE_HANDLER, DEFAULT_TIMEOUT);
-			cubeHandlerTalon.config_kI(VEL_SLOT, I_VEL_CUBE_HANDLER, DEFAULT_TIMEOUT);
-			cubeHandlerTalon.config_kD(VEL_SLOT, D_VEL_CUBE_HANDLER, DEFAULT_TIMEOUT);
-			
-			SmartDashboard.putNumber("Cube Handler Encoder Ticks: ", cubeHandlerTalon.getSelectedSensorPosition(PID_TYPE));
+			VEL_PERCENT_CUBE_HANDLER = SmartDashboard.getNumber("Cube Handler Vel Percent: ", VEL_PERCENT_CUBE_HANDLER);
 		}
 	}
 	
