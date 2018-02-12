@@ -35,6 +35,8 @@ import edu.nr.robotics.subsystems.drive.EnableMotionProfileSmartDashboardCommand
 import edu.nr.robotics.subsystems.drive.TurnSmartDashboardCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorDeltaPositionSmartDashboardCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorMoveBasicSmartDashboardCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorProfileBasicSmartDashboardCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorProfileSmartDashboardCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterVelocitySmartDashboardCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorDeltaPositionSmartDashboardCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorMoveBasicSmartDashboardCommand;
@@ -140,6 +142,7 @@ public class Robot extends IterativeRobot {
 		if(EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
 			SmartDashboard.putData(new ElevatorDeltaPositionSmartDashboardCommand());
 			SmartDashboard.putData(new ElevatorMoveBasicSmartDashboardCommand());	
+			SmartDashboard.putData(new ElevatorProfileSmartDashboardCommandGroup());
 		}
 		
 		//Elevator Shooter

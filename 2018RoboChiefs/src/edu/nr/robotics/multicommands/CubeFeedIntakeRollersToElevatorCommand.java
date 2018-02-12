@@ -4,6 +4,7 @@ import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.robotics.subsystems.cubeHandler.CubeHandler;
 import edu.nr.robotics.subsystems.elevator.Elevator;
+import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
@@ -30,12 +31,14 @@ public class CubeFeedIntakeRollersToElevatorCommand extends NRCommand {
 		} else {
 			finished = false;
 			IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_INTAKE_ROLLERS);
+			ElevatorShooter.getInstance().setMotorSpeedPercent(-ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER);
 		}
 	}
 	
 	@Override
 	protected void onEnd() {
 		IntakeRollers.getInstance().disable();
+		ElevatorShooter.getInstance().disable();
 	}
 	
 	@Override

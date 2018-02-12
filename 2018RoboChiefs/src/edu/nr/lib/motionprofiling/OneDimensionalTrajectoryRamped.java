@@ -21,7 +21,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	double startPosition;
 
 	double pow = 2;
-	double timeMult = 5;
+	private double timeMult = 1000;
 
 	ArrayList<Double> posPoints;
 	ArrayList<Double> velPoints;
@@ -38,7 +38,7 @@ public class OneDimensionalTrajectoryRamped implements OneDimensionalTrajectory 
 	 * @param accelMax
 	 *            The max acceleration (always positive)
 	 */
-	public OneDimensionalTrajectoryRamped(double goalPositionDelta, double velMax, double accelMax) {
+	public OneDimensionalTrajectoryRamped(double goalPositionDelta, double velMax, double accelMax, double timeMult) {
 		this.endPosition = Math.abs(goalPositionDelta);
 		this.startPosition = 0;
 		this.direction = Math.signum(goalPositionDelta);
