@@ -14,8 +14,8 @@ import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.AutoChoosers.StartPos;
 import edu.nr.robotics.auton.AutoChoosers.Switch;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
-import edu.nr.robotics.auton.automap.StartPosFarRightSwitchNoneCommand;
-import edu.nr.robotics.auton.automap.StartPosFarRightSwitchRightCommand;
+import edu.nr.robotics.auton.automap.StartPosRightSwitchNoneCommand;
+import edu.nr.robotics.auton.automap.StartPosRightSwitchRightCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchBothCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchLeftCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchNoneCommand;
@@ -23,9 +23,6 @@ import edu.nr.robotics.auton.automap.StartPosMiddleSwitchBothCommand;
 import edu.nr.robotics.auton.automap.StartPosMiddleSwitchLeftCommand;
 import edu.nr.robotics.auton.automap.StartPosMiddleSwitchNoneCommand;
 import edu.nr.robotics.auton.automap.StartPosMiddleSwitchRightCommand;
-import edu.nr.robotics.auton.automap.StartPosRightSwitchBothCommand;
-import edu.nr.robotics.auton.automap.StartPosRightSwitchNoneCommand;
-import edu.nr.robotics.auton.automap.StartPosRightSwitchRightCommand;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.nr.robotics.subsystems.climber.ClimberCoastCommand;
 import edu.nr.robotics.subsystems.climber.ClimberCurrentSmartDashboardCommand;
@@ -44,8 +41,8 @@ import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterVelocitySmartDa
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorDeltaPositionSmartDashboardCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorMoveBasicSmartDashboardCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocitySmartDashboardCommand;
-import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -92,7 +89,6 @@ public class Robot extends IterativeRobot {
 		AutoChoosers.autoStartPosChooser.addDefault("Start Pos Left", StartPos.left);
 		AutoChoosers.autoStartPosChooser.addObject("Start Pos Middle", StartPos.middle);
 		AutoChoosers.autoStartPosChooser.addObject("Start Pos Right", StartPos.right);
-		AutoChoosers.autoStartPosChooser.addObject("Start Pos Far Right", StartPos.farRight);
 		
 		AutoChoosers.autoSwitchChooser.addDefault("Switch None", Switch.none);
 		AutoChoosers.autoSwitchChooser.addObject("Switch Left Only", Switch.leftOnly);
@@ -313,17 +309,9 @@ public class Robot extends IterativeRobot {
 			}
 		} else if (selectedStartPos == AutoChoosers.StartPos.right) {
 			if (selectedSwitch == AutoChoosers.Switch.none || selectedSwitch == AutoChoosers.Switch.leftOnly) {
-				return (new StartPosRightSwitchNoneCommand());	
-			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly){
-				return (new StartPosRightSwitchRightCommand());
-			} else if (selectedSwitch == AutoChoosers.Switch.both) {
-				return (new StartPosRightSwitchBothCommand());
-			}
-		} else if (selectedStartPos == AutoChoosers.StartPos.farRight) {
-			if (selectedSwitch == AutoChoosers.Switch.none || selectedSwitch == AutoChoosers.Switch.leftOnly) {
-				return (new StartPosFarRightSwitchNoneCommand());
+				return (new StartPosRightSwitchNoneCommand());
 			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly || selectedSwitch == AutoChoosers.Switch.both){
-				return (new StartPosFarRightSwitchRightCommand());
+				return (new StartPosRightSwitchRightCommand());
 			}
 		} return new DriveOverBaselineAutoCommand();
 	}

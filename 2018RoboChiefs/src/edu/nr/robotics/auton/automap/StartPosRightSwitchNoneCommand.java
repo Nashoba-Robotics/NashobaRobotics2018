@@ -17,17 +17,6 @@ public class StartPosRightSwitchNoneCommand extends CommandGroup {
 
 		addSequential(new WaitCommand(Robot.getInstance().autoWaitTime));
 
-		addSequential(new ConditionalCommand(new StartPosRightToScaleLeftProfilingCommand()) {
-
-			@Override
-			protected boolean condition() {
-				return (Robot.getInstance().selectedScale == Scale.both
-						|| Robot.getInstance().selectedScale == Scale.leftonly)
-						&& FieldData.getInstance().scale == Direction.left;
-			}
-
-		});
-
 		addSequential(new ConditionalCommand(new StartPosRightToScaleRightProfilingCommand()) {
 
 			@Override
@@ -35,6 +24,17 @@ public class StartPosRightSwitchNoneCommand extends CommandGroup {
 				return (Robot.getInstance().selectedScale == Scale.both
 						|| Robot.getInstance().selectedScale == Scale.rightonly)
 						&& FieldData.getInstance().scale == Direction.right;
+			}
+
+		});
+
+		addSequential(new ConditionalCommand(new StartPosRightToScaleLeftProfilingCommand()) {
+
+			@Override
+			protected boolean condition() {
+				return (Robot.getInstance().selectedScale == Scale.both
+						|| Robot.getInstance().selectedScale == Scale.leftonly)
+						&& FieldData.getInstance().scale == Direction.left;
 			}
 
 		});
@@ -57,13 +57,14 @@ public class StartPosRightSwitchNoneCommand extends CommandGroup {
 			@Override
 			protected boolean condition() {
 				return Robot.getInstance().selectedScale == Scale.both
-						|| (Robot.getInstance().selectedScale == Scale.leftonly
-								&& FieldData.getInstance().scale == Direction.left)
 						|| (Robot.getInstance().selectedScale == Scale.rightonly
-								&& FieldData.getInstance().scale == Direction.right);
+								&& FieldData.getInstance().scale == Direction.right)
+						|| (Robot.getInstance().selectedScale == Scale.leftonly
+								|| FieldData.getInstance().scale == Direction.left);
 			}
 
 		});
+
 	}
 
 }

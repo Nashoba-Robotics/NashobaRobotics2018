@@ -14,8 +14,7 @@ public class AutoChoosers {
 	public enum StartPos {
 		left,
 		middle,
-		right,
-		farRight;
+		right;
 	}
 	
 	public enum Switch {
