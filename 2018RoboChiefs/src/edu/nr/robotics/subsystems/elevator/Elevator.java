@@ -8,8 +8,10 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.nr.lib.commandbased.CancelCommand;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerBasic;
+import edu.nr.lib.motionprofiling.OneDimensionalTrajectoryRamped;
 import edu.nr.lib.motionprofiling.OneDimensionalTrajectorySimple;
 import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
@@ -70,22 +72,19 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * The default profiling velocity percent of the elevator
 	 */
-	public static double PROFILE_VEL_PERCENT_ELEVATOR = 0.9; // TODO: Decide on PROFILE_VEL_PERCENT_ELEVATOR
+	public static double PROFILE_VEL_PERCENT_ELEVATOR = 0.9;
 
 	/**
 	 * The default profiling acceleration of the elevator
 	 */
-	public static double PROFILE_ACCEL_PERCENT_ELEVATOR = 1.0; // TODO: Decide on PROFILE_ACCEL_PERCENT_ELEVATOR
+	public static double PROFILE_ACCEL_PERCENT_ELEVATOR = 0.9;
 
 	/**
 	 * MotionMagic PID values for the elevator
 	 */
-	public static double F_POS_ELEVATOR_UP = ((VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP * MAX_SPEED_ELEVATOR_UP.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
-			+ MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP) * 1023.0)
-			/ MAX_SPEED_ELEVATOR_UP.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
-					Time.Unit.HUNDRED_MILLISECOND);
+	public static double F_POS_ELEVATOR_UP = 0.4;
 	
-	public static double P_POS_ELEVATOR_UP = 0; // TODO: Find elevator MagicMotion PID values
+	public static double P_POS_ELEVATOR_UP = 0.4; // TODO: Find elevator MagicMotion PID values
 	public static double I_POS_ELEVATOR_UP = 0;
 	public static double D_POS_ELEVATOR_UP = 0;
 	
@@ -113,15 +112,20 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	 * The distance from the end of the elevator profile at which the stopping
 	 * algorithm starts
 	 */
-	public static final Distance PROFILE_END_POS_THRESHOLD_ELEVATOR = new Distance(3, Distance.Unit.INCH); // TODO: Decide on PROFILE_END_POS_THRESHOLD_ELEVATOR
+	public static final Distance PROFILE_END_POS_THRESHOLD_ELEVATOR = new Distance(5, Distance.Unit.INCH); // TODO: Decide on PROFILE_END_POS_THRESHOLD_ELEVATOR
 
 	/**
 	 * The change in position elevator within for
 	 * PROFILE_TIME_POS_THRESHOLD_ELEVATOR before stopping profile
 	 */
-	public static final Distance PROFILE_DELTA_POS_THRESHOLD_ELEVATOR = new Distance(0.1, Distance.Unit.INCH); // TODO: Decide on PROFILE_DELTA_POS_THRESHOLD_ELEVATOR
+	public static final Distance PROFILE_DELTA_POS_THRESHOLD_ELEVATOR = new Distance(2, Distance.Unit.INCH); // TODO: Decide on PROFILE_DELTA_POS_THRESHOLD_ELEVATOR
 	public static final Time PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR = new Time(0.1, Time.Unit.SECOND); // TODO: Decide on PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR
 
+	/**
+	 * Time multiplier for the ramp of the ramped trajectory
+	 */
+	public static final double RAMPED_PROFILE_TIME_MULT_ELEVATOR = 1000;
+	
 	/**
 	 * The current values of the elevator
 	 */
@@ -188,7 +192,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	 * The positions of the elevator at each limit switch and at the default
 	 * extend height
 	 */
-	public static final Distance TOP_HEIGHT_ELEVATOR = new Distance(56535, Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV); // TODO: Find TOP_POSITION_ELEVATOR
+	public static final Distance TOP_HEIGHT_ELEVATOR = new Distance(56535.0, Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV); // TODO: Find TOP_POSITION_ELEVATOR
 	public static final Distance CLIMB_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find CLIMB_HEIGHT_ELEVATOR
 	public static final Distance SCALE_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find AUTO_HEIGHT_ELEVATOR
 	public static final Distance SWITCH_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find SCORE_LOW_HEIGHT_ELEVATOR
@@ -197,11 +201,11 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	private Speed velSetpoint = Speed.ZERO;
 	private Distance posSetpoint = Distance.ZERO;
 
-	public static Distance profileDeltaPos = Distance.ZERO;
+	public static Distance profilePos = Distance.ZERO;
 	
 	public PIDSourceType type = PIDSourceType.kRate;
 	
-	private OneDimensionalMotionProfilerBasic basicProfiler;
+	public OneDimensionalMotionProfilerBasic basicProfiler;
 
 	private Elevator() {
 
@@ -322,7 +326,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	 */
 	public Speed getHistoricalVelocity(Time timePassed) {
 		if (elevTalon != null)
-			return new Speed(elevEncoder.getVelocity(timePassed));
+			return elevEncoder.getVelocity(timePassed);
 		return Speed.ZERO;
 	}
 
@@ -346,7 +350,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 			posSetpoint = position;
 			velSetpoint = Speed.ZERO;
 			
-			if (position.sub(getPosition()).greaterThan(Distance.ZERO)) {
+			if (position.sub(getPosition()).greaterThan(Distance.ZERO) || position.sub(getPosition()).equals(Distance.ZERO)) {
 				
 				elevTalon.selectProfileSlot(MOTION_MAGIC_UP_SLOT, DEFAULT_TIMEOUT);
 				
@@ -449,22 +453,26 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 		
 		if (dist.greaterThan(Distance.ZERO)) {
 		
+			kA_UP = 0; //TODO: Find kA-position function up
+			
 			basicProfiler = new OneDimensionalMotionProfilerBasic(this, this, kV_UP, kA_UP, kP_UP, kD_UP);
-			basicProfiler.setTrajectory(new OneDimensionalTrajectorySimple(
+			basicProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(
 					dist.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV),
 					MAX_SPEED_ELEVATOR_UP.mul(PROFILE_VEL_PERCENT_ELEVATOR).get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
 							Time.Unit.HUNDRED_MILLISECOND),
 					MAX_ACCEL_ELEVATOR_UP.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
-							Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
+							Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), RAMPED_PROFILE_TIME_MULT_ELEVATOR));
 		} else {
 			
+			kA_DOWN = 0; //TODO: Find kA-position function down
+			
 			basicProfiler = new OneDimensionalMotionProfilerBasic(this, this, kV_DOWN, kA_DOWN, kP_DOWN, kD_DOWN);
-			basicProfiler.setTrajectory(new OneDimensionalTrajectorySimple(
+			basicProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(
 					dist.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV),
 					MAX_SPEED_ELEVATOR_DOWN.mul(PROFILE_VEL_PERCENT_ELEVATOR).get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
 							Time.Unit.HUNDRED_MILLISECOND),
 					MAX_ACCEL_ELEVATOR_DOWN.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
-							Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND)));
+							Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), RAMPED_PROFILE_TIME_MULT_ELEVATOR));
 		}
 				
 		basicProfiler.enable();
@@ -550,7 +558,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 					getPosition().get(Distance.Unit.INCH) + " : " + posSetpoint.get(Distance.Unit.INCH));
 		}
 		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
-			profileDeltaPos = new Distance(SmartDashboard.getNumber("Elevator Profile Delta Inches: ", 0), Distance.Unit.INCH);
+			profilePos = new Distance(SmartDashboard.getNumber("Elevator Profile Delta Inches: ", 0), Distance.Unit.INCH);
 			
 			F_POS_ELEVATOR_UP = SmartDashboard.getNumber("F Pos Elevator Up: ", F_POS_ELEVATOR_UP);
 			elevTalon.config_kF(MOTION_MAGIC_UP_SLOT, F_POS_ELEVATOR_UP, DEFAULT_TIMEOUT);
@@ -608,6 +616,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 		if (EnabledSubsystems.ELEVATOR_ENABLED) {
 			if (elevTalon.getSensorCollection().isFwdLimitSwitchClosed()) {
 				elevTalon.getSensorCollection().setQuadraturePosition((int) TOP_HEIGHT_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
+				new CancelCommand(Elevator.getInstance());
 			}
 			if (elevTalon.getSensorCollection().isRevLimitSwitchClosed()) {
 				elevTalon.getSensorCollection().setQuadraturePosition((int) BOTTOM_HEIGHT_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);

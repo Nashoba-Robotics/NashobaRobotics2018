@@ -3,8 +3,8 @@ package edu.nr.robotics.auton.automap;
 import edu.nr.robotics.FieldData;
 import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.Robot;
-import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.AutoChoosers;
+import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
 import edu.nr.robotics.auton.autoroutes.BlockToScaleProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosRightToScaleLeftProfilingCommand;
@@ -68,18 +68,6 @@ public class StartPosRightSwitchRightCommand extends CommandGroup {
 
 		});
 
-		addSequential(new ConditionalCommand(new StartPosRightToScaleLeftProfilingCommand()) {
-
-			@Override
-			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.left
-						&& (Robot.getInstance().selectedScale == Scale.both
-								|| Robot.getInstance().selectedScale == Scale.leftonly)
-						&& FieldData.getInstance().scale == Direction.left;
-			}
-
-		});
-
 		addSequential(new ConditionalCommand(new StartPosRightToScaleRightProfilingCommand()) {
 
 			@Override
@@ -88,6 +76,18 @@ public class StartPosRightSwitchRightCommand extends CommandGroup {
 						&& (Robot.getInstance().selectedScale == Scale.both
 								|| Robot.getInstance().selectedScale == Scale.rightonly)
 						&& FieldData.getInstance().scale == Direction.right;
+			}
+
+		});
+
+		addSequential(new ConditionalCommand(new StartPosRightToScaleLeftProfilingCommand()) {
+
+			@Override
+			protected boolean condition() {
+				return FieldData.getInstance().nearSwitch == Direction.left
+						&& (Robot.getInstance().selectedScale == Scale.both
+								|| Robot.getInstance().selectedScale == Scale.leftonly)
+						&& FieldData.getInstance().scale == Direction.left;
 			}
 
 		});
@@ -134,7 +134,6 @@ public class StartPosRightSwitchRightCommand extends CommandGroup {
 			}
 
 		});
-
 	}
 
 }

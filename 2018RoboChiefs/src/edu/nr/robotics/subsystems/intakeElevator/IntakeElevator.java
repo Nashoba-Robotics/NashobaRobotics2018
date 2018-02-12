@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.nr.lib.commandbased.CancelCommand;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
@@ -17,6 +18,7 @@ import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
+import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class IntakeElevator extends NRSubsystem {
@@ -273,7 +275,7 @@ public class IntakeElevator extends NRSubsystem {
 	
 	public Speed getHistoricalVelocity(Time timePassed) {
 		if (intakeElevTalon != null) {
-			return new Speed(intakeElevEncoder.getVelocity(timePassed));
+			return intakeElevEncoder.getVelocity(timePassed);
 		}
 		return Speed.ZERO;
 	}
@@ -488,6 +490,7 @@ public class IntakeElevator extends NRSubsystem {
 		if (EnabledSubsystems.INTAKE_ELEVATOR_ENABLED) {
 			if(intakeElevTalon.getSensorCollection().isFwdLimitSwitchClosed()) {
 				intakeElevTalon.getSensorCollection().setQuadraturePosition((int) FOLDED_HEIGHT.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
+				new CancelCommand(Elevator.getInstance());
 			}
 			if (intakeElevTalon.getSensorCollection().isRevLimitSwitchClosed()) {
 				intakeElevTalon.getSensorCollection().setQuadraturePosition((int) BOTTOM_HEIGHT.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);

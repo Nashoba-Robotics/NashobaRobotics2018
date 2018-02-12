@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.AngularSpeed;
 import edu.nr.lib.units.Distance;
+import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
 
 public class TalonEncoder extends TimerTask {
@@ -50,7 +51,7 @@ public class TalonEncoder extends TimerTask {
 			data.remove(0);
 		}
 		data.add(new Data(new Distance(talon.getSelectedSensorPosition(PID_TYPE), encoderUnit),
-				new AngularSpeed(talon.getSelectedSensorVelocity(PID_TYPE), Angle.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), Time.getCurrentTime()));
+				new Speed(talon.getSelectedSensorVelocity(PID_TYPE), encoderUnit, Time.Unit.HUNDRED_MILLISECOND), Time.getCurrentTime()));
 	}
 
 	/**
@@ -114,14 +115,14 @@ public class TalonEncoder extends TimerTask {
 	 *            How long ago to look
 	 * @return the velocity
 	 */
-	public AngularSpeed getVelocity(Time deltaTime) {
+	public Speed getVelocity(Time deltaTime) {
 	
 		if (deltaTime.equals(Time.ZERO)) {
-			return new AngularSpeed(talon.getSelectedSensorVelocity(PID_TYPE), Angle.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
+			return new Speed(talon.getSelectedSensorVelocity(PID_TYPE), encoderUnit, Time.Unit.HUNDRED_MILLISECOND);
 		}
 	
 		if (data.size() == 0) {
-			return new AngularSpeed(talon.getSelectedSensorVelocity(PID_TYPE), Angle.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
+			return new Speed(talon.getSelectedSensorVelocity(PID_TYPE), encoderUnit, Time.Unit.HUNDRED_MILLISECOND);
 		} else if (data.size() == 1) {
 			return data.get(0).velocity;
 		}
@@ -155,12 +156,12 @@ public class TalonEncoder extends TimerTask {
 		Data second = data.get(up);
 		if (first.timestamp.equals(second.timestamp)) {
 			System.out.println("The timestamps are equal in " + this + ". This is weird and unexpected...");
-			return AngularSpeed.ZERO;
+			return Speed.ZERO;
 		}
-		return new AngularSpeed(
+		return new Speed(
 				interpolate(first.velocity.getDefault(), second.velocity.getDefault(),
 						timestamp.div(second.timestamp.add(first.timestamp))),
-				Angle.Unit.defaultUnit, Time.Unit.defaultUnit);
+				Distance.Unit.defaultUnit, Time.Unit.defaultUnit);
 	}
 
 	private double interpolate(double first, double second, double timeRatio) {
@@ -169,11 +170,11 @@ public class TalonEncoder extends TimerTask {
 
 	private class Data {
 		Distance position;
-		AngularSpeed velocity;
+		Speed velocity;
 
 		Time timestamp;
 
-		public Data(Distance position, AngularSpeed velocity, Time timestamp) {
+		public Data(Distance position, Speed velocity, Time timestamp) {
 			this.position = position;
 			this.velocity = velocity;
 			this.timestamp = timestamp;

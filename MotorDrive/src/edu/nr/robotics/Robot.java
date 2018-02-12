@@ -44,6 +44,7 @@ public class Robot extends TimedRobot {
 		intakeRoller2.configPeakCurrentLimit(50, 0);
 		intakeRoller2.configPeakCurrentDuration(1000, 0);
 		SmartDashboard.putNumber("Motor Percent: ", 0);
+		SmartDashboard.putNumber("Motor Percent 2: ", 0);
 	}
 
 	/**
@@ -102,7 +103,7 @@ public class Robot extends TimedRobot {
 		Scheduler.getInstance().run();
 		talon.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
 		//carriageTalon.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
-		intakeRoller1.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
+		intakeRoller1.set(ControlMode.PercentOutput, -SmartDashboard.getNumber("Motor Percent 2: ", 0));
 		//intakeRoller2.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
 	
 		SmartDashboard.putNumber("Talon 1 Current: ", talon.getOutputCurrent());

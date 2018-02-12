@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import edu.nr.lib.units.Distance;
+import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -20,27 +22,27 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 	private double prevTime;
 	private double startTime;
 	
-	public static double positionGoal;
-	public static double velocityGoal;
-	public static double accelGoal;
+	public double positionGoal;
+	public double velocityGoal;
+	public double accelGoal;
 	
 	private boolean enabled = false;
 	private PIDOutput out;
 	private PIDSource source;
 	
 	private double ka, kp, kd, kv;
-	public static double errorLast;
-	public static double error;
+	public double errorLast;
+	public double error;
 	
-	public static double initialPosition;
+	public double initialPosition;
 	
-	private ArrayList<Double> posPoints;
-	private ArrayList<Double> velPoints;
-	private ArrayList<Double> accelPoints;
+	public ArrayList<Double> posPoints;
+	public ArrayList<Double> velPoints;
+	public ArrayList<Double> accelPoints;
 	
 	private OneDimensionalTrajectory trajectory;
 	
-	private int loopIteration;
+	public int loopIteration;
 		
 	public OneDimensionalMotionProfilerBasic(PIDOutput out, PIDSource source, double kv, double ka, double kp, double kd, long period) {
 		this.out = out;
@@ -55,10 +57,10 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 		this.kp = kp;
 		this.kd = kd;
 		this.kv = kv;
-		this.posPoints = new ArrayList<Double>();
-		this.velPoints = new ArrayList<Double>();
-		this.accelPoints = new ArrayList<Double>();
-		this.initialPosition = source.pidGet();
+		posPoints = new ArrayList<Double>();
+		velPoints = new ArrayList<Double>();
+		accelPoints = new ArrayList<Double>();
+		initialPosition = source.pidGet();
 	}
 	
 	public OneDimensionalMotionProfilerBasic(PIDOutput out, PIDSource source, double kv, double ka, double kp, double kd) {
@@ -82,36 +84,27 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 				velocityGoal = 0;
 				accelGoal = 0;
 			}
-			
-			error = trajectory.getGoalPosition(edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime) - source.pidGet() + initialPosition;
 						
+			source.setPIDSourceType(PIDSourceType.kDisplacement);
+			error = positionGoal - Elevator.getInstance().pidGet() + initialPosition;
+									
 			double errorDeriv = (error - errorLast) / dt;
 			
-			double output = velocityGoal * kv + accelGoal * ka + error * kp + errorDeriv * kd;
+			double output = velocityGoal * kv + error * kp + errorDeriv * kd;
 			
+			if ((accelGoal > 0 && velocityGoal > 0) || (accelGoal < 0 && velocityGoal < 0)) {
+				output += accelGoal * ka;
+			}
+			
+			source.setPIDSourceType(PIDSourceType.kRate);
 			out.pidWrite(output);
 
 			errorLast = error;
 			
-			double timeSinceStart = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime;
-			
-			if((initialPosition + (trajectory.getGoalPosition(timeSinceStart))) < 0) {
-				//double goalPosition = trajectory.getGoalPosition(timeSinceStart);
-				//double currentTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-				
-				isEnabled();
-			}
-			
 			loopIteration++;
-
-			//source.setPIDSourceType(PIDSourceType.kRate);
-			//SmartDashboard.putString("Motion Profiler V", source.pidGet() + ":" + (output * trajectory.getMaxUsedVelocity() * Math.signum(trajectory.getMaxUsedVelocity())));
-			//source.setPIDSourceType(PIDSourceType.kDisplacement);
-			//SmartDashboard.putString("Motion Profiler X", source.pidGet() + ":" 
-			//		+ (initialPosition + (trajectory.getGoalPosition(edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime))));
+			
 		}
 		
-		prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 	}
 		
 	/**
@@ -128,7 +121,6 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 	public void enable() {
 		reset();
 		posPoints = trajectory.loadPosPoints(period);
-		System.out.println(posPoints.size());
 		velPoints = trajectory.loadVelPoints(period);
 		accelPoints = trajectory.loadAccelPoints(period);
 		enabled = true;
@@ -144,6 +136,7 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 		PIDSourceType type = source.getPIDSourceType();
 		source.setPIDSourceType(PIDSourceType.kDisplacement);
 		initialPosition = source.pidGet();
+		loopIteration = 0;
 		source.setPIDSourceType(type);
 	}
 	

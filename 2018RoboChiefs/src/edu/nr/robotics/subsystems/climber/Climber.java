@@ -191,7 +191,7 @@ public class Climber extends NRSubsystem {
 	 */
 	public Speed getHistoricalVelocity(Time timePassed) {
 		if (climberTalon != null)
-			return new Speed(climberEncoder.getVelocity(timePassed));
+			return climberEncoder.getVelocity(timePassed);
 		return Speed.ZERO;
 	}
 	

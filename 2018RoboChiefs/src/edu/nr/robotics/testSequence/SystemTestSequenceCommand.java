@@ -15,7 +15,8 @@ public class SystemTestSequenceCommand extends NRCommand {
 	private double elevatorCounter = 0;
 	private double elevatorShooterCounter = 0;
 	private double intakeElevatorCounter = 0;
-	private double intakeRollersCounter = 0;
+	private double intakeRollersLeftCounter = 0;
+	private double intakeRollersRightCounter = 0;
 	
 	public final double MIN_DETECTION_CURRENT = 0.125;
 
@@ -26,14 +27,16 @@ public class SystemTestSequenceCommand extends NRCommand {
 	private double elevatorCurrent = 0;
 	private double elevatorShooterCurrent = 0;
 	private double intakeElevatorCurrent = 0;
-	private double intakeRollersCurrent = 0;
+	private double intakeRollersLeftCurrent = 0;
+	private double intakeRollersRightCurrent = 0;
 	
 	private double climberCurrentAve = 0;
 	private double cubeHandlerCurrentAve = 0;
 	private double elevatorCurrentAve = 0;
 	private double elevatorShooterCurrentAve = 0;
 	private double intakeElevatorCurrentAve = 0;
-	private double intakeRollersCurrentAve = 0;
+	private double intakeRollersCurrentLeftAve = 0;
+	private double intakeRollersCurrentRightAve = 0;
 	
 	private final double CLIMBER_STRESS_CURRENT = 0;
 	private final double CUBE_HANDLER_STRESS_CURRENT = 0;
@@ -76,11 +79,14 @@ public class SystemTestSequenceCommand extends NRCommand {
 			intakeElevatorCurrent += IntakeElevator.getInstance().getCurrent();
 			intakeElevatorCounter++;
 		}
-		if (IntakeRollers.getInstance().getCurrent() > MIN_DETECTION_CURRENT) {
-			intakeRollersCurrent += IntakeRollers.getInstance().getCurrent();
-			intakeRollersCounter++;
+		if (IntakeRollers.getInstance().getCurrentLeft() > MIN_DETECTION_CURRENT) {
+			intakeRollersLeftCurrent += IntakeRollers.getInstance().getCurrentLeft();
+			intakeRollersLeftCounter++;
 		}
-
+		if (IntakeRollers.getInstance().getCurrentRight() > MIN_DETECTION_CURRENT) {
+			intakeRollersRightCurrent += IntakeRollers.getInstance().getCurrentRight();
+			intakeRollersRightCounter++;
+		}
 		if (IntakeElevator.getInstance().isRevLimitSwitchClosed()) {
 			isIntakeElevRevLimitSwitchHit = true;
 		}
@@ -89,61 +95,65 @@ public class SystemTestSequenceCommand extends NRCommand {
 	
 	@Override
 	public void onEnd() {
+		
 		climberCurrentAve = climberCurrent / climberCounter;
 		cubeHandlerCurrentAve = cubeHandlerCurrent / cubeHandlerCounter;
 		elevatorCurrentAve = elevatorCurrent / elevatorCounter;
 		elevatorShooterCurrentAve = elevatorShooterCurrent / elevatorShooterCounter;
 		intakeElevatorCurrentAve = intakeElevatorCurrent / intakeElevatorCounter;
-		intakeRollersCurrentAve = intakeRollersCurrent / intakeRollersCounter;
+		intakeRollersCurrentLeftAve = intakeRollersLeftCurrent / intakeRollersLeftCounter;
 		
 		if (climberCurrentAve > CLIMBER_STRESS_CURRENT) {
-			System.out.println("CLIMBER CURRENT TOO HIGH: " + climberCurrentAve + " A");
-			
+			System.out.println("CLIMBER CURRENT TOO HIGH: " + climberCurrentAve + " A");	
 		} else if (climberCurrentAve < CLIMBER_LOW_CURRENT) {
-			System.out.println("CLIMBER CURRENT TOO LOW: " + climberCurrentAve + " A");
-			
+			System.out.println("CLIMBER CURRENT TOO LOW: " + climberCurrentAve + " A");	
 		}
+		
 		if (cubeHandlerCurrentAve > CUBE_HANDLER_STRESS_CURRENT) {
-			System.out.println("CUBE HANDLER CURRENT TOO HIGH: " + cubeHandlerCurrentAve + " A");
-			
+			System.out.println("CUBE HANDLER CURRENT TOO HIGH: " + cubeHandlerCurrentAve + " A");	
 		} else if (cubeHandlerCurrentAve < CUBE_HANDLER_LOW_CURRENT) {
-			System.out.println("CUBE HANDLER CURRENT TOO LOW: " + cubeHandlerCurrentAve + " A");
-			
+			System.out.println("CUBE HANDLER CURRENT TOO LOW: " + cubeHandlerCurrentAve + " A");		
 		}
+		
 		if (elevatorCurrentAve > ELEVATOR_STRESS_CURRENT) {
-			System.out.println("ELEVATOR CURRENT TOO HIGH: " + elevatorCurrentAve + " A");
-			
+			System.out.println("ELEVATOR CURRENT TOO HIGH: " + elevatorCurrentAve + " A");	
 		} else if (elevatorCurrentAve < ELEVATOR_LOW_CURRENT) {
-			System.out.println("ELEVATOR CURRENT TOO LOW: " + elevatorCurrentAve + " A");
-			
+			System.out.println("ELEVATOR CURRENT TOO LOW: " + elevatorCurrentAve + " A");	
 		}
+		
 		if (elevatorShooterCurrentAve > ELEVATOR_SHOOTER_STRESS_CURRENT) {
 			System.out.println("ELEVATOR SHOOTER CURRENT TOO HIGH: " + elevatorShooterCurrentAve + " A");
-			
 		} else if (elevatorShooterCurrentAve < ELEVATOR_SHOOTER_LOW_CURRENT) {
-			System.out.println("ELEVATOR SHOOTER CURRENT TOO LOW: " + elevatorShooterCurrentAve + " A");
-			
+			System.out.println("ELEVATOR SHOOTER CURRENT TOO LOW: " + elevatorShooterCurrentAve + " A");	
 		}
+		
 		if (intakeElevatorCurrentAve > INTAKE_ELEVATOR_STRESS_CURRENT) {
-			System.out.println("INTAKE ELEVATOR CURRENT TOO HIGH: " + intakeElevatorCurrentAve + " A");
-			
+			System.out.println("INTAKE ELEVATOR CURRENT TOO HIGH: " + intakeElevatorCurrentAve + " A");	
 		} else if (intakeElevatorCurrentAve < INTAKE_ELEVATOR_LOW_CURRENT) {
-			System.out.println("INTAKE ELEVATOR CURRENT TOO LOW: " + intakeElevatorCurrentAve + " A");
-			
+			System.out.println("INTAKE ELEVATOR CURRENT TOO LOW: " + intakeElevatorCurrentAve + " A");	
 		}
-		if (intakeRollersCurrentAve > INTAKE_ROLLERS_STRESS_CURRENT) {
-			System.out.println("INTAKE ROLLERS CURRENT TOO HIGH: " + intakeRollersCurrentAve + " A");
-			
-		} else if (intakeRollersCurrentAve < INTAKE_ROLLERS_LOW_CURRENT) {
-			System.out.println("INTAKE ROLLERS CURRENT TOO LOW: " + intakeRollersCurrentAve + " A");
-			
+		
+		if (intakeRollersCurrentLeftAve > INTAKE_ROLLERS_STRESS_CURRENT) {
+			System.out.println("INTAKE ROLLERS LEFT CURRENT TOO HIGH: " + intakeRollersCurrentLeftAve + " A");	
+		} else if (intakeRollersCurrentLeftAve < INTAKE_ROLLERS_LOW_CURRENT) {
+			System.out.println("INTAKE ROLLERS LEFT CURRENT TOO LOW: " + intakeRollersCurrentLeftAve + " A");
 		}
+		
+		if (intakeRollersCurrentRightAve > INTAKE_ROLLERS_STRESS_CURRENT) {
+			System.out.println("INTAKE ROLLERS RIGHT CURRENT TOO HIGH: " + intakeRollersCurrentRightAve + " A");
+		} else if (intakeRollersCurrentRightAve < INTAKE_ROLLERS_LOW_CURRENT) {
+			System.out.println("INTAKE ROLLERS RIGHT CURRENT TOO LOW: " + intakeRollersCurrentRightAve + " A");
+		
+		}
+		
 		if (!Elevator.getInstance().isRevLimitSwitchClosed()) {
 			System.out.println("ELEVATOR REV LIMIT SWITCH NOT CLOSED!");
 		}
+		
 		if (!isIntakeElevRevLimitSwitchHit) {
 			System.out.println("INTAKE ELEVATOR REV LIMIT SWITCH NEVER CLOSED!");
 		}
+		
 		if (!IntakeElevator.getInstance().isFwdLimitSwitchClosed()) {
 			System.out.println("INTAKE ELEVATOR FWD LIMIT SWITCH NOT CLOSED!");
 		}

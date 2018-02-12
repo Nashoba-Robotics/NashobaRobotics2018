@@ -29,7 +29,7 @@ public class CubeFeedIntakeRollersToCubeHandlerCommand extends NRCommand {
 			finished = true;
 		} else {
 			finished = false;
-			IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_INTAKE_ROLLERS);
+			IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS, IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS);
 			CubeHandler.getInstance().setMotorSpeedPercent(CubeHandler.VEL_PERCENT_CUBE_HANDLER);
 		}
 	}
