@@ -275,7 +275,7 @@ public class IntakeElevator extends NRSubsystem {
 	
 	public Speed getHistoricalVelocity(Time timePassed) {
 		if (intakeElevTalon != null) {
-			return new Speed(intakeElevEncoder.getVelocity(timePassed));
+			return intakeElevEncoder.getVelocity(timePassed);
 		}
 		return Speed.ZERO;
 	}

@@ -40,57 +40,11 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow, hDrive, hDriveFollow, pigeonTalon;
 	private TalonEncoder leftEncoder, rightEncoder, hEncoder;
 	
-	/**
-	 * The Gear ratio between the encoder and the drive wheels
-	 */
-	public static final double ENC_TO_WHEEL_GEARING = 1; //TODO: Find gearing between encoder and wheels
-
-	/**
-	 * The gear ratio between the encoder and the H drive wheel
-	 */
-	public static final double ENC_TO_H_WHEEL_GEARING = 0; //TODO: Find gearing between encoder and H drive wheel
+	public static final double REAL_ENC_TICK_PER_INCH_DRIVE = 0;
+	public static final double REAL_ENC_TICK_PER_INCH_H_DRIVE = 0;
 	
-	/**
-	 * The real, not the effective, wheel diameter
-	 */
-	
-	public static final double REAL_WHEEL_DIAMETER_INCHES = 6; //TODO: Find real wheel diameter
-	
-	/**
-	 * the real, not the effective, wheel diameter
-	 */
-	
-	public static final double REAL_WHEEL_DIAMETER_INCHES_H = 4; //TODO: Find real wheel H diameter 
-	
-	/**
-	 * The diameter of the drive wheels in inches
-	 */
-	public static final double EFFECTIVE_WHEEL_DIAMETER_INCHES = 6; //TODO: Find effective drive wheel diameter //TODO: Find slope of set distance vs real distance
-	
-	/**
-	 * The diameter of the H-drive wheel in inches
-	 */
-	public static final double EFFECTIVE_WHEEL_DIAMETER_INCHES_H = 4;//TODO: Find effective drive H-wheel diameter //TODO: Find slope of set distance H vs real distance H
-	
-	/**
-	 * The diameter of the drive wheels
-	 */
-	public static final Distance REAL_WHEEL_DIAMETER = new Distance(REAL_WHEEL_DIAMETER_INCHES, Distance.Unit.INCH);
-	
-	/**
-	 * The diameter of the H drive wheel 
-	 */
-	public static final Distance REAL_WHEEL_DIAMETER_H = new Distance(REAL_WHEEL_DIAMETER_INCHES_H, Distance.Unit.INCH);
-	
-	/**
-	 * Wheel diameter that accounts for gearing and slippage on the carpet
-	 */
-	public static final Distance EFFECTIVE_WHEEL_DIAMETER = new Distance(EFFECTIVE_WHEEL_DIAMETER_INCHES / ENC_TO_WHEEL_GEARING, Distance.Unit.INCH);
-	
-	/**
-	 * H Wheel diameter that accounts for gearing and slippage on the carpet
-	 */
-	public static final Distance EFFECTIVE_WHEEL_DIAMETER_H = new Distance(EFFECTIVE_WHEEL_DIAMETER_INCHES_H / ENC_TO_H_WHEEL_GEARING, Distance.Unit.INCH); 
+	public static final double EFFECTIVE_ENC_TICK_PER_INCH_DRIVE = REAL_ENC_TICK_PER_INCH_DRIVE;
+	public static final double EFFECTIVE_ENC_TICK_PER_INCH_H_DRIVE = REAL_ENC_TICK_PER_INCH_H_DRIVE;
 	
 	/**
 	 * The maximum speed of the drive base
@@ -140,14 +94,14 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static double I_RIGHT = 0;
 	public static double D_RIGHT = 0;
 	
-	public static double P_H = 0; //TODO: Find h PID values
+	public static double P_H = 0; //TODO: Find H PID values
 	public static double I_H = 0;
 	public static double D_H = 0;
 	
 	/**
 	 * 1D Profiling kVAPID_theta loop constants
 	 */
-	public static double kVOneD = 0 / MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
+	public static double kVOneD = 0 / MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
 	public static double kAOneD = 0;
 	public static double kPOneD = 0;
 	public static double kIOneD = 0;
@@ -333,7 +287,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			
 			leftDrive.selectProfileSlot(VEL_SLOT, DEFAULT_TIMEOUT);
 			
-			leftEncoder = new TalonEncoder(leftDrive, Distance.Unit.MAGNETIC_ENCODER_TICK);
+			leftEncoder = new TalonEncoder(leftDrive, Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE);
 			
 			leftDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
@@ -364,7 +318,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			
 			rightDrive.selectProfileSlot(VEL_SLOT, DEFAULT_TIMEOUT);
 			
-			rightEncoder = new TalonEncoder(rightDrive, Distance.Unit.MAGNETIC_ENCODER_TICK);
+			rightEncoder = new TalonEncoder(rightDrive, Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE);
 			
 			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
@@ -429,7 +383,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	public Distance getLeftPosition() {
 		if(leftDrive != null) {
-			return new Distance(leftDrive.getSelectedSensorPosition(PID_TYPE), Unit.MAGNETIC_ENCODER_TICK);
+			return new Distance(leftDrive.getSelectedSensorPosition(PID_TYPE), Unit.MAGNETIC_ENCODER_TICK_DRIVE);
 		}		
 		else {
 			return Distance.ZERO;
@@ -441,7 +395,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	public Distance getRightPosition() {
 		if(rightDrive != null) {
-			return new Distance(rightDrive.getSelectedSensorPosition(PID_TYPE), Unit.MAGNETIC_ENCODER_TICK);
+			return new Distance(rightDrive.getSelectedSensorPosition(PID_TYPE), Unit.MAGNETIC_ENCODER_TICK_DRIVE);
 		}
 		else {
 			return Distance.ZERO;
@@ -504,7 +458,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	public Speed getLeftVelocity() {
 		if (leftDrive != null)
-			return new Speed(leftDrive.getSelectedSensorVelocity(VEL_SLOT), Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
+			return new Speed(leftDrive.getSelectedSensorVelocity(VEL_SLOT), Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
 		return Speed.ZERO;
 	}
 	
@@ -513,7 +467,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	public Speed getRightVelocity() {
 		if(rightDrive != null)
-			return new Speed(rightDrive.getSelectedSensorVelocity(VEL_SLOT), Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
+			return new Speed(rightDrive.getSelectedSensorVelocity(VEL_SLOT), Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
 		return Speed.ZERO;
 	}
 	
@@ -535,7 +489,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	public Speed getHistoricalLeftVelocity(Time deltaTime) {
 		if (leftEncoder != null)
-			return new Speed(leftEncoder.getVelocity(deltaTime));
+			return leftEncoder.getVelocity(deltaTime);
 		return Speed.ZERO;
 	}
 	
@@ -548,7 +502,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	public Speed getHistoricalRightVelocity(Time deltaTime) {
 		if (rightEncoder != null)
-			return new Speed(rightEncoder.getVelocity(deltaTime));
+			return rightEncoder.getVelocity(deltaTime);
 		return Speed.ZERO;
 	}
 	
@@ -561,7 +515,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	public Speed getHistoricalHVelocity(Time deltaTime) {
 		if (hEncoder != null)
-			return new Speed(hEncoder.getVelocity(deltaTime));
+			return hEncoder.getVelocity(deltaTime);
 		return Speed.ZERO;
 	}
 	
@@ -606,19 +560,19 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			rightMotorSetpoint = right;
 			hMotorSetpoint = strafe;
 			
-			leftDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / leftMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
-			rightDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / rightMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
+			leftDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / leftMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
+			rightDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / rightMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
 			hDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_H * hMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_H) * 1023.0) / hMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
 			
 			if (leftDrive.getControlMode() == ControlMode.PercentOutput) {
 				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.div(MAX_SPEED_DRIVE));
 			} else {
-				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
+				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
 			}
 			if (rightDrive.getControlMode() == ControlMode.PercentOutput) {
 				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.div(MAX_SPEED_DRIVE));
 			} else {
-				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
+				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
 			}
 			if (hDrive.getControlMode() == ControlMode.PercentOutput) {
 				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.div(MAX_SPEED_DRIVE_H));
@@ -699,18 +653,18 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	@Override
 	public double pidGetLeft() {
 		if (type == PIDSourceType.kRate) {
-			return getInstance().getLeftVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
+			return getInstance().getLeftVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
 		} else {
-			return getInstance().getLeftPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK);
+			return getInstance().getLeftPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE);
 		}
 	}
 	
 	@Override
 	public double pidGetRight() {
 		if (type == PIDSourceType.kRate) {
-			return getInstance().getRightVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
+			return getInstance().getRightVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
 		} else {
-			return getInstance().getRightPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK);
+			return getInstance().getRightPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE);
 		}
 	}
 	
@@ -736,11 +690,11 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			minVel = MAX_SPEED_DRIVE_H.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
 			minAccel = MAX_ACCEL_DRIVE_H.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
 		} else if (distY.equals(Distance.ZERO) && !distX.equals(Distance.ZERO)) {
-			minVel = MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND);
-			minAccel = MAX_ACCEL_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
+			minVel = MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
+			minAccel = MAX_ACCEL_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
 		} else if (!distX.equals(Distance.ZERO) && !distY.equals(Distance.ZERO)) {
-			minVel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_SPEED_DRIVE_H.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
-			minAccel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACCEL_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_ACCEL_DRIVE_H.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND));
+			minVel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_SPEED_DRIVE_H.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
+			minAccel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACCEL_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_ACCEL_DRIVE_H.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND));
 		} else {
 			minVel = 0;
 			minAccel = 0;
@@ -748,7 +702,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		}
 		
 		diagonalProfiler = new HDriveDiagonalProfiler(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD, kVOneDH, kAOneDH, kPOneDH, kIOneDH, kDOneDH);
-		diagonalProfiler.setTrajectory(new RampedDiagonalHTrajectory(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK), distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H), minVel, minAccel));
+		diagonalProfiler.setTrajectory(new RampedDiagonalHTrajectory(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H), minVel, minAccel));
 		diagonalProfiler.enable();
 }
 	
@@ -899,10 +853,10 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public void startDumbDrive() {
 		if (leftDrive != null && rightDrive != null && hDrive != null) {
 			if (rightDrive.getControlMode() != ControlMode.PercentOutput) {
-				rightDrive.set(ControlMode.PercentOutput, getRightVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
+				rightDrive.set(ControlMode.PercentOutput, getRightVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
 			}
 			if (leftDrive.getControlMode() != ControlMode.PercentOutput) {
-				leftDrive.set(ControlMode.PercentOutput, getLeftVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
+				leftDrive.set(ControlMode.PercentOutput, getLeftVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
 			}
 			if(hDrive.getControlMode() != ControlMode.PercentOutput) {
 				hDrive.set(ControlMode.PercentOutput, getHVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));

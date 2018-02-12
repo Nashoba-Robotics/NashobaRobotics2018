@@ -16,24 +16,22 @@ public class Distance {
 	private Unit type;
 	
 	public enum Unit implements GenericUnit {
-		FOOT, INCH, DRIVE_ROTATION, DRIVE_ROTATION_H, METER, 
-		MAGNETIC_ENCODER_TICK, MAGNETIC_ENCODER_TICK_H, MAGNETIC_ENCODER_TICK_ELEV, MAGNETIC_ENCODER_TICK_INTAKE_ELEV,
+		FOOT, INCH, METER,
+		MAGNETIC_ENCODER_TICK_DRIVE, MAGNETIC_ENCODER_TICK_H, MAGNETIC_ENCODER_TICK_ELEV, MAGNETIC_ENCODER_TICK_INTAKE_ELEV,
 		MAGNETIC_ENCODER_TICK_ELEV_SHOOTER, MAGNETIC_ENCODER_TICK_CUBE_HANDLER, MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS,
 		MAGNETIC_ENCODER_TICK_CLIMBER;
 		
 		public static final Unit defaultUnit = INCH;
 		
 		/**
-		 * For a drive subsystem
+		 * For a drive
 		 */
-		private static final double DRIVE_ROTATION_PER_INCH = 1/(Drive.EFFECTIVE_WHEEL_DIAMETER_INCHES * Math.PI);
-		private static final double MAGNETIC_ENCODER_TICK_PER_INCH = Units.MAGNETIC_NATIVE_UNITS_PER_REV * DRIVE_ROTATION_PER_INCH / Units.NATIVE_UNITS_PER_TICK;
+		private static final double ENCODER_TICK_DRIVE_PER_INCH = Drive.EFFECTIVE_ENC_TICK_PER_INCH_DRIVE;
 		
 		/**
-		 * For an h drive
+		 * For an H drive
 		 */
-		private static final double DRIVE_ROTATION_H_PER_INCH = 1/(Drive.EFFECTIVE_WHEEL_DIAMETER_INCHES_H * Math.PI);
-		private static final double MAGNETIC_ENCODER_TICK_H_PER_INCH = Units.MAGNETIC_NATIVE_UNITS_PER_REV * DRIVE_ROTATION_H_PER_INCH / Units.NATIVE_UNITS_PER_TICK;
+		private static final double ENCODER_TICK_DRIVE_H_PER_INCH = Drive.EFFECTIVE_ENC_TICK_PER_INCH_H_DRIVE;
 		
 		/**
 		 * For an elevator
@@ -66,20 +64,14 @@ public class Distance {
 			if(this == Unit.FOOT) {
 				return val / FOOT_PER_INCH;
 			}
-			if(this == Unit.DRIVE_ROTATION) {
-				return val / DRIVE_ROTATION_PER_INCH;
-			}
-			if(this == Unit.DRIVE_ROTATION_H) {
-				return val / DRIVE_ROTATION_H_PER_INCH;
-			}
 			if(this == Unit.METER) {
 				return val / METER_PER_INCH;
 			}
-			if(this == Unit.MAGNETIC_ENCODER_TICK) {
-				return val / MAGNETIC_ENCODER_TICK_PER_INCH;
+			if(this == Unit.MAGNETIC_ENCODER_TICK_DRIVE) {
+				return val / ENCODER_TICK_DRIVE_PER_INCH;
 			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_H) {
-				return val / MAGNETIC_ENCODER_TICK_H_PER_INCH;
+				return val / ENCODER_TICK_DRIVE_H_PER_INCH;
 			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_ELEV) {
 				return val / ENCODER_TICK_ELEV_PER_INCH;
@@ -106,20 +98,14 @@ public class Distance {
 			if(this == Unit.FOOT) {
 				return FOOT_PER_INCH * val;
 			}
-			if(this == Unit.DRIVE_ROTATION) {
-				return DRIVE_ROTATION_PER_INCH * val;
-			}
-			if (this == Unit.DRIVE_ROTATION_H) {
-				return DRIVE_ROTATION_H_PER_INCH * val;
-			}
 			if(this == Unit.METER) {
 				return METER_PER_INCH * val;
 			}
-			if(this == Unit.MAGNETIC_ENCODER_TICK) {
-				return MAGNETIC_ENCODER_TICK_PER_INCH * val;
+			if(this == Unit.MAGNETIC_ENCODER_TICK_DRIVE) {
+				return ENCODER_TICK_DRIVE_PER_INCH * val;
 			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_H) {
-				return MAGNETIC_ENCODER_TICK_H_PER_INCH * val;
+				return ENCODER_TICK_DRIVE_H_PER_INCH * val;
 			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_ELEV) {
 				return ENCODER_TICK_ELEV_PER_INCH * val;

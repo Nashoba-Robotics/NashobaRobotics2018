@@ -182,7 +182,7 @@ private static CubeHandler singleton;
 	 */
 	public Speed getHistoricalVelocity(Time timePassed) {
 		if (cubeHandlerTalon != null)
-			return new Speed(cubeHandlerEncoder.getVelocity(timePassed));
+			return cubeHandlerEncoder.getVelocity(timePassed);
 		return Speed.ZERO;
 	}
 	

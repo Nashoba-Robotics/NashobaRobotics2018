@@ -18,10 +18,6 @@ public class Speed {
 		this.time = new Time(1, timeUnit);
 	}
 
-	public Speed(AngularSpeed speed) {
-		new Speed(speed.get(Angle.Unit.ROTATION, Time.Unit.MINUTE), Distance.Unit.DRIVE_ROTATION, Time.Unit.MINUTE);
-	}
-
 	public double get(Distance.Unit toDistanceUnit, Time.Unit toTimeUnit) {
 		return distance.get(toDistanceUnit) / time.get(toTimeUnit);
 	}

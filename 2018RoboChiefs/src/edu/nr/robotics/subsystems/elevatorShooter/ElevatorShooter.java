@@ -184,7 +184,7 @@ public class ElevatorShooter extends NRSubsystem {
 	 */
 	public Speed getHistoricalVelocity(Time timePassed) {
 		if (elevShooterTalon != null)
-			return new Speed(elevShooterEncoder.getVelocity(timePassed));
+			return elevShooterEncoder.getVelocity(timePassed);
 		return Speed.ZERO;
 	}
 	

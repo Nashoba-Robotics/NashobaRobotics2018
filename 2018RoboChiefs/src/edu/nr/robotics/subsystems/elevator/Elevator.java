@@ -326,7 +326,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	 */
 	public Speed getHistoricalVelocity(Time timePassed) {
 		if (elevTalon != null)
-			return new Speed(elevEncoder.getVelocity(timePassed));
+			return elevEncoder.getVelocity(timePassed);
 		return Speed.ZERO;
 	}
 
