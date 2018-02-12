@@ -44,7 +44,7 @@ public class TestSequence extends CommandGroup {
 				addParallel(new IntakeElevatorPositionCommand(IntakeElevator.BOTTOM_HEIGHT));
 				
 				//Test IntakeRollers
-				addParallel(new IntakeRollersVelocityCommand(IntakeRollers.VEL_PERCENT_INTAKE_ROLLERS));
+				addParallel(new IntakeRollersVelocityCommand(IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS, IntakeRollers.VEL_PERCENT_LOW_INTAKE_ROLLERS));
 				
 				addSequential(new WaitCommand(STARTUP_SEQUENCE_WAIT));
 				

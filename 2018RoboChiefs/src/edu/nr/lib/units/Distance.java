@@ -52,11 +52,6 @@ public class Distance {
 		private static final double ENCODER_TICK_CUBE_HANDLER_PER_INCH = CubeHandler.ENC_TICK_PER_INCH_CUBE_HANDLER;
 		
 		/**
-		 * For the intake rollers
-		 */
-		private static final double ENCODER_TICK_INTAKE_ROLLERS_PER_INCH = IntakeRollers.ENC_TICK_PER_INCH_INTAKE_ROLLERS;
-		
-		/**
 		 * For the climber
 		 */
 		private static final double ENCODER_TICK_CLIMBER_PER_INCH = Climber.ENC_TICKS_PER_INCH_CLIMBER;
@@ -98,9 +93,6 @@ public class Distance {
 			if(this == Unit.MAGNETIC_ENCODER_TICK_CUBE_HANDLER) {
 					return val / ENCODER_TICK_CUBE_HANDLER_PER_INCH;
 			}
-			if(this == Unit.MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS) {
-				return val / ENCODER_TICK_INTAKE_ROLLERS_PER_INCH;
-			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_CLIMBER) {
 				return val / ENCODER_TICK_CLIMBER_PER_INCH;
 			}
@@ -140,9 +132,6 @@ public class Distance {
 			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_CUBE_HANDLER) {
 				return ENCODER_TICK_CUBE_HANDLER_PER_INCH * val;
-			}
-			if(this == Unit.MAGNETIC_ENCODER_TICK_INTAKE_ROLLERS) {
-				return ENCODER_TICK_INTAKE_ROLLERS_PER_INCH * val;
 			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_CLIMBER) {
 				return ENCODER_TICK_CLIMBER_PER_INCH * val;

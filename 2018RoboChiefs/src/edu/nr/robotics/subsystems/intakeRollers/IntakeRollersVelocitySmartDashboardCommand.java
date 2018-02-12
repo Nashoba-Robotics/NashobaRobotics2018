@@ -10,7 +10,7 @@ public class IntakeRollersVelocitySmartDashboardCommand extends NRCommand {
 
 	@Override
 	protected void onStart() {
-		IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_INTAKE_ROLLERS);
+		IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS, IntakeRollers.VEL_PERCENT_LOW_INTAKE_ROLLERS);
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The Gear ratio between the encoder and the drive wheels
 	 */
-	public static final double ENC_TO_WHEEL_GEARING = 0; //TODO: Find gearing between encoder and wheels
+	public static final double ENC_TO_WHEEL_GEARING = 1; //TODO: Find gearing between encoder and wheels
 
 	/**
 	 * The gear ratio between the encoder and the H drive wheel
@@ -54,23 +54,23 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 * The real, not the effective, wheel diameter
 	 */
 	
-	public static final double REAL_WHEEL_DIAMETER_INCHES = 0; //TODO: Find real wheel diameter
+	public static final double REAL_WHEEL_DIAMETER_INCHES = 6; //TODO: Find real wheel diameter
 	
 	/**
 	 * the real, not the effective, wheel diameter
 	 */
 	
-	public static final double REAL_WHEEL_DIAMETER_INCHES_H = 0; //TODO: Find real wheel H diameter 
+	public static final double REAL_WHEEL_DIAMETER_INCHES_H = 4; //TODO: Find real wheel H diameter 
 	
 	/**
 	 * The diameter of the drive wheels in inches
 	 */
-	public static final double EFFECTIVE_WHEEL_DIAMETER_INCHES = 0; //TODO: Find effective drive wheel diameter //TODO: Find slope of set distance vs real distance
+	public static final double EFFECTIVE_WHEEL_DIAMETER_INCHES = 6; //TODO: Find effective drive wheel diameter //TODO: Find slope of set distance vs real distance
 	
 	/**
 	 * The diameter of the H-drive wheel in inches
 	 */
-	public static final double EFFECTIVE_WHEEL_DIAMETER_INCHES_H = 0;//TODO: Find effective drive H-wheel diameter //TODO: Find slope of set distance H vs real distance H
+	public static final double EFFECTIVE_WHEEL_DIAMETER_INCHES_H = 4;//TODO: Find effective drive H-wheel diameter //TODO: Find slope of set distance H vs real distance H
 	
 	/**
 	 * The diameter of the drive wheels
@@ -121,12 +121,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The amount of time drive can go from 0 to 12 volts
 	 */
-	public static Time DRIVE_RAMP_RATE = Time.ZERO; //TODO: Find drive ramp rate
+	public static Time DRIVE_RAMP_RATE = new Time(0.05, Time.Unit.SECOND);
 	
 	/**
 	 * The amount of time h drive can go from 0 to 12 volts
 	 */
-	public static Time H_DRIVE_RAMP_RATE = Time.ZERO; //TODO: Find h drive ramp rate
+	public static Time H_DRIVE_RAMP_RATE = new Time(0.05, Time.Unit.SECOND);
 	
 	
 	/**
