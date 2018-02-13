@@ -40,8 +40,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow, hDrive, hDriveFollow, pigeonTalon;
 	private TalonEncoder leftEncoder, rightEncoder, hEncoder;
 	
-	public static final double REAL_ENC_TICK_PER_INCH_DRIVE = 0;
-	public static final double REAL_ENC_TICK_PER_INCH_H_DRIVE = 0;
+	public static final double REAL_ENC_TICK_PER_INCH_DRIVE = 428;
+	public static final double REAL_ENC_TICK_PER_INCH_H_DRIVE = 1074;
 	
 	public static final double EFFECTIVE_ENC_TICK_PER_INCH_DRIVE = REAL_ENC_TICK_PER_INCH_DRIVE;
 	public static final double EFFECTIVE_ENC_TICK_PER_INCH_H_DRIVE = REAL_ENC_TICK_PER_INCH_H_DRIVE;
@@ -244,11 +244,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			leftDrive = CTRECreator.createMasterTalon(RobotMap.LEFT_DRIVE);
 			rightDrive = CTRECreator.createMasterTalon(RobotMap.RIGHT_DRIVE);
 			hDrive = CTRECreator.createMasterTalon(RobotMap.H_DRIVE);
-			pigeonTalon = CTRECreator.createMasterTalon(0);//TODO: find real pigeon talon
 			
 			leftDriveFollow = CTRECreator.createFollowerTalon(RobotMap.LEFT_DRIVE_FOLLOW, leftDrive.getDeviceID());
 			rightDriveFollow = CTRECreator.createFollowerTalon(RobotMap.RIGHT_DRIVE_FOLLOW, rightDrive.getDeviceID());
 			hDriveFollow = CTRECreator.createFollowerTalon(RobotMap.H_DRIVE_FOLLOW, hDrive.getDeviceID());
+			pigeonTalon = leftDriveFollow;
+			
 			
 			if (EnabledSubsystems.DRIVE_DUMB_ENABLED) {
 				leftDrive.set(ControlMode.PercentOutput, 0);
@@ -267,7 +268,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			leftDrive.config_kD(VEL_SLOT, D_LEFT, DEFAULT_TIMEOUT);
 			leftDrive.setNeutralMode(NEUTRAL_MODE);
 			leftDrive.setInverted(false);
-			leftDriveFollow.setInverted(false);
 			leftDrive.setSensorPhase(false);
 			leftDriveFollow.setSensorPhase(false);
 			
@@ -297,8 +297,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			rightDrive.config_kI(VEL_SLOT, I_RIGHT, DEFAULT_TIMEOUT);
 			rightDrive.config_kD(VEL_SLOT, D_RIGHT, DEFAULT_TIMEOUT);
 			rightDrive.setNeutralMode(NEUTRAL_MODE);			
-			rightDrive.setInverted(false);
-			rightDriveFollow.setInverted(false);
+			rightDrive.setInverted(true);
+			rightDriveFollow.setInverted(true);
 			rightDrive.setSensorPhase(false);
 			rightDriveFollow.setSensorPhase(false);
 			
@@ -359,7 +359,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			
 			LimelightNetworkTable.getInstance();
 			
-			new RunSensors();
+			//new RunSensors();
 			
 		}
 	}
@@ -550,7 +550,11 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	public void setMotorSpeedInPercent(double left, double right, double strafe) {
-		setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE.mul(strafe));
+				
+		leftDrive.set(ControlMode.PercentOutput, left);
+		rightDrive.set(ControlMode.PercentOutput, right);
+		hDrive.set(ControlMode.PercentOutput, strafe);
+		//setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE.mul(strafe));
 	}
 	
 	public void setMotorSpeed(Speed left, Speed right, Speed strafe) {

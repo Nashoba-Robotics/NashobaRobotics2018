@@ -102,7 +102,7 @@ public class OI implements SmartDashboardSource {
 	private static final int STICK_OPERATOR_RIGHT = 3;
 	
 	public static final Distance ELEVATOR_BUTTON_HEIGHT = new Distance(13, Distance.Unit.INCH);
-	public static final Drive.DriveMode driveMode = Drive.DriveMode.cheesyDrive;
+	public static final Drive.DriveMode driveMode = Drive.DriveMode.arcadeDrive;
 	
 	private OI() {		
 		driveLeft = new Joystick(STICK_LEFT);
@@ -201,11 +201,11 @@ public class OI implements SmartDashboardSource {
 	}
 	
 	public double getArcadeMoveValue() {
-		return snapDriveJoysticks(driveLeft.getY()); //* (driveLeft.getRawButton(DRIVE_REVERSE_BUTTON_NUMBER) ? 1 : -1);
+		return -snapDriveJoysticks(driveLeft.getY()); //* (driveLeft.getRawButton(DRIVE_REVERSE_BUTTON_NUMBER) ? 1 : -1);
 	}
 
 	public double getArcadeTurnValue() {
-		return snapDriveJoysticks(driveRight.getX());
+		return -snapDriveJoysticks(driveRight.getX());
 	}
 	
 	public double getArcadeHValue() {

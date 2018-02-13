@@ -60,8 +60,8 @@ public class IntakeRollers extends NRSubsystem {
 
 		if(EnabledSubsystems.INTAKE_ROLLERS_ENABLED) {
 		
-			intakeRollersLeft = CTRECreator.createMasterTalon(RobotMap.INTAKE_ROLLERS_LEFT_MASTER);
-			intakeRollersRight = CTRECreator.createMasterTalon(RobotMap.INTAKE_ROLLERS_RIGHT_MASTER);
+			intakeRollersLeft = CTRECreator.createMasterTalon(RobotMap.INTAKE_ROLLERS_LEFT);
+			intakeRollersRight = CTRECreator.createMasterTalon(RobotMap.INTAKE_ROLLERS_RIGHT);
 					
 			intakeRollersLeft.setNeutralMode(NEUTRAL_MODE_INTAKE_ROLLERS);
 			intakeRollersLeft.setInverted(false);

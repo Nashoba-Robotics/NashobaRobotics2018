@@ -27,22 +27,25 @@ public class DriveJoystickCommand extends JoystickCommand {
 			double moveValue = OI.getInstance().getArcadeMoveValue();
 			double rotateValue = OI.getInstance().getArcadeTurnValue();
 			double hValue = OI.getInstance().getArcadeHValue();
-			
+						
 			moveValue = NRMath.powWithSign(moveValue, 3);
 			rotateValue = NRMath.powWithSign(rotateValue, 3);
 			hValue = NRMath.powWithSign(hValue, 3);
 			
-			if (Math.abs(rotateValue) < 0.05 && (Math.abs(moveValue) > 0.05 || Math.abs(hValue) > 0.05)) {
+			/*if (Math.abs(rotateValue) < 0.05 && (Math.abs(moveValue) > 0.05 || Math.abs(hValue) > 0.05)) {
 				rotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD, false);
 			} else {
 				gyroCorrection.clearInitialValue();
-			}
+			}*/
 			
-			if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
+			/*if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
 				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 			} else {
 				Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier(), hValue * OI.getInstance().getDriveSpeedMultiplier());
-			}
+			}*/
+						
+			Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier(), hValue * OI.getInstance().getDriveSpeedMultiplier());
+			
 			break;
 		
 		case tankDrive:
@@ -57,11 +60,11 @@ public class DriveJoystickCommand extends JoystickCommand {
 			left = NRMath.powWithSign(left, 3);
 			hDrive = NRMath.powWithSign(hDrive, 3);
 			
-			if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
+			/*if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
 				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 			} else {
 				Drive.getInstance().tankDrive(OI.getInstance().getDriveSpeedMultiplier() * left, -OI.getInstance().getDriveSpeedMultiplier() * right, OI.getInstance().getDriveSpeedMultiplier() * hDrive);
-			}
+			}*/
 			break;
 			
 		case cheesyDrive:
@@ -73,17 +76,17 @@ public class DriveJoystickCommand extends JoystickCommand {
 			cheesyRotateValue = NRMath.powWithSign(cheesyRotateValue, 3);
 			cheesyHValue = NRMath.powWithSign(cheesyHValue, 3);
 			
-			if (Math.abs(cheesyRotateValue) < 0.05 && (Math.abs(cheesyMoveValue) > 0.05 || Math.abs(cheesyHValue) > 0.05)) {
+			/*if (Math.abs(cheesyRotateValue) < 0.05 && (Math.abs(cheesyMoveValue) > 0.05 || Math.abs(cheesyHValue) > 0.05)) {
 				cheesyRotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD, false);
 			} else {
 				gyroCorrection.clearInitialValue();
-			}
+			}*/
 			
-			if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
+			/*if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
 				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 			} else {
 				Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue, cheesyHValue);
-			}
+			}*/
 			break;
 		}
 		
