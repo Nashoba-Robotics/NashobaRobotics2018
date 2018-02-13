@@ -49,27 +49,27 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The maximum speed of the drive base
 	 */
-	public static final Speed MAX_SPEED_DRIVE = Speed.ZERO; //TODO: Find real drive max speed
+	public static final Speed MAX_SPEED_DRIVE = new Speed(12.864, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Speed MAX_SPEED_DRIVE_H = Speed.ZERO; //TODO: Find real drive max speed h
 
 	/**
 	 * The maximum acceleration of the drive base
 	 */
-	public static final Acceleration MAX_ACCEL_DRIVE = Acceleration.ZERO; //TODO: Find real drive max acceleration
+	public static final Acceleration MAX_ACCEL_DRIVE = new Acceleration(20, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	public static final Acceleration MAX_ACCEL_DRIVE_H = Acceleration.ZERO; //TODO: Find real drive max acceleration h
 	
 	/**
 	 * Voltage percentage at which robot just starts moving
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0571; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0600; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_H = 0; //This is 0 to 1 number
 	
 	/**
 	 * The drive voltage-velocity curve slopes
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0; //TODO: Find drive voltage vs velocity curve
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0733; //TODO: Find drive voltage vs velocity curve
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0726;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H = 0;
 	
 	/**
