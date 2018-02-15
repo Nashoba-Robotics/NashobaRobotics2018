@@ -26,7 +26,6 @@ public class BlockToScaleProfilingCommand extends CommandGroup {
 		
 				addParallel(new PrepareScoreScaleCommand());
 				
-				
 				addParallel(new AnonymousCommandGroup() {
 					
 					@Override

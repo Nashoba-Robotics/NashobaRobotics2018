@@ -86,13 +86,13 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The CANTalon PID values for velocity
 	 */
-	public static double P_LEFT = 0; //TODO: Find left PID values
+	public static double P_LEFT = 0.3;
 	public static double I_LEFT = 0;
-	public static double D_LEFT = 0;
+	public static double D_LEFT = 3.0;
 		
-	public static double P_RIGHT = 0; //TODO: Find right PID values
+	public static double P_RIGHT = 0.3;
 	public static double I_RIGHT = 0;
-	public static double D_RIGHT = 0;
+	public static double D_RIGHT = 3.0;
 	
 	public static double P_H = 0; //TODO: Find H PID values
 	public static double I_H = 0;
@@ -101,12 +101,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * 1D Profiling kVAPID_theta loop constants
 	 */
-	public static double kVOneD = 0 / MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kAOneD = 0;
-	public static double kPOneD = 0;
+	public static double kVOneD = 1 / MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
+	public static double kAOneD = 0.0002;
+	public static double kPOneD = 0.00001;
 	public static double kIOneD = 0;
 	public static double kDOneD = 0;
-	public static double kP_thetaOneD = 0;
+	public static double kP_thetaOneD = 0.02;
 	
 	//TODO: Find These
 	
@@ -119,18 +119,18 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Percent driving during profiling
 	 */
-	public static final double PROFILE_DRIVE_PERCENT = 0; //TODO: Find Drive profile percent
+	public static final double PROFILE_DRIVE_PERCENT = 0.9;
 	
 	/**
 	 * Percent accelerating during profiling
 	 */
-	public static final double ACCEL_PERCENT = 0; //TODO: Find optimal drive profiling acceleration percent
+	public static final double ACCEL_PERCENT = 0.9;
 	
 	/**
 	 * Max and min speed of turn during
 	 */
 	public static final double MAX_PROFILE_TURN_PERCENT = 1.0;
-	public static final double MIN_PROFILE_TURN_PERCENT = 0; 
+	public static final double MIN_PROFILE_TURN_PERCENT = 0.03; 
 	
 	/**
 	 * Percent of the drive while going to intake a cube
@@ -165,7 +165,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The angle the robot turns to once disabled at full turn speed. Used for GyroCorrection ramped mode.
 	 */
-	public static final Angle DRIVE_STOP_ANGLE = Angle.ZERO; //TODO: Find angle that robot stops at when turning goes from 1 to 0
+	public static final Angle DRIVE_STOP_ANGLE = new Angle(60, Angle.Unit.DEGREE); //TODO: Find angle that robot stops at when turning goes from 1 to 0
 
 	
 	/**
@@ -226,6 +226,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static Distance xProfile;
 	public static Distance yProfile;
 	public static double drivePercent;
+	public static double accelPercent;
 	public static Angle angleToTurn;
 	public static boolean exact;
 	
@@ -249,7 +250,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			rightDriveFollow = CTRECreator.createFollowerTalon(RobotMap.RIGHT_DRIVE_FOLLOW, rightDrive.getDeviceID());
 			hDriveFollow = CTRECreator.createFollowerTalon(RobotMap.H_DRIVE_FOLLOW, hDrive.getDeviceID());
 			pigeonTalon = leftDriveFollow;
-			
 			
 			if (EnabledSubsystems.DRIVE_DUMB_ENABLED) {
 				leftDrive.set(ControlMode.PercentOutput, 0);
@@ -550,11 +550,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	public void setMotorSpeedInPercent(double left, double right, double strafe) {
-				
-		leftDrive.set(ControlMode.PercentOutput, left);
-		rightDrive.set(ControlMode.PercentOutput, right);
 		hDrive.set(ControlMode.PercentOutput, strafe);
-		//setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE.mul(strafe));
+		setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE_H.mul(strafe));
 	}
 	
 	public void setMotorSpeed(Speed left, Speed right, Speed strafe) {
@@ -579,9 +576,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
 			}
 			if (hDrive.getControlMode() == ControlMode.PercentOutput) {
-				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.div(MAX_SPEED_DRIVE_H));
+				//hDrive.set(hDrive.getControlMode(), hMotorSetpoint.div(MAX_SPEED_DRIVE_H));
 			} else {
-				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
+				//hDrive.set(hDrive.getControlMode(), hMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
 			}	
 		}
 	}
@@ -683,7 +680,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	
 	@Override
 	public void pidWrite(double outputLeft, double outputRight, double outputH) {
-		setMotorSpeed(MAX_SPEED_DRIVE.mul(outputLeft),MAX_SPEED_DRIVE.mul(outputRight), MAX_SPEED_DRIVE_H.mul(outputH));
+		setMotorSpeedInPercent(outputLeft, outputRight, outputH);
 	}
 	
 	public void enableMotionProfiler(Distance distX, Distance distY, double maxVelPercent, double maxAccelPercent) {
@@ -704,7 +701,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			minAccel = 0;
 			System.out.println("No Distances Set");
 		}
-		
+				
 		diagonalProfiler = new HDriveDiagonalProfiler(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD, kVOneDH, kAOneDH, kPOneDH, kIOneDH, kDOneDH);
 		diagonalProfiler.setTrajectory(new RampedDiagonalHTrajectory(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H), minVel, minAccel));
 		diagonalProfiler.enable();
@@ -753,7 +750,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			
 			SmartDashboard.putNumber("X Profile Feet: ", 0);
 			SmartDashboard.putNumber("Y Profile Feet: ", 0);
-			SmartDashboard.putNumber("Drive Percent: ", 0);
+			SmartDashboard.putNumber("Drive Percent: ", PROFILE_DRIVE_PERCENT);
+			SmartDashboard.putNumber("Drive Accel Percent: ", ACCEL_PERCENT);
 			SmartDashboard.putNumber("Angle To Turn: ", 0);
 			SmartDashboard.putBoolean("Exact Turn: ", true);
 		}
@@ -838,6 +836,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				xProfile = new Distance(SmartDashboard.getNumber("X Profile Feet: ", 0), Distance.Unit.FOOT);
 				yProfile = new Distance(SmartDashboard.getNumber("Y Profile Feet: ", 0), Distance.Unit.FOOT);
 				drivePercent = SmartDashboard.getNumber("Drive Percent: ", 0);
+				accelPercent = SmartDashboard.getNumber("Drive Accel Percent: ", 0);
 				angleToTurn = new Angle(SmartDashboard.getNumber("Angle To Turn: ", 0), Angle.Unit.DEGREE);
 				exact = SmartDashboard.getBoolean("Exact Turn: ", exact);
 			}

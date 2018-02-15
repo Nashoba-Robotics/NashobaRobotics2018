@@ -240,7 +240,7 @@ public class HDriveDiagonalProfiler extends TimerTask implements SmartDashboardS
 			errorLastH = errorH;
 			
 			out.pidWrite(outputLeft, outputRight, outputH);
-
+			
 			loopIteration++;
 		}
 	}

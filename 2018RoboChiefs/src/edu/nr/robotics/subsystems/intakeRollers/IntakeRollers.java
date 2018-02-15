@@ -26,7 +26,7 @@ public class IntakeRollers extends NRSubsystem {
 	 * The voltage ramp rate of the elevator shooter. Voltage ramp rate is time it takes
 	 * to go from 0V to 12V
 	 */
-	public static Time VOLTAGE_RAMP_RATE_INTAKE_ROLLERS = Time.ZERO; //ramp rate in seconds
+	public static Time VOLTAGE_RAMP_RATE_INTAKE_ROLLERS = new Time(0.05, Time.Unit.SECOND); //ramp rate in seconds
 
 	/**
 	 * The optimal velocity percent for the intake rollers
@@ -64,7 +64,7 @@ public class IntakeRollers extends NRSubsystem {
 			intakeRollersRight = CTRECreator.createMasterTalon(RobotMap.INTAKE_ROLLERS_RIGHT);
 					
 			intakeRollersLeft.setNeutralMode(NEUTRAL_MODE_INTAKE_ROLLERS);
-			intakeRollersLeft.setInverted(false);
+			intakeRollersLeft.setInverted(true);
 	
 			intakeRollersLeft.enableVoltageCompensation(true);
 			intakeRollersLeft.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL_INTAKE_ROLLERS, DEFAULT_TIMEOUT);
@@ -142,9 +142,7 @@ public class IntakeRollers extends NRSubsystem {
 	 * What is put on SmartDashboard when it's initialized
 	 */
 	public void smartDashboardInit() {
-		if (EnabledSubsystems.ELEVATOR_SHOOTER_SMARTDASHBOARD_DEBUG_ENABLED) {
-			SmartDashboard.putNumber("Voltage Ramp Rate Intake Rollers Seconds: ",
-					VOLTAGE_RAMP_RATE_INTAKE_ROLLERS.get(Time.Unit.SECOND));
+		if (EnabledSubsystems.INTAKE_ROLLERS_SMARTDASHBOARD_DEBUG_ENABLED) {
 			SmartDashboard.putNumber("Intake Rollers Vel Percent High: ", VEL_PERCENT_HIGH_INTAKE_ROLLERS);
 			SmartDashboard.putNumber("Intake Rollers Vel Percent Low: ", VEL_PERCENT_LOW_INTAKE_ROLLERS);
 		}
@@ -157,13 +155,8 @@ public class IntakeRollers extends NRSubsystem {
 			SmartDashboard.putNumber("Intake Rollers Current Right: ", getCurrentRight());
 		}
 		if (EnabledSubsystems.INTAKE_ROLLERS_SMARTDASHBOARD_DEBUG_ENABLED) {
-			
 			VEL_PERCENT_HIGH_INTAKE_ROLLERS = SmartDashboard.getNumber("Intake Rollers Vel Percent High: ", VEL_PERCENT_HIGH_INTAKE_ROLLERS);
 			VEL_PERCENT_LOW_INTAKE_ROLLERS = SmartDashboard.getNumber("Intake Rollers Vel Percent Low: ", VEL_PERCENT_LOW_INTAKE_ROLLERS);
-			
-			VOLTAGE_RAMP_RATE_INTAKE_ROLLERS = new Time(
-					SmartDashboard.getNumber("Voltage Ramp Rate Intake Rollers Seconds: ",
-							VOLTAGE_RAMP_RATE_INTAKE_ROLLERS.get(Time.Unit.SECOND)), Time.Unit.SECOND);
 		}
 	}
 	

@@ -102,7 +102,7 @@ public class OI implements SmartDashboardSource {
 	private static final int STICK_OPERATOR_RIGHT = 3;
 	
 	public static final Distance ELEVATOR_BUTTON_HEIGHT = new Distance(13, Distance.Unit.INCH);
-	public static final Drive.DriveMode driveMode = Drive.DriveMode.arcadeDrive;
+	public static final Drive.DriveMode driveMode = Drive.DriveMode.cheesyDrive;
 	
 	private OI() {		
 		driveLeft = new Joystick(STICK_LEFT);
@@ -114,7 +114,7 @@ public class OI implements SmartDashboardSource {
 		elevatorStick = operatorRight; //TODO: find what it is
 		
 		//initDriveLeft();
-		//initDriveRight();
+		initDriveRight();
 		
 		//initOperatorLeft();
 		initOperatorRight();
@@ -135,13 +135,13 @@ public class OI implements SmartDashboardSource {
 	}
 	
 	public void initDriveRight() {
-		new JoystickButton(driveRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenPressed(new DriveToCubeButtonCommand(true));
+		//new JoystickButton(driveRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenPressed(new DriveToCubeButtonCommand(true));
 		
 		new JoystickButton(driveRight, HALF_TURN_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(), new Angle(180, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
 		new JoystickButton(driveRight, QUARTER_TURN_LEFT_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(), new Angle(-90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
 		new JoystickButton(driveRight, QUARTER_TURN_RIGHT_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(), new Angle(90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT, false));
 	
-		new JoystickButton(driveRight, CLIMB_COAST_BUTTON_NUMBER).whenPressed(new ClimberCoastCommand(true));
+		//new JoystickButton(driveRight, CLIMB_COAST_BUTTON_NUMBER).whenPressed(new ClimberCoastCommand(true));
 	}
 	
 	public void initOperatorLeft() {

@@ -24,7 +24,7 @@ public class EnableMotionProfileSmartDashboardCommand extends NRCommand {
 	
 	@Override
 	public void onStart() {
-		Drive.getInstance().enableMotionProfiler(Drive.xProfile, Drive.yProfile, Drive.drivePercent, Drive.ACCEL_PERCENT);
+		Drive.getInstance().enableMotionProfiler(Drive.xProfile, Drive.yProfile, Drive.drivePercent, Drive.accelPercent);
 		initialLeftPosition = Drive.getInstance().getLeftPosition();
 		initialRightPosition = Drive.getInstance().getRightPosition();
 		initialHPosition = Drive.getInstance().getHPosition();
@@ -80,7 +80,7 @@ public class EnableMotionProfileSmartDashboardCommand extends NRCommand {
 	@Override
 	public boolean isFinishedNR() {
 		boolean finished;
-		
+			
 		finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD)
 				.sub(Drive.getInstance().getLeftPosition())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 				&& (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2))

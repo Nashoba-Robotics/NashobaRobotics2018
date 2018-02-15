@@ -32,7 +32,7 @@ public class RampedDiagonalHTrajectory implements OneDimensionalTrajectory {
 	double startPositionH;
 
 	double pow = 2;
-	double timeMult = 11;
+	double timeMult = 30;
 
 	ArrayList<Double> posPoints;
 	ArrayList<Double> velPoints;
