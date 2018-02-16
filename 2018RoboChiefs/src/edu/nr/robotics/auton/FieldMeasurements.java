@@ -6,16 +6,9 @@ import edu.nr.lib.units.Distance;
 
 public class FieldMeasurements {
 
-	public static final Distance ROBOT_LENGTH = new Distance(0, Distance.Unit.INCH); // TODO:
-																						// Find
-																						// length
-																						// of
-																						// robot
-	public static final Distance ROBOT_WIDTH = new Distance(0, Distance.Unit.INCH); // TODO:
-																					// Find
-																					// width
-																					// of
-																					// robot
+	public static final Distance ROBOT_LENGTH = new Distance(33, Distance.Unit.INCH); // TODO: Find length of robot
+	
+	public static final Distance ROBOT_WIDTH = new Distance(27, Distance.Unit.INCH); // TODO: Find width of robot
 
 	public static final Distance BLOCK_WIDTH = new Distance(13, Distance.Unit.INCH);
 	
