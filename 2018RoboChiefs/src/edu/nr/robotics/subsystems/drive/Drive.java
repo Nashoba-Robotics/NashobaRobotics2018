@@ -43,34 +43,36 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final double REAL_ENC_TICK_PER_INCH_DRIVE = 428;
 	public static final double REAL_ENC_TICK_PER_INCH_H_DRIVE = 1074;
 	
-	public static final double EFFECTIVE_ENC_TICK_PER_INCH_DRIVE = REAL_ENC_TICK_PER_INCH_DRIVE;
+	public static final double EFFECTIVE_ENC_TICK_PER_INCH_DRIVE = REAL_ENC_TICK_PER_INCH_DRIVE * 1.008;
 	public static final double EFFECTIVE_ENC_TICK_PER_INCH_H_DRIVE = REAL_ENC_TICK_PER_INCH_H_DRIVE;
 	
 	/**
 	 * The maximum speed of the drive base
 	 */
 	public static final Speed MAX_SPEED_DRIVE = new Speed(12.864, Distance.Unit.FOOT, Time.Unit.SECOND);
-	public static final Speed MAX_SPEED_DRIVE_H = Speed.ZERO; //TODO: Find real drive max speed h
+	public static final Speed MAX_SPEED_DRIVE_H = new Speed(9.95, Distance.Unit.FOOT, Time.Unit.SECOND); //TODO: Find real drive max speed h
 
 	/**
 	 * The maximum acceleration of the drive base
 	 */
 	public static final Acceleration MAX_ACCEL_DRIVE = new Acceleration(20, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
-	public static final Acceleration MAX_ACCEL_DRIVE_H = Acceleration.ZERO; //TODO: Find real drive max acceleration h
+	public static final Acceleration MAX_ACCEL_DRIVE_H = new Acceleration(16, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND); //TODO: Find real drive max acceleration h
 	
 	/**
 	 * Voltage percentage at which robot just starts moving
 	 */
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0571; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0600; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_H = 0; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_RIGHT = 0.168; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_LEFT = 0; //TODO: find this
 	
 	/**
 	 * The drive voltage-velocity curve slopes
 	 */
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0733; //TODO: Find drive voltage vs velocity curve
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0726;
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H = 0;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_RIGHT = 0.0836;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_LEFT = 0; //TODO: Find this
 	
 	/**
 	 * The amount of time drive can go from 0 to 12 volts
@@ -94,16 +96,20 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static double I_RIGHT = 0;
 	public static double D_RIGHT = 3.0;
 	
-	public static double P_H = 0; //TODO: Find H PID values
-	public static double I_H = 0;
-	public static double D_H = 0;
+	public static double P_H_RIGHT = 0; //TODO: Find H PID right values
+	public static double I_H_RIGHT = 0;
+	public static double D_H_RIGHT = 0;
+	
+	public static double P_H_LEFT = 0; //TODO: Find H PID left values
+	public static double I_H_LEFT = 0;
+	public static double D_H_LEFT = 0;
 	
 	/**
 	 * 1D Profiling kVAPID_theta loop constants
 	 */
 	public static double kVOneD = 1 / MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
 	public static double kAOneD = 0.0002;
-	public static double kPOneD = 0.00001;
+	public static double kPOneD = 0.00002;
 	public static double kIOneD = 0;
 	public static double kDOneD = 0;
 	public static double kP_thetaOneD = 0.02;
@@ -330,8 +336,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			hDrive.setNeutralMode(NEUTRAL_MODE);
 			hDrive.setInverted(false);
 			hDriveFollow.setInverted(false);
-			hDrive.setSensorPhase(false);
-			hDriveFollow.setSensorPhase(false);
+			hDrive.setSensorPhase(true);
 			
 			hDrive.enableVoltageCompensation(true);
 			hDrive.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL, DEFAULT_TIMEOUT);
@@ -550,7 +555,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	public void setMotorSpeedInPercent(double left, double right, double strafe) {
-		hDrive.set(ControlMode.PercentOutput, strafe);
 		setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE_H.mul(strafe));
 	}
 	
@@ -563,7 +567,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			
 			leftDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / leftMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
 			rightDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / rightMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
-			hDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_H * hMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_H) * 1023.0) / hMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
+			hDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_H_RIGHT * hMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_H_LEFT) * 1023.0) / hMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
 			
 			if (leftDrive.getControlMode() == ControlMode.PercentOutput) {
 				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.div(MAX_SPEED_DRIVE));
@@ -576,9 +580,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
 			}
 			if (hDrive.getControlMode() == ControlMode.PercentOutput) {
-				//hDrive.set(hDrive.getControlMode(), hMotorSetpoint.div(MAX_SPEED_DRIVE_H));
+				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.div(MAX_SPEED_DRIVE_H));
 			} else {
-				//hDrive.set(hDrive.getControlMode(), hMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
+				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
 			}	
 		}
 	}
@@ -728,9 +732,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			SmartDashboard.putNumber("Right I Value: ", I_RIGHT);
 			SmartDashboard.putNumber("Right D Value: ", D_RIGHT);
 			
-			SmartDashboard.putNumber("H P Value: ", P_H);
-			SmartDashboard.putNumber("H I Value: ", I_H);
-			SmartDashboard.putNumber("H D Value: ", D_H);
+			SmartDashboard.putNumber("H P Value: ", P_H_RIGHT);
+			SmartDashboard.putNumber("H I Value: ", I_H_RIGHT);
+			SmartDashboard.putNumber("H D Value: ", D_H_RIGHT);
 			
 			SmartDashboard.putNumber("kVOneD Value: ", kVOneD);
 			SmartDashboard.putNumber("kAOneD Value: ", kAOneD);
@@ -801,9 +805,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				rightDrive.config_kI(VEL_SLOT, SmartDashboard.getNumber("Right I Value: ", I_RIGHT), DEFAULT_TIMEOUT);
 				rightDrive.config_kD(VEL_SLOT, SmartDashboard.getNumber("Right D Value: ", D_RIGHT), DEFAULT_TIMEOUT);
 				
-				hDrive.config_kP(VEL_SLOT, SmartDashboard.getNumber("H P Value: ", P_H), DEFAULT_TIMEOUT);
-				hDrive.config_kI(VEL_SLOT, SmartDashboard.getNumber("H I Value: ", I_H), DEFAULT_TIMEOUT);
-				hDrive.config_kD(VEL_SLOT, SmartDashboard.getNumber("H D Value: ", D_H), DEFAULT_TIMEOUT);
+				hDrive.config_kP(VEL_SLOT, SmartDashboard.getNumber("H P Value: ", P_H_RIGHT), DEFAULT_TIMEOUT);
+				hDrive.config_kI(VEL_SLOT, SmartDashboard.getNumber("H I Value: ", I_H_RIGHT), DEFAULT_TIMEOUT);
+				hDrive.config_kD(VEL_SLOT, SmartDashboard.getNumber("H D Value: ", D_H_RIGHT), DEFAULT_TIMEOUT);
 	
 				P_LEFT = SmartDashboard.getNumber("Left P Value: ", P_LEFT);
 				I_LEFT = SmartDashboard.getNumber("Left I Value: ", I_LEFT);
@@ -813,9 +817,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				I_RIGHT = SmartDashboard.getNumber("Right I Value: ", I_RIGHT);
 				D_RIGHT = SmartDashboard.getNumber("Right D Value: ", D_RIGHT);
 				
-				P_H = SmartDashboard.getNumber("H P Value: ", P_H);
-				I_H = SmartDashboard.getNumber("H I Value: ", I_H);
-				D_H = SmartDashboard.getNumber("H D Value: ", D_H);
+				P_H_RIGHT = SmartDashboard.getNumber("H P Value: ", P_H_RIGHT);
+				I_H_RIGHT = SmartDashboard.getNumber("H I Value: ", I_H_RIGHT);
+				D_H_RIGHT = SmartDashboard.getNumber("H D Value: ", D_H_RIGHT);
 				
 				kVOneD = SmartDashboard.getNumber("kVOneD Value: ", kVOneD);
 				kAOneD = SmartDashboard.getNumber("kAOneD Value: ", kAOneD);
