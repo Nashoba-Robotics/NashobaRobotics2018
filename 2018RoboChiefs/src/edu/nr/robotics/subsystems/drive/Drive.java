@@ -43,36 +43,36 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final double REAL_ENC_TICK_PER_INCH_DRIVE = 428;
 	public static final double REAL_ENC_TICK_PER_INCH_H_DRIVE = 1074;
 	
-	public static final double EFFECTIVE_ENC_TICK_PER_INCH_DRIVE = REAL_ENC_TICK_PER_INCH_DRIVE * 1.008;
+	public static final double EFFECTIVE_ENC_TICK_PER_INCH_DRIVE = REAL_ENC_TICK_PER_INCH_DRIVE * 1.0497;
 	public static final double EFFECTIVE_ENC_TICK_PER_INCH_H_DRIVE = REAL_ENC_TICK_PER_INCH_H_DRIVE;
 	
 	/**
 	 * The maximum speed of the drive base
 	 */
 	public static final Speed MAX_SPEED_DRIVE = new Speed(12.864, Distance.Unit.FOOT, Time.Unit.SECOND);
-	public static final Speed MAX_SPEED_DRIVE_H = new Speed(9.95, Distance.Unit.FOOT, Time.Unit.SECOND); //TODO: Find real drive max speed h
+	public static final Speed MAX_SPEED_DRIVE_H = new Speed(10.50, Distance.Unit.FOOT, Time.Unit.SECOND); //TODO: Find real drive max speed h
 
 	/**
 	 * The maximum acceleration of the drive base
 	 */
 	public static final Acceleration MAX_ACCEL_DRIVE = new Acceleration(20, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
-	public static final Acceleration MAX_ACCEL_DRIVE_H = new Acceleration(16, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND); //TODO: Find real drive max acceleration h
+	public static final Acceleration MAX_ACCEL_DRIVE_H = new Acceleration(14, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND); //TODO: Find real drive max acceleration h
 	
 	/**
 	 * Voltage percentage at which robot just starts moving
 	 */
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0571; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0600; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_RIGHT = 0.168; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_LEFT = 0; //TODO: find this
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_RIGHT = 0.165; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_LEFT = 0.177; //TODO: find this
 	
 	/**
 	 * The drive voltage-velocity curve slopes
 	 */
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0733; //TODO: Find drive voltage vs velocity curve
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0726;
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_RIGHT = 0.0836;
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_LEFT = 0; //TODO: Find this
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_RIGHT = 0.0788;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_LEFT = 0.0784; //TODO: Find this
 	
 	/**
 	 * The amount of time drive can go from 0 to 12 volts
@@ -96,13 +96,13 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static double I_RIGHT = 0;
 	public static double D_RIGHT = 3.0;
 	
-	public static double P_H_RIGHT = 0; //TODO: Find H PID right values
+	public static double P_H_RIGHT = 0.2;
 	public static double I_H_RIGHT = 0;
-	public static double D_H_RIGHT = 0;
+	public static double D_H_RIGHT = 2.0;
 	
-	public static double P_H_LEFT = 0; //TODO: Find H PID left values
+	public static double P_H_LEFT = 0.2;
 	public static double I_H_LEFT = 0;
-	public static double D_H_LEFT = 0;
+	public static double D_H_LEFT = 2.0;
 	
 	/**
 	 * 1D Profiling kVAPID_theta loop constants
@@ -115,7 +115,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static double kP_thetaOneD = 0.02;
 	
 	//TODO: Find These
-	
 	public static double kVOneDH = 1 / MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
 	public static double kAOneDH = 0;
 	public static double kPOneDH = 0;

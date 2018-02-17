@@ -2,6 +2,8 @@ package edu.nr.robotics.auton.autoroutes;
 
 import edu.nr.lib.commandbased.AnonymousCommandGroup;
 import edu.nr.lib.units.Distance;
+import edu.nr.robotics.FieldData;
+import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.auton.FieldMeasurements;
 import edu.nr.robotics.multicommands.DriveToCubeCommandAdvanced;
 import edu.nr.robotics.multicommands.PrepareCubeIntakeCommand;
@@ -21,14 +23,14 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new PrepareCubeIntakeCommand());
+				//addParallel(new PrepareCubeIntakeCommand());
 				
 				addParallel(new AnonymousCommandGroup() {
 					
 					@Override
 					public void commands() {
-						addSequential(new EnableMotionProfile(FieldMeasurements.PIVOT_POINT_TO_SCALE_DIAGONAL.negate(), Distance.ZERO,
-								Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+						/*addSequential(new EnableMotionProfile(FieldMeasurements.PIVOT_POINT_TO_SCALE_DIAGONAL.negate(), Distance.ZERO,
+								Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));*/
 
 						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
 								(FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_1)),
@@ -41,7 +43,7 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 
 						});
 						
-						addSequential(new EnableLimelightCommand(true));
+						//addSequential(new EnableLimelightCommand(true));
 						
 						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
 								FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_1).negate(),
@@ -54,40 +56,50 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 
 						});
 						
-						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_2), Drive.MAX_PROFILE_TURN_PERCENT, true)) {
+						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
+								FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_2),
+								Drive.MAX_PROFILE_TURN_PERCENT, true)) {
 
 							@Override
 							protected boolean condition() {
 								return block == 2;
 							}
-							
+
 						});
-						
-						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_3), Drive.MAX_PROFILE_TURN_PERCENT, true)) {
+
+						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
+								FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_3),
+								Drive.MAX_PROFILE_TURN_PERCENT, true)) {
 
 							@Override
 							protected boolean condition() {
 								return block == 3;
 							}
-							
+
 						});
 						
-						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(), (FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_2)).negate(), Drive.MAX_PROFILE_TURN_PERCENT, true)) {
+						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
+								(FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_2))
+										.negate(),
+								Drive.MAX_PROFILE_TURN_PERCENT, true)) {
 
 							@Override
 							protected boolean condition() {
 								return block == 5;
 							}
-							
+
 						});
-						
-						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(), (FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_3)).negate(), Drive.MAX_PROFILE_TURN_PERCENT, true)) {
+
+						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
+								(FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_3))
+										.negate(),
+								Drive.MAX_PROFILE_TURN_PERCENT, true)) {
 
 							@Override
 							protected boolean condition() {
 								return block == 4;
 							}
-							
+
 						});
 
 					}
@@ -96,9 +108,9 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 			}
 		});
 		
-		addSequential(new DriveToCubeCommandAdvanced());
+		//addSequential(new DriveToCubeCommandAdvanced());
 		
-		addSequential(new EnableLimelightCommand(false));
+		//addSequential(new EnableLimelightCommand(false));
 		
 	}
 
