@@ -24,7 +24,7 @@ public class PlatformZoneSwitchRightToBlockProfilingCommand extends CommandGroup
 				Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 
 		addSequential(new TurnCommand(Drive.getInstance(), new Angle(-90, Angle.Unit.DEGREE),
-				Drive.MAX_PROFILE_TURN_PERCENT, true));
+				Drive.MAX_PROFILE_TURN_PERCENT));
 		
 		addSequential(new AnonymousCommandGroup() {
 			

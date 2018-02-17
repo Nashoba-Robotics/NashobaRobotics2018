@@ -89,7 +89,7 @@ public class DriveToCubeCommandBasic extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return !EnabledSensors.intakeSensor.get() || finished;
+		return (!EnabledSensors.intakeSensorLeft.get() && !EnabledSensors.intakeSensorRight.get()) || finished;
 	}
 	
 }

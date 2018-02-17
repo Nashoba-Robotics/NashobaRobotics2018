@@ -233,7 +233,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static double drivePercent;
 	public static double accelPercent;
 	public static Angle angleToTurn;
-	public static boolean exact;
 	
 	private HDriveDiagonalProfiler diagonalProfiler;
 
@@ -568,21 +567,15 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			rightDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / rightMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
 			hDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_H_RIGHT * hMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_H_LEFT) * 1023.0) / hMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
 			
-			if (leftDrive.getControlMode() == ControlMode.PercentOutput) {
+			if (EnabledSubsystems.DRIVE_DUMB_ENABLED) {
 				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.div(MAX_SPEED_DRIVE));
-			} else {
-				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
-			}
-			if (rightDrive.getControlMode() == ControlMode.PercentOutput) {
 				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.div(MAX_SPEED_DRIVE));
-			} else {
-				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
-			}
-			if (hDrive.getControlMode() == ControlMode.PercentOutput) {
 				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.div(MAX_SPEED_DRIVE_H));
 			} else {
+				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
+				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
 				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
-			}	
+			}
 		}
 	}
 	
@@ -756,7 +749,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			SmartDashboard.putNumber("Drive Percent: ", PROFILE_DRIVE_PERCENT);
 			SmartDashboard.putNumber("Drive Accel Percent: ", ACCEL_PERCENT);
 			SmartDashboard.putNumber("Angle To Turn: ", 0);
-			SmartDashboard.putBoolean("Exact Turn: ", true);
 		}
 	}
 	
@@ -841,12 +833,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				drivePercent = SmartDashboard.getNumber("Drive Percent: ", 0);
 				accelPercent = SmartDashboard.getNumber("Drive Accel Percent: ", 0);
 				angleToTurn = new Angle(SmartDashboard.getNumber("Angle To Turn: ", 0), Angle.Unit.DEGREE);
-				exact = SmartDashboard.getBoolean("Exact Turn: ", exact);
 			}
 		}
 	}
-		
-	
 
 	public void periodic() {
 	}
@@ -858,29 +847,13 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	
 	public void startDumbDrive() {
 		if (leftDrive != null && rightDrive != null && hDrive != null) {
-			if (rightDrive.getControlMode() != ControlMode.PercentOutput) {
-				rightDrive.set(ControlMode.PercentOutput, getRightVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
-			}
-			if (leftDrive.getControlMode() != ControlMode.PercentOutput) {
-				leftDrive.set(ControlMode.PercentOutput, getLeftVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
-			}
-			if(hDrive.getControlMode() != ControlMode.PercentOutput) {
-				hDrive.set(ControlMode.PercentOutput, getHVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
-			}
+			EnabledSubsystems.DRIVE_DUMB_ENABLED = true;
 		}
 	}
 	
 	public void endDumbDrive() {
 		if (leftDrive != null && rightDrive != null && hDrive != null) {
-			if (rightDrive.getControlMode() != ControlMode.Velocity) {
-				rightDrive.set(ControlMode.Velocity, 0);
-			}
-			if (leftDrive.getControlMode() != ControlMode.Velocity) {
-				leftDrive.set(ControlMode.Velocity, 0);
-			}
-			if(hDrive.getControlMode() != ControlMode.Velocity) {
-				hDrive.set(ControlMode.Velocity, 0);
-			}
+			EnabledSubsystems.DRIVE_DUMB_ENABLED = false;
 		}
 	}
 }

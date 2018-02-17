@@ -31,7 +31,7 @@ public class StartPosLeftToScaleLeftProfilingCommand extends CommandGroup {
 						
 						addSequential(new EnableMotionProfile(FieldMeasurements.BASELINE_TO_SCALE_X, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 						
-						addSequential(new TurnCommand(Drive.getInstance(), new Angle(90, Angle.Unit.DEGREE).sub(FieldMeasurements.PIVOT_POINT_TO_SCALE), Drive.MAX_PROFILE_TURN_PERCENT, true));
+						addSequential(new TurnCommand(Drive.getInstance(), new Angle(90, Angle.Unit.DEGREE).sub(FieldMeasurements.PIVOT_POINT_TO_SCALE), Drive.MAX_PROFILE_TURN_PERCENT));
 						
 					}
 				});

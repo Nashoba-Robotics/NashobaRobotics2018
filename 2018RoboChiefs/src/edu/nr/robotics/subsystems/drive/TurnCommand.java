@@ -16,14 +16,12 @@ public class TurnCommand extends NRCommand {
 	private Angle initialAngle;
 	private GyroCorrection gyro;
 	private double turnPercent;
-	private boolean exact;
 	
-	public TurnCommand(TriplePIDOutput out, Angle angleToTurn, double turnPercent, boolean exact) {
+	public TurnCommand(TriplePIDOutput out, Angle angleToTurn, double turnPercent) {
 		super(Drive.getInstance());
 		this.out = out;
 		this.angleToTurn = angleToTurn;
 		this.turnPercent = turnPercent;
-		this.exact = exact;
 	}
 	
 	@Override
@@ -58,16 +56,11 @@ public class TurnCommand extends NRCommand {
 	@Override
 	public boolean isFinishedNR() {
 		
-		boolean finished;
-		if (exact == true){
-			finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftPosition())).abs()
+		boolean finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftPosition())).abs()
 					.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightPosition())).abs()
 					.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 					&& (initialAngle.sub(gyro.getAngleError())).abs().lessThan(Drive.DRIVE_ANGLE_THRESHOLD);
-		} else{
-			finished = (initialAngle.sub(gyro.getAngleError())).abs().lessThan(Drive.DRIVE_ANGLE_THRESHOLD);	
-		}
 		return finished;
 	}
 

@@ -32,11 +32,11 @@ public class StartPosMiddleToSwitchLeftProfilingCommand extends CommandGroup {
 						
 						addSequential(new EnableMotionProfile(FieldMeasurements.PUSH_OFF_WALL_X, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 						
-						addSequential(new TurnCommand(Drive.getInstance(), FieldMeasurements.START_POS_MID_TO_SWITCH_ANGLE_LEFT.negate(), Drive.MAX_PROFILE_TURN_PERCENT, true));
+						addSequential(new TurnCommand(Drive.getInstance(), FieldMeasurements.START_POS_MID_TO_SWITCH_ANGLE_LEFT.negate(), Drive.MAX_PROFILE_TURN_PERCENT));
 						
 						addSequential(new EnableMotionProfile(FieldMeasurements.START_POS_MID_TO_SWITCH_LEFT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 
-						addSequential(new TurnCommand(Drive.getInstance(), new Angle(90,Angle.Unit.DEGREE).add(FieldMeasurements.START_POS_MID_TO_SWITCH_ANGLE_LEFT), Drive.MAX_PROFILE_TURN_PERCENT, true));
+						addSequential(new TurnCommand(Drive.getInstance(), new Angle(90,Angle.Unit.DEGREE).add(FieldMeasurements.START_POS_MID_TO_SWITCH_ANGLE_LEFT), Drive.MAX_PROFILE_TURN_PERCENT));
 					
 						addSequential(new DriveCurrentCommand(Drive.SWITCH_DRIVE_PERCENT, Drive.SWITCH_CURRENT_LIMIT));
 

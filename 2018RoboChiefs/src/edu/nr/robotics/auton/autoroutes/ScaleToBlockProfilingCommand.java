@@ -34,7 +34,7 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 
 						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
 								(FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_1)),
-								Drive.MAX_PROFILE_TURN_PERCENT, true)) {
+								Drive.MAX_PROFILE_TURN_PERCENT)) {
 
 							@Override
 							protected boolean condition() {
@@ -47,7 +47,7 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 						
 						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
 								FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_1).negate(),
-								Drive.MAX_PROFILE_TURN_PERCENT, true)) {
+								Drive.MAX_PROFILE_TURN_PERCENT)) {
 
 							@Override
 							protected boolean condition() {
@@ -58,7 +58,7 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 						
 						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
 								FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_2),
-								Drive.MAX_PROFILE_TURN_PERCENT, true)) {
+								Drive.MAX_PROFILE_TURN_PERCENT)) {
 
 							@Override
 							protected boolean condition() {
@@ -69,7 +69,7 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 
 						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
 								FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_3),
-								Drive.MAX_PROFILE_TURN_PERCENT, true)) {
+								Drive.MAX_PROFILE_TURN_PERCENT)) {
 
 							@Override
 							protected boolean condition() {
@@ -81,7 +81,7 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
 								(FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_2))
 										.negate(),
-								Drive.MAX_PROFILE_TURN_PERCENT, true)) {
+								Drive.MAX_PROFILE_TURN_PERCENT)) {
 
 							@Override
 							protected boolean condition() {
@@ -93,7 +93,7 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
 								(FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_3))
 										.negate(),
-								Drive.MAX_PROFILE_TURN_PERCENT, true)) {
+								Drive.MAX_PROFILE_TURN_PERCENT)) {
 
 							@Override
 							protected boolean condition() {

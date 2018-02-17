@@ -1,6 +1,7 @@
 package edu.nr.robotics.subsystems.intakeRollers;
 
 import edu.nr.lib.commandbased.NRCommand;
+import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 
 public class IntakeRollersVelocitySmartDashboardCommand extends NRCommand {
 
@@ -14,7 +15,12 @@ public class IntakeRollersVelocitySmartDashboardCommand extends NRCommand {
 	}
 
 	@Override
+	protected void onEnd() {
+		IntakeRollers.getInstance().disable();
+	}
+	
+	@Override
 	protected boolean isFinishedNR() {
-		return false;
+		return !EnabledSensors.intakeSensorLeft.get() && !EnabledSensors.intakeSensorRight.get();
 	}
 }

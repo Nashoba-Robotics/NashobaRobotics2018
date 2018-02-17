@@ -34,6 +34,8 @@ public class IntakeRollers extends NRSubsystem {
 	public static double VEL_PERCENT_HIGH_INTAKE_ROLLERS = 0;
 	public static double VEL_PERCENT_LOW_INTAKE_ROLLERS = 0;
 	
+	public static Time SCORE_TIME = Time.ZERO; //TODO: Find SCORE_TIME
+	
 	/**
 	 * The current values of the elevator shooter
 	 */

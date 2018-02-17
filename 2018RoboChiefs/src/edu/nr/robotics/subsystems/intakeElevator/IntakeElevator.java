@@ -26,41 +26,46 @@ public class IntakeElevator extends NRSubsystem {
 
 	private TalonSRX intakeElevTalon;
 	private TalonEncoder intakeElevEncoder;
-
+	
 	/**
 	 * The encoder ticks per inch moved on the intake elevator
 	 */
-	public static final double ENC_TICK_PER_INCH_INTAKE_ELEVATOR = 0; // TODO: Find ENC_TICK_PER_INCH_INTAKE_ELEVATOR
-
+	public static final double ENC_TICK_PER_INCH_INTAKE_ELEVATOR = 9488.0 / 10.3125;
 	/**
 	 * The max speed of the intake elevator
 	 */
 	public static final Speed MAX_SPEED_INTAKE_ELEVATOR_UP = Speed.ZERO; // TODO: Find MAX_SPEED_INTAKE_ELEVATOR_UP
-	public static final Speed MAX_SPEED_INTAKE_ELEVATOR_DOWN = Speed.ZERO; // TODO: Find MAX_SPEED_INTAKE_ELEVATOR_DOWN
+	public static final Speed MAX_SPEED_INTAKE_ELEVATOR_DOWN = new Speed(4.483, Distance.Unit.FOOT, Time.Unit.SECOND);
 
 	/**
 	 * The max acceleration of the intake elevator
 	 */
 	public static final Acceleration MAX_ACCEL_INTAKE_ELEVATOR_UP = Acceleration.ZERO; // TODO: Find MAX_ACCEL_INTAKE_ELEVATOR_UP
-	public static final Acceleration MAX_ACCEL_INTAKE_ELEVATOR_DOWN = Acceleration.ZERO; // TODO: Find MAX_ACCEL_INTAKE_ELEVATOR_DOWN
+	public static final Acceleration MAX_ACCEL_INTAKE_ELEVATOR_DOWN = new Acceleration(11.5, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	
 	/**
-	 * The minimum voltage needed to move the intake elevator
+	 * The acutal real min move voltage of the intake elevator
+	 */
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0;
+	
+	/**
+	 * The theoretical minimum voltage needed to move the intake elevator
 	 */
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0; // TODO: Find Elevator voltage velocity curve up
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0; // TODO: Find Elevator voltage velocity curve down
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0.0228;
 	
 	/**
 	 * The slope of voltage over velocity in feet per second
 	 */
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR_UP = 0;
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR_DOWN = 0;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR_DOWN = 0.218;
 
 	/**
 	 * The voltage ramp rate of the intake elevator. Voltage ramp rate is time it takes
 	 * to go from 0V to 12V
 	 */
-	public static Time VOLTAGE_RAMP_RATE_INTAKE_ELEVATOR = Time.ZERO; // TODO: Test for intake elevator voltage ramp rate
+	public static Time VOLTAGE_RAMP_RATE_INTAKE_ELEVATOR = new Time(0.05, Time.Unit.SECOND);
 
 	/**
 	 * MotionMagic PID values for the intake elevator
@@ -164,6 +169,8 @@ public class IntakeElevator extends NRSubsystem {
 	public static final Distance FOLDED_HEIGHT = Distance.ZERO; // TODO: Find FOLDED_HEIGHT
 	
 	public static final Distance HANDLER_HEIGHT = Distance.ZERO; // TODO: Find HANDLER_HEIGHT
+	
+	public static final Distance PORTAL_HEIGHT = Distance.ZERO; // TODO: Find PORTAL_HEIGHT
 	
 	public static final Distance INTAKE_HEIGHT = Distance.ZERO; // TODO: Find INTAKE_HEIGHT
 	
