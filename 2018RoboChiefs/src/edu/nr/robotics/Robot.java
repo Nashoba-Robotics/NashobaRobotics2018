@@ -14,8 +14,6 @@ import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.AutoChoosers.StartPos;
 import edu.nr.robotics.auton.AutoChoosers.Switch;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
-import edu.nr.robotics.auton.automap.StartPosRightSwitchNoneCommand;
-import edu.nr.robotics.auton.automap.StartPosRightSwitchRightCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchBothCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchLeftCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchNoneCommand;
@@ -23,10 +21,11 @@ import edu.nr.robotics.auton.automap.StartPosMiddleSwitchBothCommand;
 import edu.nr.robotics.auton.automap.StartPosMiddleSwitchLeftCommand;
 import edu.nr.robotics.auton.automap.StartPosMiddleSwitchNoneCommand;
 import edu.nr.robotics.auton.automap.StartPosMiddleSwitchRightCommand;
+import edu.nr.robotics.auton.automap.StartPosRightSwitchNoneCommand;
+import edu.nr.robotics.auton.automap.StartPosRightSwitchRightCommand;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.nr.robotics.subsystems.climber.ClimberCoastCommand;
 import edu.nr.robotics.subsystems.climber.ClimberCurrentSmartDashboardCommand;
-import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerVelocitySmartDashboardCommand;
 import edu.nr.robotics.subsystems.drive.CSVSaverDisable;
 import edu.nr.robotics.subsystems.drive.CSVSaverEnable;
 import edu.nr.robotics.subsystems.drive.DriveForwardBasicSmartDashboardCommand;
@@ -130,13 +129,7 @@ public class Robot extends IterativeRobot {
 		//Climber
 		if(EnabledSubsystems.CLIMBER_SMARTDASHBOARD_DEBUG_ENABLED) {
 			SmartDashboard.putData(new ClimberCurrentSmartDashboardCommand());
-		}
-		
-		//Cube Handler
-		if(EnabledSubsystems.CUBE_HANDLER_SMARTDASHBOARD_DEBUG_ENABLED) {
-			SmartDashboard.putData(new CubeHandlerVelocitySmartDashboardCommand());	
-		}
-		
+		}		
 		
 		//Elevator
 		if(EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {

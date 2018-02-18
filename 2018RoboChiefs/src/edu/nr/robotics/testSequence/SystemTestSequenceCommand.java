@@ -2,7 +2,6 @@ package edu.nr.robotics.testSequence;
 
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.robotics.subsystems.climber.Climber;
-import edu.nr.robotics.subsystems.cubeHandler.CubeHandler;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
@@ -11,7 +10,6 @@ import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
 public class SystemTestSequenceCommand extends NRCommand {
 	
 	private double climberCounter = 0;
-	private double cubeHandlerCounter = 0;
 	private double elevatorCounter = 0;
 	private double elevatorShooterCounter = 0;
 	private double intakeElevatorCounter = 0;
@@ -31,7 +29,6 @@ public class SystemTestSequenceCommand extends NRCommand {
 	private double intakeRollersRightCurrent = 0;
 	
 	private double climberCurrentAve = 0;
-	private double cubeHandlerCurrentAve = 0;
 	private double elevatorCurrentAve = 0;
 	private double elevatorShooterCurrentAve = 0;
 	private double intakeElevatorCurrentAve = 0;
@@ -39,14 +36,12 @@ public class SystemTestSequenceCommand extends NRCommand {
 	private double intakeRollersCurrentRightAve = 0;
 	
 	private final double CLIMBER_STRESS_CURRENT = 0;
-	private final double CUBE_HANDLER_STRESS_CURRENT = 0;
 	private final double ELEVATOR_STRESS_CURRENT = 0;
 	private final double ELEVATOR_SHOOTER_STRESS_CURRENT = 0;
 	private final double INTAKE_ELEVATOR_STRESS_CURRENT = 0;
 	private final double INTAKE_ROLLERS_STRESS_CURRENT = 0;
 	
 	private final double CLIMBER_LOW_CURRENT = 0;
-	private final double CUBE_HANDLER_LOW_CURRENT = 0;
 	private final double ELEVATOR_LOW_CURRENT = 0;
 	private final double ELEVATOR_SHOOTER_LOW_CURRENT = 0;
 	private final double INTAKE_ELEVATOR_LOW_CURRENT = 0;
@@ -62,10 +57,6 @@ public class SystemTestSequenceCommand extends NRCommand {
 		if (Climber.getInstance().getCurrent() > MIN_DETECTION_CURRENT) {
 			climberCurrent += Climber.getInstance().getCurrent();
 			climberCounter++;
-		}
-		if (CubeHandler.getInstance().getCurrent() > MIN_DETECTION_CURRENT) {
-			cubeHandlerCurrent += CubeHandler.getInstance().getCurrent();
-			cubeHandlerCounter++;
 		}
 		if (Elevator.getInstance().getMasterCurrent() > MIN_DETECTION_CURRENT) {
 			elevatorCurrent += Elevator.getInstance().getMasterCurrent();
@@ -97,7 +88,6 @@ public class SystemTestSequenceCommand extends NRCommand {
 	public void onEnd() {
 		
 		climberCurrentAve = climberCurrent / climberCounter;
-		cubeHandlerCurrentAve = cubeHandlerCurrent / cubeHandlerCounter;
 		elevatorCurrentAve = elevatorCurrent / elevatorCounter;
 		elevatorShooterCurrentAve = elevatorShooterCurrent / elevatorShooterCounter;
 		intakeElevatorCurrentAve = intakeElevatorCurrent / intakeElevatorCounter;
@@ -107,12 +97,6 @@ public class SystemTestSequenceCommand extends NRCommand {
 			System.out.println("CLIMBER CURRENT TOO HIGH: " + climberCurrentAve + " A");	
 		} else if (climberCurrentAve < CLIMBER_LOW_CURRENT) {
 			System.out.println("CLIMBER CURRENT TOO LOW: " + climberCurrentAve + " A");	
-		}
-		
-		if (cubeHandlerCurrentAve > CUBE_HANDLER_STRESS_CURRENT) {
-			System.out.println("CUBE HANDLER CURRENT TOO HIGH: " + cubeHandlerCurrentAve + " A");	
-		} else if (cubeHandlerCurrentAve < CUBE_HANDLER_LOW_CURRENT) {
-			System.out.println("CUBE HANDLER CURRENT TOO LOW: " + cubeHandlerCurrentAve + " A");		
 		}
 		
 		if (elevatorCurrentAve > ELEVATOR_STRESS_CURRENT) {

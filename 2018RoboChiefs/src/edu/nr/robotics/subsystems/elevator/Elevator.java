@@ -41,26 +41,26 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * The max speed of the elevator
 	 */
-	public static final Speed MAX_SPEED_ELEVATOR_UP = new Speed(18, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_ELEVATOR_UP = new Speed(0, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Speed MAX_SPEED_ELEVATOR_DOWN = Speed.ZERO; //TODO: Find MAX_SPEED_ELEVATOR_DOWN
 
 	/**
 	 * The max acceleration of the elevator
 	 */
-	public static final Acceleration MAX_ACCEL_ELEVATOR_UP = new Acceleration(42, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
+	public static final Acceleration MAX_ACCEL_ELEVATOR_UP = new Acceleration(0, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	public static final Acceleration MAX_ACCEL_ELEVATOR_DOWN = Acceleration.ZERO; //TODO: Find MAX_ACCEL_ELEVATOR_DOWN
 
 	
 	/**
 	 * The minimum voltage needed to move the elevator
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0.253;
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0;
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0; //TODO: Find MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN
 
 	/**
 	 * The slope of voltage over velocity in feet per second
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP = 0.0415;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP = 0;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_DOWN = 0; //TODO: Find VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_DOWN
 	
 	/**
@@ -82,9 +82,9 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * MotionMagic PID values for the elevator
 	 */
-	public static double F_POS_ELEVATOR_UP = 0.4;
+	public static double F_POS_ELEVATOR_UP = 0;
 	
-	public static double P_POS_ELEVATOR_UP = 0.4; // TODO: Find elevator MagicMotion PID values
+	public static double P_POS_ELEVATOR_UP = 0; // TODO: Find elevator MagicMotion PID values
 	public static double I_POS_ELEVATOR_UP = 0;
 	public static double D_POS_ELEVATOR_UP = 0;
 	
@@ -100,9 +100,9 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * Velocity PID values for the elevator
 	 */
-	public static double P_VEL_ELEVATOR_UP = 0.1;
+	public static double P_VEL_ELEVATOR_UP = 0;
 	public static double I_VEL_ELEVATOR_UP = 0;
-	public static double D_VEL_ELEVATOR_UP = 1.0;
+	public static double D_VEL_ELEVATOR_UP = 0;
 	
 	public static double P_VEL_ELEVATOR_DOWN = 0; // TODO: Find elevator velocity PID values for down
 	public static double I_VEL_ELEVATOR_DOWN = 0;
@@ -240,10 +240,10 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 			elevTalon.enableVoltageCompensation(true);
 			elevTalon.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL_ELEVATOR, DEFAULT_TIMEOUT);
 	
-			elevTalon.enableCurrentLimit(true);
-			elevTalon.configPeakCurrentLimit(PEAK_CURRENT_ELEVATOR, DEFAULT_TIMEOUT);
-			elevTalon.configPeakCurrentDuration(PEAK_CURRENT_DURATION_ELEVATOR, DEFAULT_TIMEOUT);
-			elevTalon.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT_ELEVATOR, DEFAULT_TIMEOUT);
+			//elevTalon.enableCurrentLimit(true);
+			//elevTalon.configPeakCurrentLimit(PEAK_CURRENT_ELEVATOR, DEFAULT_TIMEOUT);
+			//elevTalon.configPeakCurrentDuration(PEAK_CURRENT_DURATION_ELEVATOR, DEFAULT_TIMEOUT);
+			//elevTalon.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT_ELEVATOR, DEFAULT_TIMEOUT);
 	
 			elevTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			elevTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
@@ -340,8 +340,9 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	}
 	
 	public double getFollowerCurrent() {
-		if (elevTalonFollow != null)
+		if (elevTalonFollow != null) {
 			return elevTalonFollow.getOutputCurrent();
+		}
 		return 0;
 	}
 

@@ -14,7 +14,7 @@ public class IntakeRollersIntakeCommand extends NRCommand {
 	}
 	
 	public void onEnd() {
-		IntakeRollers.getInstance().setMotorSpeedPercent(0, 0);
+		IntakeRollers.getInstance().disable();
 	}
 	
 	public boolean isFinishedNR() {

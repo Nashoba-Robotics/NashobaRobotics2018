@@ -2,9 +2,6 @@ package edu.nr.robotics.testSequence;
 
 import edu.nr.lib.commandbased.AnonymousCommandGroup;
 import edu.nr.lib.units.Distance;
-import edu.nr.robotics.subsystems.cubeHandler.CubeHandler;
-import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerStopCommand;
-import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerVelocityCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorPositionCommand;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
@@ -31,9 +28,6 @@ public class TestSequence extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				//Test Cube Handler
-				addParallel(new CubeHandlerVelocityCommand(CubeHandler.VEL_PERCENT_CUBE_HANDLER));
-				
 				//Test Elevator
 				addParallel(new ElevatorPositionCommand(new Distance(6, Distance.Unit.INCH)));
 				
@@ -47,9 +41,6 @@ public class TestSequence extends CommandGroup {
 				addParallel(new IntakeRollersVelocityCommand(IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS, IntakeRollers.VEL_PERCENT_LOW_INTAKE_ROLLERS));
 				
 				addSequential(new WaitCommand(STARTUP_SEQUENCE_WAIT));
-				
-				//Test Cube Handler
-				addParallel(new CubeHandlerStopCommand());
 				
 				//Test Elevator
 				addParallel(new ElevatorPositionCommand(Elevator.BOTTOM_HEIGHT_ELEVATOR));

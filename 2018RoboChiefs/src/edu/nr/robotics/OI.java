@@ -10,16 +10,9 @@ import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Distance;
 import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.multicommands.ClimbButtonCommand;
-import edu.nr.robotics.multicommands.DriveToCubeButtonCommand;
-import edu.nr.robotics.multicommands.DriveToCubeCommandAdvanced;
-import edu.nr.robotics.multicommands.PrepareScorePortalCommand;
 import edu.nr.robotics.multicommands.PrepareScoreScaleCommand;
 import edu.nr.robotics.multicommands.PrepareScoreSwitchCommand;
 import edu.nr.robotics.multicommands.ScorePortalCommand;
-import edu.nr.robotics.subsystems.climber.ClimberCoastCommand;
-import edu.nr.robotics.subsystems.cubeHandler.CubeHandler;
-import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerStopCommand;
-import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerVelocityCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveDumbToggleCommand;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
@@ -30,9 +23,8 @@ import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ShootCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorPositionCommand;
-import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
+import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersStopCommand;
-import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocityCommand;
 import edu.nr.robotics.subsystems.sensors.EnableFloorSensorCommand;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.nr.robotics.testSequence.SystemTestSequenceCommand;
@@ -164,7 +156,7 @@ public class OI implements SmartDashboardSource {
 		//new JoystickButton(operatorLeft, CUBE_HANDLER_BUTTON_NUMBER).whenPressed(new CubeHandlerVelocityCommand(CubeHandler.VEL_PERCENT_CUBE_HANDLER));
 		//new JoystickButton(operatorLeft, CUBE_HANDLER_BUTTON_NUMBER).whenReleased(new CubeHandlerStopCommand());
 		
-		new JoystickButton(operatorLeft, INTAKE_ROLLERS_BUTTON_NUMBER).whenPressed(new IntakeRollersVelocityCommand(IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS, IntakeRollers.VEL_PERCENT_LOW_INTAKE_ROLLERS));
+		new JoystickButton(operatorLeft, INTAKE_ROLLERS_BUTTON_NUMBER).whenPressed(new IntakeRollersIntakeCommand());
 		
 		new JoystickButton(operatorLeft, INTAKE_ROLLERS_STOP_BUTTON_NUMBER).whenPressed(new IntakeRollersStopCommand());
 		

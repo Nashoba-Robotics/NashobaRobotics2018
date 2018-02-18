@@ -3,9 +3,6 @@ package edu.nr.robotics.multicommands;
 import edu.nr.lib.commandbased.AnonymousCommandGroup;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.FieldData.Direction;
-import edu.nr.robotics.subsystems.cubeHandler.CubeHandler;
-import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerStopCommand;
-import edu.nr.robotics.subsystems.cubeHandler.CubeHandlerVelocityCommand;
 import edu.nr.robotics.subsystems.drive.StrafeToPortalCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorPositionCommand;
@@ -29,7 +26,7 @@ public class ScorePortalCommand extends CommandGroup {
 			}
 		});
 		
-		addParallel(new IntakeRollersVelocityCommand(IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS, IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS));
+		addParallel(new IntakeRollersVelocityCommand(-IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS, -IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS));
 		addSequential(new WaitCommand(IntakeRollers.SCORE_TIME.get(Time.Unit.SECOND)));
 		addSequential(new IntakeRollersStopCommand());		
 	}
