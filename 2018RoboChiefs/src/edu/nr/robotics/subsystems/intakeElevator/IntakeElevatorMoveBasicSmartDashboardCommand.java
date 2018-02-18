@@ -19,8 +19,7 @@ public class IntakeElevatorMoveBasicSmartDashboardCommand extends NRCommand {
 
 	@Override
 	protected boolean isFinishedNR() {
-		return (IntakeElevator.getInstance().getPosition().sub(initialPos.add(IntakeElevator.profileDeltaPos))).abs()
-				.lessThan(IntakeElevator.PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR);
+		return (IntakeElevator.getInstance().getPosition().sub(initialPos)).abs().greaterThan(IntakeElevator.profileDeltaPos.abs());
 	}
 	
 }

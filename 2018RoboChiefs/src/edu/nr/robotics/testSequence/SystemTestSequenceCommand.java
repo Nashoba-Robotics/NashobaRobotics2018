@@ -67,8 +67,8 @@ public class SystemTestSequenceCommand extends NRCommand {
 			cubeHandlerCurrent += CubeHandler.getInstance().getCurrent();
 			cubeHandlerCounter++;
 		}
-		if (Elevator.getInstance().getCurrent() > MIN_DETECTION_CURRENT) {
-			elevatorCurrent += Elevator.getInstance().getCurrent();
+		if (Elevator.getInstance().getMasterCurrent() > MIN_DETECTION_CURRENT) {
+			elevatorCurrent += Elevator.getInstance().getMasterCurrent();
 			elevatorCounter++;
 		}
 		if (ElevatorShooter.getInstance().getCurrent() > MIN_DETECTION_CURRENT) {

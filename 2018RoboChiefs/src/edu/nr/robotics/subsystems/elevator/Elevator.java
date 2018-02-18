@@ -112,7 +112,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	 * The distance from the end of the elevator profile at which the stopping
 	 * algorithm starts
 	 */
-	public static final Distance PROFILE_END_POS_THRESHOLD_ELEVATOR = new Distance(5, Distance.Unit.INCH); // TODO: Decide on PROFILE_END_POS_THRESHOLD_ELEVATOR
+	public static final Distance PROFILE_END_POS_THRESHOLD_ELEVATOR = new Distance(10, Distance.Unit.INCH); // TODO: Decide on PROFILE_END_POS_THRESHOLD_ELEVATOR
 
 	/**
 	 * The change in position elevator within for
@@ -333,9 +333,15 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * @return The current of the elevator talon
 	 */
-	public double getCurrent() {
+	public double getMasterCurrent() {
 		if (elevTalon != null)
 			return elevTalon.getOutputCurrent();
+		return 0;
+	}
+	
+	public double getFollowerCurrent() {
+		if (elevTalonFollow != null)
+			return elevTalonFollow.getOutputCurrent();
 		return 0;
 	}
 
@@ -382,7 +388,8 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	 */
 	public void setMotorSpeedPercent(double percent) {
 		if (elevTalon != null) {
-			setMotorSpeed(MAX_SPEED_ELEVATOR_UP.mul(percent));		
+			elevTalon.set(ControlMode.PercentOutput, percent);
+			//setMotorSpeed(MAX_SPEED_ELEVATOR_UP.mul(percent));		
 		}
 	}
 
@@ -550,7 +557,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	@Override
 	public void smartDashboardInfo() {
 		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_BASIC_ENABLED) {
-			SmartDashboard.putNumber("Elevator Current: ", getCurrent());
+			SmartDashboard.putString("Elevator Current: ", getMasterCurrent() + " : " + getFollowerCurrent());
 			SmartDashboard.putString("Elevator Velocity vs. Set Velocity: ",
 					getVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : "
 							+ velSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));

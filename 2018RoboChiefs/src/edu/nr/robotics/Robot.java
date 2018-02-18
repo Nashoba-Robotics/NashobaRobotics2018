@@ -80,6 +80,7 @@ public class Robot extends IterativeRobot {
 		autoChooserInit();
 		OI.init();
 		LimelightNetworkTable.getInstance();
+		LimelightNetworkTable.getInstance().lightLED(true);
 		LimelightNetworkTable.getInstance().lightLED(false);
 	}
 
@@ -259,7 +260,8 @@ public class Robot extends IterativeRobot {
 		new CancelAllCommand().start();
 		
 		new ClimberCoastCommand(false).start();
-		
+			
+		LimelightNetworkTable.getInstance().lightLED(true);
 		LimelightNetworkTable.getInstance().lightLED(false);
 	}
 

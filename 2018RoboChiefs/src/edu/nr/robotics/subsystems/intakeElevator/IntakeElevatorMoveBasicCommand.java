@@ -25,8 +25,7 @@ public class IntakeElevatorMoveBasicCommand extends NRCommand {
 
 	@Override
 	protected boolean isFinishedNR() {
-		return (IntakeElevator.getInstance().getPosition().sub(initialPos.add(height))).abs()
-				.lessThan(IntakeElevator.PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR);
+		return (IntakeElevator.getInstance().getPosition().sub(initialPos)).abs().greaterThan(height.abs());
 	}
 	
 }

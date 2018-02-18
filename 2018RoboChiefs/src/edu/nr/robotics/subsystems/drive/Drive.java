@@ -838,6 +838,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 
 	public void periodic() {
+		
 	}
 	
 	@Override

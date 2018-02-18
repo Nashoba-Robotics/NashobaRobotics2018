@@ -2,6 +2,7 @@ package edu.nr.robotics.subsystems.elevator;
 
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.units.Distance;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ElevatorMoveBasicSmartDashboardCommand extends NRCommand {
@@ -20,8 +21,8 @@ public class ElevatorMoveBasicSmartDashboardCommand extends NRCommand {
 
 	@Override
 	protected boolean isFinishedNR() {
-		return (Elevator.getInstance().getPosition().sub(initialPos.add(Elevator.profilePos))).abs()
-				.lessThan(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR);
+		return (Elevator.getInstance().getPosition().sub(Elevator.profilePos)).abs()
+				.lessThan(Elevator.PROFILE_END_POS_THRESHOLD_ELEVATOR);
 	}
 
 }
