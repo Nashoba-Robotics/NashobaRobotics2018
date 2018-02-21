@@ -38,6 +38,7 @@ import edu.nr.robotics.subsystems.elevator.ElevatorProfileSmartDashboardCommandG
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterVelocitySmartDashboardCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorDeltaPositionSmartDashboardCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorMoveBasicSmartDashboardCommand;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileSmartDashboardCommandGroup;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocitySmartDashboardCommand;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -147,6 +148,7 @@ public class Robot extends IterativeRobot {
 		if(EnabledSubsystems.INTAKE_ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
 			SmartDashboard.putData(new IntakeElevatorDeltaPositionSmartDashboardCommand());
 			SmartDashboard.putData(new IntakeElevatorMoveBasicSmartDashboardCommand());	
+			SmartDashboard.putData(new IntakeElevatorProfileSmartDashboardCommandGroup());
 		}
 		
 		//Intake Rollers

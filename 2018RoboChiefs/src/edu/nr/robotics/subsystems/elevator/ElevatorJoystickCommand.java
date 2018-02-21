@@ -7,7 +7,7 @@ import edu.nr.robotics.OI;
 public class ElevatorJoystickCommand extends JoystickCommand {
 	
 	private static final double MIN_ELEV_JOYSTICK_PERCENT = 0;
-	private static final double MAX_ELEV_JOYSTICK_PERCENT = 0.2;
+	private static final double MAX_ELEV_JOYSTICK_PERCENT = 0.6;
 		
 	/**
 	 * Takes elevator joystick percent values and sets the elevator to those percents.
@@ -21,7 +21,10 @@ public class ElevatorJoystickCommand extends JoystickCommand {
 	protected void onExecute() {
 		
 		if (!OI.getInstance().isElevatorNonZero()) {
-			Elevator.getInstance().setMotorSpeedPercent(0.01);
+				if (Elevator.getInstance().getPosition().lessThan(new Distance(1, Distance.Unit.INCH)))
+					Elevator.getInstance().setMotorSpeedPercent(0);
+				else 
+					Elevator.getInstance().setMotorSpeedPercent(0.01);
 		} else if (OI.getInstance().getElevatorJoystickValue() > 0) {
 			double motorPercent = OI.getInstance().getElevatorJoystickValue() * (MAX_ELEV_JOYSTICK_PERCENT - MIN_ELEV_JOYSTICK_PERCENT) + MIN_ELEV_JOYSTICK_PERCENT;
 			Elevator.getInstance().setMotorSpeedPercent(motorPercent);

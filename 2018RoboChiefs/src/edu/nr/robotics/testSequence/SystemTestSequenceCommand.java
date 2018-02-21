@@ -138,9 +138,6 @@ public class SystemTestSequenceCommand extends NRCommand {
 			System.out.println("INTAKE ELEVATOR REV LIMIT SWITCH NEVER CLOSED!");
 		}
 		
-		if (!IntakeElevator.getInstance().isFwdLimitSwitchClosed()) {
-			System.out.println("INTAKE ELEVATOR FWD LIMIT SWITCH NOT CLOSED!");
-		}
 	}
 	
 	@Override

@@ -31,10 +31,10 @@ public class IntakeRollers extends NRSubsystem {
 	/**
 	 * The optimal velocity percent for the intake rollers
 	 */
-	public static double VEL_PERCENT_HIGH_INTAKE_ROLLERS = 0;
-	public static double VEL_PERCENT_LOW_INTAKE_ROLLERS = 0;
+	public static double VEL_PERCENT_HIGH_INTAKE_ROLLERS = 85;
+	public static double VEL_PERCENT_LOW_INTAKE_ROLLERS = 80;
 	
-	public static Time SCORE_TIME = Time.ZERO; //TODO: Find SCORE_TIME
+	public static Time SCORE_TIME = new Time(0.5, Time.Unit.SECOND); //TODO: Find SCORE_TIME
 	
 	/**
 	 * The current values of the elevator shooter

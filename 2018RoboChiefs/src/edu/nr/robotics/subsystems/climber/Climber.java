@@ -27,6 +27,8 @@ public class Climber extends NRSubsystem {
 	
 	public static final Speed MAX_SPEED_CLIMBER = Speed.ZERO;//TODO: Find max speed of the climber
 	
+	public static final double CLIMB_PERCENT = 0.95; //maybe do stuff
+	
 	/**
 	 * The voltage ramp rate of the climber. Voltage ramp rate is time it takes
 	 * to go from 0V to 12V
@@ -134,10 +136,10 @@ public class Climber extends NRSubsystem {
 			climberTalon.enableVoltageCompensation(true);
 			climberTalon.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL_CLIMBER, DEFAULT_TIMEOUT);
 	
-			climberTalon.enableCurrentLimit(true);
-			climberTalon.configPeakCurrentLimit(PEAK_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
-			climberTalon.configPeakCurrentDuration(PEAK_CURRENT_DURATION_CLIMBER, DEFAULT_TIMEOUT);
-			climberTalon.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT_CLIMBER, DEFAULT_TIMEOUT);
+			//climberTalon.enableCurrentLimit(true);
+			//climberTalon.configPeakCurrentLimit(PEAK_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
+			//climberTalon.configPeakCurrentDuration(PEAK_CURRENT_DURATION_CLIMBER, DEFAULT_TIMEOUT);
+			//climberTalon.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT_CLIMBER, DEFAULT_TIMEOUT);
 	
 			climberTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			climberTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
@@ -224,7 +226,14 @@ public class Climber extends NRSubsystem {
 		if (climberTalon != null) {
 			climberTalon.selectProfileSlot(CURRENT_SLOT, DEFAULT_TIMEOUT);
 			currentSetpoint = current;
-			climberTalon.set(ControlMode.Current, current);
+			//System.out.println("current: " + current);
+			//climberTalon.set(ControlMode.PercentOutput, -1);
+		}
+	}
+	
+	public void setMotorSpeedPercent(double percent) {
+		if (climberTalon != null) {
+			climberTalon.set(ControlMode.PercentOutput, percent);
 		}
 	}
 	
@@ -252,7 +261,7 @@ public class Climber extends NRSubsystem {
 			SmartDashboard.putNumber("P Pos Climber: ", P_POS_CLIMBER);
 			SmartDashboard.putNumber("I Pos Climber: ", I_POS_CLIMBER);
 			SmartDashboard.putNumber("D Pos Climber: ", D_POS_CLIMBER);
-			SmartDashboard.putNumber("Climber Set Current:", DEFAULT_CLIMBER_CURRENT);
+			SmartDashboard.putNumber("Climber Set Current: ", DEFAULT_CLIMBER_CURRENT);
 		}
 	}
 	

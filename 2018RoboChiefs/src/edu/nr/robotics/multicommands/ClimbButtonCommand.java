@@ -1,44 +1,16 @@
 package edu.nr.robotics.multicommands;
 
-import edu.nr.lib.commandbased.NRCommand;
-import edu.nr.lib.commandbased.NRSubsystem;
-import edu.nr.lib.units.Distance;
-import edu.nr.robotics.subsystems.climber.Climber;
-import edu.nr.robotics.subsystems.climber.ClimberHoldPositionCommand;
-import edu.nr.robotics.subsystems.elevator.Elevator;
+import edu.nr.robotics.subsystems.climber.ClimbBasicPercentCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorSetToZeroCommand;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class ClimbButtonCommand extends NRCommand {
+public class ClimbButtonCommand extends CommandGroup {
 	
-	public boolean isClimberTaut;
-
-	public static final Distance CLIMB_HEIGHT = Distance.ZERO;//TODO: Find climb height
-
 	public ClimbButtonCommand() {
-		super(new NRSubsystem[] {Climber.getInstance(), Elevator.getInstance()});
-	}
-
-	@Override
-	protected void onStart() {
-		isClimberTaut = false;
-		Climber.getInstance().setCurrent(Climber.MIN_MOVE_ELEV_CURRENT);
-	}
-
-	@Override
-	protected void onExecute() {
-		if (isClimberTaut) {
-			Elevator.getInstance().setMotorSpeed(Climber.getInstance().getVelocity().mul(Elevator.HOOK_TO_CARRIAGE_RATIO));	
-		} else if (Climber.getInstance().getCurrent() >= Climber.DEFAULT_CLIMBER_CURRENT) {
-			isClimberTaut = true;
-		}
-	}
-
-	@Override
-	protected void onEnd() {
-		new ClimberHoldPositionCommand().start();
+		
+		addParallel(new ElevatorSetToZeroCommand());
+		addSequential(new ClimbBasicPercentCommand());
+		
 	}
 	
-	@Override
-	protected boolean isFinishedNR() {
-		return Elevator.getInstance().getPosition().lessThan(Elevator.CLIMB_HEIGHT_ELEVATOR.sub(CLIMB_HEIGHT));
-	}
 }

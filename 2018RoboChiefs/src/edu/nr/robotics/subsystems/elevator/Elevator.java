@@ -41,26 +41,26 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * The max speed of the elevator
 	 */
-	public static final Speed MAX_SPEED_ELEVATOR_UP = new Speed(0, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_ELEVATOR_UP = new Speed(14.567, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Speed MAX_SPEED_ELEVATOR_DOWN = Speed.ZERO; //TODO: Find MAX_SPEED_ELEVATOR_DOWN
 
 	/**
 	 * The max acceleration of the elevator
 	 */
-	public static final Acceleration MAX_ACCEL_ELEVATOR_UP = new Acceleration(0, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
+	public static final Acceleration MAX_ACCEL_ELEVATOR_UP = new Acceleration(20, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	public static final Acceleration MAX_ACCEL_ELEVATOR_DOWN = Acceleration.ZERO; //TODO: Find MAX_ACCEL_ELEVATOR_DOWN
 
 	
 	/**
 	 * The minimum voltage needed to move the elevator
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0;
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0.327;
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0; //TODO: Find MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN
 
 	/**
 	 * The slope of voltage over velocity in feet per second
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP = 0;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP = 0.0462;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_DOWN = 0; //TODO: Find VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_DOWN
 	
 	/**
@@ -106,7 +106,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	
 	public static double P_VEL_ELEVATOR_DOWN = 0; // TODO: Find elevator velocity PID values for down
 	public static double I_VEL_ELEVATOR_DOWN = 0;
-	public static double D_VEL_ELEVATOR_DOWN= 0;
+	public static double D_VEL_ELEVATOR_DOWN = 0;
 	
 	/**
 	 * The distance from the end of the elevator profile at which the stopping
@@ -389,8 +389,8 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	 */
 	public void setMotorSpeedPercent(double percent) {
 		if (elevTalon != null) {
-			elevTalon.set(ControlMode.PercentOutput, percent);
-			//setMotorSpeed(MAX_SPEED_ELEVATOR_UP.mul(percent));		
+			//elevTalon.set(ControlMode.PercentOutput, percent);
+			setMotorSpeed(MAX_SPEED_ELEVATOR_UP.mul(percent));		
 		}
 	}
 

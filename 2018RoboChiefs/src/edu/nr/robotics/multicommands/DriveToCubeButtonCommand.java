@@ -9,7 +9,7 @@ public class DriveToCubeButtonCommand extends CommandGroup {
 
 	public DriveToCubeButtonCommand(boolean advanced) {
 		
-		addSequential(new IntakeElevatorPositionCommand(IntakeElevator.INTAKE_HEIGHT));
+		//addSequential(new IntakeElevatorPositionCommand(IntakeElevator.INTAKE_HEIGHT));
 		
 		addSequential(new ConditionalCommand(new DriveToCubeCommandAdvanced(), new DriveToCubeCommandBasic()) {
 			

@@ -12,6 +12,8 @@ public class CubeIntakeCommand extends CommandGroup {
 		addSequential(new IntakeElevatorPositionCommand(IntakeElevator.INTAKE_HEIGHT));
 		
 		addSequential(new IntakeRollersIntakeCommand());
+		
+		addSequential(new IntakeElevatorPositionCommand(IntakeElevator.PORTAL_HEIGHT));
 	}
 
 }

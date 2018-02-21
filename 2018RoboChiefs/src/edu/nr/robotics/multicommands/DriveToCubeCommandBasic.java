@@ -30,7 +30,7 @@ public class DriveToCubeCommandBasic extends NRCommand {
 		hasStartedForward = false;
 		new EnableLimelightCommand(true).start();
 		IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS, IntakeRollers.VEL_PERCENT_LOW_INTAKE_ROLLERS);
-		Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
+		Drive.getInstance().disable();
 		gyro.reset();
 		
 		if ((IntakeElevator.getInstance().getPosition().sub(IntakeElevator.INTAKE_HEIGHT)).abs().greaterThan(IntakeElevator.PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR)) {

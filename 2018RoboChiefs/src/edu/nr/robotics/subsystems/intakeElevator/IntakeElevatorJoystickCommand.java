@@ -2,6 +2,7 @@ package edu.nr.robotics.subsystems.intakeElevator;
 
 import edu.nr.lib.commandbased.JoystickCommand;
 import edu.nr.lib.units.Distance;
+import edu.nr.robotics.OI;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 
@@ -21,16 +22,24 @@ public class IntakeElevatorJoystickCommand extends JoystickCommand {
 	
 	@Override
 	protected void onExecute() {
-		if (!EnabledSensors.intakeSensorLeft.get() && !EnabledSensors.intakeSensorRight.get()) {
-			IntakeElevator.getInstance().setMotorSpeedPercent(IntakeElevator.REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP);
-		} else {
-			IntakeElevator.getInstance().setMotorSpeedPercent(IntakeElevator.REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN);
+		if (!OI.getInstance().isIntakeElevatorNonZero()) {
+			if (!EnabledSensors.intakeSensorLeft.get() && !EnabledSensors.intakeSensorRight.get())
+				IntakeElevator.getInstance().setMotorSpeedRaw(0.129);
+			else {
+				IntakeElevator.getInstance().setMotorSpeedRaw(0.09);
+			}
+		} else if (OI.getInstance().getIntakeElevatorJoystickValue() > 0) {
+			double motorPercent = OI.getInstance().getIntakeElevatorJoystickValue();
+			IntakeElevator.getInstance().setMotorSpeedPercent(motorPercent);
+		} else if (OI.getInstance().getIntakeElevatorJoystickValue() < 0) {
+			double motorPercent = OI.getInstance().getIntakeElevatorJoystickValue();
+			IntakeElevator.getInstance().setMotorSpeedPercent(motorPercent);
 		}
 	}
 	
 	@Override
 	protected boolean shouldSwitchToJoystick() {
-		return IntakeElevator.getInstance().getCurrentCommand() == null;
+		return IntakeElevator.getInstance().getCurrentCommand() == null || OI.getInstance().isIntakeElevatorNonZero();
 	}
 
 	@Override

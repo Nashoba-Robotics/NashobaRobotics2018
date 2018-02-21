@@ -27,6 +27,7 @@ import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Distance.Unit;
 import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
+import edu.nr.robotics.OI;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.nr.robotics.subsystems.sensors.RunSensors;
@@ -140,7 +141,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Percent of the drive while going to intake a cube
 	 */
-	public static final double DRIVE_TO_CUBE_PERCENT = 0; //TODO: Decide on DRIVE_TO_CUBE_PERCENT
+	public static final double DRIVE_TO_CUBE_PERCENT = 0.6; //TODO: Decide on DRIVE_TO_CUBE_PERCENT
 	
 	/**
 	 * Percent of the drive while strafing to portal or cube
@@ -253,7 +254,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			leftDriveFollow = CTRECreator.createFollowerTalon(RobotMap.LEFT_DRIVE_FOLLOW, leftDrive.getDeviceID());
 			rightDriveFollow = CTRECreator.createFollowerTalon(RobotMap.RIGHT_DRIVE_FOLLOW, rightDrive.getDeviceID());
 			hDriveFollow = CTRECreator.createFollowerTalon(RobotMap.H_DRIVE_FOLLOW, hDrive.getDeviceID());
-			pigeonTalon = leftDriveFollow;
+			pigeonTalon = CTRECreator.createMasterTalon(RobotMap.INTAKE_ROLLERS_RIGHT); //6 intake
 			
 			if (EnabledSubsystems.DRIVE_DUMB_ENABLED) {
 				leftDrive.set(ControlMode.PercentOutput, 0);
@@ -574,7 +575,10 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			} else {
 				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
 				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
-				hDrive.set(hDrive.getControlMode(), hMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
+				if (OI.getInstance().isHDriveZero())
+					hDrive.set(ControlMode.PercentOutput, 0);
+				else
+					hDrive.set(ControlMode.Velocity, hMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
 			}
 		}
 	}
@@ -591,8 +595,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		hDrive.configOpenloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	}
 	
-	public void tankDrive(double left, double right, double strafe) {
-		setMotorSpeedInPercent(left, right, strafe);	
+	public void tankDrive(double left, double right, double strafe) { 
+			setMotorSpeedInPercent(left, right, strafe);
 	}
 	
 	/**

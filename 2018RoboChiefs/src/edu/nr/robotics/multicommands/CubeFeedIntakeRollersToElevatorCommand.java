@@ -10,8 +10,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class CubeFeedIntakeRollersToElevatorCommand extends CommandGroup {
 	
 	public CubeFeedIntakeRollersToElevatorCommand() {
+		System.out.println("Working");
 		
-		addSequential(new IntakeElevatorPositionCommand(IntakeElevator.HANDLER_HEIGHT));
+		//addSequential(new IntakeElevatorPositionCommand(IntakeElevator.HANDLER_HEIGHT));
 		
 		addSequential(new AnonymousCommandGroup() {
 

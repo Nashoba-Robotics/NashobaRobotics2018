@@ -8,8 +8,9 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.nr.lib.commandbased.CancelCommand;
 import edu.nr.lib.commandbased.NRSubsystem;
+import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerBasic;
+import edu.nr.lib.motionprofiling.OneDimensionalTrajectoryRamped;
 import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Acceleration;
@@ -18,10 +19,12 @@ import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
-import edu.nr.robotics.subsystems.elevator.Elevator;
+import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class IntakeElevator extends NRSubsystem {
+public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput {
 	private static IntakeElevator singleton;
 
 	private TalonSRX intakeElevTalon;
@@ -34,14 +37,14 @@ public class IntakeElevator extends NRSubsystem {
 	/**
 	 * The max speed of the intake elevator
 	 */
-	public static final Speed MAX_SPEED_INTAKE_ELEVATOR_UP = Speed.ZERO; // TODO: Find MAX_SPEED_INTAKE_ELEVATOR_UP
-	public static final Speed MAX_SPEED_INTAKE_ELEVATOR_DOWN = new Speed(4.483, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_INTAKE_ELEVATOR_UP = new Speed(3.424, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_INTAKE_ELEVATOR_DOWN = new Speed(4.458, Distance.Unit.FOOT, Time.Unit.SECOND);
 
 	/**
 	 * The max acceleration of the intake elevator
 	 */
-	public static final Acceleration MAX_ACCEL_INTAKE_ELEVATOR_UP = Acceleration.ZERO; // TODO: Find MAX_ACCEL_INTAKE_ELEVATOR_UP
-	public static final Acceleration MAX_ACCEL_INTAKE_ELEVATOR_DOWN = new Acceleration(11.5, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
+	public static final Acceleration MAX_ACCEL_INTAKE_ELEVATOR_UP = new Acceleration(12, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND); 
+	public static final Acceleration MAX_ACCEL_INTAKE_ELEVATOR_DOWN = new Acceleration(12, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	
 	/**
 	 * The acutal real min move voltage of the intake elevator
@@ -52,14 +55,14 @@ public class IntakeElevator extends NRSubsystem {
 	/**
 	 * The theoretical minimum voltage needed to move the intake elevator
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0; // TODO: Find Elevator voltage velocity curve up
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0.0228;
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0.127; 
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0.0;
 	
 	/**
 	 * The slope of voltage over velocity in feet per second
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR_UP = 0;
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR_DOWN = 0.218;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR_UP = 0.255;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR_DOWN = 0.216;
 
 	/**
 	 * The voltage ramp rate of the intake elevator. Voltage ramp rate is time it takes
@@ -70,7 +73,7 @@ public class IntakeElevator extends NRSubsystem {
 	/**
 	 * MotionMagic PID values for the intake elevator
 	 */
-	public static double F_POS_INTAKE_ELEVATOR_UP = 0;
+	public static double F_POS_INTAKE_ELEVATOR_UP = 0.077;
 	public static double P_POS_INTAKE_ELEVATOR_UP = 0; // TODO: Find intake elevator MagicMotion FPID UP values
 	public static double I_POS_INTAKE_ELEVATOR_UP = 0;
 	public static double D_POS_INTAKE_ELEVATOR_UP = 0;
@@ -83,37 +86,42 @@ public class IntakeElevator extends NRSubsystem {
 	/**
 	 * Velocity PID values for the intake elevator
 	 */
-	public static double P_VEL_INTAKE_ELEVATOR_UP = 0; // TODO: Find intake elevator velocity PID UP values
+	public static double P_VEL_INTAKE_ELEVATOR_UP = 0.1; 
 	public static double I_VEL_INTAKE_ELEVATOR_UP = 0;
-	public static double D_VEL_INTAKE_ELEVATOR_UP = 0;
+	public static double D_VEL_INTAKE_ELEVATOR_UP = 1;
 	
-	public static double P_VEL_INTAKE_ELEVATOR_DOWN = 0; // TODO: Find intake elevator velocity PID DOWN values
+	public static double P_VEL_INTAKE_ELEVATOR_DOWN = 0.36; 
 	public static double I_VEL_INTAKE_ELEVATOR_DOWN = 0;
-	public static double D_VEL_INTAKE_ELEVATOR_DOWN = 0;
+	public static double D_VEL_INTAKE_ELEVATOR_DOWN = 3.6;
 
 	/**
 	 * The default profiling velocity percent of the intake elevator
 	 */
-	public static double PROFILE_VEL_PERCENT_INTAKE_ELEVATOR = 0; // TODO: Decide on PROFILE_VEL_PERCENT_INTAKE_ELEVATOR
+	public static double PROFILE_VEL_PERCENT_INTAKE_ELEVATOR = 0.6; // TODO: Decide on PROFILE_VEL_PERCENT_INTAKE_ELEVATOR
 
 	/**
 	 * The default profiling acceleration of the intake elevator
 	 */
-	public static double PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR = 0; // TODO: Decide on PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR
+	public static double PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR = 0.9; // TODO: Decide on PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR
 
 	/**
 	 * The distance from the end of the intake elevator profile at which the stopping
 	 * algorithm starts
 	 */
-	public static final Distance PROFILE_END_POS_THRESHOLD_INTAKE_ELEVATOR = Distance.ZERO; // TODO: Decide on PROFILE_END_POS_THRESHOLD_INTAKE_ELEVATOR
+	public static final Distance PROFILE_END_POS_THRESHOLD_INTAKE_ELEVATOR = new Distance(1, Distance.Unit.INCH); // TODO: Decide on PROFILE_END_POS_THRESHOLD_INTAKE_ELEVATOR
 
 	/**
 	 * The change in position intake elevator within for
 	 * PROFILE_TIME_POS_THRESHOLD_INTAKE_ELEVATOR before stopping profile
 	 */
-	public static final Distance PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR = Distance.ZERO; // TODO: Decide on PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR
-	public static final Time PROFILE_DELTA_TIME_THRESHOLD_INTAKE_ELEVATOR = new Time(10, Time.Unit.MILLISECOND);
+	public static final Distance PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR = new Distance(1, Distance.Unit.INCH); // TODO: Decide on PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR
+	public static final Time PROFILE_DELTA_TIME_THRESHOLD_INTAKE_ELEVATOR = new Time(100, Time.Unit.MILLISECOND);
 
+	/**
+	 * Time multiplier for the ramp of the ramped trajectory
+	 */
+	public static final double RAMPED_PROFILE_TIME_MULT_INTAKE_ELEVATOR = 100; //TODO: get
+	
 	/**
 	 * The current values of the intake elevator
 	 */
@@ -152,6 +160,20 @@ public class IntakeElevator extends NRSubsystem {
 	 * The default timeout of the intake elevator functions in ms
 	 */
 	public static final int DEFAULT_TIMEOUT = 0;
+	
+	public static final double kV_UP = 1 / MAX_SPEED_INTAKE_ELEVATOR_UP.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND);
+	public static double kA_UP = 1;
+	public static double kP_UP = 0;
+	public static double kD_UP = 0;
+	
+	public static final double kV_DOWN = 1 / MAX_SPEED_INTAKE_ELEVATOR_DOWN.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND);
+	public static double kA_DOWN = 1;
+	public static double kP_DOWN = 0;
+	public static double kD_DOWN = 0;
+	
+	public OneDimensionalMotionProfilerBasic basicProfiler;
+	
+	public PIDSourceType type = PIDSourceType.kRate;
 
 	/**
 	 * The PID slot numbers
@@ -166,15 +188,20 @@ public class IntakeElevator extends NRSubsystem {
 	 * The positions of the intake elevator at each limit switch and at the default
 	 * extend height
 	 */
-	public static final Distance FOLDED_HEIGHT = Distance.ZERO; // TODO: Find FOLDED_HEIGHT
+	public static final Distance FOLDED_HEIGHT = new Distance(11.9, Distance.Unit.INCH); // TODO: Find FOLDED_HEIGHT
 	
-	public static final Distance HANDLER_HEIGHT = Distance.ZERO; // TODO: Find HANDLER_HEIGHT
+	public static final Distance HANDLER_HEIGHT = new Distance(9.6, Distance.Unit.INCH); // TODO: Find HANDLER_HEIGHT
 	
-	public static final Distance PORTAL_HEIGHT = Distance.ZERO; // TODO: Find PORTAL_HEIGHT
+	public static final Distance INTAKE_HEIGHT = Distance.ZERO; 
 	
-	public static final Distance INTAKE_HEIGHT = Distance.ZERO; // TODO: Find INTAKE_HEIGHT
+	public static final Distance PORTAL_HEIGHT = INTAKE_HEIGHT.add(new Distance(3, Distance.Unit.INCH)); // TODO: Find PORTAL_HEIGHT
 	
 	public static final Distance BOTTOM_HEIGHT = Distance.ZERO;
+	
+	
+	public static final double FOLD_CURRENT_SPIKE = 0;
+	public static final double FOLD_FINISHED_CURRENT = 0;
+	public static final double HIT_TOP_HEIGHT_CURRENT = 0;
 
 	
 	public Speed velSetpoint = Speed.ZERO;
@@ -331,15 +358,58 @@ public class IntakeElevator extends NRSubsystem {
 		}
 	}
 	
+	public void enableMotionProfiler(Distance dist, double maxVelPercent, double maxAccelPercent) {
+
+		if (dist.greaterThan(Distance.ZERO)) {
+
+			kA_UP = 0; // TODO: Find kA-position function up
+
+			basicProfiler = new OneDimensionalMotionProfilerBasic(this, this, kV_UP, kA_UP, kP_UP, kD_UP);
+			basicProfiler.setTrajectory(
+					new OneDimensionalTrajectoryRamped(dist.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV),
+							MAX_SPEED_INTAKE_ELEVATOR_UP.mul(PROFILE_VEL_PERCENT_INTAKE_ELEVATOR)
+									.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND),
+							MAX_ACCEL_INTAKE_ELEVATOR_UP.mul(PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR).get(
+									Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND,
+									Time.Unit.HUNDRED_MILLISECOND),
+							RAMPED_PROFILE_TIME_MULT_INTAKE_ELEVATOR));
+		} else {
+
+			kA_DOWN = 0; // TODO: Find kA-position function down
+
+			basicProfiler = new OneDimensionalMotionProfilerBasic(this, this, kV_DOWN, kA_DOWN, kP_DOWN, kD_DOWN);
+			basicProfiler.setTrajectory(
+					new OneDimensionalTrajectoryRamped(dist.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV),
+							MAX_SPEED_INTAKE_ELEVATOR_DOWN.mul(PROFILE_VEL_PERCENT_INTAKE_ELEVATOR)
+									.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND),
+							MAX_ACCEL_INTAKE_ELEVATOR_DOWN.mul(PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR).get(
+									Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND,
+									Time.Unit.HUNDRED_MILLISECOND),
+							RAMPED_PROFILE_TIME_MULT_INTAKE_ELEVATOR));
+		}
+
+		basicProfiler.enable();
+
+	}
+
+	public void disableProfiler() {
+		basicProfiler.disable();
+	}
+
 	/**
 	 * @param percent
 	 *            velocity
 	 */
 	public void setMotorSpeedPercent(double percent) {
 		if (intakeElevTalon != null) {
-			//setMotorSpeed(MAX_SPEED_INTAKE_ELEVATOR.mul(percent));
-			intakeElevTalon.set(ControlMode.PercentOutput, percent);
+			setMotorSpeed(MAX_SPEED_INTAKE_ELEVATOR_UP.mul(percent));
+			//intakeElevTalon.set(ControlMode.PercentOutput, percent);
 		}
+	}
+	
+	public void setMotorSpeedRaw(double percent) {
+		if (intakeElevTalon != null) 
+			intakeElevTalon.set(ControlMode.PercentOutput, percent);
 	}
 	
 	/**
@@ -407,6 +477,9 @@ public class IntakeElevator extends NRSubsystem {
 			SmartDashboard.putNumber("Voltage Ramp Rate Intake Elevator Seconds: ",
 					VOLTAGE_RAMP_RATE_INTAKE_ELEVATOR.get(Time.Unit.SECOND));
 			
+			SmartDashboard.putNumber("Intake Elevator kA Up: ", kA_UP);
+			SmartDashboard.putNumber("Intake Elevator kA Down: ", kA_UP);
+			
 			SmartDashboard.putNumber("F Pos Intake Elevator Up: ", F_POS_INTAKE_ELEVATOR_UP);
 			SmartDashboard.putNumber("P Pos Intake Elevator Up: ", P_POS_INTAKE_ELEVATOR_UP);
 			SmartDashboard.putNumber("I Pos Intake Elevator Up: ", I_POS_INTAKE_ELEVATOR_UP);
@@ -443,6 +516,7 @@ public class IntakeElevator extends NRSubsystem {
 		if (EnabledSubsystems.INTAKE_ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
 			profileDeltaPos = new Distance(SmartDashboard.getNumber("Intake Elevator Profile Delta Inches: ", 0),
 					Distance.Unit.INCH);
+			
 			F_POS_INTAKE_ELEVATOR_UP = SmartDashboard.getNumber("F Pos Intake Elevator Up: ", F_POS_INTAKE_ELEVATOR_UP);
 			P_POS_INTAKE_ELEVATOR_UP = SmartDashboard.getNumber("P Pos Intake Elevator Up: ", P_POS_INTAKE_ELEVATOR_UP);
 			I_POS_INTAKE_ELEVATOR_UP = SmartDashboard.getNumber("I Pos Intake Elevator Up: ", I_POS_INTAKE_ELEVATOR_UP);
@@ -480,12 +554,11 @@ public class IntakeElevator extends NRSubsystem {
 			intakeElevTalon.config_kI(VEL_DOWN_SLOT, I_VEL_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
 			intakeElevTalon.config_kD(VEL_DOWN_SLOT, D_VEL_INTAKE_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
 			
+			kA_UP = SmartDashboard.getNumber("Intake Elevator kA Up: ", kA_UP);
+			kA_DOWN = SmartDashboard.getNumber("Intake Elevator kA Down: ", kA_DOWN);
+			
 			SmartDashboard.putNumber("Intake Elevator Encoder Ticks: ", intakeElevTalon.getSelectedSensorPosition(PID_TYPE));
 		}
-	}
-	
-	public boolean isFwdLimitSwitchClosed() {
-		return intakeElevTalon.getSensorCollection().isFwdLimitSwitchClosed();
 	}
 	
 	public boolean isRevLimitSwitchClosed() {
@@ -495,12 +568,9 @@ public class IntakeElevator extends NRSubsystem {
 	@Override
 	public void periodic() {
 		if (EnabledSubsystems.INTAKE_ELEVATOR_ENABLED) {
-			if(intakeElevTalon.getSensorCollection().isFwdLimitSwitchClosed()) {
-				intakeElevTalon.getSensorCollection().setQuadraturePosition((int) FOLDED_HEIGHT.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
-				new CancelCommand(Elevator.getInstance());
-			}
 			if (intakeElevTalon.getSensorCollection().isRevLimitSwitchClosed()) {
 				intakeElevTalon.getSensorCollection().setQuadraturePosition((int) BOTTOM_HEIGHT.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
+				//new CancelCommand(IntakeElevator.getInstance()).start();
 			}	
 		}
 
@@ -509,4 +579,30 @@ public class IntakeElevator extends NRSubsystem {
 	public void disable() {
 		setMotorSpeedPercent(0);
 	}
+
+	@Override
+	public void pidWrite(double output) {
+		setMotorSpeed(MAX_SPEED_INTAKE_ELEVATOR_UP.mul(output));
+	}
+
+	@Override
+	public void setPIDSourceType(PIDSourceType pidSource) {
+		type = pidSource;
+	}
+
+	@Override
+	public PIDSourceType getPIDSourceType() {
+		return type;
+	}
+
+	@Override
+	public double pidGet() {
+		if (type == PIDSourceType.kRate) {
+			return getInstance().getVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV,
+					Time.Unit.HUNDRED_MILLISECOND);
+		} else {
+			return getInstance().getPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV);
+		}
+	}
+	
 }

@@ -59,13 +59,13 @@ public class ElevatorShooter extends NRSubsystem {
 	/**
 	 * The default velocity percents for the elevator shooter
 	 */
-	public static double VEL_PERCENT_LOW_ELEVATOR_SHOOTER = 0;//TODO: Find elevator shooter velocity percents
-	public static double VEL_PERCENT_HIGH_ELEVATOR_SHOOTER = 0;
+	public static double VEL_PERCENT_LOW_ELEVATOR_SHOOTER = 0.5;//TODO: Find elevator shooter velocity percents
+	public static double VEL_PERCENT_HIGH_ELEVATOR_SHOOTER = 0.8;
 	
 	/**
 	 * Time after elevator shooter motors run to wait before stopping them;
 	 */
-	public static Time SHOOT_TIME = Time.ZERO; //TODO: Decide on SHOOT_TIME
+	public static Time SHOOT_TIME = new Time(0.5, Time.Unit.SECOND); //TODO: Decide on SHOOT_TIME
 	
 	/**
 	 * The current values of the elevator shooter
@@ -131,7 +131,7 @@ public class ElevatorShooter extends NRSubsystem {
 			elevShooterTalon.config_kI(VEL_SLOT, I_VEL_ELEVATOR_SHOOTER, DEFAULT_TIMEOUT);
 			elevShooterTalon.config_kD(VEL_SLOT, D_VEL_ELEVATOR_SHOOTER, DEFAULT_TIMEOUT);
 			elevShooterTalon.setNeutralMode(NEUTRAL_MODE_ELEVATOR_SHOOTER);
-			elevShooterTalon.setInverted(false);
+			elevShooterTalon.setInverted(true);
 			elevShooterTalon.setSensorPhase(false);
 	
 			elevShooterTalon.enableVoltageCompensation(true);

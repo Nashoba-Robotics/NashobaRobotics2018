@@ -23,7 +23,7 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				//addParallel(new PrepareCubeIntakeCommand());
+				addParallel(new PrepareCubeIntakeCommand());
 				
 				addParallel(new AnonymousCommandGroup() {
 					
@@ -43,7 +43,7 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 
 						});
 						
-						//addSequential(new EnableLimelightCommand(true));
+						addSequential(new EnableLimelightCommand(true));
 						
 						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
 								FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_1).negate(),
@@ -108,9 +108,9 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 			}
 		});
 		
-		//addSequential(new DriveToCubeCommandAdvanced());
+		addSequential(new DriveToCubeCommandAdvanced());
 		
-		//addSequential(new EnableLimelightCommand(false));
+		addSequential(new EnableLimelightCommand(false));
 		
 	}
 

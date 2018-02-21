@@ -13,7 +13,7 @@ import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 
 public class DriveToCubeCommandAdvanced extends NRCommand {
 	
-	public Angle STOP_LIMELIGHT_TRACKING_ANGLE = Angle.ZERO; //TODO; Find STOP_LIMELIGHT_TRACKING_ANGLE
+	public Angle STOP_LIMELIGHT_TRACKING_ANGLE = new Angle(-15, Angle.Unit.DEGREE); //TODO; Find STOP_LIMELIGHT_TRACKING_ANGLE
 	
 	private boolean stoppedTracking = false;
 	private boolean hasStartedForward = false;
@@ -33,7 +33,7 @@ public class DriveToCubeCommandAdvanced extends NRCommand {
 		stoppedTracking = false;
 		new EnableLimelightCommand(true).start();
 		IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS, IntakeRollers.VEL_PERCENT_LOW_INTAKE_ROLLERS);
-		Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
+		Drive.getInstance().disable();
 		gyro.reset();
 		
 		if ((IntakeElevator.getInstance().getPosition().sub(IntakeElevator.INTAKE_HEIGHT)).abs().greaterThan(IntakeElevator.PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR)) {
@@ -47,6 +47,9 @@ public class DriveToCubeCommandAdvanced extends NRCommand {
 	protected void onExecute() {
 		
 		double headingAdjustment;
+		
+		System.out.println("Horiz Off: " + LimelightNetworkTable.getInstance().getHorizOffset().get(Angle.Unit.DEGREE));
+		System.out.println("Vert Off: " + LimelightNetworkTable.getInstance().getVertOffsetAngle().get(Angle.Unit.DEGREE));
 		
 		if (stoppedTracking) {
 			headingAdjustment = gyro.getTurnValue(Drive.kP_thetaOneD, false);

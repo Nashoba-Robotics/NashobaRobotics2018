@@ -18,7 +18,7 @@ public class IntakeRollersStopCommand extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return true;
+		return false;
 	}
 	
 }
