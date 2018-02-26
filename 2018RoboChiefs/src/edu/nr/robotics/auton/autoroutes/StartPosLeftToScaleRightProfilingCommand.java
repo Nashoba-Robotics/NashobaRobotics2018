@@ -11,7 +11,7 @@ import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorPositionCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
-import edu.nr.robotics.subsystems.elevatorShooter.ShootCommand;
+import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class StartPosLeftToScaleRightProfilingCommand extends CommandGroup {
@@ -47,7 +47,7 @@ public class StartPosLeftToScaleRightProfilingCommand extends CommandGroup {
 
 		});
 		
-		addSequential(new ShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
+		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
 	}
 	
 }
