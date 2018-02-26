@@ -80,7 +80,7 @@ public class DriveToCubeCommandAdvanced extends NRCommand {
 			hasStartedForward = true;
 		}
 		
-		if (hasStartedForward = true) {
+		if (hasStartedForward == true) {
 			outputLeft += Drive.DRIVE_TO_CUBE_PERCENT;
 			outputRight += Drive.DRIVE_TO_CUBE_PERCENT;
 		}

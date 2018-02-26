@@ -38,11 +38,11 @@ public class DriveJoystickCommand extends JoystickCommand {
 				gyroCorrection.clearInitialValue();
 			}
 			
-			/*if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
+			if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
 				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 			} else {
 				Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier(), hValue * OI.getInstance().getDriveSpeedMultiplier());
-			}*/
+			}
 									
 			break;
 		

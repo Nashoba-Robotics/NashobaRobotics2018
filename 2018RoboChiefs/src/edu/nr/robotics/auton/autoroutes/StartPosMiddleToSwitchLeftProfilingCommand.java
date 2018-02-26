@@ -9,7 +9,7 @@ import edu.nr.robotics.subsystems.drive.DriveCurrentCommand;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
-import edu.nr.robotics.subsystems.elevator.ElevatorPositionCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ShootCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -23,7 +23,7 @@ public class StartPosMiddleToSwitchLeftProfilingCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new ElevatorPositionCommand(Elevator.SWITCH_HEIGHT_ELEVATOR));
+				addParallel(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 				
 				addParallel(new AnonymousCommandGroup() {
 					

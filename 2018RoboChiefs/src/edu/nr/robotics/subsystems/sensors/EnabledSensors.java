@@ -9,11 +9,6 @@ public class EnabledSensors {
 	public static DigitalInput intakeSensorLeft = new DigitalInput(RobotMap.INTAKE_SENSOR_PORT_LEFT);
 	public static DigitalInput intakeSensorRight = new DigitalInput(RobotMap.INTAKE_SENSOR_PORT_RIGHT);
 	public static DigitalInput elevatorSensor = new DigitalInput(RobotMap.ELEVATOR_SENSOR_PORT);
-	public static DigitalInput portalSensorLeft1 = new DigitalInput(RobotMap.PORTAL_SENSOR_LEFT_1_PORT);
-	public static DigitalInput portalSensorLeft2 = new DigitalInput(RobotMap.PORTAL_SENSOR_LEFT_2_PORT);
-	public static DigitalInput portalSensorRight1 = new DigitalInput(RobotMap.PORTAL_SENSOR_RIGHT_1_PORT);
-	public static DigitalInput portalSensorRight2 = new DigitalInput(RobotMap.PORTAL_SENSOR_RIGHT_2_PORT);
-	public static DigitalInput cubeHandlerSensor = new DigitalInput(RobotMap.CUBE_HANDLER_SENSOR_PORT);
 	public static DigitalInput floorSensor = new DigitalInput(RobotMap.FLOOR_SENSOR_PORT);
 	
 	public static boolean limelightEnabled = false;
@@ -21,7 +16,5 @@ public class EnabledSensors {
 	public static volatile boolean floorSensorEnabled = false;
 	
 	public static Counter floorCounter = new Counter(floorSensor);
-	
-	public static boolean portalReached = false;
-	
+		
 }

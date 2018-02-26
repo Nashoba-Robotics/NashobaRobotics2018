@@ -2,23 +2,22 @@ package edu.nr.robotics.subsystems.climber;
 
 import edu.nr.lib.commandbased.NRCommand;
 
-public class ClimberCurrentCommand extends NRCommand {
+public class ClimberPercentCommand extends NRCommand {
 	
-	private double current;
-	
-	public ClimberCurrentCommand(double current) {
+	public ClimberPercentCommand() {
 		super(Climber.getInstance());
-		this.current = current;
+		
 	}
 	
 	@Override
 	protected void onStart() {
-		Climber.getInstance().setCurrent(current);
+		Climber.getInstance().setCoastMode(false);
+		Climber.getInstance().setMotorSpeedPercent(Climber.CLIMB_PERCENT);
 	}
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return false;
+		return true;
 	}
 
 }

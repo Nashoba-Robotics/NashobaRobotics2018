@@ -30,7 +30,6 @@ import edu.nr.lib.units.Time;
 import edu.nr.robotics.OI;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
-import edu.nr.robotics.subsystems.sensors.RunSensors;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -363,8 +362,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			
 			LimelightNetworkTable.getInstance();
 			
-			//new RunSensors();
-			
 		}
 	}
 	
@@ -583,14 +580,14 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		}
 	}
 	
-	public void SetVoltageRamp(Time time) {
+	public void setVoltageRamp(Time time) {
 		leftDrive.configClosedloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 		rightDrive.configClosedloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 		leftDrive.configOpenloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 		rightDrive.configOpenloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	}
 	
-	public void SetVoltageRampH(Time time) {
+	public void setVoltageRampH(Time time) {
 		hDrive.configClosedloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 		hDrive.configOpenloopRamp(time.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	}

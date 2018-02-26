@@ -14,7 +14,7 @@ public class AutoScaleLoopCommand extends CommandGroup {
 
 	public AutoScaleLoopCommand() {
 		
-		/*addSequential(new ConditionalCommand(new ScaleToBlockProfilingCommand(1)) {
+		addSequential(new ConditionalCommand(new ScaleToBlockProfilingCommand(1)) {
 
 			@Override
 			protected boolean condition() {
@@ -40,7 +40,7 @@ public class AutoScaleLoopCommand extends CommandGroup {
 										|| Robot.getInstance().selectedBlocks == AllianceBlocks.both));
 			}
 
-		});*/
+		});
 
 		addSequential(new ConditionalCommand(new ScaleToBlockProfilingCommand(2)) {
 

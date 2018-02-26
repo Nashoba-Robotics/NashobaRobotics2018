@@ -8,7 +8,7 @@ public class IntakeRollersStopCommand extends NRCommand {
 	 * Sets motor speed to 0
 	 */
 	public IntakeRollersStopCommand() {
-		
+		super(IntakeRollers.getInstance());
 	}
 	
 	@Override
@@ -18,7 +18,7 @@ public class IntakeRollersStopCommand extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return false;
+		return true;
 	}
 	
 }

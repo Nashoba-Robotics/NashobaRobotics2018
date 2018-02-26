@@ -27,6 +27,6 @@ public class IntakeRollersVelocityCommand extends NRCommand {
 	@Override
 	protected boolean isFinishedNR() {
 		//return EnabledSensors.intakeSensorLeft.get() && EnabledSensors.intakeSensorRight.get();
-		return false;
+		return true;
 	}
 }

@@ -23,10 +23,14 @@ public class IntakeElevatorJoystickCommand extends JoystickCommand {
 	@Override
 	protected void onExecute() {
 		if (!OI.getInstance().isIntakeElevatorNonZero()) {
-			if (!EnabledSensors.intakeSensorLeft.get() && !EnabledSensors.intakeSensorRight.get())
-				IntakeElevator.getInstance().setMotorSpeedRaw(0.129);
+			//if (IntakeElevator.getInstance().getPosition().lessThan(new Distance(1, Distance.Unit.INCH))) {
+			if (IntakeElevator.getInstance().getPosition().lessThan(IntakeElevator.PORTAL_HEIGHT.mul(0.5))) {
+				IntakeElevator.getInstance().setMotorPercentRaw(0);
+			}
+			else if (!EnabledSensors.intakeSensorLeft.get() && !EnabledSensors.intakeSensorRight.get())
+				IntakeElevator.getInstance().setMotorPercentRaw(IntakeElevator.REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP);
 			else {
-				IntakeElevator.getInstance().setMotorSpeedRaw(0.09);
+				IntakeElevator.getInstance().setMotorPercentRaw(IntakeElevator.REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN);
 			}
 		} else if (OI.getInstance().getIntakeElevatorJoystickValue() > 0) {
 			double motorPercent = OI.getInstance().getIntakeElevatorJoystickValue();

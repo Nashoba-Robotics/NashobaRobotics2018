@@ -149,15 +149,6 @@ public class BlockToScaleProfilingCommand extends CommandGroup {
 		
 						});
 						
-						/*addSequential(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.PIVOT_POINT_TO_SCALE_DIAGONAL, Distance.ZERO,
-								Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
-		
-									@Override
-									protected boolean condition() {
-										return block == 1 || block == 6;
-									}
-						});*/
-						
 						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
 								FieldMeasurements.PIVOT_POINT_TO_CUBE_1, Drive.MAX_PROFILE_TURN_PERCENT)) {
 		
@@ -200,9 +191,7 @@ public class BlockToScaleProfilingCommand extends CommandGroup {
 						
 						addSequential(new ConditionalCommand(
 								new EnableMotionProfile(FieldMeasurements.PLATFORM_ZONE_TO_SCALE_DIAGONAL, Distance.ZERO,
-										Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)/*,
-								new EnableMotionProfile(FieldMeasurements.PIVOT_POINT_TO_SCALE_DIAGONAL, Distance.ZERO,
-										Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)*/) {
+										Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
 		
 							@Override
 							protected boolean condition() {

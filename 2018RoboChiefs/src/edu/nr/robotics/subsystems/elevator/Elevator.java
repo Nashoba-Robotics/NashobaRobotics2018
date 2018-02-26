@@ -50,6 +50,8 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	public static final Acceleration MAX_ACCEL_ELEVATOR_UP = new Acceleration(20, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	public static final Acceleration MAX_ACCEL_ELEVATOR_DOWN = Acceleration.ZERO; //TODO: Find MAX_ACCEL_ELEVATOR_DOWN
 
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0;
 	
 	/**
 	 * The minimum voltage needed to move the elevator
@@ -197,7 +199,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	public static final Distance SCALE_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find AUTO_HEIGHT_ELEVATOR
 	public static final Distance SWITCH_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find SCORE_LOW_HEIGHT_ELEVATOR
 	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO;
-
+	
 	private Speed velSetpoint = Speed.ZERO;
 	private Distance posSetpoint = Distance.ZERO;
 
@@ -240,9 +242,9 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 			elevTalon.enableVoltageCompensation(true);
 			elevTalon.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL_ELEVATOR, DEFAULT_TIMEOUT);
 	
-			//elevTalon.enableCurrentLimit(true);
-			//elevTalon.configPeakCurrentLimit(PEAK_CURRENT_ELEVATOR, DEFAULT_TIMEOUT);
-			//elevTalon.configPeakCurrentDuration(PEAK_CURRENT_DURATION_ELEVATOR, DEFAULT_TIMEOUT);
+			elevTalon.enableCurrentLimit(true);
+			elevTalon.configPeakCurrentLimit(PEAK_CURRENT_ELEVATOR, DEFAULT_TIMEOUT);
+			elevTalon.configPeakCurrentDuration(PEAK_CURRENT_DURATION_ELEVATOR, DEFAULT_TIMEOUT);
 			//elevTalon.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT_ELEVATOR, DEFAULT_TIMEOUT);
 	
 			elevTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
@@ -379,8 +381,13 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 				elevTalon.configMotionAcceleration((int) MAX_ACCEL_ELEVATOR_DOWN.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
 						Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 						DEFAULT_TIMEOUT);
-				
 			}
+		}
+	}
+	
+	public void setMotorPercentRaw(double percent) {
+		if (elevTalon != null) {
+			elevTalon.set(ControlMode.PercentOutput, percent);
 		}
 	}
 
@@ -415,7 +422,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 										Time.Unit.HUNDRED_MILLISECOND),
 						DEFAULT_TIMEOUT);
 		
-				if (elevTalon.getControlMode() == ControlMode.PercentOutput) {
+				if (EnabledSubsystems.ELEVATOR_DUMB_ENABLED) {
 					elevTalon.set(ControlMode.PercentOutput, velSetpoint.div(MAX_SPEED_ELEVATOR_UP));
 				} else {
 					elevTalon.set(ControlMode.Velocity,
@@ -433,7 +440,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 										Time.Unit.HUNDRED_MILLISECOND),
 						DEFAULT_TIMEOUT);
 		
-				if (elevTalon.getControlMode() == ControlMode.PercentOutput) {
+				if (EnabledSubsystems.ELEVATOR_DUMB_ENABLED) {
 					elevTalon.set(ControlMode.PercentOutput, velSetpoint.div(MAX_SPEED_ELEVATOR_DOWN));
 				} else {
 					elevTalon.set(ControlMode.Velocity,

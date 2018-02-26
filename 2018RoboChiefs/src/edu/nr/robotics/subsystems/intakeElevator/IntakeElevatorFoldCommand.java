@@ -13,7 +13,9 @@ public class IntakeElevatorFoldCommand extends NRCommand {
 	
 	@Override
 	protected void onStart() {
-		IntakeElevator.getInstance().setMotorSpeedPercent(0.6);
+		IntakeElevator.getInstance().setMotorSpeedPercent(IntakeElevator.PROFILE_VEL_PERCENT_INTAKE_ELEVATOR);
+		folding = false;
+		foldFinished = false;
 	}
 	
 	@Override
@@ -22,7 +24,7 @@ public class IntakeElevatorFoldCommand extends NRCommand {
 			folding = true;
 		}
 		
-		if((IntakeElevator.getInstance().getCurrent() <= IntakeElevator.FOLD_FINISHED_CURRENT) && folding) {
+		if(folding && (IntakeElevator.getInstance().getCurrent() <= IntakeElevator.FOLD_FINISHED_CURRENT)) {
 			foldFinished = true;
 		}
 		

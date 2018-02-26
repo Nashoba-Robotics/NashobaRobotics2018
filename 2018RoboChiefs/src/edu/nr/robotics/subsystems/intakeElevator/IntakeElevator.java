@@ -49,8 +49,8 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	/**
 	 * The acutal real min move voltage of the intake elevator
 	 */
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0;
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0.127;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0.09;
 	
 	/**
 	 * The theoretical minimum voltage needed to move the intake elevator
@@ -120,7 +120,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	/**
 	 * Time multiplier for the ramp of the ramped trajectory
 	 */
-	public static final double RAMPED_PROFILE_TIME_MULT_INTAKE_ELEVATOR = 100; //TODO: get
+	public static final double RAMPED_PROFILE_TIME_MULT_INTAKE_ELEVATOR = 1000;
 	
 	/**
 	 * The current values of the intake elevator
@@ -407,7 +407,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 		}
 	}
 	
-	public void setMotorSpeedRaw(double percent) {
+	public void setMotorPercentRaw(double percent) {
 		if (intakeElevTalon != null) 
 			intakeElevTalon.set(ControlMode.PercentOutput, percent);
 	}
@@ -430,7 +430,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 									Time.Unit.HUNDRED_MILLISECOND),
 					DEFAULT_TIMEOUT);
 	
-				if (intakeElevTalon.getControlMode() == ControlMode.PercentOutput) {
+				if (EnabledSubsystems.INTAKE_ELEVATOR_DUMB_ENABLED) {
 					intakeElevTalon.set(intakeElevTalon.getControlMode(), velSetpoint.div(MAX_SPEED_INTAKE_ELEVATOR_UP));
 				} else {
 					intakeElevTalon.set(intakeElevTalon.getControlMode(),
@@ -445,7 +445,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 									Time.Unit.HUNDRED_MILLISECOND),
 					DEFAULT_TIMEOUT);
 	
-				if (intakeElevTalon.getControlMode() == ControlMode.PercentOutput) {
+				if (EnabledSubsystems.INTAKE_ELEVATOR_DUMB_ENABLED) {
 					intakeElevTalon.set(intakeElevTalon.getControlMode(), velSetpoint.div(MAX_SPEED_INTAKE_ELEVATOR_DOWN));
 				} else {
 					intakeElevTalon.set(intakeElevTalon.getControlMode(),

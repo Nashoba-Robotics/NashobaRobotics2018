@@ -7,6 +7,6 @@ public class IntakeElevatorProfileSmartDashboardCommandGroup extends CommandGrou
 	public IntakeElevatorProfileSmartDashboardCommandGroup() {
 		
 		addSequential(new IntakeElevatorProfileBasicSmartDashboardCommand());
-		//addSequential(new IntakeElevatorPositionSmartDashboardCommand());
+		addSequential(new IntakeElevatorPositionSmartDashboardCommand());
 	}
 }

@@ -9,17 +9,21 @@ import edu.nr.robotics.multicommands.ClimbButtonCommand;
 import edu.nr.robotics.multicommands.CubeFeedIntakeRollersToElevatorCommand;
 import edu.nr.robotics.multicommands.DriveToCubeButtonCommand;
 import edu.nr.robotics.multicommands.PrepareScorePortalCommand;
-import edu.nr.robotics.multicommands.ScorePortalCommand;
-import edu.nr.robotics.subsystems.climber.ClimbBasicPercentStopCommand;
+import edu.nr.robotics.subsystems.climber.ClimberCoastCommand;
+import edu.nr.robotics.subsystems.climber.ClimberStopCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
+import edu.nr.robotics.subsystems.drive.DriveDumbToggleCommand;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
+import edu.nr.robotics.subsystems.elevator.Elevator;
+import edu.nr.robotics.subsystems.elevator.ElevatorBottomDropCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ShootCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorFoldCommand;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorHandlerCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorMoveBasicCommand;
-import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileBasicCommand;
-import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
 import edu.nr.robotics.subsystems.sensors.EnableFloorSensorCommand;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -37,12 +41,13 @@ public class OI implements SmartDashboardSource {
 	private static final int FOLD_INTAKE_BUTTON_NUMBER = 4;
 	private static final int INTAKE_HANDLER_HEIGHT_BUTTON_NUMBER = 9;
 	private static final int INTAKE_BOTTOM_HEIGHT_BUTTON_NUMBER = 6;
-	private static final int INTAKE_PORTAL_HEIGHT_BUTTON_NUMBER = 8;
-	//private static final int CUBE_HANDLER_BUTTON_NUMBER = -1;
+	
 	private static final int INTAKE_ROLLERS_BUTTON_NUMBER = -1;
 	private static final int INTAKE_ROLLERS_STOP_BUTTON_NUMBER = -1;
+	private static final int INTAKE_ROLLERS_PORTAL_BUTTON_NUMBER = -1;
+	private static final int INTAKE_ROLLERS_PUKE_BUTTON_NUMBER = -1;
+	
 	private static final int INTAKE_TO_ELEVATOR_BUTTON_NUMBER = 7;
-	//private static final int INTAKE_TO_PORTAL_BUTTON_NUMBER = -1;
 	private static final int ELEVATOR_CLIMB_HEIGHT_BUTTON_NUMBER = 6;
 	private static final int ELEVATOR_SCALE_HEIGHT_BUTTON_NUMBER = 5;
 	private static final int ELEVATOR_SWITCH_HEIGHT_BUTTON_NUMBER = 3;
@@ -54,16 +59,15 @@ public class OI implements SmartDashboardSource {
 	private static final int ELEVATOR_DOWN_BUTTON_NUMBER = 10;
 	
 	private static final int ACQUIRE_CUBE_BUTTON_NUMBER = 12;
-	private static final int SCORE_IN_PORTAL_BUTTON_NUMBER = 9;
 	private static final int HALF_TURN_BUTTON_NUMBER = 2;
 	private static final int QUARTER_TURN_LEFT_BUTTON_NUMBER = 3;
 	private static final int QUARTER_TURN_RIGHT_BUTTON_NUMBER = 4;
-	private static final int DUMB_DRIVE_BUTTON_NUMBER = -1;
+	private static final int DUMB_DRIVE_BUTTON_NUMBER = 10;
 	
 	private static final int ENABLE_SCALE_STOPPING_BUTTON_NUMBER = 1;
-	private static final int RESET_GYRO_BUTTON_NUMBER = 13;
+	private static final int RESET_GYRO_BUTTON_NUMBER = 8;
 	private static final int CLIMB_BUTTON_NUMBER = 2;
-	private static final int CLIMB_COAST_BUTTON_NUMBER= -1;
+	private static final int CLIMB_COAST_BUTTON_NUMBER= 10;
 	
 	private static final int TEST_SEQUENCE_BUTTON_NUMBER = -1;
 	
@@ -100,7 +104,7 @@ public class OI implements SmartDashboardSource {
 		operatorRight = new Joystick(STICK_OPERATOR_RIGHT);
 
 		elevatorStick = operatorRight; //TODO: find what it is
-		intakeElevatorStick = operatorRight;
+		intakeElevatorStick = operatorLeft;
 		
 		initDriveLeft();
 		initDriveRight();
@@ -113,39 +117,40 @@ public class OI implements SmartDashboardSource {
 	
 	public void initDriveLeft() {
 		
-		//new JoystickButton(driveLeft, DUMB_DRIVE_BUTTON_NUMBER).whenPressed(new DriveDumbToggleCommand());
+		new JoystickButton(driveLeft, DUMB_DRIVE_BUTTON_NUMBER).whenPressed(new DriveDumbToggleCommand());
 		
 		new JoystickButton(driveLeft, ENABLE_SCALE_STOPPING_BUTTON_NUMBER).whenPressed(new EnableFloorSensorCommand(true));
 		new JoystickButton(driveLeft, ENABLE_SCALE_STOPPING_BUTTON_NUMBER).whenReleased(new EnableFloorSensorCommand(false));
-
-		new JoystickButton(driveLeft, RESET_GYRO_BUTTON_NUMBER).whenPressed(new ResetGyroCommand());
 		
 		//new JoystickButton(driveLeft, TEST_SEQUENCE_BUTTON_NUMBER).whenPressed(new SystemTestSequenceCommand());
 		
+		new JoystickButton(driveLeft, CLIMB_COAST_BUTTON_NUMBER).whenPressed(new ClimberCoastCommand(true));
 	}
 	
 	public void initDriveRight() {
 		
+		new JoystickButton(driveRight, RESET_GYRO_BUTTON_NUMBER).whenPressed(new ResetGyroCommand());
+		
 		new JoystickButton(driveRight, HALF_TURN_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(), new Angle(180, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT));
 		new JoystickButton(driveRight, QUARTER_TURN_LEFT_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(), new Angle(-90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT));
 		new JoystickButton(driveRight, QUARTER_TURN_RIGHT_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(), new Angle(90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT));
-	
-		//new JoystickButton(driveRight, CLIMB_COAST_BUTTON_NUMBER).whenPressed(new ClimberCoastCommand(true));
 	}
 	
 	public void initOperatorLeft() {
 	
 		new JoystickButton(operatorLeft, FOLD_INTAKE_BUTTON_NUMBER).whenPressed(new IntakeElevatorFoldCommand());	
-		new JoystickButton(operatorLeft, INTAKE_HANDLER_HEIGHT_BUTTON_NUMBER).whenPressed(new IntakeElevatorProfileBasicCommand(IntakeElevator.HANDLER_HEIGHT, IntakeElevator.PROFILE_VEL_PERCENT_INTAKE_ELEVATOR, IntakeElevator.PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR));
-		new JoystickButton(operatorLeft, INTAKE_BOTTOM_HEIGHT_BUTTON_NUMBER).whenPressed(new IntakeElevatorMoveBasicCommand(IntakeElevator.INTAKE_HEIGHT, IntakeElevator.PROFILE_VEL_PERCENT_INTAKE_ELEVATOR));
-		new JoystickButton(operatorLeft, INTAKE_PORTAL_HEIGHT_BUTTON_NUMBER).whenPressed(new PrepareScorePortalCommand());
+		new JoystickButton(operatorLeft, INTAKE_HANDLER_HEIGHT_BUTTON_NUMBER).whenPressed(new IntakeElevatorHandlerCommand());
+		new JoystickButton(operatorLeft, INTAKE_BOTTOM_HEIGHT_BUTTON_NUMBER).whenPressed(new IntakeElevatorBottomCommand());
+		//new JoystickButton(operatorLeft, INTAKE_PORTAL_HEIGHT_BUTTON_NUMBER).whenPressed(new PrepareScorePortalCommand());
+
 		/*
 		//new JoystickButton(operatorLeft, CUBE_HANDLER_BUTTON_NUMBER).whenPressed(new CubeHandlerVelocityCommand(CubeHandler.VEL_PERCENT_CUBE_HANDLER));
 		//new JoystickButton(operatorLeft, CUBE_HANDLER_BUTTON_NUMBER).whenReleased(new CubeHandlerStopCommand());
 		
 		new JoystickButton(operatorLeft, INTAKE_ROLLERS_BUTTON_NUMBER).whenPressed(new IntakeRollersIntakeCommand());
-		
 		new JoystickButton(operatorLeft, INTAKE_ROLLERS_STOP_BUTTON_NUMBER).whenPressed(new IntakeRollersStopCommand());
+		new JoystickButton(operatorLeft, INTAKE_ROLLERS_PORTAL_BUTTON_NUMBER).whenPressed(new IntakeRollersReverseCommand(IntakeRollers.VEL_PERCENT_PORTAL_INTAKE_ROLLERS));
+		new JoystickButton(operatorLeft, INTAKE_ROLLERS_PUKE_BUTTON_NUMBER).whenPressed(new IntakeRollersReverseCommand(IntakeRollers.VEL_PERCENT_PUKE_INTAKE_ROLLERS));
 		
 		new ConditionalDoubleJoystickButton(intakeToElevatorButton, elevatorScaleHeightButton, Type.And,
 				!EnabledSensors.intakeSensorLeft.get() && !EnabledSensors.intakeSensorRight.get()).whenPressed(new PrepareScoreScaleCommand());;
@@ -158,34 +163,32 @@ public class OI implements SmartDashboardSource {
 		new ConditionalJoystickButton(elevatorScaleHeightButton, !intakeToElevatorButton.get()).whenPressed(new ElevatorPositionCommand(Elevator.SCALE_HEIGHT_ELEVATOR));
 		new ConditionalJoystickButton(elevatorSwitchHeightButton, !intakeToElevatorButton.get()).whenPressed(new ElevatorPositionCommand(Elevator.SWITCH_HEIGHT_ELEVATOR));
 		*/
+		
 		new JoystickButton(operatorLeft, SHOOT_CUBE_BUTTON_NUMBER).whenPressed(new ShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
 		new JoystickButton(operatorLeft, PLACE_CUBE_BUTTON_NUMBER).whenPressed(new ShootCommand(ElevatorShooter.VEL_PERCENT_LOW_ELEVATOR_SHOOTER));
 		
-		new JoystickButton(operatorLeft,  11).whenPressed(new IntakeRollersIntakeCommand()); //temporary
 	}
 	
 	public void initOperatorRight() {
 		new JoystickButton(operatorRight, CANCEL_ALL_BUTTON_NUMBER).whenPressed(new CancelAllCommand());
 		
 		new JoystickButton(operatorRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenPressed(new DriveToCubeButtonCommand(true));
-		/*
-		new JoystickButton(operatorRight, ELEVATOR_UP_BUTTON_NUMBER).whenPressed(new ElevatorDeltaPositionCommand(ELEVATOR_BUTTON_HEIGHT));
-		new JoystickButton(operatorRight, ELEVATOR_DOWN_BUTTON_NUMBER).whenPressed(new ElevatorDeltaPositionCommand(ELEVATOR_BUTTON_HEIGHT.negate()));
-		*/
-		new JoystickButton(operatorRight, INTAKE_TO_ELEVATOR_BUTTON_NUMBER).whenPressed(new CubeFeedIntakeRollersToElevatorCommand());
-		/*
-		new JoystickButton(operatorRight, ELEVATOR_UP_BUTTON_NUMBER).whenPressed(new ElevatorDeltaPositionCommand(ELEVATOR_BUTTON_HEIGHT));
-		new JoystickButton(operatorRight, ELEVATOR_DOWN_BUTTON_NUMBER).whenPressed(new ElevatorDeltaPositionCommand(ELEVATOR_BUTTON_HEIGHT.negate()));
 		
-		new JoystickButton(operatorRight, ELEVATOR_CLIMB_HEIGHT_BUTTON_NUMBER).whenPressed(new ElevatorPositionCommand(Elevator.CLIMB_HEIGHT_ELEVATOR));
-		new JoystickButton(operatorRight, ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER).whenPressed(new ElevatorPositionCommand(Elevator.BOTTOM_HEIGHT_ELEVATOR));
+		new JoystickButton(operatorRight, ELEVATOR_UP_BUTTON_NUMBER).whenPressed(new ElevatorProfileCommandGroup(ELEVATOR_BUTTON_HEIGHT, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
+		new JoystickButton(operatorRight, ELEVATOR_DOWN_BUTTON_NUMBER).whenPressed(new ElevatorProfileCommandGroup(ELEVATOR_BUTTON_HEIGHT.negate(), Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
+		
+		new JoystickButton(operatorRight, INTAKE_TO_ELEVATOR_BUTTON_NUMBER).whenPressed(new CubeFeedIntakeRollersToElevatorCommand());
+		
+		//new JoystickButton(operatorRight, ELEVATOR_UP_BUTTON_NUMBER).whenPressed(new ElevatorDeltaPositionCommand(ELEVATOR_BUTTON_HEIGHT));
+		//new JoystickButton(operatorRight, ELEVATOR_DOWN_BUTTON_NUMBER).whenPressed(new ElevatorDeltaPositionCommand(ELEVATOR_BUTTON_HEIGHT.negate()));
+		
+		new JoystickButton(operatorRight, ELEVATOR_CLIMB_HEIGHT_BUTTON_NUMBER).whenPressed(new ElevatorProfileCommandGroup(Elevator.CLIMB_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
+		new JoystickButton(operatorRight, ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER).whenPressed(new ElevatorBottomDropCommand());
 		elevatorScaleHeightButton = new JoystickButton(operatorRight, ELEVATOR_SCALE_HEIGHT_BUTTON_NUMBER);
-		elevatorSwitchHeightButton = new JoystickButton(operatorRight, ELEVATOR_SWITCH_HEIGHT_BUTTON_NUMBER);*/
-
-		new JoystickButton(operatorRight, SCORE_IN_PORTAL_BUTTON_NUMBER).whenPressed(new ScorePortalCommand());
+		elevatorSwitchHeightButton = new JoystickButton(operatorRight, ELEVATOR_SWITCH_HEIGHT_BUTTON_NUMBER);
 		
 		new JoystickButton(operatorRight, CLIMB_BUTTON_NUMBER).whenPressed(new ClimbButtonCommand());
-		new JoystickButton(operatorRight, CLIMB_BUTTON_NUMBER).whenReleased(new ClimbBasicPercentStopCommand());
+		new JoystickButton(operatorRight, CLIMB_BUTTON_NUMBER).whenReleased(new ClimberStopCommand());
 		
 	}
 	

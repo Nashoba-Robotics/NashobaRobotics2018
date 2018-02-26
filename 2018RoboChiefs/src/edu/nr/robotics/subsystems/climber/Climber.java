@@ -27,46 +27,20 @@ public class Climber extends NRSubsystem {
 	
 	public static final Speed MAX_SPEED_CLIMBER = Speed.ZERO;//TODO: Find max speed of the climber
 	
-	public static final double CLIMB_PERCENT = 0.95; //maybe do stuff
+	public static final double CLIMB_PERCENT = 0.95;
 	
 	/**
 	 * The voltage ramp rate of the climber. Voltage ramp rate is time it takes
 	 * to go from 0V to 12V
 	 */
-	public static Time VOLTAGE_RAMP_RATE_CLIMBER = Time.ZERO; // TODO: Test for climber voltage ramp rate
-	
-	/**
-	 * Current PID values for the climber
-	 */
-	public static final double F_CURRENT_CLIMBER = 0;
-	public static double P_CURRENT_CLIMBER = 0; // TODO: Find climber current PID values
-	public static double I_CURRENT_CLIMBER = 0;
-	public static double D_CURRENT_CLIMBER = 0;
-	
-	/**
-	 * Position PID values for the climber
-	 */
-	public static double F_POS_CLIMBER = 0;
-	public static double P_POS_CLIMBER = 0; //TODO: Find climber position FPID values
-	public static double I_POS_CLIMBER = 0;
-	public static double D_POS_CLIMBER = 0; 
-	
-	/**
-	 * The default current of the climber
-	 */
-	public static double DEFAULT_CLIMBER_CURRENT = 0; //TODO: Find default climber current
-	
-	/**
-	 * The current the climber needs to draw for the elevator to start moving
-	 */
-	public static double MIN_MOVE_ELEV_CURRENT = 0; //TODO: Find current required to start moving the elevator
+	public static Time VOLTAGE_RAMP_RATE_CLIMBER = new Time(0.05, Time.Unit.SECOND);
 	
 	/**
 	 * The current values of the climber
 	 */
-	public static final int PEAK_CURRENT_CLIMBER = 0;// TODO: Find PEAK_CURRENT_CLIMBER
-	public static final int PEAK_CURRENT_DURATION_CLIMBER = 0; // TODO: Find PEAK_CURRENT_DURATION_CLIMBER
-	public static final int CONTINUOUS_CURRENT_LIMIT_CLIMBER = 0; // TODO: Find CONTINUOUS_CURRENT_LIMIT_CLIMBER
+	public static final int PEAK_CURRENT_CLIMBER = 80; 
+	public static final int PEAK_CURRENT_DURATION_CLIMBER = 1000; //In milliseconds
+	public static final int CONTINUOUS_CURRENT_LIMIT_CLIMBER = 40;
 	
 	/**
 	 * The rate of velocity measurements on the climber encoder
@@ -91,7 +65,7 @@ public class Climber extends NRSubsystem {
 	public static final NeutralMode NEUTRAL_MODE_CLIMBER = NeutralMode.Brake;
 	
 	/**
-	 * The PID type of the climber. 0 = Primary, 1 = Cascade
+	 * Type of PID. 0 = primary. 1 = cascade
 	 */
 	public static final int PID_TYPE = 0;
 	
@@ -99,35 +73,12 @@ public class Climber extends NRSubsystem {
 	 * The default timeout of the climber functions in ms
 	 */
 	public static final int DEFAULT_TIMEOUT = 0;
-	
-	/**
-	 * The PID slot numbers
-	 */
-	public static final int CURRENT_SLOT = 0;
-	public static final int POS_SLOT = 0;
-	
-	private double currentSetpoint = 0;
-	
+		
 	private Climber() {
 		if (EnabledSubsystems.CLIMBER_ENABLED) {
 			climberTalon = CTRECreator.createMasterTalon(RobotMap.CLIMBER_TALON);
 			
-			if (EnabledSubsystems.CLIMBER_DUMB_ENABLED) {
-				climberTalon.set(ControlMode.PercentOutput, 0);
-			} else {
-				climberTalon.set(ControlMode.Current, 0);
-			}
-				
 			climberTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);
-			climberTalon.config_kF(CURRENT_SLOT, F_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
-			climberTalon.config_kP(CURRENT_SLOT, P_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
-			climberTalon.config_kI(CURRENT_SLOT, I_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
-			climberTalon.config_kD(CURRENT_SLOT, D_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
-			
-			climberTalon.config_kF(POS_SLOT, F_POS_CLIMBER, DEFAULT_TIMEOUT);
-			climberTalon.config_kP(POS_SLOT, P_POS_CLIMBER, DEFAULT_TIMEOUT);
-			climberTalon.config_kI(POS_SLOT, I_POS_CLIMBER, DEFAULT_TIMEOUT);
-			climberTalon.config_kD(POS_SLOT, D_POS_CLIMBER, DEFAULT_TIMEOUT);
 			
 			climberTalon.setNeutralMode(NEUTRAL_MODE_CLIMBER);
 			climberTalon.setInverted(false);
@@ -136,10 +87,10 @@ public class Climber extends NRSubsystem {
 			climberTalon.enableVoltageCompensation(true);
 			climberTalon.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL_CLIMBER, DEFAULT_TIMEOUT);
 	
-			//climberTalon.enableCurrentLimit(true);
-			//climberTalon.configPeakCurrentLimit(PEAK_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
-			//climberTalon.configPeakCurrentDuration(PEAK_CURRENT_DURATION_CLIMBER, DEFAULT_TIMEOUT);
-			//climberTalon.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT_CLIMBER, DEFAULT_TIMEOUT);
+			climberTalon.enableCurrentLimit(true);
+			climberTalon.configPeakCurrentLimit(PEAK_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
+			climberTalon.configPeakCurrentDuration(PEAK_CURRENT_DURATION_CLIMBER, DEFAULT_TIMEOUT);
+			climberTalon.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT_CLIMBER, DEFAULT_TIMEOUT);
 	
 			climberTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			climberTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
@@ -206,31 +157,6 @@ public class Climber extends NRSubsystem {
 		return 0;
 	}
 	
-	/**
-	 * Sets the raw position of the climber
-	 * 
-	 * @param pos
-	 */
-	public void setPosition(Distance pos) {
-		if(climberTalon != null) {
-			climberTalon.selectProfileSlot(POS_SLOT, DEFAULT_TIMEOUT);
-			climberTalon.set(ControlMode.Position, pos.get(Distance.Unit.MAGNETIC_ENCODER_TICK_CLIMBER));
-		}
-	}
-	
-	/**
-	 * @param current 
-	 * 			The amps to set the climberTalon to
-	 */
-	public void setCurrent(double current) {
-		if (climberTalon != null) {
-			climberTalon.selectProfileSlot(CURRENT_SLOT, DEFAULT_TIMEOUT);
-			currentSetpoint = current;
-			//System.out.println("current: " + current);
-			//climberTalon.set(ControlMode.PercentOutput, -1);
-		}
-	}
-	
 	public void setMotorSpeedPercent(double percent) {
 		if (climberTalon != null) {
 			climberTalon.set(ControlMode.PercentOutput, percent);
@@ -252,16 +178,7 @@ public class Climber extends NRSubsystem {
 	 */
 	public void smartDashboardInit() {
 		if (EnabledSubsystems.CLIMBER_SMARTDASHBOARD_DEBUG_ENABLED) {
-			SmartDashboard.putNumber("Voltage Ramp Rate Climber Seconds: ",
-					VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND));
-			SmartDashboard.putNumber("P Current Climber: ", P_CURRENT_CLIMBER);
-			SmartDashboard.putNumber("I Current Climber: ", I_CURRENT_CLIMBER);
-			SmartDashboard.putNumber("D Current Climber: ", D_CURRENT_CLIMBER);
-			SmartDashboard.putNumber("F Pos Climber: ", F_POS_CLIMBER);
-			SmartDashboard.putNumber("P Pos Climber: ", P_POS_CLIMBER);
-			SmartDashboard.putNumber("I Pos Climber: ", I_POS_CLIMBER);
-			SmartDashboard.putNumber("D Pos Climber: ", D_POS_CLIMBER);
-			SmartDashboard.putNumber("Climber Set Current: ", DEFAULT_CLIMBER_CURRENT);
+			
 		}
 	}
 	
@@ -271,28 +188,9 @@ public class Climber extends NRSubsystem {
 		@Override
 	public void smartDashboardInfo() {
 			if (EnabledSubsystems.CLIMBER_SMARTDASHBOARD_BASIC_ENABLED) {
-				SmartDashboard.putString("Climber Current vs Set Current: ", getCurrent() + " : " + currentSetpoint);
+				SmartDashboard.putNumber("Climber Current", getCurrent());
 			}
 			if (EnabledSubsystems.CLIMBER_SMARTDASHBOARD_DEBUG_ENABLED) {
-				VOLTAGE_RAMP_RATE_CLIMBER = new Time(SmartDashboard.getNumber("Voltage Ramp Rate Climber Seconds: ", VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND)), Time.Unit.SECOND);
-				P_CURRENT_CLIMBER = SmartDashboard.getNumber("P Current Climber: ", P_CURRENT_CLIMBER);
-				I_CURRENT_CLIMBER = SmartDashboard.getNumber("I Current Climber: ", I_CURRENT_CLIMBER);
-				D_CURRENT_CLIMBER = SmartDashboard.getNumber("D Current Climber: ", D_CURRENT_CLIMBER);
-				F_POS_CLIMBER = SmartDashboard.getNumber("F Pos Climber: ", F_POS_CLIMBER);
-				P_POS_CLIMBER = SmartDashboard.getNumber("P Pos Climber: ", P_POS_CLIMBER);
-				I_POS_CLIMBER = SmartDashboard.getNumber("I Pos Climber: ", I_POS_CLIMBER);
-				D_POS_CLIMBER = SmartDashboard.getNumber("D Pos Climber: ", D_POS_CLIMBER);
-				
-				climberTalon.config_kP(CURRENT_SLOT, P_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
-				climberTalon.config_kI(CURRENT_SLOT, I_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
-				climberTalon.config_kD(CURRENT_SLOT, D_CURRENT_CLIMBER, DEFAULT_TIMEOUT);
-				
-				climberTalon.config_kF(POS_SLOT, F_POS_CLIMBER, DEFAULT_TIMEOUT);
-				climberTalon.config_kP(POS_SLOT, P_POS_CLIMBER, DEFAULT_TIMEOUT);
-				climberTalon.config_kI(POS_SLOT, I_POS_CLIMBER, DEFAULT_TIMEOUT);
-				climberTalon.config_kD(POS_SLOT, D_POS_CLIMBER, DEFAULT_TIMEOUT);
-				
-				DEFAULT_CLIMBER_CURRENT = SmartDashboard.getNumber("Climber Set Current: ", DEFAULT_CLIMBER_CURRENT);
 				SmartDashboard.putNumber("Climber Encoder Ticks: ", climberTalon.getSelectedSensorPosition(PID_TYPE));
 			}
 		

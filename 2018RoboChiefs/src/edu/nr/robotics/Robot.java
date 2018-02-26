@@ -23,9 +23,9 @@ import edu.nr.robotics.auton.automap.StartPosMiddleSwitchNoneCommand;
 import edu.nr.robotics.auton.automap.StartPosMiddleSwitchRightCommand;
 import edu.nr.robotics.auton.automap.StartPosRightSwitchNoneCommand;
 import edu.nr.robotics.auton.automap.StartPosRightSwitchRightCommand;
+import edu.nr.robotics.multicommands.ClimbButtonCommand;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.nr.robotics.subsystems.climber.ClimberCoastCommand;
-import edu.nr.robotics.subsystems.climber.ClimberCurrentSmartDashboardCommand;
 import edu.nr.robotics.subsystems.drive.CSVSaverDisable;
 import edu.nr.robotics.subsystems.drive.CSVSaverEnable;
 import edu.nr.robotics.subsystems.drive.DriveForwardBasicSmartDashboardCommand;
@@ -91,13 +91,13 @@ public class Robot extends IterativeRobot {
 		AutoChoosers.autoStartPosChooser.addObject("Start Pos Right", StartPos.right);
 		
 		AutoChoosers.autoSwitchChooser.addDefault("Switch None", Switch.none);
-		AutoChoosers.autoSwitchChooser.addObject("Switch Left Only", Switch.leftOnly);
-		AutoChoosers.autoSwitchChooser.addObject("Switch Right Only", Switch.rightOnly);
+		AutoChoosers.autoSwitchChooser.addObject("Switch Left", Switch.leftOnly);
+		AutoChoosers.autoSwitchChooser.addObject("Switch Right", Switch.rightOnly);
 		AutoChoosers.autoSwitchChooser.addObject("Switch Both", Switch.both);
 		
 		AutoChoosers.autoScaleChooser.addDefault("Scale None", Scale.none);
-		AutoChoosers.autoScaleChooser.addObject("Scale Left Only", Scale.leftonly);
-		AutoChoosers.autoScaleChooser.addObject("Scale Right Only", Scale.rightonly);
+		AutoChoosers.autoScaleChooser.addObject("Scale Left", Scale.leftonly);
+		AutoChoosers.autoScaleChooser.addObject("Scale Right", Scale.rightonly);
 		AutoChoosers.autoScaleChooser.addObject("Scale Both", Scale.both);
 		
 		AutoChoosers.allianceBlockChooser.addDefault("None", AllianceBlocks.none);
@@ -105,10 +105,10 @@ public class Robot extends IterativeRobot {
 		AutoChoosers.allianceBlockChooser.addObject("Block 6", AllianceBlocks.block6);
 		AutoChoosers.allianceBlockChooser.addObject("Both", AllianceBlocks.both);
 		
-		SmartDashboard.putData("Auto StartPosition", AutoChoosers.autoStartPosChooser);
+		SmartDashboard.putData("Auto Start Pos", AutoChoosers.autoStartPosChooser);
 		SmartDashboard.putData("Auto Switch", AutoChoosers.autoSwitchChooser);
 		SmartDashboard.putData("Auto Scale", AutoChoosers.autoScaleChooser);
-		SmartDashboard.putData("Alliance Partner Blocks", AutoChoosers.allianceBlockChooser);
+		SmartDashboard.putData("Partner Blocks", AutoChoosers.allianceBlockChooser);
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class Robot extends IterativeRobot {
 		
 		//Climber
 		if(EnabledSubsystems.CLIMBER_SMARTDASHBOARD_DEBUG_ENABLED) {
-			SmartDashboard.putData(new ClimberCurrentSmartDashboardCommand());
+			SmartDashboard.putData(new ClimbButtonCommand());
 		}		
 		
 		//Elevator

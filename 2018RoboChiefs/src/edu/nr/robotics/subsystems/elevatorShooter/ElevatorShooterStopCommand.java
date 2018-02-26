@@ -18,7 +18,7 @@ public class ElevatorShooterStopCommand extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return false;
+		return true;
 	}
 	
 }

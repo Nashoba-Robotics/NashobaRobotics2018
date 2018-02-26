@@ -8,7 +8,7 @@ public class PrepareScorePortalCommand extends CommandGroup {
 
 	public PrepareScorePortalCommand() {
 		
-		addSequential(new IntakeElevatorPositionCommand(IntakeElevator.PORTAL_HEIGHT));
+		//addSequential(new IntakeElevatorPositionCommand(IntakeElevator.PORTAL_HEIGHT));
 
 	}
 }

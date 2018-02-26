@@ -1,15 +1,15 @@
 package edu.nr.robotics.multicommands;
 
-import edu.nr.robotics.subsystems.climber.ClimbBasicPercentCommand;
-import edu.nr.robotics.subsystems.elevator.ElevatorSetToZeroCommand;
+import edu.nr.robotics.subsystems.climber.ClimberPercentCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorBottomDropCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class ClimbButtonCommand extends CommandGroup {
 	
 	public ClimbButtonCommand() {
 		
-		addParallel(new ElevatorSetToZeroCommand());
-		addSequential(new ClimbBasicPercentCommand());
+		addParallel(new ElevatorBottomDropCommand());
+		addSequential(new ClimberPercentCommand());
 		
 	}
 	
