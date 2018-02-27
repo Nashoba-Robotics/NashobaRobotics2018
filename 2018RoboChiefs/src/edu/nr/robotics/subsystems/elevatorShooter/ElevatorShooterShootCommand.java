@@ -4,9 +4,9 @@ import edu.nr.lib.units.Time;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 
-public class ShootCommand extends CommandGroup {
+public class ElevatorShooterShootCommand extends CommandGroup {
 	
-	public ShootCommand(double percent) {
+	public ElevatorShooterShootCommand(double percent) {
 
 		addParallel(new ElevatorShooterVelocityCommand(percent));
 		addSequential(new WaitCommand(ElevatorShooter.SHOOT_TIME.get(Time.Unit.SECOND)));

@@ -7,10 +7,16 @@ import edu.nr.robotics.auton.FieldMeasurements;
 import edu.nr.robotics.auton.autoroutes.PlatformZoneSwitchLeftToBlockProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.PlatformZoneSwitchRightToBlockProfilingCommand;
 import edu.nr.robotics.multicommands.DriveToCubeCommandAdvanced;
+import edu.nr.robotics.multicommands.PrepareScoreSwitchCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveCurrentCommand;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.StrafeToCubeCommand;
+import edu.nr.robotics.subsystems.elevator.Elevator;
+import edu.nr.robotics.subsystems.elevator.ElevatorBottomDropCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
+import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
+import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
@@ -18,6 +24,8 @@ public class AutoSwitchLoopCommand extends CommandGroup {
 
 	public AutoSwitchLoopCommand() {
 		
+		addParallel(new PrepareScoreSwitchCommand());
+				
 		addSequential(new ConditionalCommand(new PlatformZoneSwitchLeftToBlockProfilingCommand(), new PlatformZoneSwitchRightToBlockProfilingCommand()) {
 			
 			@Override
@@ -41,6 +49,10 @@ public class AutoSwitchLoopCommand extends CommandGroup {
 		
 		addSequential(new DriveCurrentCommand(Drive.SWITCH_DRIVE_PERCENT, Drive.SWITCH_CURRENT_LIMIT));
 		
+		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.shootPercent));
+		
+		addParallel(new ElevatorBottomDropCommand());
+		
 		addSequential(new EnableMotionProfile(FieldMeasurements.CUBE_TO_PLATFORM_ZONE_X.negate(), Distance.ZERO,
 				Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 		
@@ -55,6 +67,8 @@ public class AutoSwitchLoopCommand extends CommandGroup {
 		
 		addSequential(new DriveToCubeCommandAdvanced());
 		
+		addParallel(new PrepareScoreSwitchCommand());
+		
 		addSequential(new ConditionalCommand(new EnableMotionProfile(Distance.ZERO, FieldMeasurements.CUBE_1_AND_2_TO_SWITCH_Y, 
 					Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT),
 			new EnableMotionProfile(Distance.ZERO, FieldMeasurements.CUBE_1_AND_2_TO_SWITCH_Y.negate(), 
@@ -68,6 +82,10 @@ public class AutoSwitchLoopCommand extends CommandGroup {
 		});
 
 		addSequential(new DriveCurrentCommand(Drive.SWITCH_DRIVE_PERCENT, Drive.SWITCH_CURRENT_LIMIT));
+		
+		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.shootPercent));
+		
+		addParallel(new ElevatorBottomDropCommand());
 		
 		addSequential(new EnableMotionProfile(FieldMeasurements.CUBE_TO_PLATFORM_ZONE_X.negate(), Distance.ZERO,
 				Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));

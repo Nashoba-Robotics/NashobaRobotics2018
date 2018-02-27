@@ -6,6 +6,7 @@ import edu.nr.robotics.subsystems.elevator.ElevatorBottomDropCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorPositionCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorFoldCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorHandlerCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
@@ -45,5 +46,4 @@ public class PrepareScoreSwitchCommand extends CommandGroup {
 		});
 	
 	}
-
 }

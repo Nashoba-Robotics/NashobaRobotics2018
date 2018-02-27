@@ -11,7 +11,7 @@ import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
-import edu.nr.robotics.subsystems.elevatorShooter.ShootCommand;
+import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
@@ -207,7 +207,7 @@ public class BlockToScaleProfilingCommand extends CommandGroup {
 			}
 		});
 		
-		addSequential(new ShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
+		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
 	}
 
 }
