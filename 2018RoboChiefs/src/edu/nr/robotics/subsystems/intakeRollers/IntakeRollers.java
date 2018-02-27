@@ -60,6 +60,9 @@ public class IntakeRollers extends NRSubsystem {
 	 */
 	public static final int DEFAULT_TIMEOUT = 0;
 	
+	public double percentHighSetpoint = 0;
+	public double percentLowSetpoint = 0;
+	
 	private IntakeRollers() {
 
 		if(EnabledSubsystems.INTAKE_ROLLERS_ENABLED) {
@@ -137,6 +140,10 @@ public class IntakeRollers extends NRSubsystem {
 	 */
 	public void setMotorSpeedPercent(double percentHigh, double percentLow) {
 		if (intakeRollersLeft != null && intakeRollersRight != null) {
+			
+			percentHighSetpoint = percentHigh;
+			percentLowSetpoint = percentLow;
+			
 			intakeRollersLeft.set(ControlMode.PercentOutput, percentHigh);
 			intakeRollersRight.set(ControlMode.PercentOutput, percentLow);
 		}
