@@ -6,7 +6,7 @@ import edu.nr.lib.units.Distance;
 import edu.nr.robotics.FieldData;
 import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.auton.FieldMeasurements;
-import edu.nr.robotics.multicommands.PrepareScoreScaleCommand;
+import edu.nr.robotics.multicommands.PrepareScoreScaleAutoCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
@@ -24,7 +24,7 @@ public class BlockToScaleProfilingCommand extends CommandGroup {
 			@Override
 			public void commands() {
 		
-				addParallel(new PrepareScoreScaleCommand());
+				addParallel(new PrepareScoreScaleAutoCommand());
 				
 				addParallel(new AnonymousCommandGroup() {
 					

@@ -47,7 +47,7 @@ public class StartPosMiddleToSwitchRightProfilingCommand extends CommandGroup {
 			}
 		});
 		
-		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_LOW_ELEVATOR_SHOOTER));
+		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
 		
 	}
 	

@@ -10,6 +10,7 @@ import edu.nr.robotics.multicommands.PrepareCubeIntakeCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
+import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
 import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
@@ -29,8 +30,6 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 					
 					@Override
 					public void commands() {
-						/*addSequential(new EnableMotionProfile(FieldMeasurements.PIVOT_POINT_TO_SCALE_DIAGONAL.negate(), Distance.ZERO,
-								Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));*/
 
 						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
 								(FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_1)),
@@ -108,7 +107,18 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 			}
 		});
 		
-		addSequential(new DriveToCubeCommandAdvanced());
+		addSequential(new AnonymousCommandGroup() {
+
+			@Override
+			public void commands() {
+				
+				addParallel(new IntakeRollersIntakeCommand());
+				
+				addParallel(new DriveToCubeCommandAdvanced());
+				
+			}
+			
+		});
 		
 		addSequential(new EnableLimelightCommand(false));
 		

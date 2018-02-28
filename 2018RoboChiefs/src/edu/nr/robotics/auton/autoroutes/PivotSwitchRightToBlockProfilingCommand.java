@@ -6,6 +6,7 @@ import edu.nr.lib.units.Distance;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
+import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
 import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.nr.robotics.auton.FieldMeasurements;
@@ -51,7 +52,18 @@ public class PivotSwitchRightToBlockProfilingCommand extends CommandGroup {
 			}
 		});
 
-		addSequential(new DriveToCubeCommandAdvanced());
+		addSequential(new AnonymousCommandGroup() {
+
+			@Override
+			public void commands() {
+				
+				addParallel(new IntakeRollersIntakeCommand());
+				
+				addParallel(new DriveToCubeCommandAdvanced());
+				
+			}
+			
+		});
 		
 		addSequential(new EnableLimelightCommand(false));
 	}

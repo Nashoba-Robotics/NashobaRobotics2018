@@ -96,7 +96,6 @@ public class DriveJoystickCommand extends JoystickCommand {
 	@Override
 	public boolean shouldSwitchToJoystick() {
 		if(OI.driveMode == Drive.DriveMode.arcadeDrive || OI.driveMode == Drive.DriveMode.cheesyDrive) {
-			System.out.println(OI.getInstance().isArcadeNonZero());
 			return OI.getInstance().isArcadeNonZero();
 		} else {
 			return OI.getInstance().getTankLeftValue() != 0 || OI.getInstance().getTankRightValue() != 0;

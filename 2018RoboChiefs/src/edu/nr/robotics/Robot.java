@@ -288,10 +288,8 @@ public class Robot extends IterativeRobot {
 		if (selectedStartPos == AutoChoosers.StartPos.left) {
 			if (selectedSwitch == AutoChoosers.Switch.none || selectedSwitch == AutoChoosers.Switch.rightOnly) {
 				return (new StartPosLeftSwitchNoneCommand());
-			} else if (selectedSwitch == AutoChoosers.Switch.leftOnly) {
+			} else if (selectedSwitch == AutoChoosers.Switch.leftOnly || selectedSwitch == AutoChoosers.Switch.both) {
 				return new StartPosLeftSwitchLeftCommand();			
-			} else if (selectedSwitch == AutoChoosers.Switch.both) {
-				return new StartPosLeftSwitchBothCommand();		
 			}
 		} else if (selectedStartPos == AutoChoosers.StartPos.middle) {
 			if (selectedSwitch == AutoChoosers.Switch.none) {

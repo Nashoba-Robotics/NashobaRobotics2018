@@ -81,7 +81,7 @@ public class DriveToCubeCommandBasic extends NRCommand {
 
 	@Override
 	protected void onEnd() {
-		new EnableLimelightCommand(false);
+		new EnableLimelightCommand(false).start();;
 		Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 	}
 	
