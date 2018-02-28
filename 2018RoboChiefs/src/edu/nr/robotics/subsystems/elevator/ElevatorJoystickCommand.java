@@ -21,7 +21,7 @@ public class ElevatorJoystickCommand extends JoystickCommand {
 	
 	@Override
 	protected void onExecute() {
-		
+				
 		if (!OI.getInstance().isElevatorNonZero()) {
 			if (Elevator.getInstance().getPosition().lessThan(Elevator.SWITCH_HEIGHT_ELEVATOR.mul(0.5))) {
 				Elevator.getInstance().setMotorPercentRaw(0);

@@ -15,6 +15,6 @@ public class IntakeElevatorHandlerCommand extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return IntakeElevator.getInstance().getCurrent() > IntakeElevator.FOLD_CURRENT_SPIKE;
+		return IntakeElevator.getInstance().getCurrent() > IntakeElevator.HANDLER_CURRENT_SPIKE;
 	}
 }

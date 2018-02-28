@@ -18,15 +18,9 @@ public class IntakeRollersVelocityCommand extends NRCommand {
 	protected void onStart() {
 		IntakeRollers.getInstance().setMotorSpeedPercent(percentHigh, percentLow);
 	}
-
-	@Override
-	protected void onEnd() {
-		IntakeRollers.getInstance().disable();
-	}
 	
 	@Override
 	protected boolean isFinishedNR() {
-		//return EnabledSensors.intakeSensorLeft.get() && EnabledSensors.intakeSensorRight.get();
 		return true;
 	}
 }

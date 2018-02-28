@@ -41,28 +41,28 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * The max speed of the elevator
 	 */
-	public static final Speed MAX_SPEED_ELEVATOR_UP = new Speed(14.567, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_ELEVATOR_UP = new Speed(12.165, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Speed MAX_SPEED_ELEVATOR_DOWN = Speed.ZERO; //TODO: Find MAX_SPEED_ELEVATOR_DOWN
 
 	/**
 	 * The max acceleration of the elevator
 	 */
-	public static final Acceleration MAX_ACCEL_ELEVATOR_UP = new Acceleration(20, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
+	public static final Acceleration MAX_ACCEL_ELEVATOR_UP = new Acceleration(28, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	public static final Acceleration MAX_ACCEL_ELEVATOR_DOWN = Acceleration.ZERO; //TODO: Find MAX_ACCEL_ELEVATOR_DOWN
 
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0;
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0.27;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0.2;
 	
 	/**
 	 * The minimum voltage needed to move the elevator
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0.327;
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0.32;
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0; //TODO: Find MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN
 
 	/**
 	 * The slope of voltage over velocity in feet per second
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP = 0.0462;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP = 0.0559;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_DOWN = 0; //TODO: Find VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_DOWN
 	
 	/**
@@ -102,9 +102,9 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * Velocity PID values for the elevator
 	 */
-	public static double P_VEL_ELEVATOR_UP = 0;
+	public static double P_VEL_ELEVATOR_UP = 0.08;
 	public static double I_VEL_ELEVATOR_UP = 0;
-	public static double D_VEL_ELEVATOR_UP = 0;
+	public static double D_VEL_ELEVATOR_UP = 0.8;
 	
 	public static double P_VEL_ELEVATOR_DOWN = 0; // TODO: Find elevator velocity PID values for down
 	public static double I_VEL_ELEVATOR_DOWN = 0;
@@ -197,7 +197,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	public static final Distance TOP_HEIGHT_ELEVATOR = new Distance(56535.0, Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV); // TODO: Find TOP_POSITION_ELEVATOR
 	public static final Distance CLIMB_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find CLIMB_HEIGHT_ELEVATOR
 	public static final Distance SCALE_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find AUTO_HEIGHT_ELEVATOR
-	public static final Distance SWITCH_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find SCORE_LOW_HEIGHT_ELEVATOR
+	public static final Distance SWITCH_HEIGHT_ELEVATOR = new Distance(5, Distance.Unit.INCH); //TODO: Find SCORE_LOW_HEIGHT_ELEVATOR
 	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO;
 	
 	private Speed velSetpoint = Speed.ZERO;
@@ -433,7 +433,9 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 				
 				elevTalon.selectProfileSlot(VEL_DOWN_SLOT, DEFAULT_TIMEOUT);
 				
-				elevTalon.config_kF(VEL_DOWN_SLOT,
+				elevTalon.set(ControlMode.PercentOutput, 0);
+				
+				/*elevTalon.config_kF(VEL_DOWN_SLOT,
 						((VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_DOWN * velSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
 								+ MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN) * 1023.0)
 								/ velSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
@@ -445,7 +447,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 				} else {
 					elevTalon.set(ControlMode.Velocity,
 							velSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND));
-				}
+				}*/
 				
 			}
 		}

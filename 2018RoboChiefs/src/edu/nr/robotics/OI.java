@@ -120,7 +120,7 @@ public class OI implements SmartDashboardSource {
 		operatorLeft = new Joystick(STICK_OPERATOR_LEFT);
 		operatorRight = new Joystick(STICK_OPERATOR_RIGHT);
 
-		elevatorStick = operatorRight; // TODO: find what it is
+		elevatorStick = operatorRight;
 		intakeElevatorStick = operatorLeft;
 
 		initDriveLeft();
@@ -353,7 +353,7 @@ public class OI implements SmartDashboardSource {
 	}
 
 	public boolean isIntakeElevatorNonZero() {
-		return getElevatorJoystickValue() != 0;
+		return getIntakeElevatorJoystickValue() != 0;
 	}
 
 	public boolean isHDriveZero() {

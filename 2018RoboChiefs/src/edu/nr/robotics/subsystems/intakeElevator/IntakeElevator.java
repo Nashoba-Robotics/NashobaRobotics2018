@@ -97,7 +97,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	/**
 	 * The default profiling velocity percent of the intake elevator
 	 */
-	public static double PROFILE_VEL_PERCENT_INTAKE_ELEVATOR = 0.6; // TODO: Decide on PROFILE_VEL_PERCENT_INTAKE_ELEVATOR
+	public static double PROFILE_VEL_PERCENT_INTAKE_ELEVATOR = 0.4; // TODO: Decide on PROFILE_VEL_PERCENT_INTAKE_ELEVATOR
 
 	/**
 	 * The default profiling acceleration of the intake elevator
@@ -198,11 +198,8 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	
 	public static final Distance BOTTOM_HEIGHT = Distance.ZERO;
 	
-	
-	public static final double FOLD_CURRENT_SPIKE = 0;
-	public static final double FOLD_FINISHED_CURRENT = 0;
-	public static final double HIT_TOP_HEIGHT_CURRENT = 0;
-
+	public static final double FOLD_CURRENT_SPIKE = 40;
+	public static final double HANDLER_CURRENT_SPIKE = 25;
 	
 	public Speed velSetpoint = Speed.ZERO;
 	public Distance posSetpoint = Distance.ZERO;
@@ -263,7 +260,6 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 					Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 					DEFAULT_TIMEOUT);
 			
-			intakeElevTalon.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, DEFAULT_TIMEOUT);
 			intakeElevTalon.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, DEFAULT_TIMEOUT);
 	
 			intakeElevEncoder = new TalonEncoder(intakeElevTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV);
@@ -431,9 +427,9 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 					DEFAULT_TIMEOUT);
 	
 				if (EnabledSubsystems.INTAKE_ELEVATOR_DUMB_ENABLED) {
-					intakeElevTalon.set(intakeElevTalon.getControlMode(), velSetpoint.div(MAX_SPEED_INTAKE_ELEVATOR_UP));
+					intakeElevTalon.set(ControlMode.PercentOutput, velSetpoint.div(MAX_SPEED_INTAKE_ELEVATOR_UP));
 				} else {
-					intakeElevTalon.set(intakeElevTalon.getControlMode(),
+					intakeElevTalon.set(ControlMode.Velocity,
 						velSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND));
 				}
 			} else {
@@ -446,9 +442,9 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 					DEFAULT_TIMEOUT);
 	
 				if (EnabledSubsystems.INTAKE_ELEVATOR_DUMB_ENABLED) {
-					intakeElevTalon.set(intakeElevTalon.getControlMode(), velSetpoint.div(MAX_SPEED_INTAKE_ELEVATOR_DOWN));
+					intakeElevTalon.set(ControlMode.PercentOutput, velSetpoint.div(MAX_SPEED_INTAKE_ELEVATOR_DOWN));
 				} else {
-					intakeElevTalon.set(intakeElevTalon.getControlMode(),
+					intakeElevTalon.set(ControlMode.Velocity,
 						velSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND));
 				}
 			}
@@ -569,8 +565,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	public void periodic() {
 		if (EnabledSubsystems.INTAKE_ELEVATOR_ENABLED) {
 			if (intakeElevTalon.getSensorCollection().isRevLimitSwitchClosed()) {
-				intakeElevTalon.getSensorCollection().setQuadraturePosition((int) BOTTOM_HEIGHT.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
-				//new CancelCommand(IntakeElevator.getInstance()).start();
+				intakeElevTalon.getSensorCollection().setQuadraturePosition((int) BOTTOM_HEIGHT.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV), DEFAULT_TIMEOUT);
 			}	
 		}
 

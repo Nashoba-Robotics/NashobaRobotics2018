@@ -16,6 +16,6 @@ public class IntakeElevatorBottomCommand extends NRCommand {
 	
 	@Override
 	protected boolean isFinishedNR() {
-		return IntakeElevator.getInstance().getPosition().lessThan(new Distance(1, Distance.Unit.INCH));
+		return IntakeElevator.getInstance().getPosition().equals(Distance.ZERO);
 	}
 }

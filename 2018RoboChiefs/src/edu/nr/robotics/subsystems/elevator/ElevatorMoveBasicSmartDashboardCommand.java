@@ -17,7 +17,6 @@ public class ElevatorMoveBasicSmartDashboardCommand extends NRCommand {
 	protected void onStart() {
 		initialPos = Elevator.getInstance().getPosition();
 		Elevator.getInstance().setMotorSpeedPercent(Math.abs(Elevator.PROFILE_VEL_PERCENT_ELEVATOR) * Elevator.profilePos.signum());
-		System.out.println("Elev vel percent: " + Elevator.PROFILE_VEL_PERCENT_ELEVATOR + "  Elev Profile pos: " + Elevator.profilePos);
 	}
 
 	@Override

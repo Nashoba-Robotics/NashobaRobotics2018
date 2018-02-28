@@ -40,7 +40,7 @@ public class DriveToCubeCommandAdvanced extends NRCommand {
 		} else {
 			finished = false;
 		}
-		if (IntakeRollers.getInstance().percentHighSetpoint > 0 && IntakeRollers.getInstance().percentLowSetpoint > 0) {
+		if (IntakeRollers.getInstance().percentHighSetpoint == 0 && IntakeRollers.getInstance().percentLowSetpoint == 0) {
 			finished = true;
 		} else {
 			finished = false;
@@ -52,8 +52,8 @@ public class DriveToCubeCommandAdvanced extends NRCommand {
 		
 		double headingAdjustment;
 		
-		System.out.println("Horiz Off: " + LimelightNetworkTable.getInstance().getHorizOffset().get(Angle.Unit.DEGREE));
-		System.out.println("Vert Off: " + LimelightNetworkTable.getInstance().getVertOffsetAngle().get(Angle.Unit.DEGREE));
+		//System.out.println("Horiz Off: " + LimelightNetworkTable.getInstance().getHorizOffset().get(Angle.Unit.DEGREE));
+		//System.out.println("Vert Off: " + LimelightNetworkTable.getInstance().getVertOffsetAngle().get(Angle.Unit.DEGREE));
 		
 		if (stoppedTracking) {
 			headingAdjustment = gyro.getTurnValue(Drive.kP_thetaOneD, false);

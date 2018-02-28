@@ -22,9 +22,12 @@ public class IntakeElevatorJoystickCommand extends JoystickCommand {
 	
 	@Override
 	protected void onExecute() {
+		
+		IntakeElevator.getInstance().setMotorPercentRaw(0);
+		
 		if (!OI.getInstance().isIntakeElevatorNonZero()) {
-			//if (IntakeElevator.getInstance().getPosition().lessThan(new Distance(1, Distance.Unit.INCH))) {
-			if (IntakeElevator.getInstance().getPosition().lessThan(IntakeElevator.PORTAL_HEIGHT.mul(0.5))) {
+			if (IntakeElevator.getInstance().getPosition().lessThan(new Distance(1, Distance.Unit.INCH))) {
+			//if (IntakeElevator.getInstance().getPosition().lessThan(IntakeElevator.PORTAL_HEIGHT.mul(0.5))) {
 				IntakeElevator.getInstance().setMotorPercentRaw(0);
 			}
 			else if (!EnabledSensors.intakeSensorLeft.get() && !EnabledSensors.intakeSensorRight.get())
