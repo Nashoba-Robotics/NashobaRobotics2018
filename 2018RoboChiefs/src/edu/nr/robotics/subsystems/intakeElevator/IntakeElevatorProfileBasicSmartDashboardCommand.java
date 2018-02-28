@@ -21,18 +21,15 @@ public class IntakeElevatorProfileBasicSmartDashboardCommand extends NRCommand {
 	
 	public IntakeElevatorProfileBasicSmartDashboardCommand() {
 		super(IntakeElevator.getInstance());
-		this.position = IntakeElevator.profileDeltaPos;
-		this.maxVelPercent = IntakeElevator.PROFILE_VEL_PERCENT_INTAKE_ELEVATOR;
-		this.maxAccelPercent = IntakeElevator.PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR;
 	}
 	
 	@Override
 	public void onStart() {
 		this.position = IntakeElevator.profileDeltaPos;
-		System.out.println("delta pos: " + IntakeElevator.profileDeltaPos.get(Distance.Unit.INCH));
+		this.maxVelPercent = IntakeElevator.PROFILE_VEL_PERCENT_INTAKE_ELEVATOR;
+		this.maxAccelPercent = IntakeElevator.PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR;
 		initialPosition = IntakeElevator.getInstance().getPosition();
 		IntakeElevator.getInstance().enableMotionProfiler(position.sub(initialPosition), maxVelPercent, maxAccelPercent);
-		System.out.println("position: " + position.sub(initialPosition).get(Distance.Unit.INCH) + " maxVelPercent: " + maxVelPercent + " maxAccelPercent: " + maxAccelPercent);
 	}
 	
 	@Override

@@ -8,6 +8,6 @@ public class IntakeElevatorProfileCommandGroup extends CommandGroup {
 	public IntakeElevatorProfileCommandGroup(Distance position, double maxVelPercent, double maxAccelPercent) {
 		
 		addSequential(new IntakeElevatorProfileBasicCommand(position, maxVelPercent, maxAccelPercent));
-		addSequential(new IntakeElevatorPositionCommand(position));
+		//addSequential(new IntakeElevatorPositionCommand(position));
 	}
 }

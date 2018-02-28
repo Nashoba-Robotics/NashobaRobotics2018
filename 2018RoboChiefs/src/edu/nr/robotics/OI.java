@@ -32,6 +32,7 @@ import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorFoldCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorHandlerCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorMoveBasicCommand;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersReverseCommand;
@@ -210,7 +211,7 @@ public class OI implements SmartDashboardSource {
 
 		new JoystickButton(operatorRight, FOLD_INTAKE_BUTTON_NUMBER).whenPressed(new FoldIntakeMultiCommand());
 		new JoystickButton(operatorRight, INTAKE_TRANSFER_HEIGHT_BUTTON_NUMBER)
-				.whenPressed(new IntakeElevatorHandlerCommand());
+				.whenPressed(new IntakeElevatorProfileCommandGroup(IntakeElevator.HANDLER_HEIGHT, IntakeElevator.PROFILE_VEL_PERCENT_INTAKE_ELEVATOR, IntakeElevator.PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR));
 		new JoystickButton(operatorRight, INTAKE_BOTTOM_HEIGHT_BUTTON_NUMBER)
 				.whenPressed(new IntakeElevatorBottomCommand());
 

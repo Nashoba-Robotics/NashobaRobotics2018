@@ -162,12 +162,12 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	public static final int DEFAULT_TIMEOUT = 0;
 	
 	public static final double kV_UP = 1 / MAX_SPEED_INTAKE_ELEVATOR_UP.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kA_UP = 1;
+	public static double kA_UP = 0;
 	public static double kP_UP = 0;
 	public static double kD_UP = 0;
 	
 	public static final double kV_DOWN = 1 / MAX_SPEED_INTAKE_ELEVATOR_DOWN.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kA_DOWN = 1;
+	public static double kA_DOWN = 0;
 	public static double kP_DOWN = 0;
 	public static double kD_DOWN = 0;
 	
@@ -358,8 +358,6 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 
 		if (dist.greaterThan(Distance.ZERO)) {
 
-			kA_UP = 0; // TODO: Find kA-position function up
-
 			basicProfiler = new OneDimensionalMotionProfilerBasic(this, this, kV_UP, kA_UP, kP_UP, kD_UP);
 			basicProfiler.setTrajectory(
 					new OneDimensionalTrajectoryRamped(dist.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV),
@@ -370,8 +368,6 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 									Time.Unit.HUNDRED_MILLISECOND),
 							RAMPED_PROFILE_TIME_MULT_INTAKE_ELEVATOR));
 		} else {
-
-			kA_DOWN = 0; // TODO: Find kA-position function down
 
 			basicProfiler = new OneDimensionalMotionProfilerBasic(this, this, kV_DOWN, kA_DOWN, kP_DOWN, kD_DOWN);
 			basicProfiler.setTrajectory(
