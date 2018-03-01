@@ -41,6 +41,7 @@ import edu.nr.robotics.subsystems.sensors.EnableFloorSensorCommand;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -337,7 +338,9 @@ public class OI implements SmartDashboardSource {
 
 	@Override
 	public void smartDashboardInfo() {
-
+		SmartDashboard.putBoolean("Intake Sensor", !EnabledSensors.intakeSensorLeft.get() && !EnabledSensors.intakeSensorRight.get());
+		SmartDashboard.putBoolean("Floor Sensor", !EnabledSensors.floorSensor.get());
+		SmartDashboard.putBoolean("Elevator Sensor", !EnabledSensors.elevatorSensor.get());
 	}
 
 	public boolean isTankNonZero() {
