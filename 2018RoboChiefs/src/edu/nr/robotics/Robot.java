@@ -46,6 +46,21 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+/*Test Floor Sensor											11
+ClimbCommand												9
+Optimal Elevator Heights									5
+Optimal Elevator Shooter Place Percent						8
+Intake to Elevator Commands									3 (when available)
+Test Auto Modes (inc StrafeToCubeCommand)					10
+Elevator Profiling											4
+Test Elevator Carriage Sensor								1 (when available)
+Test Elevator Up/Down Buttons								7
+Intake Elevator Portal Height Profile						12
+Modify DriveToCubeCommand if needed							(during auto testing)
+Tweak IntakeElevator Profile								2 (when available)
+Fix any Drive tuning										(when practice matches start)
+DriveCurrentCommand											6*/
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
