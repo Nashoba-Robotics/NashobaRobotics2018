@@ -5,15 +5,14 @@ import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterIntakeCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorHandlerCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorPositionCommand;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersTransferCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class CubeFeedIntakeRollersToElevatorCommand extends CommandGroup {
 	
 	public CubeFeedIntakeRollersToElevatorCommand() {
-		
-		addSequential(new IntakeElevatorHandlerCommand());
-		
+				
 		addSequential(new AnonymousCommandGroup() {
 
 			@Override

@@ -7,6 +7,6 @@ public class ElevatorProfileSmartDashboardCommandGroup extends CommandGroup {
 	public ElevatorProfileSmartDashboardCommandGroup() {
 		
 		addSequential(new ElevatorProfileBasicSmartDashboardCommand());
-		addSequential(new ElevatorPositionSmartDashboardCommand());
+		//addSequential(new ElevatorPositionSmartDashboardCommand());
 	}
 }

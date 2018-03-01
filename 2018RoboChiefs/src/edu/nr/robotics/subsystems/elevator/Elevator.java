@@ -41,7 +41,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * The max speed of the elevator
 	 */
-	public static final Speed MAX_SPEED_ELEVATOR_UP = new Speed(12.165, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_ELEVATOR_UP = new Speed(12.77, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Speed MAX_SPEED_ELEVATOR_DOWN = Speed.ZERO; //TODO: Find MAX_SPEED_ELEVATOR_DOWN
 
 	/**
@@ -51,18 +51,18 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	public static final Acceleration MAX_ACCEL_ELEVATOR_DOWN = Acceleration.ZERO; //TODO: Find MAX_ACCEL_ELEVATOR_DOWN
 
 	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0.27;
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0.2;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0.27;//0.20
 	
 	/**
 	 * The minimum voltage needed to move the elevator
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0.32;
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0.304;
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0; //TODO: Find MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN
 
 	/**
 	 * The slope of voltage over velocity in feet per second
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP = 0.0559;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP = 0.0545;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_DOWN = 0; //TODO: Find VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_DOWN
 	
 	/**
@@ -74,7 +74,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * The default profiling velocity percent of the elevator
 	 */
-	public static double PROFILE_VEL_PERCENT_ELEVATOR = 0.9;
+	public static double PROFILE_VEL_PERCENT_ELEVATOR = 0.8;
 
 	/**
 	 * The default profiling acceleration of the elevator
@@ -469,8 +469,6 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	public void enableMotionProfiler(Distance dist, double maxVelPercent, double maxAccelPercent) {
 		
 		if (dist.greaterThan(Distance.ZERO)) {
-		
-			kA_UP = 0; //TODO: Find kA-position function up
 			
 			basicProfiler = new OneDimensionalMotionProfilerBasic(this, this, kV_UP, kA_UP, kP_UP, kD_UP);
 			basicProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(
@@ -480,8 +478,6 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 					MAX_ACCEL_ELEVATOR_UP.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
 							Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), RAMPED_PROFILE_TIME_MULT_ELEVATOR));
 		} else {
-			
-			kA_DOWN = 0; //TODO: Find kA-position function down
 			
 			basicProfiler = new OneDimensionalMotionProfilerBasic(this, this, kV_DOWN, kA_DOWN, kP_DOWN, kD_DOWN);
 			basicProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(

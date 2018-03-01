@@ -5,7 +5,7 @@ public class EnabledSubsystems {
 	public static final boolean DRIVE_ENABLED 									= true;
 	public static final boolean ELEVATOR_ENABLED								= true;
 	public static final boolean INTAKE_ELEVATOR_ENABLED 						= true;
-	public static final boolean ELEVATOR_SHOOTER_ENABLED						= false;
+	public static final boolean ELEVATOR_SHOOTER_ENABLED						= true;
 	public static final boolean INTAKE_ROLLERS_ENABLED							= true;
 	public static final boolean CLIMBER_ENABLED									= false;
 	
@@ -24,8 +24,8 @@ public class EnabledSubsystems {
 	
 	public static final boolean DRIVE_SMARTDASHBOARD_DEBUG_ENABLED 				= false;
 	public static final boolean ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED 			= true;
-	public static final boolean INTAKE_ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED 	= true;
-	public static final boolean ELEVATOR_SHOOTER_SMARTDASHBOARD_DEBUG_ENABLED 	= false;
+	public static final boolean INTAKE_ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED 	= false;
+	public static final boolean ELEVATOR_SHOOTER_SMARTDASHBOARD_DEBUG_ENABLED 	= true;
 	public static final boolean INTAKE_ROLLERS_SMARTDASHBOARD_DEBUG_ENABLED		= false;
 	public static final boolean CLIMBER_SMARTDASHBOARD_DEBUG_ENABLED			= false;
 }

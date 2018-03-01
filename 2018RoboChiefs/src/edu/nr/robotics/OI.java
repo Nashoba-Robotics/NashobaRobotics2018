@@ -56,12 +56,14 @@ public class OI implements SmartDashboardSource {
 	private static final int INTAKE_TRANSFER_HEIGHT_BUTTON_NUMBER = 10; // Right
 	private static final int INTAKE_BOTTOM_HEIGHT_BUTTON_NUMBER = 9; // Right
 
+	private static final int TRANSFER_CUBE_BUTTON_NUMBER = 4; //Right
+	
 	private static final int INTAKE_ROLLERS_STOP_BUTTON_NUMBER = 2; // Right
 	private static final int INTAKE_ROLLERS_FAST_BUTTON_NUMBER = 11; // Left
 	private static final int INTAKE_ROLLERS_SLOW_BUTTON_NUMBER = 8; // Left
 
 	private static final int ELEVATOR_CLIMB_HEIGHT_BUTTON_NUMBER = 6; // Right
-	private static final int ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER = 7; // Right
+	private static final int ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER = 8; // Right
 
 	private static final int SCALE_BUTTON_NUMBER = 5; // Left
 	private static final int SWITCH_BUTTON_NUMBER = 6; // Left
@@ -240,8 +242,10 @@ public class OI implements SmartDashboardSource {
 
 		new JoystickButton(operatorRight, ELEVATOR_CLIMB_HEIGHT_BUTTON_NUMBER)
 				.whenPressed(new ClimbPrepareCommand());
-		new JoystickButton(operatorRight, BOTTOM_BUTTON_NUMBER).whenPressed(new ElevatorBottomDropCommand());
+		
+		new JoystickButton(operatorRight, ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER).whenPressed(new ElevatorBottomDropCommand());
 
+		new JoystickButton(operatorRight, TRANSFER_CUBE_BUTTON_NUMBER).whenPressed(new CubeFeedIntakeRollersToElevatorCommand());
 	}
 
 	public static OI getInstance() {

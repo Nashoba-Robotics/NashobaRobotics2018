@@ -162,7 +162,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	public static final int DEFAULT_TIMEOUT = 0;
 	
 	public static final double kV_UP = 1 / MAX_SPEED_INTAKE_ELEVATOR_UP.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kA_UP = 0;
+	public static double kA_UP = 0.0008;
 	public static double kP_UP = 0;
 	public static double kD_UP = 0;
 	
@@ -198,7 +198,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	
 	public static final Distance BOTTOM_HEIGHT = Distance.ZERO;
 	
-	public static final double FOLD_CURRENT_SPIKE = 40;
+	public static final double FOLD_CURRENT_SPIKE = 60;
 	public static final double HANDLER_CURRENT_SPIKE = 25;
 	
 	public Speed velSetpoint = Speed.ZERO;

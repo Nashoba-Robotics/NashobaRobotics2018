@@ -42,9 +42,9 @@ public class CTRECreator {
         
         public int TIMEOUT = 0; // in ms
 
-        public int CONTROL_FRAME_PERIOD_MS = 5;
+        public int CONTROL_FRAME_PERIOD_MS = 10;
         public int MOTION_CONTROL_FRAME_PERIOD_MS = 100;
-        public int GENERAL_STATUS_FRAME_RATE_MS = 5;
+        public int GENERAL_STATUS_FRAME_RATE_MS = 10;
         public int FEEDBACK_STATUS_FRAME_RATE_MS = 100;
         public int QUAD_ENCODER_STATUS_FRAME_RATE_MS = 100;
         public int ANALOG_TEMP_VBAT_STATUS_FRAME_RATE_MS = 100;

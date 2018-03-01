@@ -8,7 +8,7 @@ public class ElevatorProfileCommandGroup extends CommandGroup {
 	public ElevatorProfileCommandGroup(Distance position, double maxVelPercent, double maxAccelPercent) {
 		
 		addSequential(new ElevatorProfileBasicCommand(position, maxVelPercent, maxAccelPercent));
-		addSequential(new ElevatorPositionCommand(position));
+		//addSequential(new ElevatorPositionCommand(position));
 		
 	}
 }

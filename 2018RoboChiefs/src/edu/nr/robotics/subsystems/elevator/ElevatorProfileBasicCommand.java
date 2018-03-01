@@ -44,12 +44,12 @@ public class ElevatorProfileBasicCommand extends NRCommand {
 	@Override
 	public void onEnd() {
 		Elevator.getInstance().disableProfiler();
-		Elevator.getInstance().setMotorSpeedPercent(0);
+		Elevator.getInstance().setMotorSpeedPercent(0.01);
 	}
 	
 	@Override
 	public boolean isFinishedNR() {
-		boolean finished = Elevator.getInstance().basicProfiler.loopIteration > Elevator.getInstance().basicProfiler.posPoints.size();
+		boolean finished = Elevator.getInstance().basicProfiler.loopIteration > Elevator.getInstance().basicProfiler.posPoints.size() - 2;
 		return finished;
 	}
 
