@@ -50,14 +50,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 ClimbCommand												9
 Optimal Elevator Heights									5
 Optimal Elevator Shooter Place Percent						8
-Intake to Elevator Commands									3 (when available)
+Intake to Elevator Commands									3 (when available)					x
 Test Auto Modes (inc StrafeToCubeCommand)					10
-Elevator Profiling											4
-Test Elevator Carriage Sensor								1 (when available)
+Elevator Profiling											4									x
+Test Elevator Carriage Sensor								1 (when available)					x
 Test Elevator Up/Down Buttons								7
 Intake Elevator Portal Height Profile						12
 Modify DriveToCubeCommand if needed							(during auto testing)
-Tweak IntakeElevator Profile								2 (when available)
+Tweak IntakeElevator Profile								2 (when available)					x
 Fix any Drive tuning										(when practice matches start)
 DriveCurrentCommand											6*/
 

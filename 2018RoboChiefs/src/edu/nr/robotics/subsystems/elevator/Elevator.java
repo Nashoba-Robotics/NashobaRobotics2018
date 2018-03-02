@@ -196,8 +196,8 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	 */
 	public static final Distance TOP_HEIGHT_ELEVATOR = new Distance(56535.0, Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV); // TODO: Find TOP_POSITION_ELEVATOR
 	public static final Distance CLIMB_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find CLIMB_HEIGHT_ELEVATOR
-	public static final Distance SCALE_HEIGHT_ELEVATOR = Distance.ZERO; // TODO: Find AUTO_HEIGHT_ELEVATOR
-	public static final Distance SWITCH_HEIGHT_ELEVATOR = new Distance(5, Distance.Unit.INCH); //TODO: Find SCORE_LOW_HEIGHT_ELEVATOR
+	public static final Distance SCALE_HEIGHT_ELEVATOR = new Distance(6, Distance.Unit.FOOT);
+	public static final Distance SWITCH_HEIGHT_ELEVATOR = new Distance(2.5, Distance.Unit.FOOT);
 	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO;
 	
 	private Speed velSetpoint = Speed.ZERO;
@@ -468,11 +468,13 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	
 	public void enableMotionProfiler(Distance dist, double maxVelPercent, double maxAccelPercent) {
 		
+		Distance tempDist = dist.mul(1.514).add(new Distance(1.121, Distance.Unit.INCH));
+		
 		if (dist.greaterThan(Distance.ZERO)) {
 			
 			basicProfiler = new OneDimensionalMotionProfilerBasic(this, this, kV_UP, kA_UP, kP_UP, kD_UP);
 			basicProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(
-					dist.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV),
+					tempDist.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV),
 					MAX_SPEED_ELEVATOR_UP.mul(PROFILE_VEL_PERCENT_ELEVATOR).get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
 							Time.Unit.HUNDRED_MILLISECOND),
 					MAX_ACCEL_ELEVATOR_UP.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
@@ -481,7 +483,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 			
 			basicProfiler = new OneDimensionalMotionProfilerBasic(this, this, kV_DOWN, kA_DOWN, kP_DOWN, kD_DOWN);
 			basicProfiler.setTrajectory(new OneDimensionalTrajectoryRamped(
-					dist.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV),
+					tempDist.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV),
 					MAX_SPEED_ELEVATOR_DOWN.mul(PROFILE_VEL_PERCENT_ELEVATOR).get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
 							Time.Unit.HUNDRED_MILLISECOND),
 					MAX_ACCEL_ELEVATOR_DOWN.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
@@ -607,7 +609,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 					PROFILE_VEL_PERCENT_ELEVATOR);
 			PROFILE_ACCEL_PERCENT_ELEVATOR = SmartDashboard.getNumber("Profile Accel Percent Elevator: ",
 					PROFILE_ACCEL_PERCENT_ELEVATOR);
-			
+						
 			kA_UP = SmartDashboard.getNumber("Elevator kA Up: ", kA_UP);
 			kP_UP = SmartDashboard.getNumber("Elevator kP Up: ", kP_UP);
 			kD_UP = SmartDashboard.getNumber("Elevator kD Up: ", kD_UP);

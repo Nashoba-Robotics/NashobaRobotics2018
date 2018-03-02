@@ -37,7 +37,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	/**
 	 * The max speed of the intake elevator
 	 */
-	public static final Speed MAX_SPEED_INTAKE_ELEVATOR_UP = new Speed(3.424, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_INTAKE_ELEVATOR_UP = new Speed(2.773, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Speed MAX_SPEED_INTAKE_ELEVATOR_DOWN = new Speed(4.458, Distance.Unit.FOOT, Time.Unit.SECOND);
 
 	/**
@@ -49,19 +49,19 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	/**
 	 * The acutal real min move voltage of the intake elevator
 	 */
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0.127;
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0.09;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0.05;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0.05;
 	
 	/**
 	 * The theoretical minimum voltage needed to move the intake elevator
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0.127; 
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0.243; 
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0.0;
 	
 	/**
 	 * The slope of voltage over velocity in feet per second
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR_UP = 0.255;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR_UP = 0.273;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_INTAKE_ELEVATOR_DOWN = 0.216;
 
 	/**
@@ -162,12 +162,12 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	public static final int DEFAULT_TIMEOUT = 0;
 	
 	public static final double kV_UP = 1 / MAX_SPEED_INTAKE_ELEVATOR_UP.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kA_UP = 0.0008;
+	public static double kA_UP = 0.0004;
 	public static double kP_UP = 0;
 	public static double kD_UP = 0;
 	
 	public static final double kV_DOWN = 1 / MAX_SPEED_INTAKE_ELEVATOR_DOWN.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kA_DOWN = 0;
+	public static double kA_DOWN = 0.0004;
 	public static double kP_DOWN = 0;
 	public static double kD_DOWN = 0;
 	
@@ -190,7 +190,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	 */
 	public static final Distance FOLDED_HEIGHT = new Distance(11.9, Distance.Unit.INCH); // TODO: Find FOLDED_HEIGHT
 	
-	public static final Distance HANDLER_HEIGHT = new Distance(9.6, Distance.Unit.INCH); // TODO: Find HANDLER_HEIGHT
+	public static final Distance HANDLER_HEIGHT = new Distance(8.5, Distance.Unit.INCH); // TODO: Find HANDLER_HEIGHT
 	
 	public static final Distance INTAKE_HEIGHT = Distance.ZERO; 
 	
@@ -198,7 +198,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	
 	public static final Distance BOTTOM_HEIGHT = Distance.ZERO;
 	
-	public static final double FOLD_CURRENT_SPIKE = 60;
+	public static final double FOLD_CURRENT_SPIKE = 50;
 	public static final double HANDLER_CURRENT_SPIKE = 25;
 	
 	public Speed velSetpoint = Speed.ZERO;

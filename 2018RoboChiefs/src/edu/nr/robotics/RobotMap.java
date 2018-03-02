@@ -20,7 +20,7 @@ public class RobotMap {
 	
 	public static final int INTAKE_SENSOR_PORT_LEFT = 7;
 	public static final int INTAKE_SENSOR_PORT_RIGHT = 9;
-	public static final int ELEVATOR_SENSOR_PORT = 6;
+	public static final int ELEVATOR_SENSOR_PORT = 4;
 	public static final int FLOOR_SENSOR_PORT = 8;
 	
 }

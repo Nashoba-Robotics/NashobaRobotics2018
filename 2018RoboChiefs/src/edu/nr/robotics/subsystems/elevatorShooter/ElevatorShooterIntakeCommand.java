@@ -10,7 +10,7 @@ public class ElevatorShooterIntakeCommand extends NRCommand {
 	}
 	
 	protected void onStart() {
-		ElevatorShooter.getInstance().setMotorSpeedPercent(-ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER);
+		ElevatorShooter.getInstance().setMotorSpeedPercent(-ElevatorShooter.VEL_PERCENT_TRANSFER);
 	}
 	
 	protected void onEnd() {

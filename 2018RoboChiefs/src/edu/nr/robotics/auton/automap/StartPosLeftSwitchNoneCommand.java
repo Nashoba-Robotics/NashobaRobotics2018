@@ -7,6 +7,7 @@ import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosLeftToScaleLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosLeftToScaleRightProfilingCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorBottomDropCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
@@ -28,7 +29,7 @@ public class StartPosLeftSwitchNoneCommand extends CommandGroup {
 
 		});
 
-		addSequential(new ConditionalCommand(new StartPosLeftToScaleRightProfilingCommand()) {
+		/*addSequential(new ConditionalCommand(new StartPosLeftToScaleRightProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
@@ -37,7 +38,7 @@ public class StartPosLeftSwitchNoneCommand extends CommandGroup {
 						&& FieldData.getInstance().scale == Direction.right;
 			}
 
-		});
+		});*/
 
 		addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()) {
 
@@ -52,7 +53,9 @@ public class StartPosLeftSwitchNoneCommand extends CommandGroup {
 
 		});
 
-		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()) {
+		addSequential(new ElevatorBottomDropCommand());
+		
+		/*addSequential(new ConditionalCommand(new AutoScaleLoopCommand()) {
 
 			@Override
 			protected boolean condition() {
@@ -63,7 +66,7 @@ public class StartPosLeftSwitchNoneCommand extends CommandGroup {
 								&& FieldData.getInstance().scale == Direction.right);
 			}
 
-		});
+		});*/
 	}
 
 }

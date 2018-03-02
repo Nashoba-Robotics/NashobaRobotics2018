@@ -10,7 +10,7 @@ public class IntakeRollersTransferCommand extends NRCommand {
 	}
 	
 	protected void onStart() {
-		IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS, IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS);
+		IntakeRollers.getInstance().setMotorSpeedPercent(IntakeRollers.VEL_PERCENT_TRANSFER_INTAKE_ROLLERS, IntakeRollers.VEL_PERCENT_TRANSFER_INTAKE_ROLLERS);
 	}
 	
 	protected void onEnd() {

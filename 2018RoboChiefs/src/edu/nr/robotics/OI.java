@@ -25,6 +25,7 @@ import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorBottomDropCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorDeltaPositionCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
+import edu.nr.robotics.subsystems.elevator.ElevatorProfileDeltaCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
@@ -237,9 +238,9 @@ public class OI implements SmartDashboardSource {
 		// Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 
 		new JoystickButton(operatorRight, ELEVATOR_UP_BUTTON_NUMBER)
-				.whenPressed(new ElevatorDeltaPositionCommand(ELEVATOR_BUTTON_HEIGHT));
+				.whenPressed(new ElevatorProfileDeltaCommandGroup(ELEVATOR_BUTTON_HEIGHT, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 		new JoystickButton(operatorRight, ELEVATOR_DOWN_BUTTON_NUMBER)
-				.whenPressed(new ElevatorDeltaPositionCommand(ELEVATOR_BUTTON_HEIGHT.negate()));
+				.whenPressed(new ElevatorProfileDeltaCommandGroup(ELEVATOR_BUTTON_HEIGHT.negate(), Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 
 		new JoystickButton(operatorRight, ELEVATOR_CLIMB_HEIGHT_BUTTON_NUMBER)
 				.whenPressed(new ClimbPrepareCommand());
