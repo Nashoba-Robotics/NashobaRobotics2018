@@ -9,7 +9,7 @@ import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 public class ElevatorJoystickCommand extends JoystickCommand {
 	
 	private static final double MIN_ELEV_JOYSTICK_PERCENT = 0;
-	private static final double MAX_ELEV_JOYSTICK_PERCENT = 0.6;
+	private static final double MAX_ELEV_JOYSTICK_PERCENT = 0.41;
 		
 	/**
 	 * Takes elevator joystick percent values and sets the elevator to those percents.

@@ -191,7 +191,8 @@ public class OI implements SmartDashboardSource {
 						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));*/
 		/*new ConditionalJoystickButton(scaleButton, EnabledSensors.elevatorSensor.get())
 				.whenPressed(new PrepareScoreScaleCommand());*/
-		scaleButton.whenPressed(new PrepareScoreScaleCommand());
+		scaleButton.whenPressed(new ElevatorProfileCommandGroup(Elevator.SCALE_HEIGHT_ELEVATOR,
+				Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 		
 		//Switch
 		/*new ConditionalJoystickButton(switchButton, !EnabledSensors.elevatorSensor.get())
@@ -199,7 +200,8 @@ public class OI implements SmartDashboardSource {
 						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));*/
 		/*new ConditionalJoystickButton(switchButton, EnabledSensors.elevatorSensor.get())
 				.whenPressed(new PrepareScoreSwitchCommand());*/
-		switchButton.whenPressed(new PrepareScoreSwitchCommand());
+		switchButton.whenPressed(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR,
+				Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 		
 		//Bottom
 		/*new ConditionalJoystickButton(bottomButton, !EnabledSensors.elevatorSensor.get())

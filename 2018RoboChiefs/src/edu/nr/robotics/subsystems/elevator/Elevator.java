@@ -433,7 +433,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 				
 				elevTalon.selectProfileSlot(VEL_DOWN_SLOT, DEFAULT_TIMEOUT);
 				
-				elevTalon.set(ControlMode.PercentOutput, 0);
+				elevTalon.set(ControlMode.PercentOutput, -0.2);
 				
 				/*elevTalon.config_kF(VEL_DOWN_SLOT,
 						((VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_DOWN * velSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
