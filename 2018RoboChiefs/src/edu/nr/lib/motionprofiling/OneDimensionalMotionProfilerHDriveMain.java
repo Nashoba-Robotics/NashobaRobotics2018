@@ -104,7 +104,7 @@ public class OneDimensionalMotionProfilerHDriveMain extends TimerTask implements
 			
 			outputLeft = -headingAdjustment;
 			outputRight = headingAdjustment;
-						
+			
 			out.pidWrite(outputLeft, outputRight, outputH);			
 			
 			loopIteration++;

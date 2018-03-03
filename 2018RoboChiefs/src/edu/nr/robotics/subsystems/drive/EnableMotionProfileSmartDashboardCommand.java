@@ -38,9 +38,9 @@ public class EnableMotionProfileSmartDashboardCommand extends NRCommand {
 					Drive.getInstance().pidGetLeft() + ":" + HDriveDiagonalProfiler.velocityGoal);
 			SmartDashboard.putString("Motion Profiler V Right",
 					Drive.getInstance().pidGetRight() + ":" + HDriveDiagonalProfiler.velocityGoal);
-			Drive.getInstance().setPIDSourceType(PIDSourceType.kRate);
 			SmartDashboard.putString("Motion Profiler V H",
 					Drive.getInstance().pidGetH() + ":" + HDriveDiagonalProfiler.velocityGoalH);
+			Drive.getInstance().setPIDSourceType(PIDSourceType.kDisplacement);
 			SmartDashboard.putString("Motion Profiler X Left",
 					new Distance(Drive.getInstance().pidGetLeft(), Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
 							.get(Distance.Unit.INCH)

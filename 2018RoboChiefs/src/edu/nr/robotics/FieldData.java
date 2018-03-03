@@ -32,6 +32,8 @@ public class FieldData {
 	public void getFieldData() { 
 		String gsm = DriverStation.getInstance().getGameSpecificMessage();
 		
+		System.out.println(gsm.length());
+		
 		if (gsm.charAt(0) == 'l' || gsm.charAt(0) == 'L'){
 			nearSwitch = Direction.left;
 		} else if (gsm.charAt(0) == 'r' || gsm.charAt(0) == 'R'){

@@ -94,7 +94,6 @@ public class Robot extends IterativeRobot {
 		smartDashboardInit();
 		autoChooserInit();
 		OI.init();
-		LimelightNetworkTable.getInstance();
 		LimelightNetworkTable.getInstance().lightLED(true);
 		LimelightNetworkTable.getInstance().lightLED(false);
 	}
