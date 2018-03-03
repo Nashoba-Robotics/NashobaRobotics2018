@@ -3,7 +3,7 @@ package edu.nr.robotics.subsystems.intakeElevator;
 import edu.nr.lib.commandbased.NRCommand;
 
 public class IntakeElevatorFoldCommand extends NRCommand {
-		
+	
 	public IntakeElevatorFoldCommand() {
 		super(IntakeElevator.getInstance());
 	}
@@ -11,6 +11,7 @@ public class IntakeElevatorFoldCommand extends NRCommand {
 	@Override
 	protected void onStart() {
 		IntakeElevator.getInstance().setMotorSpeedPercent(IntakeElevator.PROFILE_VEL_PERCENT_INTAKE_ELEVATOR);
+		IntakeElevator.intakeFolded = true;
 	}
 	
 	@Override

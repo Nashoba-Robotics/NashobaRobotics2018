@@ -12,12 +12,6 @@ public class ClimberStopCommand extends NRCommand {
 	@Override
 	protected void onStart() {
 		Climber.getInstance().setMotorSpeedPercent(0);
-		Climber.getInstance().setCoastMode(true);
-	}
-	
-	@Override
-	protected void onEnd() {
-		new ElevatorBottomDropCommand().start();
 	}
 	
 	@Override

@@ -29,7 +29,7 @@ public class StartPosRightSwitchNoneCommand extends CommandGroup {
 
 		});
 
-		/*addSequential(new ConditionalCommand(new StartPosRightToScaleLeftProfilingCommand()) {
+		addSequential(new ConditionalCommand(new StartPosRightToScaleLeftProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
@@ -38,7 +38,7 @@ public class StartPosRightSwitchNoneCommand extends CommandGroup {
 						&& FieldData.getInstance().scale == Direction.left;
 			}
 
-		});*/
+		});
 
 		addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()) {
 
@@ -52,10 +52,8 @@ public class StartPosRightSwitchNoneCommand extends CommandGroup {
 			}
 
 		});
-
-		addSequential(new ElevatorBottomDropCommand());
 		
-		/*addSequential(new ConditionalCommand(new AutoScaleLoopCommand()) {
+		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()) {
 
 			@Override
 			protected boolean condition() {
@@ -66,7 +64,7 @@ public class StartPosRightSwitchNoneCommand extends CommandGroup {
 								|| FieldData.getInstance().scale == Direction.left);
 			}
 
-		});*/
+		});
 
 	}
 

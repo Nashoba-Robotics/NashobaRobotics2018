@@ -186,25 +186,28 @@ public class OI implements SmartDashboardSource {
 		lowGoalButton = new JoystickButton(operatorLeft, LOW_GOAL_BUTTON_NUMBER);
 
 		//Scale
-		new ConditionalJoystickButton(scaleButton, !EnabledSensors.elevatorSensor.get())
+		/*new ConditionalJoystickButton(scaleButton, !EnabledSensors.elevatorSensor.get())
 				.whenPressed(new ElevatorProfileCommandGroup(Elevator.SCALE_HEIGHT_ELEVATOR,
-						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
-		new ConditionalJoystickButton(scaleButton, EnabledSensors.elevatorSensor.get())
-				.whenPressed(new PrepareScoreScaleCommand());
+						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));*/
+		/*new ConditionalJoystickButton(scaleButton, EnabledSensors.elevatorSensor.get())
+				.whenPressed(new PrepareScoreScaleCommand());*/
+		scaleButton.whenPressed(new PrepareScoreScaleCommand());
 		
 		//Switch
-		new ConditionalJoystickButton(switchButton, !EnabledSensors.elevatorSensor.get())
+		/*new ConditionalJoystickButton(switchButton, !EnabledSensors.elevatorSensor.get())
 				.whenPressed(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR,
-						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
-		new ConditionalJoystickButton(switchButton, EnabledSensors.elevatorSensor.get())
-				.whenPressed(new PrepareScoreSwitchCommand());
+						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));*/
+		/*new ConditionalJoystickButton(switchButton, EnabledSensors.elevatorSensor.get())
+				.whenPressed(new PrepareScoreSwitchCommand());*/
+		switchButton.whenPressed(new PrepareScoreSwitchCommand());
 		
 		//Bottom
-		new ConditionalJoystickButton(bottomButton, !EnabledSensors.elevatorSensor.get())
+		/*new ConditionalJoystickButton(bottomButton, !EnabledSensors.elevatorSensor.get())
 				.whenPressed(new ElevatorProfileCommandGroup(Elevator.BOTTOM_HEIGHT_ELEVATOR,
-						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
-		new ConditionalJoystickButton(bottomButton, EnabledSensors.elevatorSensor.get())
-				.whenPressed(new PrepareScoreElevatorBottomCommand());
+						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));*/
+		/*new ConditionalJoystickButton(bottomButton, EnabledSensors.elevatorSensor.get())
+				.whenPressed(new PrepareScoreElevatorBottomCommand());*/
+		bottomButton.whenPressed(new PrepareScoreElevatorBottomCommand());
 		
 		//Low Goal
 		lowGoalButton.whenPressed(new PrepareScorePortalCommand());

@@ -106,6 +106,7 @@ public class StartPosLeftSwitchLeftCommand extends CommandGroup {
 
 		});
 
+		
 		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()) {
 
 			@Override

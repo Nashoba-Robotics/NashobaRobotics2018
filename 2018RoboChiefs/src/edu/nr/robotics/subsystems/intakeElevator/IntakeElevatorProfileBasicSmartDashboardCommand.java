@@ -25,6 +25,7 @@ public class IntakeElevatorProfileBasicSmartDashboardCommand extends NRCommand {
 	
 	@Override
 	public void onStart() {
+		IntakeElevator.intakeFolded = true;
 		this.position = IntakeElevator.profileDeltaPos;
 		this.maxVelPercent = IntakeElevator.PROFILE_VEL_PERCENT_INTAKE_ELEVATOR;
 		this.maxAccelPercent = IntakeElevator.PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR;

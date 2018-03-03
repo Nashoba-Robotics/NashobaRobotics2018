@@ -43,13 +43,13 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final double REAL_ENC_TICK_PER_INCH_DRIVE = 428;
 	public static final double REAL_ENC_TICK_PER_INCH_H_DRIVE = 1074;
 	
-	public static final double EFFECTIVE_ENC_TICK_PER_INCH_DRIVE = REAL_ENC_TICK_PER_INCH_DRIVE * 1.0497;
+	public static final double EFFECTIVE_ENC_TICK_PER_INCH_DRIVE = REAL_ENC_TICK_PER_INCH_DRIVE;
 	public static final double EFFECTIVE_ENC_TICK_PER_INCH_H_DRIVE = REAL_ENC_TICK_PER_INCH_H_DRIVE;
 	
 	/**
 	 * The maximum speed of the drive base
 	 */
-	public static final Speed MAX_SPEED_DRIVE = new Speed(12.864, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_DRIVE = new Speed(12.16/*12.864*/, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Speed MAX_SPEED_DRIVE_H = new Speed(10.50, Distance.Unit.FOOT, Time.Unit.SECOND); //TODO: Find real drive max speed h
 
 	/**
@@ -61,16 +61,16 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Voltage percentage at which robot just starts moving
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0571; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0600; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0930;//0.0571; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0978;//0.0600; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_RIGHT = 0.165; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_LEFT = 0.177; //TODO: find this
 	
 	/**
 	 * The drive voltage-velocity curve slopes
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0733; //TODO: Find drive voltage vs velocity curve
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0726;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0746;//0.0733; //TODO: Find drive voltage vs velocity curve
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0730;//0.0726;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_RIGHT = 0.0788;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_LEFT = 0.0784; //TODO: Find this
 	
@@ -108,8 +108,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 * 1D Profiling kVAPID_theta loop constants
 	 */
 	public static double kVOneD = 1 / MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kAOneD = 0.0002;
-	public static double kPOneD = 0.00002;
+	public static double kAOneD = 0;//0.0002;
+	public static double kPOneD = 0.00002;//0.00002;
 	public static double kIOneD = 0;
 	public static double kDOneD = 0;
 	public static double kP_thetaOneD = 0.02;
@@ -124,7 +124,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Percent driving during profiling
 	 */
-	public static final double PROFILE_DRIVE_PERCENT = 0.9;
+	public static final double PROFILE_DRIVE_PERCENT = 0.8;
 	
 	/**
 	 * Percent accelerating during profiling
@@ -135,12 +135,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 * Max and min speed of turn during
 	 */
 	public static final double MAX_PROFILE_TURN_PERCENT = 1.0;
-	public static final double MIN_PROFILE_TURN_PERCENT = 0.03; 
+	public static final double MIN_PROFILE_TURN_PERCENT = 0.02; 
 	
 	/**
 	 * Percent of the drive while going to intake a cube
 	 */
-	public static final double DRIVE_TO_CUBE_PERCENT = 0.6; //TODO: Decide on DRIVE_TO_CUBE_PERCENT
+	public static final double DRIVE_TO_CUBE_PERCENT = 0.4; //TODO: Decide on DRIVE_TO_CUBE_PERCENT
 	
 	/**
 	 * Percent of the drive while strafing to portal or cube
@@ -170,7 +170,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The angle the robot turns to once disabled at full turn speed. Used for GyroCorrection ramped mode.
 	 */
-	public static final Angle DRIVE_STOP_ANGLE = new Angle(60, Angle.Unit.DEGREE); //TODO: Find angle that robot stops at when turning goes from 1 to 0
+	public static final Angle DRIVE_STOP_ANGLE = new Angle(70, Angle.Unit.DEGREE); //TODO: Find angle that robot stops at when turning goes from 1 to 0
 
 	
 	/**
@@ -183,12 +183,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * When Driving into an object, the current when the driving stops
 	 */
-	public static final double SWITCH_CURRENT_LIMIT = 0; //TODO: Find Switch Current Limit
+	public static final double SWITCH_CURRENT_LIMIT = 40; //TODO: Find Switch Current Limit
 	
 	/**
 	 * the drive percent while driving into the switch
 	 */
-	public static final double SWITCH_DRIVE_PERCENT = 0; //TODO: determine switch drive percent
+	public static final double SWITCH_DRIVE_PERCENT = 0.4; //TODO: determine switch drive percent
 	
 	public static final VelocityMeasPeriod VELOCITY_MEASUREMENT_PERIOD_DRIVE = VelocityMeasPeriod.Period_10Ms; //TODO: Find measurement period of velocity
 	public static final int VELOCITY_MEASUREMENT_WINDOW_DRIVE = 32; //TODO: Find this
@@ -551,6 +551,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	public void setMotorSpeedInPercent(double left, double right, double strafe) {
+		/*leftDrive.set(ControlMode.PercentOutput, left);
+		rightDrive.set(ControlMode.PercentOutput, right);*/
+		
 		setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE_H.mul(strafe));
 	}
 	

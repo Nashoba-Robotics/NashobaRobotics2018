@@ -41,28 +41,28 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * The max speed of the elevator
 	 */
-	public static final Speed MAX_SPEED_ELEVATOR_UP = new Speed(12.77, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_ELEVATOR_UP = new Speed(10.98, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Speed MAX_SPEED_ELEVATOR_DOWN = Speed.ZERO; //TODO: Find MAX_SPEED_ELEVATOR_DOWN
 
 	/**
 	 * The max acceleration of the elevator
 	 */
-	public static final Acceleration MAX_ACCEL_ELEVATOR_UP = new Acceleration(28, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
+	public static final Acceleration MAX_ACCEL_ELEVATOR_UP = new Acceleration(30, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	public static final Acceleration MAX_ACCEL_ELEVATOR_DOWN = Acceleration.ZERO; //TODO: Find MAX_ACCEL_ELEVATOR_DOWN
 
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0.27;
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0.27;//0.20
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0.15;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0.15;//0.20
 	
 	/**
 	 * The minimum voltage needed to move the elevator
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0.304;
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0.260;
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0; //TODO: Find MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN
 
 	/**
 	 * The slope of voltage over velocity in feet per second
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP = 0.0545;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP = 0.0674;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_DOWN = 0; //TODO: Find VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_DOWN
 	
 	/**
@@ -196,7 +196,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	 */
 	public static final Distance TOP_HEIGHT_ELEVATOR = new Distance(56535.0, Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV); // TODO: Find TOP_POSITION_ELEVATOR
 	public static final Distance CLIMB_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find CLIMB_HEIGHT_ELEVATOR
-	public static final Distance SCALE_HEIGHT_ELEVATOR = new Distance(6, Distance.Unit.FOOT);
+	public static final Distance SCALE_HEIGHT_ELEVATOR = new Distance(7, Distance.Unit.FOOT);
 	public static final Distance SWITCH_HEIGHT_ELEVATOR = new Distance(2.5, Distance.Unit.FOOT);
 	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO;
 	
@@ -467,8 +467,8 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	}
 	
 	public void enableMotionProfiler(Distance dist, double maxVelPercent, double maxAccelPercent) {
-		
-		Distance tempDist = dist.mul(1.514).add(new Distance(1.121, Distance.Unit.INCH));
+				
+		Distance tempDist = dist.mul(1.227).add(new Distance(-4.533, Distance.Unit.INCH));
 		
 		if (dist.greaterThan(Distance.ZERO)) {
 			

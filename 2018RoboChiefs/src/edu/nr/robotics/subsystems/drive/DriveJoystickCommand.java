@@ -33,16 +33,18 @@ public class DriveJoystickCommand extends JoystickCommand {
 			hValue = NRMath.powWithSign(hValue, 3);
 			
 			if (Math.abs(rotateValue) < 0.05 && (Math.abs(moveValue) > 0.05 || Math.abs(hValue) > 0.05)) {
-				rotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD, false);
+				rotateValue = -gyroCorrection.getTurnValue(Drive.kP_thetaOneD, false);
 			} else {
 				gyroCorrection.clearInitialValue();
 			}
 			
-			if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
+			/*if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
 				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 			} else {
 				Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier(), hValue * OI.getInstance().getDriveSpeedMultiplier());
-			}
+			}*/
+			Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier(), hValue * OI.getInstance().getDriveSpeedMultiplier());
+
 									
 			break;
 		
@@ -80,11 +82,11 @@ public class DriveJoystickCommand extends JoystickCommand {
 				gyroCorrection.clearInitialValue();
 			}
 			
-			/*if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
+			if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
 				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 			} else {
 				Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue, cheesyHValue);
-			}*/
+			}
 			
 			Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue, cheesyHValue);
 			

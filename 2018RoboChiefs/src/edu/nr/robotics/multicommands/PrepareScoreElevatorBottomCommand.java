@@ -29,7 +29,7 @@ public class PrepareScoreElevatorBottomCommand extends CommandGroup {
 		
 		addSequential(new IntakeRollersIntakeCommand());
 		
-		addSequential(new WaitCommand(0.5));
+		addSequential(new WaitCommand(0.25));
 		
 		addSequential(new IntakeElevatorProfileCommandGroup(IntakeElevator.HANDLER_HEIGHT, IntakeElevator.PROFILE_VEL_PERCENT_INTAKE_ELEVATOR, IntakeElevator.PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR));
 		

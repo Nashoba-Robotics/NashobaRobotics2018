@@ -27,6 +27,7 @@ public class IntakeElevatorProfileBasicCommand extends NRCommand {
 	
 	@Override
 	public void onStart() {
+		IntakeElevator.intakeFolded = true;
 		initialPosition = IntakeElevator.getInstance().getPosition();
 		IntakeElevator.getInstance().enableMotionProfiler(position.sub(initialPosition), maxVelPercent, maxAccelPercent);
 	}

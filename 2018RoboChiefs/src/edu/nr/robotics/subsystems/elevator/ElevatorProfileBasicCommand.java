@@ -44,7 +44,7 @@ public class ElevatorProfileBasicCommand extends NRCommand {
 	@Override
 	public void onEnd() {
 		Elevator.getInstance().disableProfiler();
-		Elevator.getInstance().setMotorSpeedPercent(0.01);
+		Elevator.getInstance().setMotorPercentRaw(Elevator.REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP);
 	}
 	
 	@Override

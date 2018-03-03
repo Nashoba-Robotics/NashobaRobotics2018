@@ -9,7 +9,7 @@ import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 public class ElevatorJoystickCommand extends JoystickCommand {
 	
 	private static final double MIN_ELEV_JOYSTICK_PERCENT = 0;
-	private static final double MAX_ELEV_JOYSTICK_PERCENT = 0.2;
+	private static final double MAX_ELEV_JOYSTICK_PERCENT = 0.6;
 		
 	/**
 	 * Takes elevator joystick percent values and sets the elevator to those percents.
@@ -23,7 +23,7 @@ public class ElevatorJoystickCommand extends JoystickCommand {
 	protected void onExecute() {
 				
 		if (!OI.getInstance().isElevatorNonZero()) {
-			if (Elevator.getInstance().getPosition().lessThan(Elevator.SWITCH_HEIGHT_ELEVATOR.mul(0.5))) {
+			if (Elevator.getInstance().getPosition().lessThan(new Distance(3, Distance.Unit.INCH))) {
 				Elevator.getInstance().setMotorPercentRaw(0);
 			}
 			else if (!EnabledSensors.elevatorSensor.get()) {

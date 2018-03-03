@@ -32,7 +32,7 @@ public class RampedDiagonalHTrajectory implements OneDimensionalTrajectory {
 	double startPositionH;
 
 	double pow = 2;
-	double timeMult = 36;
+	double timeMult = 42;
 
 	ArrayList<Double> posPoints;
 	ArrayList<Double> velPoints;
@@ -281,7 +281,7 @@ public class RampedDiagonalHTrajectory implements OneDimensionalTrajectory {
 	public ArrayList<Double> loadVelPointsH(double period) {
 		velPointsH.clear();
 		for (int time = 0; time < Math.round(totalTime * 100); time += period) {
-			velPointsH.add(getGoalVelocity(time / 100) * endPositionY / endPosition * directionY);
+			velPointsH.add(getGoalVelocity(time / 100.0) * endPositionY / endPosition * directionY);
 		}
 		return velPointsH;
 	}

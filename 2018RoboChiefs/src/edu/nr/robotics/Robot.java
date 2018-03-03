@@ -186,7 +186,7 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledPeriodic() {
-		Scheduler.getInstance().run();
+		//Scheduler.getInstance().run();
 	}
 
 	/**
@@ -261,7 +261,6 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		Scheduler.getInstance().run();
 	}
 
 	@Override
@@ -280,7 +279,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		Scheduler.getInstance().run();
+		
 	}
 
 	/**
@@ -290,13 +289,14 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 	}
 	
+	@Override
 	public void robotPeriodic() {
 		Scheduler.getInstance().run();
 		
 		Periodic.runAll();
 		SmartDashboardSource.runAll();
 		
-		SmartDashboard.putData(RobotDiagram.getInstance());
+		//SmartDashboard.putData(RobotDiagram.getInstance());
 	}
 	
 	public Command getAutoCommand() {

@@ -2,15 +2,18 @@ package edu.nr.robotics.subsystems.elevator;
 
 import edu.nr.lib.commandbased.NRCommand;
 
-public class ElevatorBottomDropCommand extends NRCommand {
+public class ElevatorPercentRawCommand extends NRCommand {
 
-	public ElevatorBottomDropCommand() {
+	private double percent;
+	
+	public ElevatorPercentRawCommand(double percent) {
 		super(Elevator.getInstance());
+		this.percent = percent;
 	}
 	
 	@Override
 	protected void onStart() {
-		Elevator.getInstance().setMotorPercentRaw(-0.2);
+		Elevator.getInstance().setMotorPercentRaw(percent);
 	}
 	
 	@Override

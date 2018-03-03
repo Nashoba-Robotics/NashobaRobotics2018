@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput {
+	
 	private static IntakeElevator singleton;
 
 	private TalonSRX intakeElevTalon;
@@ -49,8 +50,9 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	/**
 	 * The acutal real min move voltage of the intake elevator
 	 */
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0.05;
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0.05;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0.1;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0.1;
+	public static final double INTAKE_FOLD_HOLD_PERCENT = 0.2;
 	
 	/**
 	 * The theoretical minimum voltage needed to move the intake elevator
@@ -190,7 +192,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	 */
 	public static final Distance FOLDED_HEIGHT = new Distance(11.9, Distance.Unit.INCH); // TODO: Find FOLDED_HEIGHT
 	
-	public static final Distance HANDLER_HEIGHT = new Distance(8.5, Distance.Unit.INCH); // TODO: Find HANDLER_HEIGHT
+	public static final Distance HANDLER_HEIGHT = new Distance(9.5, Distance.Unit.INCH); // TODO: Find HANDLER_HEIGHT
 	
 	public static final Distance INTAKE_HEIGHT = Distance.ZERO; 
 	
@@ -198,7 +200,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	
 	public static final Distance BOTTOM_HEIGHT = Distance.ZERO;
 	
-	public static final double FOLD_CURRENT_SPIKE = 50;
+	public static final double FOLD_CURRENT_SPIKE = 70;
 	public static final double HANDLER_CURRENT_SPIKE = 25;
 	
 	public Speed velSetpoint = Speed.ZERO;
@@ -206,6 +208,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	
 	public static Distance profileDeltaPos = Distance.ZERO;
 	
+	public static boolean intakeFolded = false;
 	
 	private IntakeElevator() {
 

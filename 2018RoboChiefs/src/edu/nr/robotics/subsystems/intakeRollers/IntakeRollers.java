@@ -31,8 +31,8 @@ public class IntakeRollers extends NRSubsystem {
 	/**
 	 * The optimal velocity percent for the intake rollers
 	 */
-	public static double VEL_PERCENT_HIGH_INTAKE_ROLLERS = 0.75;
-	public static double VEL_PERCENT_LOW_INTAKE_ROLLERS = 0.7;
+	public static double VEL_PERCENT_HIGH_INTAKE_ROLLERS = 0.8;
+	public static double VEL_PERCENT_LOW_INTAKE_ROLLERS = 0.6;
 	public static double VEL_PERCENT_TRANSFER_INTAKE_ROLLERS = 0.6;
 	public static double VEL_PERCENT_PORTAL_INTAKE_ROLLERS = 0.90; //TODO: Find VEL_PERCENT_PORTAL_INTAKE_ROLLERS
 	public static double VEL_PERCENT_PUKE_INTAKE_ROLLERS = 0.20; //TODO: Find VEL_PERCENT_PUKE_INTAKE_ROLLERS

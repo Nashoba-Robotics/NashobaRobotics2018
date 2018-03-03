@@ -18,6 +18,6 @@ public class ElevatorShooterIntakeCommand extends NRCommand {
 	}
 	
 	protected boolean isFinishedNR() {
-		return !EnabledSensors.elevatorSensor.get();
+		return !EnabledSensors.elevatorSensor.get() || ElevatorShooter.getInstance().getCurrent() > 15;
 	}
 }

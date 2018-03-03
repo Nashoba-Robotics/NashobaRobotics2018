@@ -26,7 +26,10 @@ public class IntakeElevatorJoystickCommand extends JoystickCommand {
 		IntakeElevator.getInstance().setMotorPercentRaw(0);
 		
 		if (!OI.getInstance().isIntakeElevatorNonZero()) {
-			if (IntakeElevator.getInstance().getPosition().lessThan(new Distance(1, Distance.Unit.INCH))) {
+			if (IntakeElevator.intakeFolded) {
+				IntakeElevator.getInstance().setMotorPercentRaw(IntakeElevator.INTAKE_FOLD_HOLD_PERCENT);
+			}
+			else if (IntakeElevator.getInstance().getPosition().lessThan(new Distance(1, Distance.Unit.INCH))) {
 			//if (IntakeElevator.getInstance().getPosition().lessThan(IntakeElevator.PORTAL_HEIGHT.mul(0.5))) {
 				IntakeElevator.getInstance().setMotorPercentRaw(0);
 			}
@@ -36,9 +39,13 @@ public class IntakeElevatorJoystickCommand extends JoystickCommand {
 				IntakeElevator.getInstance().setMotorPercentRaw(IntakeElevator.REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN);
 			}
 		} else if (OI.getInstance().getIntakeElevatorJoystickValue() > 0) {
+			if (!IntakeElevator.intakeFolded) {
+				IntakeElevator.intakeFolded = false;
+			}
 			double motorPercent = OI.getInstance().getIntakeElevatorJoystickValue();
 			IntakeElevator.getInstance().setMotorSpeedPercent(motorPercent);
 		} else if (OI.getInstance().getIntakeElevatorJoystickValue() < 0) {
+			IntakeElevator.intakeFolded = false;
 			double motorPercent = OI.getInstance().getIntakeElevatorJoystickValue();
 			IntakeElevator.getInstance().setMotorSpeedPercent(motorPercent);
 		}
