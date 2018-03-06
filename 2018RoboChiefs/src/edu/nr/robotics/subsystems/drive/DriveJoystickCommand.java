@@ -8,6 +8,8 @@ import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 
 public class DriveJoystickCommand extends JoystickCommand {
 
+	double prevTime = 0;
+	
 	private GyroCorrection gyroCorrection;
 
 	public DriveJoystickCommand() {
@@ -22,6 +24,9 @@ public class DriveJoystickCommand extends JoystickCommand {
 	@Override
 	public void onExecute() {
 		
+		double dt = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - prevTime;
+		prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+				
 		switch (OI.driveMode) {
 		case arcadeDrive:
 			double moveValue = OI.getInstance().getArcadeMoveValue();

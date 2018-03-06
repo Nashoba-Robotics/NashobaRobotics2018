@@ -224,10 +224,11 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(operatorRight, INTAKE_BOTTOM_HEIGHT_BUTTON_NUMBER)
 				.whenPressed(new IntakeElevatorBottomCommand());
 
+
 		new JoystickButton(operatorRight, CANCEL_ALL_BUTTON_NUMBER).whenPressed(new CancelAllCommand());
 
 		new JoystickButton(operatorRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenPressed(new DriveToCubeButtonCommand(true));
-
+		
 		new JoystickButton(operatorRight, INTAKE_ROLLERS_STOP_BUTTON_NUMBER)
 				.whenPressed(new IntakeRollersStopCommand());
 
@@ -253,6 +254,7 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(operatorRight, ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER).whenPressed(new ElevatorBottomDropCommand());
 
 		new JoystickButton(operatorRight, TRANSFER_CUBE_BUTTON_NUMBER).whenPressed(new CubeFeedIntakeRollersToElevatorCommand());
+		
 	}
 
 	public static OI getInstance() {

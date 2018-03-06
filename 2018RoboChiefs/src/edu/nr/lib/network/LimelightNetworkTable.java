@@ -54,9 +54,8 @@ public class LimelightNetworkTable extends TimerTask {
 	private LimelightNetworkTable() {
 		limelightInstance = NetworkTableInstance.create();
 		timer = new Timer();
-		timer.scheduleAtFixedRate(this, 0, (long) DEFAULT_PERIOD.get(Time.Unit.MILLISECOND));
+		timer.schedule(this, 0, (long) DEFAULT_PERIOD.get(Time.Unit.MILLISECOND));
 		limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
-		//limelightTable = limelightInstance.getTable("limelight");
 		lightLED(DEFAULT_LED_LIGHT);
 		setPipeline(DEFAULT_PIPELINE);
 	}
