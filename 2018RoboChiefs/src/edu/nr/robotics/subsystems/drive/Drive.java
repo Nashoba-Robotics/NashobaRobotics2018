@@ -664,7 +664,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	public TalonSRX getPigeonTalon() {
-		return hDriveFollow;
+		return rightDriveFollow;
 	}
 	
 	@Override
