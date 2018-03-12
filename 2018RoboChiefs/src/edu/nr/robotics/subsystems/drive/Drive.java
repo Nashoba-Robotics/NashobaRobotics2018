@@ -37,7 +37,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 
 	private static Drive singleton;
 	
-	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow, hDrive, hDriveFollow, pigeonTalon;
+	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow, hDrive, hDriveFollow;
 	
 	/**
 	 * The Gear ratio between the encoder and the drive wheels
@@ -193,7 +193,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The angle within which the turning stops
 	 */
-	public static final Angle DRIVE_ANGLE_THRESHOLD = new Angle(0.1, Angle.Unit.DEGREE);
+	public static final Angle DRIVE_ANGLE_THRESHOLD = new Angle(1, Angle.Unit.DEGREE);
 
 	/**
 	 * The angle the robot turns to once disabled at full turn speed. Used for GyroCorrection ramped mode
@@ -277,7 +277,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			leftDrive = CTRECreator.createMasterTalon(RobotMap.LEFT_DRIVE);
 			rightDrive = CTRECreator.createMasterTalon(RobotMap.RIGHT_DRIVE);
 			hDrive = CTRECreator.createMasterTalon(RobotMap.H_DRIVE);
-			pigeonTalon = CTRECreator.createMasterTalon(RobotMap.H_DRIVE_FOLLOW);
 			
 			leftDriveFollow = CTRECreator.createFollowerTalon(RobotMap.LEFT_DRIVE_FOLLOW, leftDrive.getDeviceID());
 			rightDriveFollow = CTRECreator.createFollowerTalon(RobotMap.RIGHT_DRIVE_FOLLOW, rightDrive.getDeviceID());
