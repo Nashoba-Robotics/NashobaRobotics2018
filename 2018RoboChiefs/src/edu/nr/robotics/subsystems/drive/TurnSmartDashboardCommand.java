@@ -4,7 +4,10 @@ import edu.nr.lib.NRMath;
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.interfaces.TriplePIDOutput;
+import edu.nr.lib.motionprofiling.HDriveDiagonalProfiler;
 import edu.nr.lib.units.Angle;
+import edu.nr.lib.units.Distance;
+import edu.nr.lib.units.Speed;
 
 public class TurnSmartDashboardCommand extends NRCommand {
 		
@@ -50,15 +53,10 @@ public class TurnSmartDashboardCommand extends NRCommand {
 	public boolean isFinishedNR() {
 		
 		boolean finished;
-		if (Drive.exact) {
-			finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftPosition())).abs()
-					.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-					&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightPosition())).abs()
-					.lessThan(Drive.PROFILE_POSITION_THRESHOLD) && 
+		finished = Drive.getInstance().getLeftVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD)
+					&& Drive.getInstance().getRightVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD)
+					&& Drive.getInstance().getHVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD) && 
 					(initialAngle.sub(gyro.getAngleError())).abs().lessThan(Drive.DRIVE_ANGLE_THRESHOLD);
-		} else {
-			finished = (initialAngle.sub(gyro.getAngleError())).abs().lessThan(Drive.DRIVE_ANGLE_THRESHOLD);	
-		}
 		return finished;
 	}
 

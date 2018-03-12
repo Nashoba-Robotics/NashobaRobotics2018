@@ -52,7 +52,7 @@ public class EnableMotionProfileSmartDashboardCommand extends NRCommand {
 	public boolean isFinishedNR() {
 		boolean finished;
 		
-		finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftPosition())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
+		/*finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftPosition())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 				&& (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getLeftPosition())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 				&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightPosition())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 				&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getRightPosition())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
@@ -60,7 +60,8 @@ public class EnableMotionProfileSmartDashboardCommand extends NRCommand {
 				&& (Drive.getInstance().getHistoricalHPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getHPosition())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 				&& (Drive.getInstance().getHistoricalHPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getHPosition())).abs().lessThan(Drive.PROFILE_POSITION_THRESHOLD)
 				&& Math.abs(((Math.abs(Drive.getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H) - initialHPosition.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H))) - Math.abs(HDriveDiagonalProfiler.posPointsH.get(HDriveDiagonalProfiler.posPointsH.size() - 1)))) < Drive.END_THRESHOLD.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H);
-		return finished;
+		*/
+		return false;
 	}
 
 }

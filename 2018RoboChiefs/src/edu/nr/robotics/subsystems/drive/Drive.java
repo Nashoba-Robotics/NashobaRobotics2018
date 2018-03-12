@@ -38,7 +38,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	private static Drive singleton;
 	
 	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow, hDrive, hDriveFollow, pigeonTalon;
-	private TalonEncoder leftEncoder, rightEncoder, hEncoder;
 	
 	/**
 	 * The Gear ratio between the encoder and the drive wheels
@@ -184,10 +183,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	public static final Distance END_THRESHOLD = new Distance(3, Distance.Unit.INCH);
 	
-	/**
-	 * Position error in motion profiling that talon needs to be within for 2 * profile position threshold for profile to stop
-	 */
-	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(1.0, Distance.Unit.INCH);
+	public static final Speed PROFILE_END_SPEED_THRESHOLD = new Speed(0.01, Distance.Unit.INCH, Time.Unit.SECOND);
 	
 	/**
 	 * Time stopped before motion profiling ends
@@ -197,7 +193,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The angle within which the turning stops
 	 */
-	public static final Angle DRIVE_ANGLE_THRESHOLD = new Angle(1, Angle.Unit.DEGREE);
+	public static final Angle DRIVE_ANGLE_THRESHOLD = new Angle(0.1, Angle.Unit.DEGREE);
 
 	/**
 	 * The angle the robot turns to once disabled at full turn speed. Used for GyroCorrection ramped mode
@@ -320,9 +316,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			
 			leftDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			leftDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			
-			leftEncoder = new TalonEncoder(leftDrive, Distance.Unit.MAGNETIC_ENCODER_TICK);
-			
+						
 			leftDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
 			rightDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
@@ -348,9 +342,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			
 			rightDrive.configClosedloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			rightDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			
-			rightEncoder = new TalonEncoder(rightDrive, Distance.Unit.MAGNETIC_ENCODER_TICK);
-			
+						
 			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
 			hDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, NO_TIMEOUT);
@@ -377,9 +369,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			
 			hDrive.configClosedloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
 			hDrive.configOpenloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), NO_TIMEOUT);
-			
-			hEncoder = new TalonEncoder(hDrive, Distance.Unit.MAGNETIC_ENCODER_TICK_H);
-			
+						
 			hDriveFollow.setNeutralMode(NEUTRAL_MODE);
 				
 			CheesyDriveCalculationConstants.createDriveTypeCalculations();
@@ -442,45 +432,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	/**
-	 * Gets the historical position of the left talon
-	 * 
-	 * @param deltaTime
-	 *            How long ago to look
-	 * @return old position of the left talon
-	 */
-	public Distance getHistoricalLeftPosition(Time deltaTime) {
-		if (leftEncoder != null)
-			return leftEncoder.getPosition(deltaTime);
-		return Distance.ZERO;
-	}
-
-	/**
-	 * Gets the historical position of the right talon
-	 * 
-	 * @param deltaTime
-	 *            How long ago to look
-	 * @return old position of the right talon
-	 */
-	public Distance getHistoricalRightPosition(Time deltaTime) {
-		if (rightEncoder != null)
-			return rightEncoder.getPosition(deltaTime);
-		return Distance.ZERO;
-	}
-	
-	/**
-	 * Gets the historical position of the h talon
-	 * 
-	 * @param deltaTime
-	 * 				How long ago to look
-	 * @return old position of the h talon
-	 */
-	public Distance getHistoricalHPosition(Time deltaTime) {
-		if (hEncoder != null)
-			return hEncoder.getPosition(deltaTime);
-		return Distance.ZERO;
-	}
-	
-	/**
 	 * @return Current velocity of the left talon
 	 */
 	public Speed getLeftVelocity() {
@@ -504,45 +455,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public Speed getHVelocity() {
 		if(hDrive != null) 
 			return new Speed(hDrive.getSelectedSensorVelocity(SLOT_0), Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
-		return Speed.ZERO;
-	}
-	
-	/**
-	 * Historical velocity of the left talon
-	 * 
-	 * @param deltaTime
-	 * 			How long ago to look
-	 * @return Velocity of left talon
-	 */
-	public Speed getHistoricalLeftVelocity(Time deltaTime) {
-		if (leftEncoder != null)
-			return new Speed(leftEncoder.getVelocity(deltaTime));
-		return Speed.ZERO;
-	}
-	
-	/**
-	 * Historical velocity of the right talon
-	 * 
-	 * @param deltaTime
-	 * 			How long ago to look
-	 * @return Velocity of right talon
-	 */
-	public Speed getHistoricalRightVelocity(Time deltaTime) {
-		if (rightEncoder != null)
-			return new Speed(rightEncoder.getVelocity(deltaTime));
-		return Speed.ZERO;
-	}
-	
-	/**
-	 * Historical velocity of the h talon
-	 * 
-	 * @param deltaTime
-	 * 			How long ago to look
-	 * @return Velocity of h talon
-	 */
-	public Speed getHistoricalHVelocity(Time deltaTime) {
-		if (hEncoder != null)
-			return new Speed(hEncoder.getVelocity(deltaTime));
 		return Speed.ZERO;
 	}
 	
