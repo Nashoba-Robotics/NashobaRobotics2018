@@ -38,7 +38,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	private static Drive singleton;
 	
 	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow, hDrive, hDriveFollow, pigeonTalon;
-	private TalonEncoder leftEncoder, rightEncoder, hEncoder;
 	
 	public static final double REAL_ENC_TICK_PER_INCH_DRIVE = 428;
 	public static final double REAL_ENC_TICK_PER_INCH_H_DRIVE = 1074;
@@ -290,9 +289,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			leftDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			
 			leftDrive.selectProfileSlot(VEL_SLOT, DEFAULT_TIMEOUT);
-			
-			leftEncoder = new TalonEncoder(leftDrive, Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE);
-			
+						
 			leftDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
 			rightDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);
@@ -321,9 +318,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			rightDrive.configOpenloopRamp(DRIVE_RAMP_RATE.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			
 			rightDrive.selectProfileSlot(VEL_SLOT, DEFAULT_TIMEOUT);
-			
-			rightEncoder = new TalonEncoder(rightDrive, Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE);
-			
+						
 			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
 			hDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);
@@ -351,9 +346,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			hDrive.configOpenloopRamp(H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			
 			hDrive.selectProfileSlot(VEL_SLOT, DEFAULT_TIMEOUT);
-			
-			hEncoder = new TalonEncoder(hDrive, Distance.Unit.MAGNETIC_ENCODER_TICK_H);
-			
+						
 			hDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
 			smartDashboardInit();
@@ -416,45 +409,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	/**
-	 * Gets the historical position of the left talon
-	 * 
-	 * @param deltaTime
-	 *            How long ago to look
-	 * @return old position of the left talon
-	 */
-	public Distance getHistoricalLeftPosition(Time deltaTime) {
-		if (leftEncoder != null)
-			return leftEncoder.getPosition(deltaTime);
-		return Distance.ZERO;
-	}
-
-	/**
-	 * Gets the historical position of the right talon
-	 * 
-	 * @param deltaTime
-	 *            How long ago to look
-	 * @return old position of the right talon
-	 */
-	public Distance getHistoricalRightPosition(Time deltaTime) {
-		if (rightEncoder != null)
-			return rightEncoder.getPosition(deltaTime);
-		return Distance.ZERO;
-	}
-	
-	/**
-	 * Gets the historical position of the h talon
-	 * 
-	 * @param deltaTime
-	 * 				How long ago to look
-	 * @return old position of the h talon
-	 */
-	public Distance getHistoricalHPosition(Time deltaTime) {
-		if (hEncoder != null)
-			return hEncoder.getPosition(deltaTime);
-		return Distance.ZERO;
-	}
-	
-	/**
 	 * @return Current velocity of the left talon
 	 */
 	public Speed getLeftVelocity() {
@@ -478,45 +432,6 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public Speed getHVelocity() {
 		if(hDrive != null) 
 			return new Speed(hDrive.getSelectedSensorVelocity(VEL_SLOT), Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
-		return Speed.ZERO;
-	}
-	
-	/**
-	 * Historical velocity of the left talon
-	 * 
-	 * @param deltaTime
-	 * 			How long ago to look
-	 * @return Velocity of left talon
-	 */
-	public Speed getHistoricalLeftVelocity(Time deltaTime) {
-		if (leftEncoder != null)
-			return leftEncoder.getVelocity(deltaTime);
-		return Speed.ZERO;
-	}
-	
-	/**
-	 * Historical velocity of the right talon
-	 * 
-	 * @param deltaTime
-	 * 			How long ago to look
-	 * @return Velocity of right talon
-	 */
-	public Speed getHistoricalRightVelocity(Time deltaTime) {
-		if (rightEncoder != null)
-			return rightEncoder.getVelocity(deltaTime);
-		return Speed.ZERO;
-	}
-	
-	/**
-	 * Historical velocity of the h talon
-	 * 
-	 * @param deltaTime
-	 * 			How long ago to look
-	 * @return Velocity of h talon
-	 */
-	public Speed getHistoricalHVelocity(Time deltaTime) {
-		if (hEncoder != null)
-			return hEncoder.getVelocity(deltaTime);
 		return Speed.ZERO;
 	}
 	

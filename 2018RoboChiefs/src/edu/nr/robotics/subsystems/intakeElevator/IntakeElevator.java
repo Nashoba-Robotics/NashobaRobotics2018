@@ -29,12 +29,12 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	private static IntakeElevator singleton;
 
 	private TalonSRX intakeElevTalon;
-	private TalonEncoder intakeElevEncoder;
 	
 	/**
 	 * The encoder ticks per inch moved on the intake elevator
 	 */
 	public static final double ENC_TICK_PER_INCH_INTAKE_ELEVATOR = 9488.0 / 10.3125;
+	
 	/**
 	 * The max speed of the intake elevator
 	 */
@@ -264,9 +264,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 					DEFAULT_TIMEOUT);
 			
 			intakeElevTalon.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, DEFAULT_TIMEOUT);
-	
-			intakeElevEncoder = new TalonEncoder(intakeElevTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV);
-	
+		
 			smartDashboardInit();
 		}
 	}
@@ -291,24 +289,10 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 		return Distance.ZERO;
 	}
 	
-	public Distance getHistoricalPosition(Time timePassed) {
-		if (intakeElevTalon != null) {
-			return intakeElevEncoder.getPosition(timePassed);
-		}
-		return Distance.ZERO;
-	}
-	
 	public Speed getVelocity() {
 		if (intakeElevTalon != null) {
 			return new Speed(intakeElevTalon.getSelectedSensorVelocity(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV,
 				Time.Unit.HUNDRED_MILLISECOND);
-		}
-		return Speed.ZERO;
-	}
-	
-	public Speed getHistoricalVelocity(Time timePassed) {
-		if (intakeElevTalon != null) {
-			return intakeElevEncoder.getVelocity(timePassed);
 		}
 		return Speed.ZERO;
 	}

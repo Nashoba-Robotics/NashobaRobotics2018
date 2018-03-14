@@ -21,7 +21,6 @@ public class Climber extends NRSubsystem {
 	private static Climber singleton;
 	
 	private TalonSRX climberTalon;
-	private TalonEncoder climberEncoder;
 	
 	public static final double ENC_TICKS_PER_INCH_CLIMBER = 0; //TODO: Find encoder ticks per inch for climber
 	
@@ -94,9 +93,7 @@ public class Climber extends NRSubsystem {
 	
 			climberTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			climberTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_CLIMBER.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
-	
-			climberEncoder = new TalonEncoder(climberTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_CLIMBER);
-	
+		
 		}
 
 		smartDashboardInit();
@@ -132,19 +129,6 @@ public class Climber extends NRSubsystem {
 		if (climberTalon != null)
 			return new Speed(climberTalon.getSelectedSensorVelocity(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_CLIMBER,
 				Time.Unit.HUNDRED_MILLISECOND);
-		return Speed.ZERO;
-	}
-	
-	/**
-	 * Gets the historical velocity of the climber talon
-	 * 
-	 * @param timePassed
-	 *            How long ago to look
-	 * @return old velocity of the climber talon
-	 */
-	public Speed getHistoricalVelocity(Time timePassed) {
-		if (climberTalon != null)
-			return climberEncoder.getVelocity(timePassed);
 		return Speed.ZERO;
 	}
 	

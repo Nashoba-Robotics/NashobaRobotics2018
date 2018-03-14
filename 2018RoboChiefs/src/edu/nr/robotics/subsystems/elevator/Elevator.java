@@ -31,7 +31,6 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	private static Elevator singleton;
 
 	private TalonSRX elevTalon, elevTalonFollow;
-	private TalonEncoder elevEncoder;
 
 	/**
 	 * The encoder ticks per inch moved on the elevator
@@ -259,9 +258,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 			
 			elevTalon.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, DEFAULT_TIMEOUT);
 			elevTalon.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, DEFAULT_TIMEOUT);
-	
-			elevEncoder = new TalonEncoder(elevTalon, Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV);
-	
+		
 			elevTalonFollow.setNeutralMode(NEUTRAL_MODE_ELEVATOR);
 			
 			if (EnabledSubsystems.ELEVATOR_DUMB_ENABLED) {
@@ -297,38 +294,12 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	}
 
 	/**
-	 * Gets the historical position of the elevator talon
-	 * 
-	 * @param timePassed
-	 *            How long ago to look
-	 * @return old position of the elevator talon
-	 */
-	public Distance getHistoricalPosition(Time timePassed) {
-		if (elevTalon != null)
-			return elevEncoder.getPosition(timePassed);
-		return Distance.ZERO;
-	}
-
-	/**
 	 * @return The current velocity of the elevator encoders
 	 */
 	public Speed getVelocity() {
 		if (elevTalon != null)
 			return new Speed(elevTalon.getSelectedSensorVelocity(PID_TYPE), Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
 				Time.Unit.HUNDRED_MILLISECOND);
-		return Speed.ZERO;
-	}
-
-	/**
-	 * Gets the historical velocity of the elevator talon
-	 * 
-	 * @param timePassed
-	 *            How long ago to look
-	 * @return old velocity of the elevator talon
-	 */
-	public Speed getHistoricalVelocity(Time timePassed) {
-		if (elevTalon != null)
-			return elevEncoder.getVelocity(timePassed);
 		return Speed.ZERO;
 	}
 
