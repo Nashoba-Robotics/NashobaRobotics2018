@@ -105,7 +105,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	 * The default profiling acceleration of the intake elevator
 	 */
 	public static double PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR = 0.9; // TODO: Decide on PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR
-
+	
 	/**
 	 * The distance from the end of the intake elevator profile at which the stopping
 	 * algorithm starts

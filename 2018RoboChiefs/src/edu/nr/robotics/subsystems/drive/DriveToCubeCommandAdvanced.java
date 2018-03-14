@@ -35,7 +35,7 @@ public class DriveToCubeCommandAdvanced extends NRCommand {
 		new EnableLimelightCommand(true).start();
 		gyro.reset();
 		
-		if ((IntakeElevator.getInstance().getPosition().sub(IntakeElevator.INTAKE_HEIGHT)).abs().greaterThan(IntakeElevator.PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR)) {
+		if ((IntakeElevator.getInstance().getPosition().sub(IntakeElevator.INTAKE_HEIGHT)).abs().greaterThan(IntakeElevator.PROFILE_END_POS_THRESHOLD_INTAKE_ELEVATOR)) {
 			finished = true;
 		} else {
 			finished = false;

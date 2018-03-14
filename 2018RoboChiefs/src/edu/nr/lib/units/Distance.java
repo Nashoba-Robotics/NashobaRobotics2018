@@ -16,7 +16,7 @@ public class Distance {
 	public enum Unit implements GenericUnit {
 		FOOT, INCH, METER,
 		MAGNETIC_ENCODER_TICK_DRIVE, MAGNETIC_ENCODER_TICK_H, MAGNETIC_ENCODER_TICK_ELEV, MAGNETIC_ENCODER_TICK_INTAKE_ELEV,
-		MAGNETIC_ENCODER_TICK_ELEV_SHOOTER, MAGNETIC_ENCODER_TICK_CLIMBER;
+		MAGNETIC_ENCODER_TICK_CLIMBER;
 		
 		public static final Unit defaultUnit = INCH;
 		
@@ -35,12 +35,7 @@ public class Distance {
 		 */
 		private static final double ENCODER_TICK_ELEV_PER_INCH = Elevator.ENC_TICK_PER_INCH_CARRIAGE;
 		private static final double ENCODER_TICK_INTAKE_ELEV_PER_INCH = IntakeElevator.ENC_TICK_PER_INCH_INTAKE_ELEVATOR;
-		
-		/**
-		 * For an elevator shooter
-		 */
-		private static final double ENCODER_TICK_ELEV_SHOOTER_PER_INCH = ElevatorShooter.ENC_TICK_PER_INCH_ELEVATOR_SHOOTER;
-			
+				
 		/**
 		 * For the climber
 		 */
@@ -71,9 +66,6 @@ public class Distance {
 			if(this == Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV) {
 				return val / ENCODER_TICK_INTAKE_ELEV_PER_INCH;
 			}
-			if(this == Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER) {
-				return val / ENCODER_TICK_ELEV_SHOOTER_PER_INCH;
-			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_CLIMBER) {
 				return val / ENCODER_TICK_CLIMBER_PER_INCH;
 			}
@@ -101,9 +93,6 @@ public class Distance {
 			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV) {
 				return ENCODER_TICK_INTAKE_ELEV_PER_INCH * val;
-			}
-			if(this == Unit.MAGNETIC_ENCODER_TICK_ELEV_SHOOTER) {
-				return ENCODER_TICK_ELEV_SHOOTER_PER_INCH * val;
 			}
 			if(this == Unit.MAGNETIC_ENCODER_TICK_CLIMBER) {
 				return ENCODER_TICK_CLIMBER_PER_INCH * val;
