@@ -19,7 +19,6 @@ public class ClimbButtonCommand extends NRCommand {
 	
 	@Override
 	protected void onEnd() {
-		System.out.println("Here");
 		Climber.getInstance().setMotorSpeedPercent(0);
 	}
 	

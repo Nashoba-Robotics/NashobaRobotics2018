@@ -76,6 +76,11 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	public static double PROFILE_VEL_PERCENT_ELEVATOR = 0.8;
 
 	/**
+	 * The percent the elevator is driven when 'dropped'
+	 */
+	public static final double DROP_PERCENT_ELEVATOR = -0.2;
+	
+	/**
 	 * The default profiling acceleration of the elevator
 	 */
 	public static double PROFILE_ACCEL_PERCENT_ELEVATOR = 0.9;

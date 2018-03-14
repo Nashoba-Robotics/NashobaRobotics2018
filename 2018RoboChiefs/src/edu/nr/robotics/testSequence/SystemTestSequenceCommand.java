@@ -21,7 +21,6 @@ public class SystemTestSequenceCommand extends NRCommand {
 	private boolean isIntakeElevRevLimitSwitchHit = false;
 	
 	private double climberCurrent = 0;
-	private double cubeHandlerCurrent = 0;
 	private double elevatorCurrent = 0;
 	private double elevatorShooterCurrent = 0;
 	private double intakeElevatorCurrent = 0;
@@ -92,6 +91,7 @@ public class SystemTestSequenceCommand extends NRCommand {
 		elevatorShooterCurrentAve = elevatorShooterCurrent / elevatorShooterCounter;
 		intakeElevatorCurrentAve = intakeElevatorCurrent / intakeElevatorCounter;
 		intakeRollersCurrentLeftAve = intakeRollersLeftCurrent / intakeRollersLeftCounter;
+		intakeRollersCurrentRightAve = intakeRollersRightCurrent / intakeRollersRightCounter;
 		
 		if (climberCurrentAve > CLIMBER_STRESS_CURRENT) {
 			System.out.println("CLIMBER CURRENT TOO HIGH: " + climberCurrentAve + " A");	
@@ -128,10 +128,6 @@ public class SystemTestSequenceCommand extends NRCommand {
 		} else if (intakeRollersCurrentRightAve < INTAKE_ROLLERS_LOW_CURRENT) {
 			System.out.println("INTAKE ROLLERS RIGHT CURRENT TOO LOW: " + intakeRollersCurrentRightAve + " A");
 		
-		}
-		
-		if (!Elevator.getInstance().isRevLimitSwitchClosed()) {
-			System.out.println("ELEVATOR REV LIMIT SWITCH NOT CLOSED!");
 		}
 		
 		if (!isIntakeElevRevLimitSwitchHit) {

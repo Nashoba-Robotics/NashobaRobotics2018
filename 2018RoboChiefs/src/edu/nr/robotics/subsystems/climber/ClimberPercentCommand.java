@@ -8,14 +8,16 @@ import edu.nr.robotics.subsystems.elevator.ElevatorPercentRawCommand;
 
 public class ClimberPercentCommand extends NRCommand {
 	
-	public ClimberPercentCommand() {
+	private double percent;
+	
+	public ClimberPercentCommand(double percent) {
 		super(Climber.getInstance());
-		
+		this.percent = percent;
 	}
 	
 	@Override
 	protected void onStart() {
-		Climber.getInstance().setMotorSpeedPercent(Climber.CLIMB_PERCENT);
+		Climber.getInstance().setMotorSpeedPercent(percent);
 	}
 	
 	@Override
