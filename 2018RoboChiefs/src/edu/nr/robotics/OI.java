@@ -1,41 +1,33 @@
 package edu.nr.robotics;
 
 import edu.nr.lib.commandbased.CancelAllCommand;
+import edu.nr.lib.commandbased.DoNothingCommand;
 import edu.nr.lib.gyro.ResetGyroCommand;
 import edu.nr.lib.interfaces.SmartDashboardSource;
-import edu.nr.lib.joystickbuttons.ConditionalDoubleJoystickButton;
-import edu.nr.lib.joystickbuttons.ConditionalJoystickButton;
 import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Distance;
 import edu.nr.robotics.multicommands.ClimbButtonCommand;
 import edu.nr.robotics.multicommands.ClimbPrepareCommand;
 import edu.nr.robotics.multicommands.CubeFeedIntakeRollersToElevatorCommand;
-import edu.nr.robotics.multicommands.DriveToCubeButtonCommand;
 import edu.nr.robotics.multicommands.FoldIntakeMultiCommand;
 import edu.nr.robotics.multicommands.PrepareScoreElevatorBottomCommand;
 import edu.nr.robotics.multicommands.PrepareScorePortalCommand;
-import edu.nr.robotics.multicommands.PrepareScoreScaleCommand;
-import edu.nr.robotics.multicommands.PrepareScoreSwitchCommand;
 import edu.nr.robotics.subsystems.climber.ClimberCoastCommand;
 import edu.nr.robotics.subsystems.climber.ClimberStopCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveDumbToggleCommand;
+import edu.nr.robotics.subsystems.drive.DriveToCubeButtonCommand;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorBottomDropCommand;
-import edu.nr.robotics.subsystems.elevator.ElevatorDeltaPositionCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileDeltaCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
-import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorFoldCommand;
-import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorHandlerCommand;
-import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorMoveBasicCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
-import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersReverseCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersStopCommand;
 import edu.nr.robotics.subsystems.sensors.EnableFloorSensorCommand;
@@ -87,6 +79,8 @@ public class OI implements SmartDashboardSource {
 	private static final int DUMB_DRIVE_BUTTON_NUMBER = 14;
 
 	private static final int ENABLE_SCALE_STOPPING_BUTTON_NUMBER = 1;
+	private static final int DRIVE_TO_CUBE_JOYSTICK_BUTTON_NUMBER = 4;
+	
 	private static final int RESET_GYRO_BUTTON_NUMBER = 8;
 	private static final int CLIMB_COAST_BUTTON_NUMBER = 10;
 
@@ -151,6 +145,9 @@ public class OI implements SmartDashboardSource {
 		// SystemTestSequenceCommand());
 
 		new JoystickButton(driveLeft, CLIMB_COAST_BUTTON_NUMBER).whenPressed(new ClimberCoastCommand(true));
+		
+		new JoystickButton(driveLeft, DRIVE_TO_CUBE_JOYSTICK_BUTTON_NUMBER).whenPressed(new DriveToCubeJoystickCommand());
+		new JoystickButton(driveLeft, DRIVE_TO_CUBE_JOYSTICK_BUTTON_NUMBER).whenReleased(new DoNothingCommand(Drive.getInstance()));
 	}
 
 	public void initDriveRight() {
