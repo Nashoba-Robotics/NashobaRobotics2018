@@ -149,17 +149,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The position from the end at which profile position threshold takes effect
 	 */
-	public static final Distance END_THRESHOLD = new Distance(3, Distance.Unit.INCH); //TODO: Find End Threshold
+	public static final Distance END_THRESHOLD = new Distance(3, Distance.Unit.INCH);
 	
 	/**
-	 * Position error in motion profiling that talon needs to be within for 2 * profile position threshold for profile to stop
+	 * The speed the profile needs to be under to stop
 	 */
-	public static final Distance PROFILE_POSITION_THRESHOLD = new Distance(1, Distance.Unit.INCH);
-	
-	/**
-	 * Time stopped before motion profiling ends
-	 */
-	public static final Time PROFILE_TIME_THRESHOLD = new Time(10, Time.Unit.MILLISECOND);
+	public static final Speed PROFILE_END_SPEED_THRESHOLD = new Speed(0.1, Distance.Unit.INCH, Time.Unit.SECOND);
 	
 	/**
 	 * The angle within which the turning stops
