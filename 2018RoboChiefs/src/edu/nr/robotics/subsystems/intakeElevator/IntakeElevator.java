@@ -110,14 +110,9 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	 * The distance from the end of the intake elevator profile at which the stopping
 	 * algorithm starts
 	 */
-	public static final Distance PROFILE_END_POS_THRESHOLD_INTAKE_ELEVATOR = new Distance(1, Distance.Unit.INCH); // TODO: Decide on PROFILE_END_POS_THRESHOLD_INTAKE_ELEVATOR
+	public static final Distance PROFILE_END_POS_THRESHOLD_INTAKE_ELEVATOR = new Distance(1, Distance.Unit.INCH);
 
-	/**
-	 * The change in position intake elevator within for
-	 * PROFILE_TIME_POS_THRESHOLD_INTAKE_ELEVATOR before stopping profile
-	 */
-	public static final Distance PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR = new Distance(1, Distance.Unit.INCH); // TODO: Decide on PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR
-	public static final Time PROFILE_DELTA_TIME_THRESHOLD_INTAKE_ELEVATOR = new Time(100, Time.Unit.MILLISECOND);
+	public static final Speed PROFILE_STOP_SPEED_THRESHOLD = new Speed(0.1, Distance.Unit.INCH, Time.Unit.SECOND); //TODO: Decide on this
 
 	/**
 	 * Time multiplier for the ramp of the ramped trajectory

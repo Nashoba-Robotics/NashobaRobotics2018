@@ -116,12 +116,10 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	public static final Distance PROFILE_END_POS_THRESHOLD_ELEVATOR = new Distance(10, Distance.Unit.INCH); // TODO: Decide on PROFILE_END_POS_THRESHOLD_ELEVATOR
 
 	/**
-	 * The change in position elevator within for
-	 * PROFILE_TIME_POS_THRESHOLD_ELEVATOR before stopping profile
+	 * The speed the elevator needs to be under to stop the profile
 	 */
-	public static final Distance PROFILE_DELTA_POS_THRESHOLD_ELEVATOR = new Distance(2, Distance.Unit.INCH); // TODO: Decide on PROFILE_DELTA_POS_THRESHOLD_ELEVATOR
-	public static final Time PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR = new Time(0.1, Time.Unit.SECOND); // TODO: Decide on PROFILE_DELTA_TIME_THRESHOLD_ELEVATOR
-
+	public static final Speed PROFILE_STOP_SPEED_THRESHOLD = new Speed(0.1, Distance.Unit.INCH, Time.Unit.SECOND); //TODO: Find real number
+	
 	/**
 	 * Time multiplier for the ramp of the ramped trajectory
 	 */

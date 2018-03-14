@@ -23,11 +23,9 @@ public class IntakeElevatorDeltaPositionSmartDashboardCommand extends NRCommand 
 	
 	@Override
 	protected boolean isFinishedNR() {
-		boolean finished = (IntakeElevator.getInstance().getHistoricalPosition(IntakeElevator.PROFILE_DELTA_TIME_THRESHOLD_INTAKE_ELEVATOR)
-				.sub(IntakeElevator.getInstance().getPosition())).abs().lessThan(IntakeElevator.PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR)
-				&& (IntakeElevator.getInstance().getHistoricalPosition(IntakeElevator.PROFILE_DELTA_TIME_THRESHOLD_INTAKE_ELEVATOR.mul(2))
-						.sub(IntakeElevator.getInstance().getPosition())).abs().lessThan(IntakeElevator.PROFILE_DELTA_POS_THRESHOLD_INTAKE_ELEVATOR)
-				&& (initialPos.add(IntakeElevator.profileDeltaPos).sub(IntakeElevator.getInstance().getPosition())).abs().lessThan(IntakeElevator.PROFILE_END_POS_THRESHOLD_INTAKE_ELEVATOR);
+		boolean finished = IntakeElevator.getInstance().getVelocity().lessThan(IntakeElevator.PROFILE_STOP_SPEED_THRESHOLD)
+				&& (initialPos.add(IntakeElevator.profileDeltaPos).sub(IntakeElevator.getInstance().getPosition())).abs()
+						.lessThan(IntakeElevator.PROFILE_END_POS_THRESHOLD_INTAKE_ELEVATOR);
 		return finished;
 	}
 

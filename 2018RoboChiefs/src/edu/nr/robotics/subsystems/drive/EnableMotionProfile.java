@@ -20,9 +20,7 @@ public class EnableMotionProfile extends NRCommand {
 	Distance distH;
 	double maxVelPercent;
 	double maxAccelPercent;
-	
-	private final Distance END_THRESHOLD = Drive.END_THRESHOLD;
-	
+		
 	public EnableMotionProfile(Distance dist, Distance distH, double maxVelPercent, double maxAccelPercent) {
 		super(Drive.getInstance());
 		this.dist = dist;

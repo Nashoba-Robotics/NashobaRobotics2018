@@ -30,6 +30,6 @@ public class ElevatorMoveBasicCommand extends NRCommand {
 	@Override
 	protected boolean isFinishedNR() {
 		return (Elevator.getInstance().getPosition().sub(initialPos.add(height))).abs()
-				.lessThan(Elevator.PROFILE_DELTA_POS_THRESHOLD_ELEVATOR);
+				.lessThan(Elevator.PROFILE_END_POS_THRESHOLD_ELEVATOR);
 	}
 }
