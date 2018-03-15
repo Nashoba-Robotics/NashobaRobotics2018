@@ -19,7 +19,7 @@ public class PrepareScoreSwitchCommand extends CommandGroup {
 	
 	public PrepareScoreSwitchCommand() {
 
-		addSequential(new AnonymousCommandGroup() {
+		/*addSequential(new AnonymousCommandGroup() {
 			
 			@Override
 			public void commands() {
@@ -41,6 +41,18 @@ public class PrepareScoreSwitchCommand extends CommandGroup {
 		
 		addSequential(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR,
 						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
+		*/
+		
+		addSequential(new AnonymousCommandGroup() {
+			
+			@Override
+			public void commands() {
+				addParallel(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR,
+						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
+				
+				addParallel(new IntakeElevatorFoldCommand());
+			}
+		});
 	
 	}
 }

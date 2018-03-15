@@ -5,21 +5,26 @@ import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.robotics.subsystems.climber.Climber;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 
-public class ClimbButtonCommand extends NRCommand {
+public class ClimberStopButtonCommand extends NRCommand {
 	
-	public ClimbButtonCommand() {
+	public ClimberStopButtonCommand() {
 		super(new NRSubsystem[] {Climber.getInstance(), Elevator.getInstance()});
 	}
 	
 	@Override
 	protected void onStart() {
+		Climber.getInstance().setMotorSpeedPercent(Climber.CLIMB_HOLD_PERCENT);
 		Elevator.getInstance().setMotorPercentRaw(0);
-		Climber.getInstance().setMotorSpeedPercent(Climber.CLIMB_PERCENT);
+	}
+	
+	@Override
+	protected void onEnd() {
+		Climber.getInstance().setMotorSpeedPercent(0);
 	}
 	
 	@Override
 	protected boolean isFinishedNR() {
 		return false;
 	}
-	
+
 }

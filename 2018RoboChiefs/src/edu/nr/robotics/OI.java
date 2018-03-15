@@ -8,12 +8,13 @@ import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Distance;
 import edu.nr.robotics.multicommands.ClimbButtonCommand;
 import edu.nr.robotics.multicommands.ClimbPrepareCommand;
+import edu.nr.robotics.multicommands.ClimberStopButtonCommand;
 import edu.nr.robotics.multicommands.CubeFeedIntakeRollersToElevatorCommand;
 import edu.nr.robotics.multicommands.FoldIntakeMultiCommand;
 import edu.nr.robotics.multicommands.PrepareScoreElevatorBottomCommand;
 import edu.nr.robotics.multicommands.PrepareScorePortalCommand;
+import edu.nr.robotics.multicommands.PrepareScoreSwitchCommand;
 import edu.nr.robotics.subsystems.climber.ClimberCoastCommand;
-import edu.nr.robotics.subsystems.climber.ClimberStopCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveDumbToggleCommand;
 import edu.nr.robotics.subsystems.drive.DriveToCubeButtonCommand;
@@ -176,7 +177,7 @@ public class OI implements SmartDashboardSource {
 				.whenPressed(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_LOW_ELEVATOR_SHOOTER));
 
 		new JoystickButton(operatorLeft, CLIMB_BUTTON_NUMBER).whenPressed(new ClimbButtonCommand());
-		new JoystickButton(operatorLeft, CLIMB_BUTTON_NUMBER).whenReleased(new ClimberStopCommand());
+		new JoystickButton(operatorLeft, CLIMB_BUTTON_NUMBER).whenReleased(new ClimberStopButtonCommand());
 
 		scaleButton = new JoystickButton(operatorLeft, SCALE_BUTTON_NUMBER);
 		switchButton = new JoystickButton(operatorLeft, SWITCH_BUTTON_NUMBER);
@@ -184,29 +185,13 @@ public class OI implements SmartDashboardSource {
 		lowGoalButton = new JoystickButton(operatorLeft, LOW_GOAL_BUTTON_NUMBER);
 
 		//Scale
-		/*new ConditionalJoystickButton(scaleButton, !EnabledSensors.elevatorSensor.get())
-				.whenPressed(new ElevatorProfileCommandGroup(Elevator.SCALE_HEIGHT_ELEVATOR,
-						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));*/
-		/*new ConditionalJoystickButton(scaleButton, EnabledSensors.elevatorSensor.get())
-				.whenPressed(new PrepareScoreScaleCommand());*/
 		scaleButton.whenPressed(new ElevatorProfileCommandGroup(Elevator.SCALE_HEIGHT_ELEVATOR,
 				Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 		
 		//Switch
-		/*new ConditionalJoystickButton(switchButton, !EnabledSensors.elevatorSensor.get())
-				.whenPressed(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR,
-						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));*/
-		/*new ConditionalJoystickButton(switchButton, EnabledSensors.elevatorSensor.get())
-				.whenPressed(new PrepareScoreSwitchCommand());*/
-		switchButton.whenPressed(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR,
-				Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
+		switchButton.whenPressed(new PrepareScoreSwitchCommand());
 		
 		//Bottom
-		/*new ConditionalJoystickButton(bottomButton, !EnabledSensors.elevatorSensor.get())
-				.whenPressed(new ElevatorProfileCommandGroup(Elevator.BOTTOM_HEIGHT_ELEVATOR,
-						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));*/
-		/*new ConditionalJoystickButton(bottomButton, EnabledSensors.elevatorSensor.get())
-				.whenPressed(new PrepareScoreElevatorBottomCommand());*/
 		bottomButton.whenPressed(new PrepareScoreElevatorBottomCommand());
 		
 		//Low Goal

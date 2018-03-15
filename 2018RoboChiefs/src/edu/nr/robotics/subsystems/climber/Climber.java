@@ -28,6 +28,8 @@ public class Climber extends NRSubsystem {
 	
 	public static final double CLIMB_PERCENT = 0.95;
 	
+	public static final double CLIMB_HOLD_PERCENT = 0; //TODO: Find CLIMB_HOLD_PERCENT
+	
 	/**
 	 * The voltage ramp rate of the climber. Voltage ramp rate is time it takes
 	 * to go from 0V to 12V

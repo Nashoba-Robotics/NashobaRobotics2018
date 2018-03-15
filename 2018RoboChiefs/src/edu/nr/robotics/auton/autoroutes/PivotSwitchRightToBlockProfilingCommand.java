@@ -25,6 +25,8 @@ public class PivotSwitchRightToBlockProfilingCommand extends CommandGroup {
 		addSequential(new TurnCommand(Drive.getInstance(), new Angle(-90, Angle.Unit.DEGREE),
 				Drive.MAX_PROFILE_TURN_PERCENT));
 
+		addSequential(new EnableLimelightCommand(true));
+		
 		addSequential(new AnonymousCommandGroup() {
 			
 			@Override

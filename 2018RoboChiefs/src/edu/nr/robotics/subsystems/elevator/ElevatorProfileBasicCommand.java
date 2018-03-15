@@ -49,7 +49,7 @@ public class ElevatorProfileBasicCommand extends NRCommand {
 	
 	@Override
 	public boolean isFinishedNR() {
-		boolean finished = Elevator.getInstance().basicProfiler.loopIteration > Elevator.getInstance().basicProfiler.posPoints.size() - 2;
+		boolean finished = Elevator.getInstance().basicProfiler.loopIteration > Elevator.getInstance().basicProfiler.posPoints.size();
 		return finished;
 	}
 

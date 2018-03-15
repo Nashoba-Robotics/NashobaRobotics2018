@@ -118,8 +118,8 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	 * The distance from the end of the elevator profile at which the stopping
 	 * algorithm starts
 	 */
-	public static final Distance PROFILE_END_POS_THRESHOLD_ELEVATOR = new Distance(10, Distance.Unit.INCH); // TODO: Decide on PROFILE_END_POS_THRESHOLD_ELEVATOR
-
+	public static final Distance PROFILE_END_POS_THRESHOLD_ELEVATOR = new Distance(3, Distance.Unit.INCH);
+	
 	/**
 	 * The speed the elevator needs to be under to stop the profile
 	 */
