@@ -75,18 +75,18 @@ public class OI implements SmartDashboardSource {
 	private static final int CLIMB_BUTTON_NUMBER = 10; // Left
 
 	private static final int ACQUIRE_CUBE_BUTTON_NUMBER = 12; // Right
-	private static final int HALF_TURN_BUTTON_NUMBER = 2;
-	private static final int QUARTER_TURN_LEFT_BUTTON_NUMBER = 3;
-	private static final int QUARTER_TURN_RIGHT_BUTTON_NUMBER = 4;
-	private static final int DUMB_DRIVE_BUTTON_NUMBER = 14;
+	private static final int HALF_TURN_BUTTON_NUMBER = 3;
+	private static final int QUARTER_TURN_LEFT_BUTTON_NUMBER = 4;
+	private static final int QUARTER_TURN_RIGHT_BUTTON_NUMBER = 5;
+	private static final int DUMB_DRIVE_BUTTON_NUMBER = 10;
 
 	private static final int ENABLE_SCALE_STOPPING_BUTTON_NUMBER = 1;
-	private static final int DRIVE_TO_CUBE_JOYSTICK_BUTTON_NUMBER = 4;
+	private static final int DRIVE_TO_CUBE_JOYSTICK_BUTTON_NUMBER = 5;
 	
-	private static final int RESET_GYRO_BUTTON_NUMBER = 8;
-	private static final int CLIMB_COAST_BUTTON_NUMBER = 10;
+	private static final int RESET_GYRO_BUTTON_NUMBER = 7;
+	private static final int CLIMB_COAST_BUTTON_NUMBER = 6;
 
-	private static final int TEST_SEQUENCE_BUTTON_NUMBER = -1;
+	private static final int TEST_SEQUENCE_BUTTON_NUMBER = 10;
 
 	private double driveSpeedMultiplier = 1;
 

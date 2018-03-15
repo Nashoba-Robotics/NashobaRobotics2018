@@ -9,6 +9,7 @@ import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveToCubeCommandAdvanced;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
+import edu.nr.robotics.subsystems.drive.TurnToCubeCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
 import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;;
@@ -59,7 +60,17 @@ public class PivotSwitchLeftToBlockProfilingCommand extends CommandGroup {
 				
 				addParallel(new IntakeRollersIntakeCommand());
 				
-				addParallel(new DriveToCubeCommandAdvanced());
+				/*addParallel(new DriveToCubeCommandAdvanced());*/
+				
+				addParallel(new AnonymousCommandGroup() {
+					
+					@Override
+					public void commands() {
+						addSequential(new TurnToCubeCommand());
+						addSequential(new EnableMotionProfile(FieldMeasurements.CUBE_1_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+						
+					}
+				});	
 				
 			}
 			
