@@ -1,6 +1,5 @@
 package edu.nr.lib.talons;
 
-import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
@@ -12,14 +11,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU_ControlFrame;
 import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
 
-import edu.wpi.first.wpilibj.MotorSafety;
-
-/**
- * Adapted from 254's CANTalonFactory
- * 
- * Creates CANTalon objects and configures all the parameters we care about to factory defaults. Closed-loop and sensor
- * parameters are not set, as these are expected to be set by the application.
- */
+import edu.nr.lib.talons.CTRECreator.Configuration;
 
 public class CTRECreator {
 
@@ -161,6 +153,4 @@ public class CTRECreator {
     	
     	return pigeon;
     }
-    
-    
 }
