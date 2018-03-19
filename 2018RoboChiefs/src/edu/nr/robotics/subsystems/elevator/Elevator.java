@@ -355,6 +355,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 				elevTalon.configMotionAcceleration((int) MAX_ACCEL_ELEVATOR_DOWN.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
 						Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 						DEFAULT_TIMEOUT);
+			
 			}
 		}
 	}

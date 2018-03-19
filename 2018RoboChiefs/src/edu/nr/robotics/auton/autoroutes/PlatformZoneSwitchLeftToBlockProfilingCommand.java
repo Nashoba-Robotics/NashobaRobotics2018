@@ -41,9 +41,7 @@ public class PlatformZoneSwitchLeftToBlockProfilingCommand extends CommandGroup 
 					
 					@Override
 					public void commands() {
-						
-						addSequential(new EnableLimelightCommand(true));
-						
+												
 						addSequential(new EnableMotionProfile(
 								(FieldMeasurements.BASELINE_TO_PLATFORM_ZONE_X.sub(FieldMeasurements.BASELINE_TO_SWITCH_X)).negate(),
 								Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
@@ -70,7 +68,7 @@ public class PlatformZoneSwitchLeftToBlockProfilingCommand extends CommandGroup 
 					public void commands() {
 						
 						addSequential(new TurnToCubeCommand());
-						addSequential(new EnableMotionProfile(FieldMeasurements.CUBE_TO_PLATFORM_ZONE_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+						addSequential(new EnableMotionProfile(FieldMeasurements.CUBE_TO_PLATFORM_ZONE_X, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 						
 					}
 				});

@@ -70,7 +70,7 @@ public class PlatformZoneSwitchRightToBlockProfilingCommand extends CommandGroup
 					public void commands() {
 						
 						addSequential(new TurnToCubeCommand());
-						addSequential(new EnableMotionProfile(FieldMeasurements.CUBE_TO_PLATFORM_ZONE_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+						addSequential(new EnableMotionProfile(FieldMeasurements.CUBE_TO_PLATFORM_ZONE_X, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 						
 					}
 				});
