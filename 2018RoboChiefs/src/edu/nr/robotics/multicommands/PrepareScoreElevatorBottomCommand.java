@@ -2,7 +2,9 @@ package edu.nr.robotics.multicommands;
 
 import edu.nr.lib.commandbased.AnonymousCommandGroup;
 import edu.nr.lib.units.Time;
+import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorBottomDropCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileCommandGroup;
@@ -35,9 +37,17 @@ public class PrepareScoreElevatorBottomCommand extends CommandGroup {
 		
 		addSequential(new WaitCommand(INTAKE_CUBE_WAIT_TIME.get(Time.Unit.SECOND)));
 		
-		addSequential(new IntakeElevatorProfileCommandGroup(IntakeElevator.HANDLER_HEIGHT, IntakeElevator.PROFILE_VEL_PERCENT_INTAKE_ELEVATOR, IntakeElevator.PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR));
+		addSequential(new AnonymousCommandGroup() {
+			
+			@Override
+			public void commands() {
+				addParallel(new IntakeElevatorProfileCommandGroup(IntakeElevator.HANDLER_HEIGHT, IntakeElevator.PROFILE_VEL_PERCENT_INTAKE_ELEVATOR, IntakeElevator.PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR));
+				
+				addParallel(new ElevatorProfileCommandGroup(Elevator.TRANSFER_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
+			}
+		});
 		
-		addSequential(new CubeFeedIntakeRollersToElevatorCommand());
+		addSequential(new CubeFeedIntakeRollersToElevatorCommandManual());
 		
 	}
 }

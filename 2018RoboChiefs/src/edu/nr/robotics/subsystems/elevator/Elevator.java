@@ -198,9 +198,10 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	 */
 	public static final Distance TOP_HEIGHT_ELEVATOR = new Distance(56535.0, Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV); // TODO: Find TOP_POSITION_ELEVATOR
 	public static final Distance CLIMB_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find CLIMB_HEIGHT_ELEVATOR
-	public static final Distance SCALE_HEIGHT_ELEVATOR = new Distance(7, Distance.Unit.FOOT);
-	public static final Distance SWITCH_HEIGHT_ELEVATOR = new Distance(2.5, Distance.Unit.FOOT);
+	public static final Distance SCALE_HEIGHT_ELEVATOR = new Distance(6.5, Distance.Unit.FOOT);
+	public static final Distance SWITCH_HEIGHT_ELEVATOR = new Distance(3, Distance.Unit.FOOT);
 	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO;
+	public static final Distance TRANSFER_HEIGHT_ELEVATOR = new Distance(8, Distance.Unit.INCH);
 	
 	private Speed velSetpoint = Speed.ZERO;
 	private Distance posSetpoint = Distance.ZERO;
@@ -605,7 +606,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	public void periodic() {
 		if (EnabledSubsystems.ELEVATOR_ENABLED) {
 			if (elevTalon.getSensorCollection().isFwdLimitSwitchClosed()) {
-				elevTalon.getSensorCollection().setQuadraturePosition((int) TOP_HEIGHT_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
+				//elevTalon.getSensorCollection().setQuadraturePosition((int) TOP_HEIGHT_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
 				new CancelCommand(Elevator.getInstance());
 			}
 			if (elevTalon.getSensorCollection().isRevLimitSwitchClosed()) {

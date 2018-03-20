@@ -195,7 +195,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	
 	public static final Distance BOTTOM_HEIGHT = Distance.ZERO;
 	
-	public static final double FOLD_CURRENT_SPIKE = 70;
+	public static final double FOLD_CURRENT_SPIKE = 90;
 	public static final double HANDLER_CURRENT_SPIKE = 25;
 	
 	public Speed velSetpoint = Speed.ZERO;

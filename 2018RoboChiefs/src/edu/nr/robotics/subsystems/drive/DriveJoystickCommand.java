@@ -102,11 +102,15 @@ public class DriveJoystickCommand extends JoystickCommand {
 
 	@Override
 	public boolean shouldSwitchToJoystick() {
-		if((OI.driveMode == Drive.DriveMode.arcadeDrive) || (OI.driveMode == Drive.DriveMode.cheesyDrive)) {
-			return OI.getInstance().isArcadeNonZero();
-		} else {
-			return OI.getInstance().getTankLeftValue() != 0 || OI.getInstance().getTankRightValue() != 0;
-		} 
+		if (!(Drive.getInstance().getCurrentCommand() instanceof DriveToCubeJoystickCommand)) {
+		
+			if((OI.driveMode == Drive.DriveMode.arcadeDrive) || (OI.driveMode == Drive.DriveMode.cheesyDrive)) {
+				return OI.getInstance().isArcadeNonZero();
+			} else {
+				return OI.getInstance().getTankLeftValue() != 0 || OI.getInstance().getTankRightValue() != 0;
+			}
+		}
+		return false;
 	}
 
 	@Override

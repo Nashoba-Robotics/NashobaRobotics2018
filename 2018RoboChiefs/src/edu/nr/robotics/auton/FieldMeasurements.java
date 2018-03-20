@@ -22,7 +22,7 @@ public class FieldMeasurements {
 			.sub(ROBOT_LENGTH.mul(0.5));
 	public static final Distance BASELINE_TO_PLATFORM_ZONE_Y = Distance.ZERO;
 	
-	public static final Distance BASELINE_TO_SCALE_X = new Distance(254, Distance.Unit.INCH);
+	public static final Distance BASELINE_TO_SCALE_X = new Distance(266, Distance.Unit.INCH);
 
 	public static final Distance BASELINE_TO_SWITCH_X = new Distance(168, Distance.Unit.INCH).sub(ROBOT_LENGTH.mul(0.5));
 	public static final Distance BASELINE_TO_SWITCH_Y = Distance.ZERO;
