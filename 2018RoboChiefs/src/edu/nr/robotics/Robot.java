@@ -96,6 +96,11 @@ public class Robot extends IterativeRobot {
 		OI.init();
 		LimelightNetworkTable.getInstance().lightLED(true);
 		LimelightNetworkTable.getInstance().lightLED(false);
+		
+		for (int i = 0; i < 10; i++) {
+			System.out.println("Name Geoff");
+		}
+		System.out.println("-Erik");
 	}
 
 	public void autoChooserInit() {
@@ -185,7 +190,6 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledPeriodic() {
-		//Scheduler.getInstance().run();
 	}
 
 	/**
