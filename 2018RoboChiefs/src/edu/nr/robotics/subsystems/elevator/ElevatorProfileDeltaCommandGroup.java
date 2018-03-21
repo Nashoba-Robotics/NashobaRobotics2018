@@ -10,12 +10,12 @@ public class ElevatorProfileDeltaCommandGroup extends CommandGroup {
 		
 		addSequential(new ElevatorProfileBasicCommand(delta.add(Elevator.getInstance().getPosition()), maxVelPercent, maxAccelPercent));
 	
-		addSequential(new ConditionalCommand(new ElevatorPositionSmartDashboardCommand()) {
+		/*addSequential(new ConditionalCommand(new ElevatorPositionSmartDashboardCommand()) {
 			
 			@Override
 			protected boolean condition() {
 				return (Elevator.getInstance().getPosition().sub(delta.add(Elevator.getInstance().getPosition()))).abs().greaterThan(Elevator.PROFILE_END_POS_THRESHOLD_ELEVATOR);
 			}
-		});
+		});*/
 	}
 }
