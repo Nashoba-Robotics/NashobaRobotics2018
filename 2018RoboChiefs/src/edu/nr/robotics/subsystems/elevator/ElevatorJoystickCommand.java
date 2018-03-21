@@ -9,7 +9,8 @@ import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 public class ElevatorJoystickCommand extends JoystickCommand {
 	
 	private static final double MIN_ELEV_JOYSTICK_PERCENT = 0;
-	private static final double MAX_ELEV_JOYSTICK_PERCENT = 0.41;
+	private static final double MAX_ELEV_JOYSTICK_PERCENT_UP = 0.42;
+	private static final double MAX_ELEV_JOYSTICK_PERCENT_DOWN = 0.3;
 		
 	/**
 	 * Takes elevator joystick percent values and sets the elevator to those percents.
@@ -32,10 +33,10 @@ public class ElevatorJoystickCommand extends JoystickCommand {
 				Elevator.getInstance().setMotorPercentRaw(Elevator.REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN);
 			}
 		} else if (OI.getInstance().getElevatorJoystickValue() > 0) {
-			double motorPercent = OI.getInstance().getElevatorJoystickValue() * (MAX_ELEV_JOYSTICK_PERCENT - MIN_ELEV_JOYSTICK_PERCENT) + MIN_ELEV_JOYSTICK_PERCENT;
+			double motorPercent = OI.getInstance().getElevatorJoystickValue() * (MAX_ELEV_JOYSTICK_PERCENT_UP - MIN_ELEV_JOYSTICK_PERCENT) + MIN_ELEV_JOYSTICK_PERCENT;
 			Elevator.getInstance().setMotorSpeedPercent(motorPercent);
 		} else if (OI.getInstance().getElevatorJoystickValue() < 0) {
-			double motorPercent = OI.getInstance().getElevatorJoystickValue() * (MAX_ELEV_JOYSTICK_PERCENT - MIN_ELEV_JOYSTICK_PERCENT) - MIN_ELEV_JOYSTICK_PERCENT;
+			double motorPercent = OI.getInstance().getElevatorJoystickValue() * (MAX_ELEV_JOYSTICK_PERCENT_DOWN - MIN_ELEV_JOYSTICK_PERCENT) - MIN_ELEV_JOYSTICK_PERCENT;
 			Elevator.getInstance().setMotorSpeedPercent(motorPercent);
 		}
 		

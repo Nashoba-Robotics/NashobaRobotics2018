@@ -31,7 +31,7 @@ public class StartPosLeftToScaleLeftProfilingCommand extends CommandGroup {
 			}
 		});
 		
-		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
+		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_SCALE_AUTO_ELEVATOR_SHOOTER));
 		
 	}
 	

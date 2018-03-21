@@ -35,7 +35,7 @@ public class FieldMeasurements {
 
 	public static final Distance SWITCH_EDGE_TO_FIELD_EDGE_Y = new Distance(85.25, Distance.Unit.INCH);
 
-	public static final Distance PLATFORM_ZONE_WIDTH_START_POS = FIELD_WIDTH.sub(BEN_FOOT_LENGTH.mul(2)).sub(ROBOT_WIDTH).sub(new Distance(29.69, Distance.Unit.INCH));
+	public static final Distance PLATFORM_ZONE_WIDTH_START_POS = FIELD_WIDTH.sub(new Distance(29.69, Distance.Unit.INCH).mul(2)).sub(BEN_FOOT_LENGTH).sub(ROBOT_WIDTH);
 	
 	//Change 18 to be half of cube to platform zone diagonal first number
 	public static final Distance PLATFORM_ZONE_WIDTH_BLOCK = FIELD_WIDTH.sub(SWITCH_EDGE_TO_FIELD_EDGE_Y.mul(2))
