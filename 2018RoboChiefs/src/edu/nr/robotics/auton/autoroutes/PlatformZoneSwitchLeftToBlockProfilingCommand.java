@@ -12,6 +12,7 @@ import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.StrafeToCubeCommand;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
 import edu.nr.robotics.subsystems.drive.TurnToCubeCommand;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
 import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -27,31 +28,24 @@ public class PlatformZoneSwitchLeftToBlockProfilingCommand extends CommandGroup 
 
 		addSequential(new TurnCommand(Drive.getInstance(), new Angle(90, Angle.Unit.DEGREE),
 				Drive.MAX_PROFILE_TURN_PERCENT));
-
-		addSequential(new EnableLimelightCommand(true));
 		
 		addSequential(new AnonymousCommandGroup() {
 			
 			@Override
 			public void commands() {
 				
-				addParallel(new PrepareCubeIntakeCommand());
+				addParallel(new IntakeElevatorBottomCommand());
 				
-				addParallel(new AnonymousCommandGroup() {
-					
-					@Override
-					public void commands() {
-												
-						addSequential(new EnableMotionProfile(
-								(FieldMeasurements.BASELINE_TO_PLATFORM_ZONE_X.sub(FieldMeasurements.BASELINE_TO_SWITCH_X)).negate(),
-								Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
-						
-						addSequential(new StrafeToCubeCommand(Direction.left));
-						
-					}
-				});
+				addSequential(new EnableMotionProfile(
+						(FieldMeasurements.BASELINE_TO_PLATFORM_ZONE_X.sub(FieldMeasurements.BASELINE_TO_SWITCH_X)).negate(),
+						Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+				
 			}
 		});
+		
+		addSequential(new EnableLimelightCommand(true));
+		
+		addSequential(new StrafeToCubeCommand(Direction.left));
 		
 		addSequential(new AnonymousCommandGroup() {
 
@@ -59,9 +53,7 @@ public class PlatformZoneSwitchLeftToBlockProfilingCommand extends CommandGroup 
 			public void commands() {
 				
 				addParallel(new IntakeRollersIntakeCommand());
-				
-				/*addParallel(new DriveToCubeCommandAdvanced());*/
-				
+								
 				addParallel(new AnonymousCommandGroup() {
 					
 					@Override

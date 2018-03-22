@@ -3,7 +3,7 @@ package edu.nr.robotics.multicommands;
 import edu.nr.lib.commandbased.AnonymousCommandGroup;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.subsystems.elevator.Elevator;
-import edu.nr.robotics.subsystems.elevator.ElevatorBottomDropCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
@@ -26,7 +26,7 @@ public class PrepareScoreElevatorBottomCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new ElevatorBottomDropCommand());
+				addParallel(new ElevatorBottomCommand());
 				
 				addParallel(new IntakeElevatorBottomCommand());
 				

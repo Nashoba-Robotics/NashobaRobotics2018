@@ -1,7 +1,7 @@
 package edu.nr.robotics.multicommands;
 
 import edu.nr.lib.commandbased.AnonymousCommandGroup;
-import edu.nr.robotics.subsystems.elevator.ElevatorBottomDropCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorHandlerCommand;
@@ -18,7 +18,7 @@ public class PrepareScorePortalCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new ElevatorBottomDropCommand());
+				addParallel(new ElevatorBottomCommand());
 				
 				addParallel(new IntakeElevatorBottomCommand());
 				

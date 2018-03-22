@@ -22,7 +22,7 @@ import edu.nr.robotics.subsystems.drive.DriveToCubeButtonCommand;
 import edu.nr.robotics.subsystems.drive.DriveToCubeJoystickCommand;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
-import edu.nr.robotics.subsystems.elevator.ElevatorBottomDropCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileDeltaCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
@@ -36,6 +36,7 @@ import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersStopCommand;
 import edu.nr.robotics.subsystems.sensors.EnableFloorSensorCommand;
 import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
+import edu.nr.robotics.subsystems.sensors.ToggleLimelightCommand;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -167,8 +168,7 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(driveRight, QUARTER_TURN_RIGHT_BUTTON_NUMBER).whenPressed(
 				new TurnCommand(Drive.getInstance(), new Angle(90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT));
 	
-		new JoystickButton(driveRight, ENABLE_LIMELIGHT_BUTTON).whenPressed(new EnableLimelightCommand(true));
-		new JoystickButton(driveRight, ENABLE_LIMELIGHT_BUTTON).whenReleased(new EnableLimelightCommand(false));
+		new JoystickButton(driveRight, ENABLE_LIMELIGHT_BUTTON).whenPressed(new ToggleLimelightCommand());
 	}
 
 	public void initOperatorLeft() {
@@ -241,7 +241,7 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(operatorRight, ELEVATOR_CLIMB_HEIGHT_BUTTON_NUMBER)
 				.whenPressed(new ClimbPrepareCommand());
 		
-		new JoystickButton(operatorRight, ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER).whenPressed(new ElevatorBottomDropCommand());
+		new JoystickButton(operatorRight, ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER).whenPressed(new ElevatorBottomCommand());
 
 		new JoystickButton(operatorRight, TRANSFER_CUBE_BUTTON_NUMBER).whenPressed(new CubeFeedIntakeRollersToElevatorCommandManual());
 		

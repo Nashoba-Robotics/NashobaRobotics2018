@@ -2,7 +2,7 @@ package edu.nr.robotics.multicommands;
 
 import edu.nr.lib.commandbased.AnonymousCommandGroup;
 import edu.nr.robotics.subsystems.elevator.Elevator;
-import edu.nr.robotics.subsystems.elevator.ElevatorBottomDropCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorPositionCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
@@ -18,7 +18,7 @@ public class PrepareCubeIntakeCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				addParallel(new IntakeElevatorBottomCommand());
-				addParallel(new ElevatorBottomDropCommand());
+				addParallel(new ElevatorBottomCommand());
 			}
 		});
 	}

@@ -5,7 +5,7 @@ import edu.nr.lib.units.Distance;
 import edu.nr.robotics.subsystems.climber.Climber;
 import edu.nr.robotics.subsystems.climber.ClimberPercentCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
-import edu.nr.robotics.subsystems.elevator.ElevatorBottomDropCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorPositionCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
@@ -34,7 +34,7 @@ public class TestSequence extends CommandGroup {
 				
 				//Test Elevator
 				addSequential(new ElevatorProfileCommandGroup(new Distance(12, Distance.Unit.INCH), Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
-				addSequential(new ElevatorBottomDropCommand());
+				addSequential(new ElevatorBottomCommand());
 				
 				//Test ElevatorShooter
 				addSequential(new ElevatorShooterVelocityCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));

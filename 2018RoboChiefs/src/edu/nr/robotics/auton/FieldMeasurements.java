@@ -42,8 +42,8 @@ public class FieldMeasurements {
 			.add(new Distance(18, Distance.Unit.INCH)).add(INTAKE_LENGTH.mul(0.5).add(ROBOT_LENGTH.mul(0.25)));
 	//TODO: Find more precisely
 	
-	public static final Distance FIELD_EDGE_TO_CUBE_2_Y = new Distance(113, Distance.Unit.INCH).sub(PIVOT_POINT_FIELD_EDGE_Y);
-	public static final Distance FIELD_EDGE_TO_CUBE_3_Y = new Distance(142, Distance.Unit.INCH).sub(PIVOT_POINT_FIELD_EDGE_Y);
+	public static final Distance FIELD_EDGE_TO_CUBE_2_Y = new Distance(113, Distance.Unit.INCH);
+	public static final Distance FIELD_EDGE_TO_CUBE_3_Y = new Distance(142, Distance.Unit.INCH);
 	
 	public static final Distance CUBE_1_TO_PIVOT_POINT_DIAGONAL = NRMath
 			.hypot(SWITCH_EDGE_TO_FIELD_EDGE_Y.sub(PIVOT_POINT_FIELD_EDGE_Y).add(BLOCK_WIDTH.mul(0.5)),

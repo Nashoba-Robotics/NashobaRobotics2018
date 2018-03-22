@@ -19,7 +19,7 @@ import edu.nr.robotics.subsystems.drive.StrafeToCubeCommand;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
 import edu.nr.robotics.subsystems.drive.TurnToCubeCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
-import edu.nr.robotics.subsystems.elevator.ElevatorBottomDropCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
@@ -41,26 +41,44 @@ public class AutoSwitchLoopCommand extends CommandGroup {
 			
 		});
 				
-		addSequential(new PrepareScoreSwitchAutoCommand());
+		addSequential(new AnonymousCommandGroup() {
+			
+			@Override
+			public void commands() {
 				
-		addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT)) {
+				addParallel(new PrepareScoreSwitchAutoCommand());
+				
+				addParallel(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT)) {
 
-			@Override
-			protected boolean condition() {				
-				return FieldData.getInstance().nearSwitch == Direction.left;
+					@Override
+					protected boolean condition() {				
+						return FieldData.getInstance().nearSwitch == Direction.left;
+					}
+					
+				});
+				
 			}
-			
 		});
+				
+		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
 		
-		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.shootPercent));
-		
-		addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT)) {
-
-			@Override
-			protected boolean condition() {				
-				return FieldData.getInstance().nearSwitch == Direction.left;
-			}
+		addSequential(new AnonymousCommandGroup() {
 			
+			@Override
+			public void commands() {
+				
+				addParallel(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT)) {
+
+					@Override
+					protected boolean condition() {				
+						return FieldData.getInstance().nearSwitch == Direction.left;
+					}
+					
+				});
+				
+				addParallel(new ElevatorBottomCommand());
+				
+			}
 		});
 		
 		addSequential(new AnonymousCommandGroup() {
@@ -91,9 +109,7 @@ public class AutoSwitchLoopCommand extends CommandGroup {
 			public void commands() {
 				
 				addParallel(new IntakeRollersIntakeCommand());
-				
-				/*addParallel(new DriveToCubeCommandAdvanced());*/
-				
+								
 				addParallel(new AnonymousCommandGroup() {
 					
 					@Override

@@ -46,20 +46,29 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/*Test Floor Sensor											11
-ClimbCommand												9
-Optimal Elevator Heights									5
-Optimal Elevator Shooter Place Percent						8
-Intake to Elevator Commands									3 (when available)					x
-Test Auto Modes (inc StrafeToCubeCommand)					10
-Elevator Profiling											4									x
-Test Elevator Carriage Sensor								1 (when available)					x
-Test Elevator Up/Down Buttons								7
-Intake Elevator Portal Height Profile						12
-Modify DriveToCubeCommand if needed							(during auto testing)
-Tweak IntakeElevator Profile								2 (when available)					x
-Fix any Drive tuning										(when practice matches start)
-DriveCurrentCommand											6*/
+/*Test Floor Sensor											
+ClimbCommand												
+IntakeToElevatorCommands (elevator at right height)
+Test Auto Modes (inc StrafeToCubeCommand)					
+Elevator Profiling Position	
+Test Elevator Up/Down Buttons
+Tweak IntakeElevator Profile
+Fix any Drive tuning
+DriveCurrentCommand
+
+Make left-right 2-scale autos match						x
+Clean up and expand intake deploy in auto				x
+Auto switch loop logic
+Check angle turn for 2nd cube							x
+Change angle turn for 1st cube across field
+Tweak turning (stops at right angle, no oscillation)
+Check driving to cube in auto in all cases				x
+Speed up profiling ramps
+Limelight button is toggle								x
+Make Transfer have right elevator height at all times
+Have driving and elevator decoupled in auto				x
+
+*/
 
 /**
  * The VM is configured to automatically run this class, and to call the

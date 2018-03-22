@@ -6,13 +6,13 @@ import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.subsystems.drive.Drive;
 
-public class IntakeWhileSlowingCommand extends NRCommand {
+public class IntakeDeployWhileSlowingCommand extends NRCommand {
 
 	private boolean slowedEnough = false;
 	private Speed prevSpeed;
 	private Speed lowEnoughSpeedThreshold = new Speed(6, Distance.Unit.FOOT, Time.Unit.SECOND);
 	
-	public IntakeWhileSlowingCommand() {
+	public IntakeDeployWhileSlowingCommand() {
 		super(IntakeElevator.getInstance());
 	}
 	

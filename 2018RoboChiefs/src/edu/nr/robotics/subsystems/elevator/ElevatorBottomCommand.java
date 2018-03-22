@@ -3,9 +3,9 @@ package edu.nr.robotics.subsystems.elevator;
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.units.Distance;
 
-public class ElevatorBottomDropCommand extends NRCommand {
+public class ElevatorBottomCommand extends NRCommand {
 
-	public ElevatorBottomDropCommand() {
+	public ElevatorBottomCommand() {
 		super(Elevator.getInstance());
 	}
 	
