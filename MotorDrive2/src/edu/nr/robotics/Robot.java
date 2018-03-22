@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		talon = CTRECreator.createMasterTalon(1);
+		talon = CTRECreator.createMasterTalon(7);
 		carriageTalon = CTRECreator.createMasterTalon(5);
 		intakeRoller1 = CTRECreator.createMasterTalon(2);
 		intakeRoller2 = CTRECreator.createMasterTalon(4);
@@ -111,7 +111,7 @@ public class Robot extends TimedRobot {
 		Scheduler.getInstance().run();
 		talon.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
 		//carriageTalon.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
-		intakeRoller1.set(ControlMode.PercentOutput, -SmartDashboard.getNumber("Motor Percent 2: ", 0));
+		//intakeRoller1.set(ControlMode.PercentOutput, -SmartDashboard.getNumber("Motor Percent 2: ", 0));
 		//intakeRoller2.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
 	
 		SmartDashboard.putNumber("Talon 1 Current: ", talon.getOutputCurrent());
