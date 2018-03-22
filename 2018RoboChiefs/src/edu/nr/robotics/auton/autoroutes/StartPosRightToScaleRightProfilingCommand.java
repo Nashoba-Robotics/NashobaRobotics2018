@@ -12,12 +12,23 @@ import edu.nr.robotics.subsystems.elevator.ElevatorPositionCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeWhileSlowingCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class StartPosRightToScaleRightProfilingCommand extends CommandGroup {
 	
 	public StartPosRightToScaleRightProfilingCommand () {
-
+		
+		addSequential(new AnonymousCommandGroup() {
+			
+			@Override
+			public void commands() {
+				addParallel(new IntakeWhileSlowingCommand());
+				addParallel(new EnableMotionProfile(FieldMeasurements.BASELINE_TO_SCALE_X, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+			}
+		});	
+		
 		addSequential(new AnonymousCommandGroup() {
 			
 			@Override
@@ -25,23 +36,21 @@ public class StartPosRightToScaleRightProfilingCommand extends CommandGroup {
 				
 				addParallel(new ElevatorProfileCommandGroup(Elevator.SCALE_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 				
-				addParallel(new AnonymousCommandGroup() {
-					
-					@Override
-					public void commands() {
-						
-						addSequential(new EnableMotionProfile(FieldMeasurements.BASELINE_TO_SCALE_X, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
-						
-						addSequential(new TurnCommand(Drive.getInstance(), (new Angle(90, Angle.Unit.DEGREE).sub(FieldMeasurements.PIVOT_POINT_TO_SCALE)).negate(), Drive.MAX_PROFILE_TURN_PERCENT));
-						
-					}
-				});
+				addParallel(new TurnCommand(Drive.getInstance(), (new Angle(90, Angle.Unit.DEGREE).sub(FieldMeasurements.PIVOT_POINT_TO_SCALE)).negate(), Drive.MAX_PROFILE_TURN_PERCENT));
 				
 			}
 
 		});
 		
-		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
+		addSequential(new AnonymousCommandGroup() {
+
+			@Override
+			public void commands() {
+				addParallel(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_SCALE_AUTO_ELEVATOR_SHOOTER));
+				addParallel(new IntakeElevatorBottomCommand());
+			}
+			
+		});
 	}
 
 }

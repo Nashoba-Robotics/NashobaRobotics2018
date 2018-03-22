@@ -4,6 +4,7 @@ import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.network.LimelightNetworkTable;
 import edu.nr.lib.units.Angle;
 import edu.nr.robotics.OI;
+import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 
 public class DriveToCubeJoystickCommand extends NRCommand {
 
@@ -13,7 +14,7 @@ public class DriveToCubeJoystickCommand extends NRCommand {
 	
 	@Override
 	protected void onStart() {
-		LimelightNetworkTable.getInstance().enable();
+		new EnableLimelightCommand(true).start();
 	}
 	
 	@Override
@@ -39,7 +40,7 @@ public class DriveToCubeJoystickCommand extends NRCommand {
 	
 	@Override
 	protected void onEnd() {
-		LimelightNetworkTable.getInstance().disable();
+		new EnableLimelightCommand(false).start();
 	}
 	
 	@Override

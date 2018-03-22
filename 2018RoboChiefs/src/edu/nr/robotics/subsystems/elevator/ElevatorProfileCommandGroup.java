@@ -10,13 +10,13 @@ public class ElevatorProfileCommandGroup extends CommandGroup {
 		
 		addSequential(new ElevatorProfileBasicCommand(position, maxVelPercent, maxAccelPercent));
 		
-		addSequential(new ConditionalCommand(new ElevatorPositionCommand(position)) {
+		/*addSequential(new ConditionalCommand(new ElevatorPositionCommand(position)) {
 			
 			@Override
 			protected boolean condition() {
 				return (Elevator.getInstance().getPosition().sub(position)).abs().greaterThan(Elevator.PROFILE_END_POS_THRESHOLD_ELEVATOR);
 			}
-		});
+		});*/
 		
 	}
 }

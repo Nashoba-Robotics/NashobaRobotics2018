@@ -159,12 +159,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The angle within which the turning stops
 	 */
-	public static final Angle DRIVE_ANGLE_THRESHOLD = new Angle(1, Angle.Unit.DEGREE);
+	public static final Angle DRIVE_ANGLE_THRESHOLD = new Angle(2, Angle.Unit.DEGREE);
 	
 	/**
 	 * The angle the robot turns to once disabled at full turn speed. Used for GyroCorrection ramped mode.
 	 */
-	public static final Angle DRIVE_STOP_ANGLE = new Angle(70, Angle.Unit.DEGREE); //TODO: Find angle that robot stops at when turning goes from 1 to 0
+	public static final Angle DRIVE_STOP_ANGLE = new Angle(50, Angle.Unit.DEGREE); //TODO: Find angle that robot stops at when turning goes from 1 to 0
 
 	
 	/**

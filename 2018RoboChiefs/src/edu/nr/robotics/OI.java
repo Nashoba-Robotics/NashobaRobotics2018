@@ -10,6 +10,7 @@ import edu.nr.robotics.multicommands.ClimbButtonCommand;
 import edu.nr.robotics.multicommands.ClimbPrepareCommand;
 import edu.nr.robotics.multicommands.ClimberStopButtonCommand;
 import edu.nr.robotics.multicommands.CubeFeedIntakeRollersToElevatorCommand;
+import edu.nr.robotics.multicommands.CubeFeedIntakeRollersToElevatorCommandManual;
 import edu.nr.robotics.multicommands.FoldIntakeMultiCommand;
 import edu.nr.robotics.multicommands.PrepareScoreElevatorBottomCommand;
 import edu.nr.robotics.multicommands.PrepareScorePortalCommand;
@@ -33,6 +34,7 @@ import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersReverseCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersStopCommand;
 import edu.nr.robotics.subsystems.sensors.EnableFloorSensorCommand;
+import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -86,6 +88,8 @@ public class OI implements SmartDashboardSource {
 	private static final int RESET_GYRO_BUTTON_NUMBER = 7;
 	private static final int CLIMB_COAST_BUTTON_NUMBER = 6;
 
+	private static final int ENABLE_LIMELIGHT_BUTTON = 6;
+	
 	private static final int TEST_SEQUENCE_BUTTON_NUMBER = 10;
 
 	private double driveSpeedMultiplier = 1;
@@ -162,6 +166,9 @@ public class OI implements SmartDashboardSource {
 				new Angle(-90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT));
 		new JoystickButton(driveRight, QUARTER_TURN_RIGHT_BUTTON_NUMBER).whenPressed(
 				new TurnCommand(Drive.getInstance(), new Angle(90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT));
+	
+		new JoystickButton(driveRight, ENABLE_LIMELIGHT_BUTTON).whenPressed(new EnableLimelightCommand(true));
+		new JoystickButton(driveRight, ENABLE_LIMELIGHT_BUTTON).whenReleased(new EnableLimelightCommand(false));
 	}
 
 	public void initOperatorLeft() {
@@ -236,7 +243,7 @@ public class OI implements SmartDashboardSource {
 		
 		new JoystickButton(operatorRight, ELEVATOR_BOTTOM_HEIGHT_BUTTON_NUMBER).whenPressed(new ElevatorBottomDropCommand());
 
-		new JoystickButton(operatorRight, TRANSFER_CUBE_BUTTON_NUMBER).whenPressed(new CubeFeedIntakeRollersToElevatorCommand());
+		new JoystickButton(operatorRight, TRANSFER_CUBE_BUTTON_NUMBER).whenPressed(new CubeFeedIntakeRollersToElevatorCommandManual());
 		
 	}
 

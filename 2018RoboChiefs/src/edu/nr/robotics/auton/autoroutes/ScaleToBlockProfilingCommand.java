@@ -108,16 +108,16 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 		
 		addSequential(new TurnToCubeCommand());
 		
+		addParallel(new IntakeRollersIntakeCommand());
+		
 		addSequential(new AnonymousCommandGroup() {
 
 			@Override
 			public void commands() {
 				
-				addParallel(new IntakeRollersIntakeCommand());
+				//addParallel(new DriveToCubeCommandAdvanced());
 				
-				/*addParallel(new DriveToCubeCommandAdvanced());*/
-				
-				addParallel(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_1_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
+				addSequential(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_1_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
 					
 					@Override
 					protected boolean condition() {
@@ -125,7 +125,7 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 					}
 				});
 				
-				addParallel(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_2_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
+				addSequential(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_2_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
 					
 					@Override
 					protected boolean condition() {
@@ -133,7 +133,7 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 					}
 				});
 				
-				addParallel(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_3_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
+				addSequential(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_3_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
 					
 					@Override
 					protected boolean condition() {

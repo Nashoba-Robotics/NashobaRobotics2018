@@ -78,7 +78,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * The percent the elevator is driven when 'dropped'
 	 */
-	public static final double DROP_PERCENT_ELEVATOR = -0.2;
+	public static final double DROP_PERCENT_ELEVATOR = -0.4;
 	
 	/**
 	 * The default profiling acceleration of the elevator
@@ -186,11 +186,6 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	public static double kA_DOWN = 0;
 	public static double kP_DOWN = 0;
 	public static double kD_DOWN = 0;
-	
-	/**
-	 * The max speed ratio of the carriage to the hook
-	 */
-	public static final double HOOK_TO_CARRIAGE_RATIO = 0; //TODO: Find  Carriage to hook ratio
 
 	/**
 	 * The positions of the elevator at each limit switch and at the default
@@ -198,9 +193,10 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	 */
 	public static final Distance TOP_HEIGHT_ELEVATOR = new Distance(56535.0, Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV); // TODO: Find TOP_POSITION_ELEVATOR
 	public static final Distance CLIMB_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find CLIMB_HEIGHT_ELEVATOR
-	public static final Distance SCALE_HEIGHT_ELEVATOR = new Distance(7, Distance.Unit.FOOT);
-	public static final Distance SWITCH_HEIGHT_ELEVATOR = new Distance(2.5, Distance.Unit.FOOT);
+	public static final Distance SCALE_HEIGHT_ELEVATOR = new Distance(6.5, Distance.Unit.FOOT);
+	public static final Distance SWITCH_HEIGHT_ELEVATOR = new Distance(3, Distance.Unit.FOOT);
 	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO;
+	public static final Distance TRANSFER_HEIGHT_ELEVATOR = new Distance(8, Distance.Unit.INCH);
 	
 	private Speed velSetpoint = Speed.ZERO;
 	private Distance posSetpoint = Distance.ZERO;
@@ -408,7 +404,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 				
 				elevTalon.selectProfileSlot(VEL_DOWN_SLOT, DEFAULT_TIMEOUT);
 				
-				elevTalon.set(ControlMode.PercentOutput, -0.2);
+				elevTalon.set(ControlMode.PercentOutput, speed.div(Elevator.MAX_SPEED_ELEVATOR_UP));
 				
 				/*elevTalon.config_kF(VEL_DOWN_SLOT,
 						((VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_DOWN * velSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
@@ -605,7 +601,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	public void periodic() {
 		if (EnabledSubsystems.ELEVATOR_ENABLED) {
 			if (elevTalon.getSensorCollection().isFwdLimitSwitchClosed()) {
-				elevTalon.getSensorCollection().setQuadraturePosition((int) TOP_HEIGHT_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
+				//elevTalon.getSensorCollection().setQuadraturePosition((int) TOP_HEIGHT_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
 				new CancelCommand(Elevator.getInstance());
 			}
 			if (elevTalon.getSensorCollection().isRevLimitSwitchClosed()) {
