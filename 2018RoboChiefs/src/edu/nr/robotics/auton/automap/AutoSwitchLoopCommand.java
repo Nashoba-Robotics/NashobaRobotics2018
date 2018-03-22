@@ -124,26 +124,45 @@ public class AutoSwitchLoopCommand extends CommandGroup {
 			
 		});
 		
-		addSequential(new PrepareScoreSwitchAutoCommand());
-		
-		addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT)) {
-
-			@Override
-			protected boolean condition() {				
-				return FieldData.getInstance().nearSwitch == Direction.left;
-			}
+		addSequential(new AnonymousCommandGroup() {
 			
+			@Override
+			public void commands() {
+				
+				addParallel(new PrepareScoreSwitchAutoCommand());
+				
+				addParallel(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT)) {
+
+					@Override
+					protected boolean condition() {				
+						return FieldData.getInstance().nearSwitch == Direction.left;
+					}
+					
+				});
+
+				
+			}
 		});
 		
 		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.shootPercent));
 		
-		addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT)) {
-
-			@Override
-			protected boolean condition() {				
-				return FieldData.getInstance().nearSwitch == Direction.left;
-			}
+		addSequential(new AnonymousCommandGroup() {
 			
+			@Override
+			public void commands() {
+				
+				addParallel(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT)) {
+
+					@Override
+					protected boolean condition() {				
+						return FieldData.getInstance().nearSwitch == Direction.left;
+					}
+					
+				});
+				
+				addParallel(new ElevatorBottomCommand());
+				
+			}
 		});
 		
 		addSequential(new AnonymousCommandGroup() {
@@ -174,9 +193,7 @@ public class AutoSwitchLoopCommand extends CommandGroup {
 			public void commands() {
 				
 				addParallel(new PrepareScoreElevatorBottomCommand());
-				
-				/*addParallel(new DriveToCubeCommandAdvanced());*/
-				
+								
 				addParallel(new AnonymousCommandGroup() {
 					
 					@Override
