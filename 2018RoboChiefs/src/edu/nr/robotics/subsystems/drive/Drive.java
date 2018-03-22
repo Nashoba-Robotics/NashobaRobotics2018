@@ -139,7 +139,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Percent of the drive while going to intake a cube
 	 */
-	public static final double DRIVE_TO_CUBE_PERCENT = 0.4; //TODO: Decide on DRIVE_TO_CUBE_PERCENT
+	public static final double DRIVE_TO_CUBE_PERCENT = 0.4;
 	
 	/**
 	 * Percent of the drive while strafing to portal or cube
@@ -154,7 +154,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The speed the profile needs to be under to stop
 	 */
-	public static final Speed PROFILE_END_SPEED_THRESHOLD = new Speed(0.1, Distance.Unit.INCH, Time.Unit.SECOND);
+	public static final Speed PROFILE_END_SPEED_THRESHOLD = MAX_SPEED_DRIVE.mul(MIN_PROFILE_TURN_PERCENT + 0.01);
 	
 	/**
 	 * The angle within which the turning stops
@@ -164,7 +164,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The angle the robot turns to once disabled at full turn speed. Used for GyroCorrection ramped mode.
 	 */
-	public static final Angle DRIVE_STOP_ANGLE = new Angle(50, Angle.Unit.DEGREE); //TODO: Find angle that robot stops at when turning goes from 1 to 0
+	public static final Angle DRIVE_STOP_ANGLE = new Angle(60, Angle.Unit.DEGREE); //TODO: Find angle that robot stops at when turning goes from 1 to 0
 
 	
 	/**

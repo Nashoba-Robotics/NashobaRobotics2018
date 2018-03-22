@@ -60,8 +60,8 @@ Make left-right 2-scale autos match						x
 Clean up and expand intake deploy in auto				x
 Auto switch loop logic
 Check angle turn for 2nd cube							x
-Change angle turn for 1st cube across field
-Tweak turning (stops at right angle, no oscillation)
+Change angle turn for 1st cube across field				x
+Tweak turning (stops at right angle, no oscillation)	x
 Check driving to cube in auto in all cases				x
 Speed up profiling ramps
 Limelight button is toggle								x
