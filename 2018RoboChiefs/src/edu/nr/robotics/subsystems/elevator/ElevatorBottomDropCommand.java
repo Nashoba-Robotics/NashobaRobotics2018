@@ -15,7 +15,12 @@ public class ElevatorBottomDropCommand extends NRCommand {
 	}
 	
 	@Override
+	protected void onEnd() {
+		Elevator.getInstance().setMotorPercentRaw(0);
+	}
+	
+	@Override
 	protected boolean isFinishedNR() {
-		return Elevator.getInstance().getPosition().lessThan(new Distance(2, Distance.Unit.INCH));
+		return Elevator.getInstance().getPosition().lessThan(new Distance(4, Distance.Unit.INCH));
 	}
 }

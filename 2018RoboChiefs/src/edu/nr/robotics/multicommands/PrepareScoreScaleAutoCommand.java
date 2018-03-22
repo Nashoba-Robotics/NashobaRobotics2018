@@ -27,8 +27,5 @@ public class PrepareScoreScaleAutoCommand extends CommandGroup {
 		});
 		
 		addSequential(new CubeFeedIntakeRollersToElevatorCommand());
-		
-		addSequential(new ElevatorProfileCommandGroup(Elevator.SCALE_HEIGHT_ELEVATOR,
-				Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 	}
 }

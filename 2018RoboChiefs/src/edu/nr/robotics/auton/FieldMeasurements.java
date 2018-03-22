@@ -35,7 +35,7 @@ public class FieldMeasurements {
 
 	public static final Distance SWITCH_EDGE_TO_FIELD_EDGE_Y = new Distance(85.25, Distance.Unit.INCH);
 
-	public static final Distance PLATFORM_ZONE_WIDTH_START_POS = FIELD_WIDTH.sub(new Distance(29.69, Distance.Unit.INCH).mul(2)).sub(BEN_FOOT_LENGTH).sub(ROBOT_WIDTH);
+	public static final Distance PLATFORM_ZONE_WIDTH_START_POS = new Distance(255, Distance.Unit.INCH).sub(ROBOT_WIDTH);
 	
 	//Change 18 to be half of cube to platform zone diagonal first number
 	public static final Distance PLATFORM_ZONE_WIDTH_BLOCK = FIELD_WIDTH.sub(SWITCH_EDGE_TO_FIELD_EDGE_Y.mul(2))
@@ -98,7 +98,8 @@ public class FieldMeasurements {
 			Angle.Unit.RADIAN);
 
 	// Platform Zone Y direction to diagonal of scale
-	public static final Angle PIVOT_POINT_TO_SCALE = new Angle(62, Angle.Unit.DEGREE);
+	public static final Angle PIVOT_POINT_TO_SCALE = new Angle(55, Angle.Unit.DEGREE);
+	public static final Angle PIVOT_POINT_TO_SCALE_ACROSS_FIELD = new Angle(65, Angle.Unit.DEGREE);
 	
 	//For switch strafing
 	public static final Distance CUBE_1_AND_2_TO_SWITCH_Y = ROBOT_WIDTH.mul(0.5);
