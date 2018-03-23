@@ -144,7 +144,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Percent of the drive while strafing to portal or cube
 	 */
-	public static final double SENSOR_STRAFE_PERCENT  = 0; //TODO: Decide on sensor strafe percent
+	public static final double SENSOR_STRAFE_PERCENT  = 0.3;
 	
 	/**
 	 * The position from the end at which profile position threshold takes effect
@@ -177,7 +177,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * When Driving into an object, the current when the driving stops
 	 */
-	public static final double SWITCH_CURRENT_LIMIT = 40; //TODO: Find Switch Current Limit
+	public static final double SWITCH_CURRENT_LIMIT = 50;
 	
 	/**
 	 * the drive percent while driving into the switch

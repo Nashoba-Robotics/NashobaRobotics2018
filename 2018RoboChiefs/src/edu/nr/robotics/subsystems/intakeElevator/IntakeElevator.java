@@ -50,9 +50,9 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	/**
 	 * The acutal real min move voltage of the intake elevator
 	 */
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0.15;
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0.15;
-	public static final double INTAKE_FOLD_HOLD_PERCENT = 0.2;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0.05;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0.05;
+	public static final double INTAKE_FOLD_HOLD_PERCENT = 0.15;
 	
 	/**
 	 * The theoretical minimum voltage needed to move the intake elevator
@@ -99,12 +99,14 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	/**
 	 * The default profiling velocity percent of the intake elevator
 	 */
-	public static double PROFILE_VEL_PERCENT_INTAKE_ELEVATOR = 0.4; // TODO: Decide on PROFILE_VEL_PERCENT_INTAKE_ELEVATOR
-
+	public static double PROFILE_VEL_PERCENT_INTAKE_ELEVATOR = 0.4;
+	public static double DEPLOY_PERCENT_INTAKE_ELEVATOR = 0.3;
+	public static double DRIVE_TO_BOTTOM_PERCENT_INTAKE_ELEVATOR = 0.6;
+	
 	/**
 	 * The default profiling acceleration of the intake elevator
 	 */
-	public static double PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR = 0.9; // TODO: Decide on PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR
+	public static double PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR = 0.9;
 	
 	/**
 	 * The distance from the end of the intake elevator profile at which the stopping
@@ -114,6 +116,8 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 
 	public static final Speed PROFILE_STOP_SPEED_THRESHOLD = new Speed(0.1, Distance.Unit.INCH, Time.Unit.SECOND); //TODO: Decide on this
 
+	public static final Time INTAKE_FLIP_OUT_TIME = new Time(0.5, Time.Unit.SECOND);
+	
 	/**
 	 * Time multiplier for the ramp of the ramped trajectory
 	 */
@@ -187,7 +191,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	 */
 	public static final Distance FOLDED_HEIGHT = new Distance(11.9, Distance.Unit.INCH); // TODO: Find FOLDED_HEIGHT
 	
-	public static final Distance HANDLER_HEIGHT = new Distance(14, Distance.Unit.INCH); // TODO: Find HANDLER_HEIGHT
+	public static final Distance HANDLER_HEIGHT = new Distance(10, Distance.Unit.INCH); // TODO: Find HANDLER_HEIGHT
 	
 	public static final Distance INTAKE_HEIGHT = Distance.ZERO; 
 	
@@ -195,7 +199,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	
 	public static final Distance BOTTOM_HEIGHT = Distance.ZERO;
 	
-	public static final double FOLD_CURRENT_SPIKE = 70;
+	public static final double FOLD_CURRENT_SPIKE = 80;
 	public static final double HANDLER_CURRENT_SPIKE = 25;
 	
 	public Speed velSetpoint = Speed.ZERO;

@@ -13,6 +13,7 @@ import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeDeployCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeDeployWhileSlowingCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
@@ -20,14 +21,7 @@ public class StartPosLeftToScaleLeftProfilingCommand extends CommandGroup {
 
 	public StartPosLeftToScaleLeftProfilingCommand() {
 				
-		addSequential(new AnonymousCommandGroup() {
-			
-			@Override
-			public void commands() {
-				addParallel(new IntakeDeployWhileSlowingCommand());
-				addParallel(new EnableMotionProfile(FieldMeasurements.BASELINE_TO_SCALE_X, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
-			}
-		});
+		addSequential(new EnableMotionProfile(FieldMeasurements.BASELINE_TO_SCALE_X, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 				
 		addSequential(new AnonymousCommandGroup() {
 			
@@ -40,7 +34,15 @@ public class StartPosLeftToScaleLeftProfilingCommand extends CommandGroup {
 			}
 		});
 		
-		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_SCALE_AUTO_ELEVATOR_SHOOTER));
+		addSequential(new AnonymousCommandGroup() {
+			
+			@Override
+			public void commands() {
+				addParallel(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_SCALE_AUTO_ELEVATOR_SHOOTER));
+				
+				addParallel(new IntakeDeployCommand());
+			}
+		});
 	}
 	
 }

@@ -50,7 +50,7 @@ public class PrepareScoreSwitchCommand extends CommandGroup {
 				addParallel(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR,
 						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 				
-				/*addParallel(new IntakeElevatorFoldCommand());*/
+				addParallel(new IntakeElevatorFoldCommand());
 			}
 		});
 	

@@ -58,7 +58,8 @@ DriveCurrentCommand
 
 Make left-right 2-scale autos match						x
 Clean up and expand intake deploy in auto				x
-Auto switch loop logic
+Auto switch loop 
+logic									x
 Check angle turn for 2nd cube							x
 Change angle turn for 1st cube across field				x
 Tweak turning (stops at right angle, no oscillation)	x

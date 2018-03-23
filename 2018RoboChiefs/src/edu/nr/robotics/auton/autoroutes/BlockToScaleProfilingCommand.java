@@ -14,6 +14,7 @@ import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeDeployCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
@@ -220,7 +221,7 @@ public class BlockToScaleProfilingCommand extends CommandGroup {
 				
 				addParallel(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_SCALE_AUTO_ELEVATOR_SHOOTER));
 				
-				addParallel(new IntakeElevatorBottomCommand());
+				addParallel(new IntakeDeployCommand());
 				
 			}
 		});

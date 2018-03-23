@@ -10,6 +10,7 @@ import edu.nr.robotics.subsystems.drive.DriveToCubeCommandAdvanced;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
 import edu.nr.robotics.subsystems.drive.TurnToCubeCommand;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeDeployCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeDeployWhileSlowingCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
@@ -33,7 +34,7 @@ public class PivotSwitchLeftToBlockProfilingCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new IntakeElevatorBottomCommand());
+				addParallel(new IntakeDeployCommand());
 				
 				addParallel(new EnableMotionProfile(FieldMeasurements.SWITCH_TO_PIVOT_POINT_X.negate(),
 						Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));

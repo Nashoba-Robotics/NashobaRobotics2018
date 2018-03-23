@@ -27,12 +27,14 @@ import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileDeltaCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeDeployCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersReverseCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersStopCommand;
+import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocityCommand;
 import edu.nr.robotics.subsystems.sensors.EnableFloorSensorCommand;
 import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
@@ -72,6 +74,8 @@ public class OI implements SmartDashboardSource {
 	private static final int SHOOT_CUBE_BUTTON_NUMBER = 12; // Left
 	private static final int PLACE_CUBE_BUTTON_NUMBER = 9; // Left
 
+	private static final int RUN_INTAKE_BUTTON_NUMBER = 11; //Right drive
+	
 	private static final int ELEVATOR_UP_BUTTON_NUMBER = 5; // Right
 	private static final int ELEVATOR_DOWN_BUTTON_NUMBER = 3; // Right
 
@@ -169,6 +173,9 @@ public class OI implements SmartDashboardSource {
 				new TurnCommand(Drive.getInstance(), new Angle(90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT));
 	
 		new JoystickButton(driveRight, ENABLE_LIMELIGHT_BUTTON).whenPressed(new ToggleLimelightCommand());
+	
+		new JoystickButton(driveRight, RUN_INTAKE_BUTTON_NUMBER).whenPressed(new IntakeRollersVelocityCommand(IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS, IntakeRollers.VEL_PERCENT_LOW_INTAKE_ROLLERS));
+		new JoystickButton(driveRight, RUN_INTAKE_BUTTON_NUMBER).whenReleased(new IntakeRollersStopCommand());
 	}
 
 	public void initOperatorLeft() {
@@ -212,7 +219,7 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(operatorRight, INTAKE_TRANSFER_HEIGHT_BUTTON_NUMBER)
 				.whenPressed(new IntakeElevatorProfileCommandGroup(IntakeElevator.HANDLER_HEIGHT, IntakeElevator.PROFILE_VEL_PERCENT_INTAKE_ELEVATOR, IntakeElevator.PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR));
 		new JoystickButton(operatorRight, INTAKE_BOTTOM_HEIGHT_BUTTON_NUMBER)
-				.whenPressed(new IntakeElevatorBottomCommand());
+				.whenPressed(new IntakeDeployCommand());
 
 
 		new JoystickButton(operatorRight, CANCEL_ALL_BUTTON_NUMBER).whenPressed(new CancelAllCommand());

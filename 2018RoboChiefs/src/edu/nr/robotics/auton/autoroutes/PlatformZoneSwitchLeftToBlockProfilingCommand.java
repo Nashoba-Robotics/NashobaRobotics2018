@@ -5,14 +5,12 @@ import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Distance;
 import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.auton.FieldMeasurements;
-import edu.nr.robotics.multicommands.PrepareCubeIntakeCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
-import edu.nr.robotics.subsystems.drive.DriveToCubeCommandAdvanced;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.StrafeToCubeCommand;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
 import edu.nr.robotics.subsystems.drive.TurnToCubeCommand;
-import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeDeployCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
 import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -34,7 +32,7 @@ public class PlatformZoneSwitchLeftToBlockProfilingCommand extends CommandGroup 
 			@Override
 			public void commands() {
 				
-				addParallel(new IntakeElevatorBottomCommand());
+				addParallel(new IntakeDeployCommand());
 				
 				addSequential(new EnableMotionProfile(
 						(FieldMeasurements.BASELINE_TO_PLATFORM_ZONE_X.sub(FieldMeasurements.BASELINE_TO_SWITCH_X)).negate(),

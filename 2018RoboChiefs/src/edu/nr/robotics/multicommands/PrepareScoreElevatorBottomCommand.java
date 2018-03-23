@@ -5,8 +5,8 @@ import edu.nr.lib.units.Time;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeDeployCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
-import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -28,7 +28,7 @@ public class PrepareScoreElevatorBottomCommand extends CommandGroup {
 				
 				addParallel(new ElevatorBottomCommand());
 				
-				addParallel(new IntakeElevatorBottomCommand());
+				addParallel(new IntakeDeployCommand());
 				
 			}
 		});
