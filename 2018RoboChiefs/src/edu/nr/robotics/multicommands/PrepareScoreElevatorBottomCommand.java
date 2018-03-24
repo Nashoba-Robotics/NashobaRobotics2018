@@ -30,10 +30,10 @@ public class PrepareScoreElevatorBottomCommand extends CommandGroup {
 				
 				addParallel(new IntakeDeployCommand());
 				
+				addParallel(new IntakeRollersIntakeCommand());
+				
 			}
 		});
-		
-		addSequential(new IntakeRollersIntakeCommand());
 		
 		addSequential(new WaitCommand(INTAKE_CUBE_WAIT_TIME.get(Time.Unit.SECOND)));
 		

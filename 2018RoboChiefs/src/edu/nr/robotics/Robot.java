@@ -80,6 +80,8 @@ Have driving and elevator decoupled in auto				x
  */
 public class Robot extends IterativeRobot {
 	
+	private double prevTime = 0;
+	
 	private static Robot singleton;
 	
 	public synchronized static Robot getInstance() {
@@ -292,7 +294,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		
+		double dt = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - prevTime;
+		prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+		//System.out.println(dt);
 	}
 
 	/**

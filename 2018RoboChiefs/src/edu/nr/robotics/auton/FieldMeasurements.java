@@ -35,7 +35,7 @@ public class FieldMeasurements {
 
 	public static final Distance SWITCH_EDGE_TO_FIELD_EDGE_Y = new Distance(85.25, Distance.Unit.INCH);
 
-	public static final Distance PLATFORM_ZONE_WIDTH_START_POS = new Distance(263, Distance.Unit.INCH).sub(ROBOT_WIDTH);
+	public static final Distance PLATFORM_ZONE_WIDTH_START_POS = new Distance(259, Distance.Unit.INCH).sub(ROBOT_WIDTH);
 	
 	//Change 18 to be half of cube to platform zone diagonal first number
 	public static final Distance PLATFORM_ZONE_WIDTH_BLOCK = FIELD_WIDTH.sub(SWITCH_EDGE_TO_FIELD_EDGE_Y.mul(2))
@@ -81,7 +81,7 @@ public class FieldMeasurements {
 
 	public static final Distance CUBE_TO_PLATFORM_ZONE_DIAGONAL = new Distance(36, Distance.Unit.INCH).sub(BLOCK_WIDTH.mul(0.5));
 	
-	public static final Distance PLATFORM_ZONE_TO_SCALE_DIAGONAL = new Distance(46, Distance.Unit.INCH);
+	public static final Distance PLATFORM_ZONE_TO_SCALE_DIAGONAL = new Distance(44, Distance.Unit.INCH);
 	
 	// Platform zone Y direction to diagonal of cube
 	public static final Angle PIVOT_POINT_TO_CUBE_1 = new Angle(

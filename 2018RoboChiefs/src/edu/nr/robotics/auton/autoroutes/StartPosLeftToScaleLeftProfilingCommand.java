@@ -20,7 +20,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class StartPosLeftToScaleLeftProfilingCommand extends CommandGroup {
 
 	public StartPosLeftToScaleLeftProfilingCommand() {
-				
+		
+		addParallel(new IntakeDeployCommand());
+		
 		addSequential(new EnableMotionProfile(FieldMeasurements.BASELINE_TO_SCALE_X, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 				
 		addSequential(new AnonymousCommandGroup() {
@@ -34,15 +36,7 @@ public class StartPosLeftToScaleLeftProfilingCommand extends CommandGroup {
 			}
 		});
 		
-		addSequential(new AnonymousCommandGroup() {
-			
-			@Override
-			public void commands() {
-				addParallel(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_SCALE_AUTO_ELEVATOR_SHOOTER));
-				
-				addParallel(new IntakeDeployCommand());
-			}
-		});
+		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_SCALE_AUTO_ELEVATOR_SHOOTER));
 	}
 	
 }

@@ -7,7 +7,6 @@ import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosLeftToScaleLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosLeftToScaleRightProfilingCommand;
-import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;

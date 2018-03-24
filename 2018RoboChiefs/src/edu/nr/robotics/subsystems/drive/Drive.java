@@ -164,7 +164,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The angle the robot turns to once disabled at full turn speed. Used for GyroCorrection ramped mode.
 	 */
-	public static final Angle DRIVE_STOP_ANGLE = new Angle(60, Angle.Unit.DEGREE); //TODO: Find angle that robot stops at when turning goes from 1 to 0
+	public static final Angle DRIVE_STOP_ANGLE = new Angle(55, Angle.Unit.DEGREE); //TODO: Find angle that robot stops at when turning goes from 1 to 0
 
 	
 	/**
@@ -177,7 +177,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * When Driving into an object, the current when the driving stops
 	 */
-	public static final double SWITCH_CURRENT_LIMIT = 50;
+	public static final double SWITCH_CURRENT_LIMIT = 70;
 	
 	/**
 	 * the drive percent while driving into the switch

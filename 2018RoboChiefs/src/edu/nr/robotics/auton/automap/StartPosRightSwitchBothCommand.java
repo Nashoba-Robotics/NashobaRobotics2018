@@ -8,8 +8,6 @@ import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.autoroutes.BlockToScaleProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.PivotSwitchLeftToBlockProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.PivotSwitchRightToBlockProfilingCommand;
-import edu.nr.robotics.auton.autoroutes.StartPosLeftToSwitchLeftProfilingCommand;
-import edu.nr.robotics.auton.autoroutes.StartPosLeftToSwitchRightProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosRightToSwitchLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosRightToSwitchRightProfilingCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;

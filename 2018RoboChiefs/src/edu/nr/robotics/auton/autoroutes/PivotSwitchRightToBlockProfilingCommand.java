@@ -32,17 +32,25 @@ public class PivotSwitchRightToBlockProfilingCommand extends CommandGroup {
 				
 				addParallel(new IntakeDeployCommand());
 				
-				addParallel(new EnableMotionProfile(FieldMeasurements.SWITCH_TO_PIVOT_POINT_X.negate(),
-						Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+				addParallel(new AnonymousCommandGroup() {
+					
+					@Override
+					public void commands() {
+						
+						addSequential(new EnableMotionProfile(FieldMeasurements.SWITCH_TO_PIVOT_POINT_X.negate(),
+								Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+						
+						addSequential(new EnableLimelightCommand(true));
+						
+						addSequential(new TurnCommand(Drive.getInstance(),
+								(new Angle(90, Angle.Unit.DEGREE).sub(FieldMeasurements.PIVOT_POINT_TO_CUBE_1)),
+								Drive.MAX_PROFILE_TURN_PERCENT));
+						
+					}
+				});
 				
 			}
 		});
-		
-		addSequential(new EnableLimelightCommand(true));
-		
-		addSequential(new TurnCommand(Drive.getInstance(),
-				(new Angle(90, Angle.Unit.DEGREE).sub(FieldMeasurements.PIVOT_POINT_TO_CUBE_1)),
-				Drive.MAX_PROFILE_TURN_PERCENT));
 
 		addSequential(new AnonymousCommandGroup() {
 

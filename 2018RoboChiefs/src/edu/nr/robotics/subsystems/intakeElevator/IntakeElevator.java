@@ -191,7 +191,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	 */
 	public static final Distance FOLDED_HEIGHT = new Distance(11.9, Distance.Unit.INCH); // TODO: Find FOLDED_HEIGHT
 	
-	public static final Distance HANDLER_HEIGHT = new Distance(10, Distance.Unit.INCH); // TODO: Find HANDLER_HEIGHT
+	public static final Distance HANDLER_HEIGHT = new Distance(13, Distance.Unit.INCH); // TODO: Find HANDLER_HEIGHT
 	
 	public static final Distance INTAKE_HEIGHT = Distance.ZERO; 
 	
@@ -199,7 +199,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	
 	public static final Distance BOTTOM_HEIGHT = Distance.ZERO;
 	
-	public static final double FOLD_CURRENT_SPIKE = 80;
+	public static final double FOLD_CURRENT_SPIKE = 90;
 	public static final double HANDLER_CURRENT_SPIKE = 25;
 	
 	public Speed velSetpoint = Speed.ZERO;

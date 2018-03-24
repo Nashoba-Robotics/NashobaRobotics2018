@@ -22,8 +22,6 @@ import edu.wpi.first.wpilibj.command.ConditionalCommand;
 public class ScaleToBlockProfilingCommand extends CommandGroup {
 
 	public ScaleToBlockProfilingCommand(int block) {
-
-		addSequential(new EnableLimelightCommand(true));
 		
 		addSequential(new AnonymousCommandGroup() {
 			
@@ -141,39 +139,50 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 			}
 		});
 		
+		addSequential(new EnableLimelightCommand(true));
+		
 		addSequential(new TurnToCubeCommand());
 		
-		addParallel(new IntakeRollersIntakeCommand());
-		
 		addSequential(new AnonymousCommandGroup() {
-
+			
 			@Override
 			public void commands() {
 				
-				addSequential(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_1_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
-					
+				addParallel(new IntakeRollersIntakeCommand());
+				
+				addParallel(new AnonymousCommandGroup() {
+
 					@Override
-					protected boolean condition() {
-						return block == 1 || block == 6;
+					public void commands() {
+						
+						addSequential(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_1_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
+							
+							@Override
+							protected boolean condition() {
+								return block == 1 || block == 6;
+							}
+						});
+						
+						addSequential(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_2_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
+							
+							@Override
+							protected boolean condition() {
+								return block == 2 || block == 5;
+							}
+						});
+						
+						addSequential(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_3_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
+							
+							@Override
+							protected boolean condition() {
+								return block == 3 || block == 4;
+							}
+						});
+						
+				
 					}
 				});
-				
-				addSequential(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_2_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
-					
-					@Override
-					protected boolean condition() {
-						return block == 2 || block == 5;
-					}
-				});
-				
-				addSequential(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_3_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
-					
-					@Override
-					protected boolean condition() {
-						return block == 3 || block == 4;
-					}
-				});
-				
+		
 			}
 			
 		});

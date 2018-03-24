@@ -10,17 +10,12 @@ import edu.nr.robotics.auton.autoroutes.PlatformZoneSwitchRightToBlockProfilingC
 import edu.nr.robotics.multicommands.PrepareCubeIntakeCommand;
 import edu.nr.robotics.multicommands.PrepareScoreElevatorBottomCommand;
 import edu.nr.robotics.multicommands.PrepareScoreSwitchAutoCommand;
-import edu.nr.robotics.multicommands.PrepareScoreSwitchCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
-import edu.nr.robotics.subsystems.drive.DriveCurrentCommand;
-import edu.nr.robotics.subsystems.drive.DriveToCubeCommandAdvanced;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.StrafeToCubeCommand;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
 import edu.nr.robotics.subsystems.drive.TurnToCubeCommand;
-import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
-import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorFoldCommand;
