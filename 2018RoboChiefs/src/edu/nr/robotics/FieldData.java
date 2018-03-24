@@ -30,7 +30,12 @@ public class FieldData {
 	}
 	
 	public void getFieldData() { 
+		
 		String gsm = DriverStation.getInstance().getGameSpecificMessage();
+		
+		while (gsm == null || gsm.length() == 0) {
+			gsm = DriverStation.getInstance().getGameSpecificMessage();
+		}
 		
 		System.out.println(gsm.length());
 		

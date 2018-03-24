@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.command.PrintCommand;
 public class StartPosRightToScaleRightProfilingCommand extends CommandGroup {
 	
 	public StartPosRightToScaleRightProfilingCommand () {
-				
+						
 		addParallel(new IntakeDeployCommand());
 		
 		addSequential(new EnableMotionProfile(FieldMeasurements.BASELINE_TO_SCALE_X, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
@@ -35,7 +35,7 @@ public class StartPosRightToScaleRightProfilingCommand extends CommandGroup {
 			}
 
 		});
-		
+				
 		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_SCALE_AUTO_ELEVATOR_SHOOTER));
 	}
 
