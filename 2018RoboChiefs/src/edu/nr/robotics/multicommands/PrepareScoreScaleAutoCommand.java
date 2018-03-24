@@ -1,11 +1,8 @@
 package edu.nr.robotics.multicommands;
 
 import edu.nr.lib.commandbased.AnonymousCommandGroup;
-import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
-import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
-import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileCommandGroup;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
@@ -26,6 +23,6 @@ public class PrepareScoreScaleAutoCommand extends CommandGroup {
 			}
 		});
 		
-		addSequential(new CubeFeedIntakeRollersToElevatorCommand());
+		addSequential(new CubeFeedIntakeRollersToElevatorCommandManual());
 	}
 }

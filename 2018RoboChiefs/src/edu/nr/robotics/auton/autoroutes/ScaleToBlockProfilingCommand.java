@@ -23,6 +23,8 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 
 	public ScaleToBlockProfilingCommand(int block) {
 		
+		addSequential(new EnableLimelightCommand(true));
+		
 		addSequential(new AnonymousCommandGroup() {
 			
 			@Override
@@ -138,8 +140,6 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 				
 			}
 		});
-		
-		addSequential(new EnableLimelightCommand(true));
 		
 		addSequential(new TurnToCubeCommand());
 		
