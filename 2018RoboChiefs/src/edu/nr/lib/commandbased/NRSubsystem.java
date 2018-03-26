@@ -59,6 +59,7 @@ public abstract class NRSubsystem extends Subsystem implements SmartDashboardSou
 			if(joystickCommand.shouldSwitchToJoystick()) {
 				Command currentCommand = getCurrentCommand();
 				if(currentCommand != joystickCommand) {
+					System.out.println(joystickCommand + " is overriding.");
 					NRCommand.cancelCommand(getCurrentCommand());
 				}
 			}

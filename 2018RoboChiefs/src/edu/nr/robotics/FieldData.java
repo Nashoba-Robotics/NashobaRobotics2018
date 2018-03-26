@@ -33,11 +33,13 @@ public class FieldData {
 		
 		String gsm = DriverStation.getInstance().getGameSpecificMessage();
 		
+		System.out.println("Original data at start of auto: " + gsm);
+		
 		while (gsm == null || gsm.length() == 0) {
 			gsm = DriverStation.getInstance().getGameSpecificMessage();
 		}
 		
-		System.out.println(gsm.length());
+		System.out.println("First three character string: " + gsm);
 		
 		if (gsm.charAt(0) == 'l' || gsm.charAt(0) == 'L'){
 			nearSwitch = Direction.left;

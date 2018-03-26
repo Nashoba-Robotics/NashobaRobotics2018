@@ -21,7 +21,6 @@ public class StartPosMiddleSwitchLeftCommand extends CommandGroup {
 
 		addSequential(new WaitCommand(Robot.getInstance().autoWaitTime));
 
-		// Checks
 		addSequential(new ConditionalCommand(new StartPosMiddleToSwitchLeftProfilingCommand()) {
 
 			@Override
