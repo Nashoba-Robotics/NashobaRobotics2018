@@ -20,7 +20,7 @@ public class AutoChoosers {
 	public enum Switch {
 		leftOnly,
 		rightOnly,
-		none,
+		other,
 		both;
 	}
 	
@@ -42,4 +42,5 @@ public class AutoChoosers {
 		basic,
 		oneD;
 	}
+	
 }

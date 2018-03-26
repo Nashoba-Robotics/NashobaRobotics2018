@@ -29,7 +29,7 @@ public class StartPosMiddleSwitchRightCommand extends CommandGroup {
 			}
 
 		});
-
+		/*
 		addSequential(new ConditionalCommand(new PivotSwitchRightToBlockProfilingCommand()) {
 
 			@Override
@@ -133,7 +133,7 @@ public class StartPosMiddleSwitchRightCommand extends CommandGroup {
 										&& FieldData.getInstance().scale == Direction.right));
 			}
 
-		});
+		});*/
 
 	}
 

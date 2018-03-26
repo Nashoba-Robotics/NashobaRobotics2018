@@ -29,6 +29,7 @@ public class StartPosMiddleSwitchLeftCommand extends CommandGroup {
 				return FieldData.getInstance().nearSwitch == Direction.left;
 			}
 		});
+		/*
 
 		addSequential(new ConditionalCommand(new PivotSwitchLeftToBlockProfilingCommand()) {
 
@@ -133,7 +134,7 @@ public class StartPosMiddleSwitchLeftCommand extends CommandGroup {
 										&& FieldData.getInstance().scale == Direction.right));
 			}
 
-		});
+		});*/
 
 
 	}
