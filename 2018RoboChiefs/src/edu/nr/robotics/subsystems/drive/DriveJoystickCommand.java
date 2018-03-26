@@ -4,6 +4,7 @@ import edu.nr.lib.NRMath;
 import edu.nr.lib.commandbased.JoystickCommand;
 import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.robotics.OI;
+import edu.nr.robotics.Robot;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 
 public class DriveJoystickCommand extends JoystickCommand {
@@ -102,7 +103,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 
 	@Override
 	public boolean shouldSwitchToJoystick() {
-		if (!(Drive.getInstance().getCurrentCommand() instanceof DriveToCubeJoystickCommand)) {
+		if (!(Drive.getInstance().getCurrentCommand() instanceof DriveToCubeJoystickCommand) && !Robot.getInstance().isAutonomous()) {
 		
 			if((OI.driveMode == Drive.DriveMode.arcadeDrive) || (OI.driveMode == Drive.DriveMode.cheesyDrive)) {
 				return OI.getInstance().isArcadeNonZero();
