@@ -29,111 +29,14 @@ public class StartPosMiddleSwitchLeftCommand extends CommandGroup {
 			}
 		});
 
-		addSequential(new ConditionalCommand(new PivotSwitchLeftToBlockProfilingCommand()) {
-
-			@Override
-			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.left
-						&& (Robot.getInstance().selectedScale == Scale.both
-								|| (Robot.getInstance().selectedScale == Scale.leftonly
-										&& FieldData.getInstance().scale == Direction.left)
-								|| (Robot.getInstance().selectedScale == Scale.rightonly
-										&& FieldData.getInstance().scale == Direction.right));
-			}
-
-		});
-
-		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(1)) {
-
-			@Override
-			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.left
-						&& (Robot.getInstance().selectedScale == Scale.both
-								|| Robot.getInstance().selectedScale == Scale.leftonly)
-						&& FieldData.getInstance().scale == Direction.left;
-			}
-
-		});
-
-		addSequential(new ConditionalCommand(new BlockToScaleProfilingCommand(1)) {
-
-			@Override
-			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.left
-						&& (Robot.getInstance().selectedScale == Scale.both
-								|| Robot.getInstance().selectedScale == Scale.rightonly)
-						&& FieldData.getInstance().scale == Direction.right;
-			}
-
-		});
-
-		addSequential(new ConditionalCommand(new StartPosMiddleToScaleLeftProfilingCommand()) {
-
-			@Override
-			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.right
-						&& (Robot.getInstance().selectedScale == Scale.both
-								|| Robot.getInstance().selectedScale == Scale.leftonly)
-						&& FieldData.getInstance().scale == Direction.left;
-			}
-
-		});
-
-		addSequential(new ConditionalCommand(new StartPosMiddleToScaleRightProfilingCommand()) {
-
-			@Override
-			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.right
-						&& (Robot.getInstance().selectedScale == Scale.both
-								|| Robot.getInstance().selectedScale == Scale.rightonly)
-						&& FieldData.getInstance().scale == Direction.right;
-			}
-
-		});
-
 		addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.right
-						&& (Robot.getInstance().selectedScale == Scale.none
-								|| (Robot.getInstance().selectedScale == Scale.leftonly
-										&& FieldData.getInstance().scale == Direction.right)
-								|| (Robot.getInstance().selectedScale == Scale.rightonly
-										&& FieldData.getInstance().scale == Direction.left));
+				return FieldData.getInstance().nearSwitch == Direction.right;
 			}
 
 		});
-
-		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()) {
-
-			@Override
-			protected boolean condition() {
-				return Robot.getInstance().selectedScale == Scale.both
-						|| (Robot.getInstance().selectedScale == Scale.leftonly
-								&& FieldData.getInstance().scale == Direction.left)
-						|| (Robot.getInstance().selectedScale == Scale.rightonly
-								&& FieldData.getInstance().scale == Direction.right);
-			}
-
-		});
-		
-		addSequential(new ConditionalCommand(new AutoSwitchLoopCommand()) {
-
-			@Override
-			protected boolean condition() {
-				return ((Robot.getInstance().selectedSwitch == AutoChoosers.Switch.leftOnly
-						|| Robot.getInstance().selectedSwitch == AutoChoosers.Switch.both)
-						&& FieldData.getInstance().nearSwitch == Direction.left)
-						&& !(Robot.getInstance().selectedScale == Scale.both
-								|| (Robot.getInstance().selectedScale == Scale.leftonly
-										&& FieldData.getInstance().scale == Direction.left)
-								|| (Robot.getInstance().selectedScale == Scale.rightonly
-										&& FieldData.getInstance().scale == Direction.right));
-			}
-
-		});
-
 
 	}
 
