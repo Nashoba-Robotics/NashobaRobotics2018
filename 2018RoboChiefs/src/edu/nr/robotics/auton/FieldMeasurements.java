@@ -61,17 +61,26 @@ public class FieldMeasurements {
 					new Distance(61, Distance.Unit.INCH).add(BLOCK_WIDTH.mul(0.5)))
 			.sub(ROBOT_LENGTH.mul(0.5)).sub(INTAKE_LENGTH).add(new Distance(6, Distance.Unit.INCH));
 
+	////////////////////////////////////////
 	//Distances For Middle Start Position
 	public static final Distance PUSH_OFF_WALL_X = new Distance(6, Distance.Unit.INCH);
 	public static final Distance START_POS_MID_TO_SWITCH_LEFT_DIAGONAL = NRMath
 			.hypot(BASELINE_TO_10_CUBE_PILE.sub(PUSH_OFF_WALL_X).add(ROBOT_LENGTH.mul(0.5)), new Distance(9, Distance.Unit.FOOT));
-
+	
+	public static final Distance FRONT_SWITCH_LOOP_TO_CUBE_DIAGONAL = Distance.ZERO;
+	////////////////////////////////////////
+	
+	
+	////////////////////////////////////////
 	//Angles For Middle Start Position
 	public static final Angle START_POS_MID_TO_SWITCH_ANGLE_LEFT = new Angle(Math.atan(
 			 new Distance(9, Distance.Unit.FOOT).div(
 					 BASELINE_TO_10_CUBE_PILE.sub(PUSH_OFF_WALL_X).add(ROBOT_LENGTH.mul(0.5)))),
 			Angle.Unit.RADIAN);
-
+	
+	public static final Angle FRONT_SWITCH_LOOP_TO_CUBE_ANGLE = Angle.ZERO;
+	////////////////////////////////////////
+	
 	public static final Distance CUBE_TO_PLATFORM_ZONE_DIAGONAL = new Distance(36, Distance.Unit.INCH).sub(BLOCK_WIDTH.mul(0.5));
 	
 	public static final Distance PLATFORM_ZONE_TO_SCALE_DIAGONAL = new Distance(44, Distance.Unit.INCH);

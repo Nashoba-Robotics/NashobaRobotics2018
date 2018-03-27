@@ -5,6 +5,7 @@ import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
+import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorFoldCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileCommandGroup;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
@@ -26,16 +27,6 @@ public class PrepareScoreSwitchAutoCommand extends CommandGroup {
 		});
 		
 		addSequential(new CubeFeedIntakeRollersToElevatorCommand());
-		
-		addSequential(new AnonymousCommandGroup() {
-			
-			@Override
-			public void commands() {
-				addParallel(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR,
-						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
-				addParallel(new FoldIntakeMultiCommand());
-			}
-			
-		});
+		addSequential(new IntakeElevatorFoldCommand());
 	}
 }
