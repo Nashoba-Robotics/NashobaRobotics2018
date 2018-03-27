@@ -8,7 +8,6 @@ import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
 import edu.nr.robotics.auton.DriveOverBaselineFancyCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosLeftToScaleLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosLeftToScaleRightProfilingCommand;
-import edu.nr.robotics.auton.autoroutes.StartPosLeftToSwitchLeftProfilingCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
@@ -41,7 +40,7 @@ public class StartPosLeftSwitchOtherCommand extends CommandGroup {
 
 		});
 		
-		addSequential(new ConditionalCommand(new StartPosLeftToSwitchLeftProfilingCommand()) {
+		addSequential(new ConditionalCommand(new StartPosLeftSwitchLeftCommand()) {
 
 			@Override
 			protected boolean condition() {
