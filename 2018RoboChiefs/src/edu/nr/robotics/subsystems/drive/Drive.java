@@ -130,6 +130,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 */
 	public static final double ACCEL_PERCENT = 0.9;
 	
+	/**
+	 * Multiplies joystick turn value
+	 */
 	public static final double TURN_JOYSTICK_MULTIPLIER = 1.0;
 	
 	/**
