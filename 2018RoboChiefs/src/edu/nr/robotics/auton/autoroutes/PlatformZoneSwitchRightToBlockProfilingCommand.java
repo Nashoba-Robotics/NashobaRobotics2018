@@ -35,7 +35,7 @@ public class PlatformZoneSwitchRightToBlockProfilingCommand extends CommandGroup
 				addParallel(new IntakeDeployCommand());
 				
 				addParallel(new EnableMotionProfile(
-						(FieldMeasurements.BASELINE_TO_PLATFORM_ZONE_X.sub(FieldMeasurements.BASELINE_TO_SWITCH_X)).negate(),
+						(FieldMeasurements.BASELINE_TO_PLATFORM_ZONE_X.sub(FieldMeasurements.BASELINE_TO_MID_SWITCH_X)).negate(),
 						Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 				
 			}

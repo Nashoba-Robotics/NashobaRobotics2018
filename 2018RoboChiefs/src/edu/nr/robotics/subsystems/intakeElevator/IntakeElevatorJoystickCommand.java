@@ -54,7 +54,7 @@ public class IntakeElevatorJoystickCommand extends JoystickCommand {
 	
 	@Override
 	protected boolean shouldSwitchToJoystick() {
-		return !Robot.getInstance().isAutonomous() && (IntakeElevator.getInstance().getCurrentCommand() == null || OI.getInstance().isIntakeElevatorNonZero());
+		return IntakeElevator.getInstance().getCurrentCommand() == null || (OI.getInstance().isIntakeElevatorNonZero() && !Robot.getInstance().isAutonomous());
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package edu.nr.robotics.subsystems.elevator;
 import edu.nr.lib.commandbased.JoystickCommand;
 import edu.nr.lib.units.Distance;
 import edu.nr.robotics.OI;
+import edu.nr.robotics.Robot;
 import edu.nr.robotics.subsystems.climber.Climber;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 
@@ -44,7 +45,7 @@ public class ElevatorJoystickCommand extends JoystickCommand {
 	
 	@Override
 	protected boolean shouldSwitchToJoystick() {
-		return Elevator.getInstance().getCurrentCommand() == null || OI.getInstance().isElevatorNonZero();
+		return Elevator.getInstance().getCurrentCommand() == null || (!Robot.getInstance().isAutonomous() && OI.getInstance().isElevatorNonZero());
 	}
 
 	@Override

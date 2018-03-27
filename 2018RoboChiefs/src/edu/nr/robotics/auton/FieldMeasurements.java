@@ -24,12 +24,13 @@ public class FieldMeasurements {
 	
 	public static final Distance BASELINE_TO_SCALE_X = new Distance(266, Distance.Unit.INCH);
 
-	public static final Distance BASELINE_TO_SWITCH_X = new Distance(98, Distance.Unit.INCH).sub(ROBOT_LENGTH.mul(0.5)); //168 for outside
-	public static final Distance BASELINE_TO_SWITCH_Y = Distance.ZERO;
+	public static final Distance BASELINE_TO_MID_SWITCH_X = new Distance(168, Distance.Unit.INCH).sub(ROBOT_LENGTH);
+	
+	public static final Distance BASELINE_TO_SWITCH_X = new Distance(140, Distance.Unit.INCH).sub(ROBOT_LENGTH);
 
+	public static final Distance BASELINE_TO_10_CUBE_PILE = new Distance(98, Distance.Unit.INCH).sub(ROBOT_LENGTH);
+	
 	public static final Distance SWITCH_TO_PIVOT_POINT_X = new Distance(88, Distance.Unit.INCH);
-
-	//public static final Distance PIVOT_POINT_TO_SCALE_DIAGONAL = new Distance(18, Distance.Unit.INCH);
 
 	public static final Distance PIVOT_POINT_FIELD_EDGE_Y = FIELD_WIDTH.mul(0.5).sub(new Distance(54, Distance.Unit.INCH)); //54 for outside
 
@@ -63,20 +64,12 @@ public class FieldMeasurements {
 	//Distances For Middle Start Position
 	public static final Distance PUSH_OFF_WALL_X = new Distance(6, Distance.Unit.INCH);
 	public static final Distance START_POS_MID_TO_SWITCH_LEFT_DIAGONAL = NRMath
-			.hypot(BASELINE_TO_SWITCH_X.sub(PUSH_OFF_WALL_X), FIELD_WIDTH.mul(0.5).add(new Distance(6, Distance.Unit.INCH)).sub(PIVOT_POINT_FIELD_EDGE_Y)
-					.add(ROBOT_WIDTH.mul(0.5).sub(new Distance(12, Distance.Unit.INCH))));
-	public static final Distance START_POS_MID_TO_SWITCH_RIGHT_DIAGONAL = NRMath
-			.hypot(BASELINE_TO_SWITCH_X.sub(PUSH_OFF_WALL_X), FIELD_WIDTH.mul(0.5).sub(PIVOT_POINT_FIELD_EDGE_Y)
-					.sub(ROBOT_WIDTH.mul(0.5).sub(new Distance(12, Distance.Unit.INCH))));
+			.hypot(BASELINE_TO_10_CUBE_PILE.sub(PUSH_OFF_WALL_X).add(ROBOT_LENGTH.mul(0.5)), new Distance(9, Distance.Unit.FOOT));
 
 	//Angles For Middle Start Position
-	public static final Angle START_POS_MID_TO_SWITCH_ANGLE_LEFT = new Angle(Math.atan((FIELD_WIDTH.mul(0.5).add(new Distance(6, Distance.Unit.INCH))
-			.sub(PIVOT_POINT_FIELD_EDGE_Y).add(ROBOT_WIDTH.mul(0.5).sub(new Distance(12, Distance.Unit.INCH))))
-					.div(BASELINE_TO_SWITCH_X.sub(PUSH_OFF_WALL_X))),
-			Angle.Unit.RADIAN);
-	public static final Angle START_POS_MID_TO_SWITCH_ANGLE_RIGHT = new Angle(Math.atan((FIELD_WIDTH.mul(0.5)
-			.sub(PIVOT_POINT_FIELD_EDGE_Y).sub(ROBOT_WIDTH.mul(0.5).sub(new Distance(12, Distance.Unit.INCH))))
-					.div(BASELINE_TO_SWITCH_X.sub(PUSH_OFF_WALL_X))),
+	public static final Angle START_POS_MID_TO_SWITCH_ANGLE_LEFT = new Angle(Math.atan(
+			 new Distance(9, Distance.Unit.FOOT).div(
+					 BASELINE_TO_10_CUBE_PILE.sub(PUSH_OFF_WALL_X).add(ROBOT_LENGTH.mul(0.5)))),
 			Angle.Unit.RADIAN);
 
 	public static final Distance CUBE_TO_PLATFORM_ZONE_DIAGONAL = new Distance(36, Distance.Unit.INCH).sub(BLOCK_WIDTH.mul(0.5));

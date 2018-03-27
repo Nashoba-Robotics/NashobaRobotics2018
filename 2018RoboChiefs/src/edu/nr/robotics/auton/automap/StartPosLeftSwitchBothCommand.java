@@ -127,7 +127,7 @@ public class StartPosLeftSwitchBothCommand extends CommandGroup {
 
 		});
 		
-		addSequential(new ConditionalCommand(new AutoSwitchLoopCommand()) {
+		addSequential(new ConditionalCommand(new AutoSwitchLoopBackCommand()) {
 
 			@Override
 			protected boolean condition() {

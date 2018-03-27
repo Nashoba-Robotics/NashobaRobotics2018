@@ -45,31 +45,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/*Test Floor Sensor											
-ClimbCommand												
-IntakeToElevatorCommands (elevator at right height)
-Test Auto Modes (inc StrafeToCubeCommand)					
-Elevator Profiling Position	
-Test Elevator Up/Down Buttons
-Tweak IntakeElevator Profile
-Fix any Drive tuning
-DriveCurrentCommand
-
-Make left-right 2-scale autos match						x
-Clean up and expand intake deploy in auto				x
-Auto switch loop 
-logic									x
-Check angle turn for 2nd cube							x
-Change angle turn for 1st cube across field				x
-Tweak turning (stops at right angle, no oscillation)	x
-Check driving to cube in auto in all cases				x
-Speed up profiling ramps
-Limelight button is toggle								x
-Make Transfer have right elevator height at all times
-Have driving and elevator decoupled in auto				x
-
-*/
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot

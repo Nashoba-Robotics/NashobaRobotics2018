@@ -23,9 +23,9 @@ import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
-public class AutoSwitchLoopCommand extends CommandGroup {
+public class AutoSwitchLoopBackCommand extends CommandGroup {
 
-	public AutoSwitchLoopCommand() {
+	public AutoSwitchLoopBackCommand() {
 						
 		addSequential(new ConditionalCommand(new PlatformZoneSwitchLeftToBlockProfilingCommand(), new PlatformZoneSwitchRightToBlockProfilingCommand()) {
 			

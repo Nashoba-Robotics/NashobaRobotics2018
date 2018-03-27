@@ -4,6 +4,7 @@ import edu.nr.robotics.FieldData;
 import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.Robot;
 import edu.nr.robotics.auton.autoroutes.StartPosMiddleToSwitchRightProfilingCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
@@ -22,6 +23,8 @@ public class StartPosMiddleSwitchRightCommand extends CommandGroup {
 			}
 
 		});
+		
+		addSequential(new ElevatorBottomCommand());
 	}
 
 }

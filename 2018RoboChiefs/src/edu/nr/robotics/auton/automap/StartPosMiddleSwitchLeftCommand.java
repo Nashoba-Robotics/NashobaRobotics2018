@@ -10,6 +10,7 @@ import edu.nr.robotics.auton.autoroutes.BlockToScaleProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosMiddleToScaleLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosMiddleToScaleRightProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosMiddleToSwitchLeftProfilingCommand;
+import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.nr.robotics.auton.autoroutes.PivotSwitchLeftToBlockProfilingCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
@@ -28,17 +29,8 @@ public class StartPosMiddleSwitchLeftCommand extends CommandGroup {
 				return FieldData.getInstance().nearSwitch == Direction.left;
 			}
 		});
-		/*
-
-		addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()) {
-
-			@Override
-			protected boolean condition() {
-				return FieldData.getInstance().nearSwitch == Direction.right;
-			}
-
-		});*/
-
+		
+		addSequential(new ElevatorBottomCommand());
 	}
 
 }
