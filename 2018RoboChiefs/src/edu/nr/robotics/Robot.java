@@ -14,14 +14,13 @@ import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.AutoChoosers.StartPos;
 import edu.nr.robotics.auton.AutoChoosers.Switch;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
-import edu.nr.robotics.auton.automap.StartPosLeftSwitchBothCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchLeftCommand;
-import edu.nr.robotics.auton.automap.StartPosLeftSwitchNoneCommand;
+import edu.nr.robotics.auton.automap.StartPosLeftSwitchOtherCommand;
 import edu.nr.robotics.auton.automap.StartPosMiddleSwitchBothCommand;
 import edu.nr.robotics.auton.automap.StartPosMiddleSwitchLeftCommand;
-import edu.nr.robotics.auton.automap.StartPosMiddleSwitchNoneCommand;
+import edu.nr.robotics.auton.automap.StartPosMiddleSwitchOtherCommand;
 import edu.nr.robotics.auton.automap.StartPosMiddleSwitchRightCommand;
-import edu.nr.robotics.auton.automap.StartPosRightSwitchNoneCommand;
+import edu.nr.robotics.auton.automap.StartPosRightSwitchOtherCommand;
 import edu.nr.robotics.auton.automap.StartPosRightSwitchRightCommand;
 import edu.nr.robotics.multicommands.ClimbButtonCommand;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
@@ -121,12 +120,12 @@ public class Robot extends IterativeRobot {
 		AutoChoosers.autoStartPosChooser.addObject("Start Pos Middle", StartPos.middle);
 		AutoChoosers.autoStartPosChooser.addObject("Start Pos Right", StartPos.right);
 		
-		AutoChoosers.autoSwitchChooser.addDefault("Switch None", Switch.none);
+		AutoChoosers.autoSwitchChooser.addDefault("Switch None", Switch.other);
 		AutoChoosers.autoSwitchChooser.addObject("Switch Left", Switch.leftOnly);
 		AutoChoosers.autoSwitchChooser.addObject("Switch Right", Switch.rightOnly);
 		AutoChoosers.autoSwitchChooser.addObject("Switch Both", Switch.both);
 		
-		AutoChoosers.autoScaleChooser.addDefault("Scale None", Scale.none);
+		AutoChoosers.autoScaleChooser.addDefault("Scale Default", Scale.none);
 		AutoChoosers.autoScaleChooser.addObject("Scale Left", Scale.leftonly);
 		AutoChoosers.autoScaleChooser.addObject("Scale Right", Scale.rightonly);
 		AutoChoosers.autoScaleChooser.addObject("Scale Both", Scale.both);
@@ -317,14 +316,14 @@ public class Robot extends IterativeRobot {
 	
 	public Command getAutoCommand() {
 		if (selectedStartPos == AutoChoosers.StartPos.left) {
-			if (selectedSwitch == AutoChoosers.Switch.none || selectedSwitch == AutoChoosers.Switch.rightOnly) {
-				return (new StartPosLeftSwitchNoneCommand());
+			if (selectedSwitch == AutoChoosers.Switch.other || selectedSwitch == AutoChoosers.Switch.rightOnly) {
+				return (new StartPosLeftSwitchOtherCommand());
 			} else if (selectedSwitch == AutoChoosers.Switch.leftOnly || selectedSwitch == AutoChoosers.Switch.both) {
 				return new StartPosLeftSwitchLeftCommand();			
 			}
 		} else if (selectedStartPos == AutoChoosers.StartPos.middle) {
-			if (selectedSwitch == AutoChoosers.Switch.none) {
-				return (new StartPosMiddleSwitchNoneCommand());		
+			if (selectedSwitch == AutoChoosers.Switch.other) {
+				return (new StartPosMiddleSwitchOtherCommand());		
 			} else if (selectedSwitch == AutoChoosers.Switch.leftOnly) {
 				return (new StartPosMiddleSwitchLeftCommand());		
 			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly){
@@ -333,8 +332,8 @@ public class Robot extends IterativeRobot {
 				return (new StartPosMiddleSwitchBothCommand());
 			}
 		} else if (selectedStartPos == AutoChoosers.StartPos.right) {
-			if (selectedSwitch == AutoChoosers.Switch.none || selectedSwitch == AutoChoosers.Switch.leftOnly) {
-				return (new StartPosRightSwitchNoneCommand());
+			if (selectedSwitch == AutoChoosers.Switch.other || selectedSwitch == AutoChoosers.Switch.leftOnly) {
+				return (new StartPosRightSwitchOtherCommand());
 			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly || selectedSwitch == AutoChoosers.Switch.both){
 				return (new StartPosRightSwitchRightCommand());
 			}

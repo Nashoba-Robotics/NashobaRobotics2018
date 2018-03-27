@@ -28,7 +28,7 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 			}
 
 		});
-
+		/*
 		addSequential(new ConditionalCommand(new PivotSwitchLeftToBlockProfilingCommand()) {
 
 			@Override
@@ -66,7 +66,7 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 						&& FieldData.getInstance().scale == Direction.right;
 			}
 
-		});
+		});*/
 
 		addSequential(new ConditionalCommand(new StartPosMiddleToSwitchRightProfilingCommand()) {
 
@@ -76,6 +76,7 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 			}
 
 		});
+		/*
 
 		addSequential(new ConditionalCommand(new PivotSwitchRightToBlockProfilingCommand()) {
 
@@ -145,7 +146,7 @@ public class StartPosMiddleSwitchBothCommand extends CommandGroup {
 										&& FieldData.getInstance().scale == Direction.right));
 			}
 
-		});
+		});*/
 
 	}
 

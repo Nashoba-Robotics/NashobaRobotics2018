@@ -5,9 +5,9 @@ import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 
-public class StartPosMiddleSwitchNoneCommand extends CommandGroup {
+public class StartPosMiddleSwitchOtherCommand extends CommandGroup {
 
-	public StartPosMiddleSwitchNoneCommand() {
+	public StartPosMiddleSwitchOtherCommand() {
 
 		addSequential(new WaitCommand(Robot.getInstance().autoWaitTime));
 

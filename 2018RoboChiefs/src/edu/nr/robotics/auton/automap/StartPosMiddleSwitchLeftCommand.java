@@ -28,6 +28,7 @@ public class StartPosMiddleSwitchLeftCommand extends CommandGroup {
 				return FieldData.getInstance().nearSwitch == Direction.left;
 			}
 		});
+		/*
 
 		addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()) {
 
@@ -36,7 +37,7 @@ public class StartPosMiddleSwitchLeftCommand extends CommandGroup {
 				return FieldData.getInstance().nearSwitch == Direction.right;
 			}
 
-		});
+		});*/
 
 	}
 

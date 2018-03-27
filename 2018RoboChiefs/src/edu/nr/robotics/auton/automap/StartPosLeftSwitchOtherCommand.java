@@ -5,16 +5,17 @@ import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.Robot;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
+import edu.nr.robotics.auton.DriveOverBaselineFancyCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosLeftToScaleLeftProfilingCommand;
 import edu.nr.robotics.auton.autoroutes.StartPosLeftToScaleRightProfilingCommand;
+import edu.nr.robotics.auton.autoroutes.StartPosLeftToSwitchLeftProfilingCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
-import edu.wpi.first.wpilibj.command.PrintCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 
-public class StartPosLeftSwitchNoneCommand extends CommandGroup {
+public class StartPosLeftSwitchOtherCommand extends CommandGroup {
 
-	public StartPosLeftSwitchNoneCommand() {
+	public StartPosLeftSwitchOtherCommand() {
 
 		addSequential(new WaitCommand(Robot.getInstance().autoWaitTime));
 		
@@ -39,16 +40,47 @@ public class StartPosLeftSwitchNoneCommand extends CommandGroup {
 			}
 
 		});
+		
+		addSequential(new ConditionalCommand(new StartPosLeftToSwitchLeftProfilingCommand()) {
+
+			@Override
+			protected boolean condition() {
+				return !(Robot.getInstance().selectedScale == Scale.both
+						|| (Robot.getInstance().selectedScale == Scale.leftonly
+								&& FieldData.getInstance().scale == Direction.left)
+						|| (Robot.getInstance().selectedScale == Scale.rightonly
+								&& FieldData.getInstance().scale == Direction.right))
+						&& FieldData.getInstance().nearSwitch == Direction.left;
+			}
+			
+		});
+		
+		addSequential(new ConditionalCommand(new DriveOverBaselineFancyCommand()) {
+
+			@Override
+			protected boolean condition() {
+				return !(Robot.getInstance().selectedScale == Scale.both
+						|| (Robot.getInstance().selectedScale == Scale.leftonly
+								&& FieldData.getInstance().scale == Direction.left)
+						|| (Robot.getInstance().selectedScale == Scale.rightonly
+								&& FieldData.getInstance().scale == Direction.right))
+						&& FieldData.getInstance().nearSwitch == Direction.right
+						&& FieldData.getInstance().scale == Direction.right;
+			}
+			
+		});
 
 		addSequential(new ConditionalCommand(new DriveOverBaselineAutoCommand()) {
 
 			@Override
 			protected boolean condition() {
-				return Robot.getInstance().selectedScale == Scale.none
+				return !(Robot.getInstance().selectedScale == Scale.both
 						|| (Robot.getInstance().selectedScale == Scale.leftonly
-								&& FieldData.getInstance().scale == Direction.right)
+								&& FieldData.getInstance().scale == Direction.left)
 						|| (Robot.getInstance().selectedScale == Scale.rightonly
-								&& FieldData.getInstance().scale == Direction.left);
+								&& FieldData.getInstance().scale == Direction.right))
+						&& FieldData.getInstance().nearSwitch == Direction.right
+						&& FieldData.getInstance().scale == Direction.left;
 			}
 
 		});
@@ -65,6 +97,8 @@ public class StartPosLeftSwitchNoneCommand extends CommandGroup {
 			}
 
 		});
+		
+
 	}
 
 }
