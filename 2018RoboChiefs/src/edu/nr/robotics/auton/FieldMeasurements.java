@@ -117,4 +117,6 @@ public class FieldMeasurements {
 	public static final Distance CUBE_TO_PLATFORM_ZONE_X = new Distance(27, Distance.Unit.INCH).sub(ROBOT_LENGTH.mul(0.5));
 	
 	public static final Angle SWITCH_LOOP_SWITCH_ANGLE = new Angle(10, Angle.Unit.DEGREE);
+	
+	public static final Distance CUBE_1_TO_SWITCH_DIAGONAL = new Distance(16, Distance.Unit.INCH);
 }

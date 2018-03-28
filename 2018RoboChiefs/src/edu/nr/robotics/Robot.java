@@ -11,15 +11,20 @@ import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.auton.AutoChoosers;
 import edu.nr.robotics.auton.AutoChoosers.AllianceBlocks;
 import edu.nr.robotics.auton.AutoChoosers.Scale;
+import edu.nr.robotics.auton.AutoChoosers.ScaleSwitch;
 import edu.nr.robotics.auton.AutoChoosers.StartPos;
 import edu.nr.robotics.auton.AutoChoosers.Switch;
 import edu.nr.robotics.auton.DriveOverBaselineAutoCommand;
+import edu.nr.robotics.auton.automap.StartPosLeftScaleSwitchLeftCommand;
+import edu.nr.robotics.auton.automap.StartPosLeftScaleSwitchRightCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchLeftCommand;
 import edu.nr.robotics.auton.automap.StartPosLeftSwitchOtherCommand;
 import edu.nr.robotics.auton.automap.StartPosMiddleSwitchBothCommand;
 import edu.nr.robotics.auton.automap.StartPosMiddleSwitchLeftCommand;
 import edu.nr.robotics.auton.automap.StartPosMiddleSwitchOtherCommand;
 import edu.nr.robotics.auton.automap.StartPosMiddleSwitchRightCommand;
+import edu.nr.robotics.auton.automap.StartPosRightScaleSwitchLeftCommand;
+import edu.nr.robotics.auton.automap.StartPosRightScaleSwitchRightCommand;
 import edu.nr.robotics.auton.automap.StartPosRightSwitchOtherCommand;
 import edu.nr.robotics.auton.automap.StartPosRightSwitchRightCommand;
 import edu.nr.robotics.multicommands.ClimbButtonCommand;
@@ -39,7 +44,6 @@ import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorDeltaPositionSmar
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorMoveBasicSmartDashboardCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileSmartDashboardCommandGroup;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocitySmartDashboardCommand;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -67,6 +71,7 @@ public class Robot extends IterativeRobot {
 	public AutoChoosers.Switch selectedSwitch;
 	public AutoChoosers.Scale selectedScale;
 	public AutoChoosers.AllianceBlocks selectedBlocks;
+	public AutoChoosers.ScaleSwitch selectedScaleSwitch;
 	public double autoWaitTime;
 	
 	/**
@@ -110,10 +115,14 @@ public class Robot extends IterativeRobot {
 		AutoChoosers.allianceBlockChooser.addObject("Block 6", AllianceBlocks.block6);
 		AutoChoosers.allianceBlockChooser.addObject("Both", AllianceBlocks.both);
 		
+		AutoChoosers.autoScaleSwitchChooser.addObject("Scale Switch Yes", ScaleSwitch.scaleSwitchYes);
+		AutoChoosers.autoScaleSwitchChooser.addDefault("Scale Switch No", ScaleSwitch.scaleSwitchNo);
+		
 		SmartDashboard.putData("Auto Start Pos", AutoChoosers.autoStartPosChooser);
 		SmartDashboard.putData("Auto Switch", AutoChoosers.autoSwitchChooser);
 		SmartDashboard.putData("Auto Scale", AutoChoosers.autoScaleChooser);
 		SmartDashboard.putData("Partner Blocks", AutoChoosers.allianceBlockChooser);
+		SmartDashboard.putData("Auto ScaleSwitch", AutoChoosers.autoScaleSwitchChooser);
 	}
 
 	/**
@@ -198,7 +207,7 @@ public class Robot extends IterativeRobot {
 		
 		FieldData.getInstance().getFieldData();
 
-		SmartDashboard.putBoolean("Near Switch Left: ",
+		/*SmartDashboard.putBoolean("Near Switch Left: ",
 				(FieldData.getInstance().nearSwitch == Direction.left
 						&& FieldData.getInstance().alliance == Alliance.Blue)
 						|| (FieldData.getInstance().nearSwitch == Direction.right
@@ -227,14 +236,14 @@ public class Robot extends IterativeRobot {
 				(FieldData.getInstance().farSwitch == Direction.left
 						&& FieldData.getInstance().alliance == Alliance.Red)
 						|| (FieldData.getInstance().farSwitch == Direction.right
-								&& FieldData.getInstance().alliance == Alliance.Blue));
+								&& FieldData.getInstance().alliance == Alliance.Blue));*/
 
 		selectedStartPos = AutoChoosers.autoStartPosChooser.getSelected();
 		selectedSwitch = AutoChoosers.autoSwitchChooser.getSelected();
 		selectedScale = AutoChoosers.autoScaleChooser.getSelected();
 		selectedBlocks = AutoChoosers.allianceBlockChooser.getSelected();
+		selectedScaleSwitch = AutoChoosers.autoScaleSwitchChooser.getSelected();
 		autoWaitTime = SmartDashboard.getNumber("Auto Wait Time", autoWaitTime);
-		
 		
 		autonomousCommand = getAutoCommand();
 
@@ -290,28 +299,48 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public Command getAutoCommand() {
-		if (selectedStartPos == AutoChoosers.StartPos.left) {
-			if (selectedSwitch == AutoChoosers.Switch.other || selectedSwitch == AutoChoosers.Switch.rightOnly) {
-				return (new StartPosLeftSwitchOtherCommand());
-			} else if (selectedSwitch == AutoChoosers.Switch.leftOnly || selectedSwitch == AutoChoosers.Switch.both) {
-				return new StartPosLeftSwitchLeftCommand();			
+		if (selectedScaleSwitch == AutoChoosers.ScaleSwitch.scaleSwitchYes
+				&& (((selectedScale == AutoChoosers.Scale.leftonly || selectedScale == AutoChoosers.Scale.both)
+						&& FieldData.getInstance().scale == Direction.left)
+						|| ((selectedScale == AutoChoosers.Scale.rightonly || selectedScale == AutoChoosers.Scale.both)
+								&& FieldData.getInstance().scale == Direction.right))) {
+			if(selectedStartPos == AutoChoosers.StartPos.left && FieldData.getInstance().scale == Direction.left) {
+				return (new StartPosLeftScaleSwitchLeftCommand());
 			}
-		} else if (selectedStartPos == AutoChoosers.StartPos.middle) {
-			if (selectedSwitch == AutoChoosers.Switch.other) {
-				return (new StartPosMiddleSwitchOtherCommand());		
-			} else if (selectedSwitch == AutoChoosers.Switch.leftOnly) {
-				return (new StartPosMiddleSwitchLeftCommand());		
-			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly){
-				return (new StartPosMiddleSwitchRightCommand());
-			} else if (selectedSwitch == AutoChoosers.Switch.both) {
-				return (new StartPosMiddleSwitchBothCommand());
+			else if(selectedStartPos == AutoChoosers.StartPos.left && FieldData.getInstance().scale == Direction.right) {
+				return (new StartPosLeftScaleSwitchRightCommand());
 			}
-		} else if (selectedStartPos == AutoChoosers.StartPos.right) {
-			if (selectedSwitch == AutoChoosers.Switch.other || selectedSwitch == AutoChoosers.Switch.leftOnly) {
-				return (new StartPosRightSwitchOtherCommand());
-			} else if (selectedSwitch == AutoChoosers.Switch.rightOnly || selectedSwitch == AutoChoosers.Switch.both){
-				return (new StartPosRightSwitchRightCommand());
+			else if(selectedStartPos == AutoChoosers.StartPos.right && FieldData.getInstance().scale == Direction.left) {
+				return (new StartPosRightScaleSwitchLeftCommand());
 			}
-		} return new DriveOverBaselineAutoCommand();
+			else if(selectedStartPos == AutoChoosers.StartPos.right && FieldData.getInstance().scale == Direction.right) {
+				return (new StartPosRightScaleSwitchRightCommand());
+			} return (new DriveOverBaselineAutoCommand());
+		}
+		else {
+			if (selectedStartPos == AutoChoosers.StartPos.left) {
+				if (selectedSwitch == AutoChoosers.Switch.other || selectedSwitch == AutoChoosers.Switch.rightOnly) {
+					return (new StartPosLeftSwitchOtherCommand());
+				} else if (selectedSwitch == AutoChoosers.Switch.leftOnly || selectedSwitch == AutoChoosers.Switch.both) {
+					return new StartPosLeftSwitchLeftCommand();			
+				}
+			} else if (selectedStartPos == AutoChoosers.StartPos.middle) {
+				if (selectedSwitch == AutoChoosers.Switch.other) {
+					return (new StartPosMiddleSwitchOtherCommand());		
+				} else if (selectedSwitch == AutoChoosers.Switch.leftOnly) {
+					return (new StartPosMiddleSwitchLeftCommand());		
+				} else if (selectedSwitch == AutoChoosers.Switch.rightOnly){
+					return (new StartPosMiddleSwitchRightCommand());
+				} else if (selectedSwitch == AutoChoosers.Switch.both) {
+					return (new StartPosMiddleSwitchBothCommand());
+				}
+			} else if (selectedStartPos == AutoChoosers.StartPos.right) {
+				if (selectedSwitch == AutoChoosers.Switch.other || selectedSwitch == AutoChoosers.Switch.leftOnly) {
+					return (new StartPosRightSwitchOtherCommand());
+				} else if (selectedSwitch == AutoChoosers.Switch.rightOnly || selectedSwitch == AutoChoosers.Switch.both){
+					return (new StartPosRightSwitchRightCommand());
+				}
+			} return new DriveOverBaselineAutoCommand();
+		}
 	}
 }
