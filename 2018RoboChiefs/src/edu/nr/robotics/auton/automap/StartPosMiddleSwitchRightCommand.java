@@ -24,7 +24,7 @@ public class StartPosMiddleSwitchRightCommand extends CommandGroup {
 
 		});
 		
-		addSequential(new ElevatorBottomCommand());
+		addSequential(new AutoSwitchLoopFrontCommand());
 	}
 
 }

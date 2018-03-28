@@ -67,7 +67,12 @@ public class FieldMeasurements {
 	public static final Distance START_POS_MID_TO_SWITCH_LEFT_DIAGONAL = NRMath
 			.hypot(BASELINE_TO_10_CUBE_PILE.sub(PUSH_OFF_WALL_X).add(ROBOT_LENGTH.mul(0.5)), new Distance(9, Distance.Unit.FOOT));
 	
-	public static final Distance FRONT_SWITCH_LOOP_TO_CUBE_DIAGONAL = Distance.ZERO;
+	public static final Distance FRONT_SWITCH_LOOP_TO_CUBE_MID_DIAGONAL = NRMath
+			.hypot(new Distance(41, Distance.Unit.INCH), new Distance(15, Distance.Unit.INCH))
+			.sub(ROBOT_LENGTH.mul(0.5)).sub(INTAKE_LENGTH.mul(0.5));
+	public static final Distance FRONT_SWITCH_LOOP_TO_CUBE_FAR_DIAGONAL = NRMath
+			.hypot(new Distance(35, Distance.Unit.INCH), new Distance(28, Distance.Unit.INCH))
+			.sub(ROBOT_LENGTH.mul(0.5)).sub(INTAKE_LENGTH.mul(0.5));
 	////////////////////////////////////////
 	
 	
@@ -78,7 +83,10 @@ public class FieldMeasurements {
 					 BASELINE_TO_10_CUBE_PILE.sub(PUSH_OFF_WALL_X).add(ROBOT_LENGTH.mul(0.5)))),
 			Angle.Unit.RADIAN);
 	
-	public static final Angle FRONT_SWITCH_LOOP_TO_CUBE_ANGLE = Angle.ZERO;
+	public static final Angle FRONT_SWITCH_LOOP_TO_CUBE_MID_ANGLE = new Angle(Math.atan(new Distance(41, Distance.Unit.INCH).div
+			(new Distance(15, Distance.Unit.INCH))), Angle.Unit.RADIAN);
+	public static final Angle FRONT_SWITCH_LOOP_TO_CUBE_FAR_ANGLE = new Angle(Math.atan(new Distance(35, Distance.Unit.INCH).div
+			(new Distance(28, Distance.Unit.INCH))), Angle.Unit.RADIAN);
 	////////////////////////////////////////
 	
 	public static final Distance CUBE_TO_PLATFORM_ZONE_DIAGONAL = new Distance(36, Distance.Unit.INCH).sub(BLOCK_WIDTH.mul(0.5));

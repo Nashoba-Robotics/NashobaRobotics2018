@@ -9,7 +9,6 @@ import edu.nr.robotics.multicommands.PrepareScoreSwitchAutoCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
-import edu.nr.robotics.subsystems.drive.TurnToCubeCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
@@ -31,8 +30,8 @@ public class AutoSwitchLoopFrontCommand extends CommandGroup {
 				addParallel(new ElevatorBottomCommand());
 				
 				addParallel(new EnableMotionProfile(
-						((FieldMeasurements.SWITCH_EDGE_TO_FIELD_EDGE_Y.sub(FieldMeasurements.PIVOT_POINT_FIELD_EDGE_Y)
-								.sub(FieldMeasurements.ROBOT_LENGTH.mul(0.5)))).negate(),
+						(FieldMeasurements.BASELINE_TO_SWITCH_X.sub(FieldMeasurements.BASELINE_TO_10_CUBE_PILE)
+								.add(FieldMeasurements.ROBOT_LENGTH.mul(0.5)).negate()),
 						Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 				
 			}
@@ -50,7 +49,7 @@ public class AutoSwitchLoopFrontCommand extends CommandGroup {
 					@Override
 					public void commands() {
 						
-						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT)) {
+						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_MID_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_MID_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT)) {
 							
 							@Override
 							protected boolean condition() {
@@ -58,8 +57,6 @@ public class AutoSwitchLoopFrontCommand extends CommandGroup {
 							}
 							
 						});
-						
-						addSequential(new TurnToCubeCommand());
 						
 					}
 				});
@@ -72,7 +69,7 @@ public class AutoSwitchLoopFrontCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				addParallel(new IntakeRollersIntakeCommand());
-				addParallel(new EnableMotionProfile(FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+				addParallel(new EnableMotionProfile(FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_MID_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 				
 			}
 		});
@@ -89,9 +86,9 @@ public class AutoSwitchLoopFrontCommand extends CommandGroup {
 					@Override
 					public void commands() {
 						
-						addSequential(new EnableMotionProfile(FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_DIAGONAL.negate(), Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+						addSequential(new EnableMotionProfile(FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_MID_DIAGONAL.negate(), Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 						
-						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT)) {
+						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_MID_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_MID_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT)) {
 							
 							@Override
 							protected boolean condition() {
@@ -105,9 +102,99 @@ public class AutoSwitchLoopFrontCommand extends CommandGroup {
 		});
 		
 		addSequential(new EnableMotionProfile(
-						((FieldMeasurements.SWITCH_EDGE_TO_FIELD_EDGE_Y.sub(FieldMeasurements.PIVOT_POINT_FIELD_EDGE_Y)
-								.sub(FieldMeasurements.ROBOT_LENGTH.mul(0.5)))),
+				(FieldMeasurements.BASELINE_TO_SWITCH_X.sub(FieldMeasurements.BASELINE_TO_10_CUBE_PILE)
+						.add(FieldMeasurements.ROBOT_LENGTH.mul(0.5))),
+				Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+		
+		addSequential(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
+		
+		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
+		
+		//Two cube stops here
+		/////////////////////
+		
+		addSequential(new AnonymousCommandGroup() {
+			
+			@Override
+			public void commands() {
+				addParallel(new ElevatorBottomCommand());
+				
+				addParallel(new EnableMotionProfile(
+						(FieldMeasurements.BASELINE_TO_SWITCH_X.sub(FieldMeasurements.BASELINE_TO_10_CUBE_PILE)
+								.add(FieldMeasurements.ROBOT_LENGTH.mul(0.5)).negate()),
 						Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+				
+			}
+		});
+		
+		addSequential(new AnonymousCommandGroup() {
+			
+			@Override
+			public void commands() {
+				
+				addParallel(new IntakeDeployCommand());
+				
+				addParallel(new AnonymousCommandGroup() {
+					
+					@Override
+					public void commands() {
+						
+						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_FAR_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_FAR_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT)) {
+							
+							@Override
+							protected boolean condition() {
+								return FieldData.getInstance().nearSwitch == Direction.left;
+							}
+							
+						});
+						
+					}
+				});
+				
+			}
+		});
+		
+		addSequential(new AnonymousCommandGroup() {
+			
+			@Override
+			public void commands() {
+				addParallel(new IntakeRollersIntakeCommand());
+				addParallel(new EnableMotionProfile(FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_FAR_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+				
+			}
+		});
+		
+		addSequential(new AnonymousCommandGroup() {
+			
+			@Override
+			public void commands() {
+				
+				addParallel(new PrepareScoreSwitchAutoCommand());
+				
+				addParallel(new AnonymousCommandGroup() {
+					
+					@Override
+					public void commands() {
+						
+						addSequential(new EnableMotionProfile(FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_FAR_DIAGONAL.negate(), Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+						
+						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_FAR_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.FRONT_SWITCH_LOOP_TO_CUBE_FAR_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT)) {
+							
+							@Override
+							protected boolean condition() {
+								return FieldData.getInstance().nearSwitch == Direction.left;
+							}
+							
+						});
+					}
+				});
+			}
+		});
+		
+		addSequential(new EnableMotionProfile(
+				(FieldMeasurements.BASELINE_TO_SWITCH_X.sub(FieldMeasurements.BASELINE_TO_10_CUBE_PILE)
+						.add(FieldMeasurements.ROBOT_LENGTH.mul(0.5))),
+				Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 		
 		addSequential(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 		
