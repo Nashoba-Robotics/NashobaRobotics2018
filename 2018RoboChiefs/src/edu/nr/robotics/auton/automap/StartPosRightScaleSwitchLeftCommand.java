@@ -9,6 +9,8 @@ public class StartPosRightScaleSwitchLeftCommand extends CommandGroup {
 		
 		addSequential(new StartPosLeftToScaleLeftProfilingCommand());
 		
+		addSequential(new AutoScaleSwitchLoopCommand());
+		
 		
 		
 	}

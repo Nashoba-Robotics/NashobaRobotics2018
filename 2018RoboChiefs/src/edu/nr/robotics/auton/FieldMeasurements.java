@@ -119,4 +119,6 @@ public class FieldMeasurements {
 	public static final Angle SWITCH_LOOP_SWITCH_ANGLE = new Angle(10, Angle.Unit.DEGREE);
 	
 	public static final Distance CUBE_1_TO_SWITCH_DIAGONAL = new Distance(16, Distance.Unit.INCH);
+	
+	public static final Angle CUBE_1_TO_CUBE_2 = PIVOT_POINT_TO_CUBE_1.sub(PIVOT_POINT_TO_CUBE_2);
 }
