@@ -8,7 +8,7 @@ public class ElevatorProfileDeltaCommandGroup extends CommandGroup {
 
 	public ElevatorProfileDeltaCommandGroup(Distance delta, double maxVelPercent, double maxAccelPercent) {
 		
-		addSequential(new ElevatorProfileBasicCommand(delta.add(Elevator.getInstance().getPosition()), maxVelPercent, maxAccelPercent));
+		addSequential(new ElevatorProfileDeltaBasicCommand(delta, maxVelPercent, maxAccelPercent));
 	
 		/*addSequential(new ConditionalCommand(new ElevatorPositionSmartDashboardCommand()) {
 			

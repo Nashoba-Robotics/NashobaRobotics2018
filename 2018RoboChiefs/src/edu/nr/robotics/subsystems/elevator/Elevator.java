@@ -192,11 +192,11 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	 * extend height
 	 */
 	public static final Distance TOP_HEIGHT_ELEVATOR = new Distance(56535.0, Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV); // TODO: Find TOP_POSITION_ELEVATOR
-	public static final Distance CLIMB_HEIGHT_ELEVATOR = Distance.ZERO; //TODO: Find CLIMB_HEIGHT_ELEVATOR
+	public static final Distance CLIMB_HEIGHT_ELEVATOR = new Distance(100.0, Distance.Unit.INCH); 
 	public static final Distance SCALE_HEIGHT_ELEVATOR = new Distance(6.5, Distance.Unit.FOOT);
-	public static final Distance SWITCH_HEIGHT_ELEVATOR = new Distance(4, Distance.Unit.FOOT);
+	public static final Distance SWITCH_HEIGHT_ELEVATOR = new Distance(4.0, Distance.Unit.FOOT);
 	public static final Distance BOTTOM_HEIGHT_ELEVATOR = Distance.ZERO;
-	public static final Distance TRANSFER_HEIGHT_ELEVATOR = new Distance(4, Distance.Unit.INCH);
+	public static final Distance TRANSFER_HEIGHT_ELEVATOR = new Distance(4.0, Distance.Unit.INCH);
 	
 	private Speed velSetpoint = Speed.ZERO;
 	private Distance posSetpoint = Distance.ZERO;
