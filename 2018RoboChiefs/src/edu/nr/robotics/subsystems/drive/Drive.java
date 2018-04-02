@@ -40,38 +40,36 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	private TalonSRX leftDrive, rightDrive, leftDriveFollow, rightDriveFollow, hDrive, hDriveFollow, pigeonTalon;
 	
 	public static final double REAL_ENC_TICK_PER_INCH_DRIVE = 428;
-	public static final double REAL_ENC_TICK_PER_INCH_H_DRIVE = 1074;
+	public static final double REAL_ENC_TICK_PER_INCH_H_DRIVE = 0;
 	
-	public static final double EFFECTIVE_ENC_TICK_PER_INCH_DRIVE = REAL_ENC_TICK_PER_INCH_DRIVE;
+	public static final double EFFECTIVE_ENC_TICK_PER_INCH_DRIVE = 56.69;
 	public static final double EFFECTIVE_ENC_TICK_PER_INCH_H_DRIVE = REAL_ENC_TICK_PER_INCH_H_DRIVE;
 	
 	/**
 	 * The maximum speed of the drive base
 	 */
-	public static final Speed MAX_SPEED_DRIVE = new Speed(12.16/*12.864*/, Distance.Unit.FOOT, Time.Unit.SECOND);
-	public static final Speed MAX_SPEED_DRIVE_H = new Speed(10.50, Distance.Unit.FOOT, Time.Unit.SECOND); //TODO: Find real drive max speed h
+	public static final Speed MAX_SPEED_DRIVE = new Speed(13.142, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_DRIVE_H = new Speed(2.299 * 5, Distance.Unit.FOOT, Time.Unit.SECOND);
 
 	/**
 	 * The maximum acceleration of the drive base
 	 */
-	public static final Acceleration MAX_ACCEL_DRIVE = new Acceleration(20, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
-	public static final Acceleration MAX_ACCEL_DRIVE_H = new Acceleration(14, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND); //TODO: Find real drive max acceleration h
+	public static final Acceleration MAX_ACCEL_DRIVE = new Acceleration(16, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
+	public static final Acceleration MAX_ACCEL_DRIVE_H = new Acceleration(1.802 * 5, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	
 	/**
 	 * Voltage percentage at which robot just starts moving
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0930;//0.0571; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0978;//0.0600; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_RIGHT = 0.165; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_LEFT = 0.177; //TODO: find this
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0965; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0927; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_H = 0.165; //This is 0 to 1 number
 	
 	/**
 	 * The drive voltage-velocity curve slopes
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0746;//0.0733; //TODO: Find drive voltage vs velocity curve
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0730;//0.0726;
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_RIGHT = 0.0788;
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_LEFT = 0.0784; //TODO: Find this
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0670;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0685;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H = 0.363 / 5;
 	
 	/**
 	 * The amount of time drive can go from 0 to 12 volts
@@ -81,59 +79,49 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The amount of time h drive can go from 0 to 12 volts
 	 */
-	public static Time H_DRIVE_RAMP_RATE = new Time(0.05, Time.Unit.SECOND);
+	public static Time H_DRIVE_RAMP_RATE = new Time(0.1, Time.Unit.SECOND);
 	
 	
 	/**
 	 * The CANTalon PID values for velocity
 	 */
-	public static double P_LEFT = 0.3;
+	public static double P_LEFT = 3.5;
 	public static double I_LEFT = 0;
-	public static double D_LEFT = 3.0;
+	public static double D_LEFT = 35;
 		
-	public static double P_RIGHT = 0.3;
+	public static double P_RIGHT = 3.5;
 	public static double I_RIGHT = 0;
-	public static double D_RIGHT = 3.0;
+	public static double D_RIGHT = 35;
 	
-	public static double P_H_RIGHT = 0.2;
-	public static double I_H_RIGHT = 0;
-	public static double D_H_RIGHT = 2.0;
-	
-	public static double P_H_LEFT = 0.2;
-	public static double I_H_LEFT = 0;
-	public static double D_H_LEFT = 2.0;
+	public static double P_H = 0.5;
+	public static double I_H = 0;
+	public static double D_H = 5;
 	
 	/**
 	 * 1D Profiling kVAPID_theta loop constants
 	 */
 	public static double kVOneD = 1 / MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kAOneD = 0;//0.0002;
-	public static double kPOneD = 0.00002;//0.00002;
+	public static double kAOneD = 0.0018;
+	public static double kPOneD = 0.0001;
 	public static double kIOneD = 0;
 	public static double kDOneD = 0;
-	public static double kP_thetaOneD = 0.02;
+	public static double kP_thetaOneD = 0.015;
 	
-	//TODO: Find These
 	public static double kVOneDH = 1 / MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
 	public static double kAOneDH = 0;
-	public static double kPOneDH = 0;
+	public static double kPOneDH = 0.00001;
 	public static double kIOneDH = 0;
 	public static double kDOneDH = 0;
 	
 	/**
 	 * Percent driving during profiling
 	 */
-	public static final double PROFILE_DRIVE_PERCENT = 0.8;
+	public static final double PROFILE_DRIVE_PERCENT = 0.7;
 	
 	/**
 	 * Percent accelerating during profiling
 	 */
-	public static final double ACCEL_PERCENT = 0.9;
-	
-	/**
-	 * Multiplies joystick turn value
-	 */
-	public static final double TURN_JOYSTICK_MULTIPLIER = 1.0;
+	public static final double ACCEL_PERCENT = 0.7;
 	
 	/**
 	 * Max and min speed of turn during
@@ -149,28 +137,29 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Percent of the drive while strafing to portal or cube
 	 */
-	public static final double SENSOR_STRAFE_PERCENT  = 0.3;
+	public static final double SENSOR_STRAFE_PERCENT  = 0.1;
 	
 	/**
 	 * The position from the end at which profile position threshold takes effect
 	 */
 	public static final Distance END_THRESHOLD = new Distance(3, Distance.Unit.INCH);
 	
-	/**
-	 * The speed the profile needs to be under to stop
-	 */
 	public static final Speed PROFILE_END_SPEED_THRESHOLD = MAX_SPEED_DRIVE.mul(MIN_PROFILE_TURN_PERCENT + 0.01);
+	
+	/**
+	 * Time stopped before motion profiling ends
+	 */
+	public static final Time PROFILE_TIME_THRESHOLD = new Time(0.1, Time.Unit.SECOND);
 	
 	/**
 	 * The angle within which the turning stops
 	 */
-	public static final Angle DRIVE_ANGLE_THRESHOLD = new Angle(2, Angle.Unit.DEGREE);
-	
-	/**
-	 * The angle the robot turns to once disabled at full turn speed. Used for GyroCorrection ramped mode.
-	 */
-	public static final Angle DRIVE_STOP_ANGLE = new Angle(55, Angle.Unit.DEGREE); //TODO: Find angle that robot stops at when turning goes from 1 to 0
+	public static final Angle DRIVE_ANGLE_THRESHOLD = new Angle(1, Angle.Unit.DEGREE);
 
+	/**
+	 * The angle the robot turns to once disabled at full turn speed. Used for GyroCorrection ramped mode
+	 */
+	public static final Angle DRIVE_STOP_ANGLE = new Angle(50, Angle.Unit.DEGREE);
 	
 	/**
 	 * Current ratings based on MAXI Circuit Breaker Model MX5
@@ -180,14 +169,16 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	private static final int CONTINUOUS_CURRENT_LIMIT = 40; //In amps
 	
 	/**
-	 * When Driving into an object, the current when the driving stops
+	 * When driving into the switch, the current when the driving stops. In amps.
 	 */
-	public static final double SWITCH_CURRENT_LIMIT = 70;
+	public static final double SWITCH_CURRENT_LIMIT = 30;
 	
 	/**
-	 * the drive percent while driving into the switch
+	 * The percent at which to drive into the switch
 	 */
-	public static final double SWITCH_DRIVE_PERCENT = 0.4; //TODO: determine switch drive percent
+	public static final double SWITCH_DRIVE_PERCENT = 0.2;
+	
+	public static final double TURN_JOYSTICK_MULTIPLIER = 1.0;
 	
 	public static final VelocityMeasPeriod VELOCITY_MEASUREMENT_PERIOD_DRIVE = VelocityMeasPeriod.Period_10Ms; //TODO: Find measurement period of velocity
 	public static final int VELOCITY_MEASUREMENT_WINDOW_DRIVE = 32; //TODO: Find this
@@ -481,7 +472,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			
 			leftDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / leftMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
 			rightDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / rightMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
-			hDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_H_RIGHT * hMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_H_LEFT) * 1023.0) / hMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
+			hDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_H * hMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_H) * 1023.0) / hMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
 			
 			if (EnabledSubsystems.DRIVE_DUMB_ENABLED) {
 				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.div(MAX_SPEED_DRIVE));
@@ -643,9 +634,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			SmartDashboard.putNumber("Right I Value: ", I_RIGHT);
 			SmartDashboard.putNumber("Right D Value: ", D_RIGHT);
 			
-			SmartDashboard.putNumber("H P Value: ", P_H_RIGHT);
-			SmartDashboard.putNumber("H I Value: ", I_H_RIGHT);
-			SmartDashboard.putNumber("H D Value: ", D_H_RIGHT);
+			SmartDashboard.putNumber("H P Value: ", P_H);
+			SmartDashboard.putNumber("H I Value: ", I_H);
+			SmartDashboard.putNumber("H D Value: ", D_H);
 			
 			SmartDashboard.putNumber("kVOneD Value: ", kVOneD);
 			SmartDashboard.putNumber("kAOneD Value: ", kAOneD);
@@ -715,9 +706,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				rightDrive.config_kI(VEL_SLOT, SmartDashboard.getNumber("Right I Value: ", I_RIGHT), DEFAULT_TIMEOUT);
 				rightDrive.config_kD(VEL_SLOT, SmartDashboard.getNumber("Right D Value: ", D_RIGHT), DEFAULT_TIMEOUT);
 				
-				hDrive.config_kP(VEL_SLOT, SmartDashboard.getNumber("H P Value: ", P_H_RIGHT), DEFAULT_TIMEOUT);
-				hDrive.config_kI(VEL_SLOT, SmartDashboard.getNumber("H I Value: ", I_H_RIGHT), DEFAULT_TIMEOUT);
-				hDrive.config_kD(VEL_SLOT, SmartDashboard.getNumber("H D Value: ", D_H_RIGHT), DEFAULT_TIMEOUT);
+				hDrive.config_kP(VEL_SLOT, SmartDashboard.getNumber("H P Value: ", P_H), DEFAULT_TIMEOUT);
+				hDrive.config_kI(VEL_SLOT, SmartDashboard.getNumber("H I Value: ", I_H), DEFAULT_TIMEOUT);
+				hDrive.config_kD(VEL_SLOT, SmartDashboard.getNumber("H D Value: ", D_H), DEFAULT_TIMEOUT);
 	
 				P_LEFT = SmartDashboard.getNumber("Left P Value: ", P_LEFT);
 				I_LEFT = SmartDashboard.getNumber("Left I Value: ", I_LEFT);
@@ -727,9 +718,9 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 				I_RIGHT = SmartDashboard.getNumber("Right I Value: ", I_RIGHT);
 				D_RIGHT = SmartDashboard.getNumber("Right D Value: ", D_RIGHT);
 				
-				P_H_RIGHT = SmartDashboard.getNumber("H P Value: ", P_H_RIGHT);
-				I_H_RIGHT = SmartDashboard.getNumber("H I Value: ", I_H_RIGHT);
-				D_H_RIGHT = SmartDashboard.getNumber("H D Value: ", D_H_RIGHT);
+				P_H = SmartDashboard.getNumber("H P Value: ", P_H);
+				I_H = SmartDashboard.getNumber("H I Value: ", I_H);
+				D_H = SmartDashboard.getNumber("H D Value: ", D_H);
 				
 				kVOneD = SmartDashboard.getNumber("kVOneD Value: ", kVOneD);
 				kAOneD = SmartDashboard.getNumber("kAOneD Value: ", kAOneD);
