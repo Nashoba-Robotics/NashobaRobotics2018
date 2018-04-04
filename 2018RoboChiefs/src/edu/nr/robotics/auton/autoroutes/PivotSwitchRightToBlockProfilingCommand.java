@@ -30,7 +30,7 @@ public class PivotSwitchRightToBlockProfilingCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new IntakeDeployCommand());
+				//addParallel(new IntakeDeployCommand());
 				
 				addParallel(new AnonymousCommandGroup() {
 					
@@ -57,7 +57,7 @@ public class PivotSwitchRightToBlockProfilingCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new IntakeRollersIntakeCommand());
+				//addParallel(new IntakeRollersIntakeCommand());
 								
 				addParallel(new AnonymousCommandGroup() {
 					

@@ -6,9 +6,9 @@ import edu.nr.lib.units.Distance;
 
 public class FieldMeasurements {
 
-	public static final Distance ROBOT_LENGTH = new Distance(33, Distance.Unit.INCH);
+	public static final Distance ROBOT_LENGTH = new Distance(38, Distance.Unit.INCH);
 	
-	public static final Distance ROBOT_WIDTH = new Distance(27, Distance.Unit.INCH); 
+	public static final Distance ROBOT_WIDTH = new Distance(28, Distance.Unit.INCH); 
 	
 	public static final Distance INTAKE_LENGTH = new Distance(15, Distance.Unit.INCH);
 

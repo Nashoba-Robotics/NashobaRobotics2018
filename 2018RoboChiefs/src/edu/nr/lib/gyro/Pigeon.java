@@ -16,7 +16,7 @@ public class Pigeon extends Gyro implements Periodic {
 	private static Pigeon singleton;
 	
 	private PigeonIMU pigeon;
-	private static int talonID = 6; //intake rollers
+	private static int talonID = 10; //intake rollers
 	
 	private double[] yawPitchRoll;
 	private short[] XYZError;

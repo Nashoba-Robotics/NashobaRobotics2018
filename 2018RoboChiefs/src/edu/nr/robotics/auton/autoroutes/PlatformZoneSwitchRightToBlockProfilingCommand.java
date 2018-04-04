@@ -32,7 +32,7 @@ public class PlatformZoneSwitchRightToBlockProfilingCommand extends CommandGroup
 			@Override
 			public void commands() {
 				
-				addParallel(new IntakeDeployCommand());
+				//addParallel(new IntakeDeployCommand());
 				
 				addParallel(new EnableMotionProfile(
 						(FieldMeasurements.BASELINE_TO_PLATFORM_ZONE_X.sub(FieldMeasurements.BASELINE_TO_MID_SWITCH_X)).negate(),
@@ -50,7 +50,7 @@ public class PlatformZoneSwitchRightToBlockProfilingCommand extends CommandGroup
 			@Override
 			public void commands() {
 				
-				addParallel(new IntakeRollersIntakeCommand());
+				//addParallel(new IntakeRollersIntakeCommand());
 								
 				addParallel(new AnonymousCommandGroup() {
 					

@@ -40,11 +40,13 @@ public class IntakeRollers extends NRSubsystem {
 	public static Time SCORE_TIME = new Time(0.5, Time.Unit.SECOND);
 	
 	/**
-	 * The current values of the elevator shooter
+	 * The current values of the intake rollers
 	 */
 	public static final int PEAK_CURRENT_INTAKE_ROLLERS = 80;
-	public static final int PEAK_CURRENT_DURATION_INTAKE_ROLLERS = 1000;	
+	public static final int PEAK_CURRENT_DURATION_INTAKE_ROLLERS = 250;	
 	public static final int CONTINUOUS_CURRENT_LIMIT_INTAKE_ROLLERS = 40;
+	
+	public static final int CURRENT_PEAK_INTAKE_ROLLERS = 40;
 	
 	/**
 	 * The 100% voltage that is used as a base calculation for all PercentOutputs

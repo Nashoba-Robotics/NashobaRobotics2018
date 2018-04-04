@@ -41,7 +41,7 @@ public class AutoSwitchLoopBackCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new PrepareScoreSwitchAutoCommand());
+				//addParallel(new PrepareScoreSwitchAutoCommand());
 				
 				addParallel(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT)) {
 
@@ -55,7 +55,7 @@ public class AutoSwitchLoopBackCommand extends CommandGroup {
 			}
 		});
 				
-		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
+		//addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
 		
 		addSequential(new AnonymousCommandGroup() {
 			
@@ -71,7 +71,7 @@ public class AutoSwitchLoopBackCommand extends CommandGroup {
 					
 				});
 				
-				addParallel(new ElevatorBottomCommand());
+				//addParallel(new ElevatorBottomCommand());
 				
 			}
 		});
@@ -81,7 +81,7 @@ public class AutoSwitchLoopBackCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new PrepareCubeIntakeCommand());
+				//addParallel(new PrepareCubeIntakeCommand());
 				
 				addParallel(new EnableMotionProfile(FieldMeasurements.CUBE_TO_PLATFORM_ZONE_X.negate(), Distance.ZERO,
 						Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
@@ -103,7 +103,7 @@ public class AutoSwitchLoopBackCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new IntakeRollersIntakeCommand());
+				//addParallel(new IntakeRollersIntakeCommand());
 								
 				addParallel(new AnonymousCommandGroup() {
 					
@@ -124,7 +124,7 @@ public class AutoSwitchLoopBackCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new PrepareScoreSwitchAutoCommand());
+				//addParallel(new PrepareScoreSwitchAutoCommand());
 				
 				addParallel(new ConditionalCommand(new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE, Drive.MAX_PROFILE_TURN_PERCENT), new TurnCommand(Drive.getInstance(), FieldMeasurements.SWITCH_LOOP_SWITCH_ANGLE.negate(), Drive.MAX_PROFILE_TURN_PERCENT)) {
 
@@ -139,7 +139,7 @@ public class AutoSwitchLoopBackCommand extends CommandGroup {
 			}
 		});
 		
-		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.shootPercent));
+		//addSequential(new ElevatorShooterShootCommand(ElevatorShooter.shootPercent));
 		
 		addSequential(new AnonymousCommandGroup() {
 			
@@ -155,7 +155,7 @@ public class AutoSwitchLoopBackCommand extends CommandGroup {
 					
 				});
 				
-				addParallel(new ElevatorBottomCommand());
+				//addParallel(new ElevatorBottomCommand());
 				
 			}
 		});
@@ -165,7 +165,7 @@ public class AutoSwitchLoopBackCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new PrepareCubeIntakeCommand());
+				//addParallel(new PrepareCubeIntakeCommand());
 				
 				addParallel(new EnableMotionProfile(FieldMeasurements.CUBE_TO_PLATFORM_ZONE_X.negate(), Distance.ZERO,
 						Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
@@ -187,7 +187,7 @@ public class AutoSwitchLoopBackCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new PrepareScoreElevatorBottomCommand());
+				//addParallel(new PrepareScoreElevatorBottomCommand());
 								
 				addParallel(new AnonymousCommandGroup() {
 					
@@ -203,7 +203,7 @@ public class AutoSwitchLoopBackCommand extends CommandGroup {
 			
 		});
 		
-		addSequential(new IntakeElevatorFoldCommand());
+		//addSequential(new IntakeElevatorFoldCommand());
 
 		
 	}

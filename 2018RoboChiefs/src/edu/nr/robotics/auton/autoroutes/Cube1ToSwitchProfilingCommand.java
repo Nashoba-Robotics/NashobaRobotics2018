@@ -16,7 +16,7 @@ public class Cube1ToSwitchProfilingCommand extends CommandGroup {
 	
 	public Cube1ToSwitchProfilingCommand() {
 		
-		addSequential(new PrepareScoreSwitchAutoCommand());
+		//addSequential(new PrepareScoreSwitchAutoCommand());
 		
 		addSequential(new AnonymousCommandGroup() {
 			
@@ -25,13 +25,13 @@ public class Cube1ToSwitchProfilingCommand extends CommandGroup {
 				addParallel(new EnableMotionProfile(FieldMeasurements.CUBE_1_TO_SWITCH_DIAGONAL, Distance.ZERO,
 						Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 				
-				addParallel(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR,
-						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
+				/*addParallel(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR,
+						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));*/
 				
 			}
 		});
 		
-		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
+		//addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
 		
 	}
 

@@ -23,20 +23,20 @@ public class SwitchToCube2ProfilingCommand extends CommandGroup {
 			
 			@Override
 			public void commands() {
-				addParallel(new ElevatorBottomCommand());
+				//addParallel(new ElevatorBottomCommand());
 				
 				addParallel(new EnableMotionProfile(
 						(FieldMeasurements.CUBE_1_TO_SWITCH_DIAGONAL.add(FieldMeasurements.CUBE_1_TO_PIVOT_POINT_DIAGONAL)).negate(),
 						Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 			
-				addParallel(new AnonymousCommandGroup() {
+				/*addParallel(new AnonymousCommandGroup() {
 					
 					@Override
 					public void commands() {
 						addSequential(new WaitCommand(0.5));
 						addSequential(new IntakeElevatorBottomCommand());
 					}
-				});
+				});*/
 			}
 		});
 		
@@ -53,7 +53,7 @@ public class SwitchToCube2ProfilingCommand extends CommandGroup {
 			
 			@Override
 			public void commands() {
-				addParallel(new IntakeRollersIntakeCommand());
+				//addParallel(new IntakeRollersIntakeCommand());
 				addParallel(new EnableMotionProfile(FieldMeasurements.CUBE_2_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 
 			}

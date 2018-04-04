@@ -76,23 +76,24 @@ public class DriveJoystickCommand extends JoystickCommand {
 		case cheesyDrive:
 			double cheesyMoveValue = OI.getInstance().getArcadeMoveValue();
 			double cheesyRotateValue = OI.getInstance().getArcadeTurnValue();
-			double cheesyHValue = OI.getInstance().getArcadeHValue();
+			//double cheesyHValue = OI.getInstance().getArcadeHValue();
+			double cheesyHValue = 0;
 			
 			cheesyMoveValue = NRMath.powWithSign(cheesyMoveValue, 3);
 			cheesyRotateValue = NRMath.powWithSign(cheesyRotateValue, 3);
 			cheesyHValue = NRMath.powWithSign(cheesyHValue, 3);
 			
-			if (Math.abs(cheesyRotateValue) < 0.05 && (Math.abs(cheesyMoveValue) > 0.05 || Math.abs(cheesyHValue) > 0.05)) {
+			/*if (Math.abs(cheesyRotateValue) < 0.05 && (Math.abs(cheesyMoveValue) > 0.05 || Math.abs(cheesyHValue) > 0.05)) {
 				cheesyRotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD, false);
 			} else {
 				gyroCorrection.clearInitialValue();
-			}
+			}*/
 			
-			if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
+			/*if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
 				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
 			} else {
 				Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue, cheesyHValue);
-			}
+			}*/
 			
 			Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue, cheesyHValue);
 			

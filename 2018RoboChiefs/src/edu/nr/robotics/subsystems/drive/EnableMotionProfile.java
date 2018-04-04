@@ -99,14 +99,17 @@ public class EnableMotionProfile extends NRCommand {
 				- Math.abs(HDriveDiagonalProfiler.posPoints
 						.get(HDriveDiagonalProfiler.posPoints.size() - 1)))) < Drive.END_THRESHOLD
 								.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
-				&& Math.abs(((Math.abs(Drive.getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H)
+				&& /*Math.abs(((Math.abs(Drive.getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H)
 						- initialHPosition.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H)))
 						- Math.abs(HDriveDiagonalProfiler.posPointsH
 								.get(HDriveDiagonalProfiler.posPointsH.size() - 1)))) < Drive.END_THRESHOLD
 										.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H)
-				&& Drive.getInstance().getLeftVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD)
-				&& Drive.getInstance().getRightVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD)
-				&& Drive.getInstance().getHVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD);
+				&&*/ Drive.getInstance().getLeftVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD)
+				&& Drive.getInstance().getRightVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD);
+				//&& Drive.getInstance().getHVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD);
+		
+		System.out.println(Drive.getInstance().getLeftVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD)
+				&& Drive.getInstance().getRightVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD));
 		
 		return finished;
 	}

@@ -19,7 +19,7 @@ public class StartPosRightToScaleRightProfilingCommand extends CommandGroup {
 	
 	public StartPosRightToScaleRightProfilingCommand () {
 						
-		addParallel(new IntakeDeployCommand());
+		//addParallel(new IntakeDeployCommand());
 		
 		addSequential(new EnableMotionProfile(FieldMeasurements.BASELINE_TO_SCALE_X, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 		
@@ -28,7 +28,7 @@ public class StartPosRightToScaleRightProfilingCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new ElevatorProfileCommandGroup(Elevator.SCALE_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
+				//addParallel(new ElevatorProfileCommandGroup(Elevator.SCALE_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 				
 				addParallel(new TurnCommand(Drive.getInstance(), (new Angle(90, Angle.Unit.DEGREE).sub(FieldMeasurements.PIVOT_POINT_TO_SCALE)).negate(), Drive.MAX_PROFILE_TURN_PERCENT));
 				
@@ -36,7 +36,7 @@ public class StartPosRightToScaleRightProfilingCommand extends CommandGroup {
 
 		});
 				
-		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_SCALE_AUTO_ELEVATOR_SHOOTER));
+		//addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_SCALE_AUTO_ELEVATOR_SHOOTER));
 	}
 
 }

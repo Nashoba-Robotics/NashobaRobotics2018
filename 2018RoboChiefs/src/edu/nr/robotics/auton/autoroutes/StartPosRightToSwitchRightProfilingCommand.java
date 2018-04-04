@@ -17,7 +17,7 @@ public class StartPosRightToSwitchRightProfilingCommand extends CommandGroup {
 
 	public StartPosRightToSwitchRightProfilingCommand() {
 		
-		addSequential(new EnableMotionProfile(FieldMeasurements.BASELINE_TO_MID_SWITCH_X, FieldMeasurements.BASELINE_TO_SWITCH_Y, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+		addSequential(new EnableMotionProfile(FieldMeasurements.BASELINE_TO_MID_SWITCH_X, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 		
 		addSequential(new TurnCommand(Drive.getInstance(), new Angle(-90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT));
 		
@@ -26,9 +26,9 @@ public class StartPosRightToSwitchRightProfilingCommand extends CommandGroup {
 						.sub(FieldMeasurements.ROBOT_LENGTH.mul(0.5))),
 				Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 		
-		addSequential(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
+		//addSequential(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 						
-		addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
+		//addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_HIGH_ELEVATOR_SHOOTER));
 	}
 	
 }

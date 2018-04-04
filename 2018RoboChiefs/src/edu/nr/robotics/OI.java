@@ -20,6 +20,7 @@ import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveDumbToggleCommand;
 import edu.nr.robotics.subsystems.drive.DriveToCubeButtonCommand;
 import edu.nr.robotics.subsystems.drive.DriveToCubeJoystickCommand;
+import edu.nr.robotics.subsystems.drive.EnableSniperModeCommand;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
@@ -94,6 +95,8 @@ public class OI implements SmartDashboardSource {
 	private static final int CLIMB_COAST_BUTTON_NUMBER = 6;
 
 	private static final int ENABLE_LIMELIGHT_BUTTON = 6;
+	
+	private static final int SNIPER_MODE_BUTTON = 1;
 	
 	private static final int TEST_SEQUENCE_BUTTON_NUMBER = 10;
 
@@ -176,6 +179,9 @@ public class OI implements SmartDashboardSource {
 	
 		new JoystickButton(driveRight, RUN_INTAKE_BUTTON_NUMBER).whenPressed(new IntakeRollersVelocityCommand(IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS, IntakeRollers.VEL_PERCENT_LOW_INTAKE_ROLLERS));
 		new JoystickButton(driveRight, RUN_INTAKE_BUTTON_NUMBER).whenReleased(new IntakeRollersStopCommand());
+		
+		new JoystickButton(driveRight, SNIPER_MODE_BUTTON).whenPressed(new EnableSniperModeCommand(true));
+		new JoystickButton(driveRight, SNIPER_MODE_BUTTON).whenReleased(new EnableSniperModeCommand(false));
 	}
 
 	public void initOperatorLeft() {

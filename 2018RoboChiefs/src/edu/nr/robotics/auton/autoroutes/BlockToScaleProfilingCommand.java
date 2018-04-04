@@ -27,7 +27,7 @@ public class BlockToScaleProfilingCommand extends CommandGroup {
 			@Override
 			public void commands() {
 		
-				addParallel(new PrepareScoreScaleAutoCommand());
+				//addParallel(new PrepareScoreScaleAutoCommand());
 				
 				addParallel(new AnonymousCommandGroup() {
 					
@@ -210,7 +210,7 @@ public class BlockToScaleProfilingCommand extends CommandGroup {
 			}
 		});
 		
-		addSequential(new AnonymousCommandGroup() {
+		/*addSequential(new AnonymousCommandGroup() {
 			
 			@Override
 			public void commands() {
@@ -229,7 +229,7 @@ public class BlockToScaleProfilingCommand extends CommandGroup {
 				});
 				
 			}
-		});
+		});*/
 		
 	}
 }

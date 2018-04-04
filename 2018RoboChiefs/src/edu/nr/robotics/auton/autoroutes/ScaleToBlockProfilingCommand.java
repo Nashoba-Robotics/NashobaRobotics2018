@@ -30,9 +30,9 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new ElevatorBottomCommand());
+				//addParallel(new ElevatorBottomCommand());
 				
-				addParallel(new AnonymousCommandGroup() {
+				addSequential(new AnonymousCommandGroup() {
 					
 					@Override
 					public void commands() {
@@ -148,7 +148,7 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 			@Override
 			public void commands() {
 				
-				addParallel(new IntakeRollersIntakeCommand());
+				//addParallel(new IntakeRollersIntakeCommand());
 				
 				addParallel(new AnonymousCommandGroup() {
 

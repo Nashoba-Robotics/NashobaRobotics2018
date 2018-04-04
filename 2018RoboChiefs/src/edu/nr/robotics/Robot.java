@@ -100,12 +100,12 @@ public class Robot extends IterativeRobot {
 		AutoChoosers.autoStartPosChooser.addObject("Start Pos Middle", StartPos.middle);
 		AutoChoosers.autoStartPosChooser.addObject("Start Pos Right", StartPos.right);
 		
-		AutoChoosers.autoSwitchChooser.addDefault("Switch None", Switch.other);
+		AutoChoosers.autoSwitchChooser.addDefault("Switch Default", Switch.other);
 		AutoChoosers.autoSwitchChooser.addObject("Switch Left", Switch.leftOnly);
 		AutoChoosers.autoSwitchChooser.addObject("Switch Right", Switch.rightOnly);
 		AutoChoosers.autoSwitchChooser.addObject("Switch Both", Switch.both);
 		
-		AutoChoosers.autoScaleChooser.addDefault("Scale Default", Scale.none);
+		AutoChoosers.autoScaleChooser.addDefault("Scale None", Scale.none);
 		AutoChoosers.autoScaleChooser.addObject("Scale Left", Scale.leftonly);
 		AutoChoosers.autoScaleChooser.addObject("Scale Right", Scale.rightonly);
 		AutoChoosers.autoScaleChooser.addObject("Scale Both", Scale.both);
