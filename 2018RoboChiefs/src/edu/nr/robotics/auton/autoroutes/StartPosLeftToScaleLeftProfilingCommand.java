@@ -7,15 +7,8 @@ import edu.nr.robotics.auton.FieldMeasurements;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
-import edu.nr.robotics.subsystems.elevator.Elevator;
-import edu.nr.robotics.subsystems.elevator.ElevatorPositionCommand;
-import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
-import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
-import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
-import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
-import edu.nr.robotics.subsystems.intakeElevator.IntakeDeployCommand;
-import edu.nr.robotics.subsystems.intakeElevator.IntakeDeployWhileSlowingCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.PrintCommand;
 
 public class StartPosLeftToScaleLeftProfilingCommand extends CommandGroup {
 
@@ -31,7 +24,7 @@ public class StartPosLeftToScaleLeftProfilingCommand extends CommandGroup {
 			public void commands() {
 				
 				//addParallel(new ElevatorProfileCommandGroup(Elevator.SCALE_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
-				
+								
 				addParallel(new TurnCommand(Drive.getInstance(), new Angle(90, Angle.Unit.DEGREE).sub(FieldMeasurements.PIVOT_POINT_TO_SCALE), Drive.MAX_PROFILE_TURN_PERCENT));
 			}
 		});

@@ -179,6 +179,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static final double SWITCH_DRIVE_PERCENT = 0.2;
 	
 	public static double TURN_JOYSTICK_MULTIPLIER = 1.0;
+	public static double MOVE_JOYSTICK_MULTIPLIER = 1.0;
 	
 	public static final VelocityMeasPeriod VELOCITY_MEASUREMENT_PERIOD_DRIVE = VelocityMeasPeriod.Period_10Ms; //TODO: Find measurement period of velocity
 	public static final int VELOCITY_MEASUREMENT_WINDOW_DRIVE = 32; //TODO: Find this
@@ -460,7 +461,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		/*leftDrive.set(ControlMode.PercentOutput, left);
 		rightDrive.set(ControlMode.PercentOutput, right);*/
 		
-		hDrive.set(ControlMode.PercentOutput, strafe);
+		//hDrive.set(ControlMode.PercentOutput, strafe);
 		setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE_H.mul(strafe));
 	}
 	

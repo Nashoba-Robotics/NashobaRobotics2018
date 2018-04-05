@@ -24,7 +24,7 @@ public class FieldMeasurements {
 	
 	public static final Distance BASELINE_TO_SCALE_X = new Distance(266, Distance.Unit.INCH);
 
-	public static final Distance BASELINE_TO_MID_SWITCH_X = new Distance(168, Distance.Unit.INCH).sub(ROBOT_LENGTH);
+	public static final Distance BASELINE_TO_MID_SWITCH_X = new Distance(168, Distance.Unit.INCH).sub(ROBOT_LENGTH.mul(0.5));
 	
 	public static final Distance BASELINE_TO_SWITCH_X = new Distance(140, Distance.Unit.INCH).sub(ROBOT_LENGTH);
 
@@ -32,7 +32,7 @@ public class FieldMeasurements {
 	
 	public static final Distance SWITCH_TO_PIVOT_POINT_X = new Distance(88, Distance.Unit.INCH);
 
-	public static final Distance PIVOT_POINT_FIELD_EDGE_Y = FIELD_WIDTH.mul(0.5).sub(new Distance(54, Distance.Unit.INCH)); //54 for outside
+	public static final Distance PIVOT_POINT_FIELD_EDGE_Y = new Distance(54, Distance.Unit.INCH); //54 for outside
 
 	public static final Distance SWITCH_EDGE_TO_FIELD_EDGE_Y = new Distance(85.25, Distance.Unit.INCH);
 

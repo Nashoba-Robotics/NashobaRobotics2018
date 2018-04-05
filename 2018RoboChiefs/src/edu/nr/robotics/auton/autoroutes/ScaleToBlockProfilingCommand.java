@@ -1,23 +1,21 @@
 package edu.nr.robotics.auton.autoroutes;
 
 import edu.nr.lib.commandbased.AnonymousCommandGroup;
+import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Distance;
 import edu.nr.robotics.FieldData;
 import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.Robot;
-import edu.nr.robotics.auton.FieldMeasurements;
 import edu.nr.robotics.auton.AutoChoosers.StartPos;
-import edu.nr.robotics.multicommands.PrepareCubeIntakeCommand;
+import edu.nr.robotics.auton.FieldMeasurements;
 import edu.nr.robotics.subsystems.drive.Drive;
-import edu.nr.robotics.subsystems.drive.DriveToCubeCommandAdvanced;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
 import edu.nr.robotics.subsystems.drive.TurnToCubeCommand;
-import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
-import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
 import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
+import edu.wpi.first.wpilibj.command.PrintCommand;
 
 public class ScaleToBlockProfilingCommand extends CommandGroup {
 
@@ -37,6 +35,8 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 					@Override
 					public void commands() {
 
+						addSequential(new PrintCommand("" + FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_1).get(Angle.Unit.DEGREE)));
+						
 						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
 								(FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_1)),
 								Drive.MAX_PROFILE_TURN_PERCENT)) {

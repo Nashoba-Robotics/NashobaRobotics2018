@@ -26,7 +26,7 @@ public class StartPosMiddleToSwitchLeftProfilingCommand extends CommandGroup {
 	
 		addSequential(new EnableMotionProfile(
 				FieldMeasurements.BASELINE_TO_SWITCH_X.sub(FieldMeasurements.BASELINE_TO_10_CUBE_PILE)
-						.add(FieldMeasurements.ROBOT_LENGTH.mul(0.5)),
+						.sub(FieldMeasurements.ROBOT_LENGTH.mul(0.5)),
 				Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 				
 		//addSequential(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
