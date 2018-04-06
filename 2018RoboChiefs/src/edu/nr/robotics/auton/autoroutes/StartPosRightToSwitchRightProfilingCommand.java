@@ -17,7 +17,7 @@ public class StartPosRightToSwitchRightProfilingCommand extends CommandGroup {
 
 	public StartPosRightToSwitchRightProfilingCommand() {
 		
-		addSequential(new EnableMotionProfile(FieldMeasurements.BASELINE_TO_MID_SWITCH_X, FieldMeasurements.BASELINE_TO_SWITCH_Y, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
+		addSequential(new EnableMotionProfile(FieldMeasurements.BASELINE_TO_MID_SWITCH_X, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 		
 		addSequential(new TurnCommand(Drive.getInstance(), new Angle(-90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT));
 		

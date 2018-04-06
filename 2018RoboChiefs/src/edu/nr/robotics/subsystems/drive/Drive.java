@@ -133,7 +133,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Multiplies joystick turn value
 	 */
-	public static final double TURN_JOYSTICK_MULTIPLIER = 1.0;
+	public static double TURN_JOYSTICK_MULTIPLIER = 1.0;
+	
+	/**
+	 * Multiplies joystick move value
+	 */
+	public static double MOVE_JOYSTICK_MULTIPLIER = 1.0;
 	
 	/**
 	 * Max and min speed of turn during

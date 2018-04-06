@@ -20,7 +20,10 @@ import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveDumbToggleCommand;
 import edu.nr.robotics.subsystems.drive.DriveToCubeButtonCommand;
 import edu.nr.robotics.subsystems.drive.DriveToCubeJoystickCommand;
+import edu.nr.robotics.subsystems.drive.EnableSniperForwardMode;
+import edu.nr.robotics.subsystems.drive.EnableSniperTurnMode;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
+import edu.nr.robotics.subsystems.drive.TurnToAngleCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
@@ -86,8 +89,10 @@ public class OI implements SmartDashboardSource {
 	private static final int QUARTER_TURN_LEFT_BUTTON_NUMBER = 4;
 	private static final int QUARTER_TURN_RIGHT_BUTTON_NUMBER = 5;
 	private static final int DUMB_DRIVE_BUTTON_NUMBER = 10;
+	private static final int SNIPER_MODE_BUTTON = 1;
+	private static final int TURN_TO_ANGLE_COMMAND_BUTTON = 2; //right
 
-	private static final int ENABLE_SCALE_STOPPING_BUTTON_NUMBER = 1;
+	//private static final int ENABLE_SCALE_STOPPING_BUTTON_NUMBER = 1;
 	private static final int DRIVE_TO_CUBE_JOYSTICK_BUTTON_NUMBER = 5;
 	
 	private static final int RESET_GYRO_BUTTON_NUMBER = 7;
@@ -146,15 +151,18 @@ public class OI implements SmartDashboardSource {
 
 		new JoystickButton(driveLeft, DUMB_DRIVE_BUTTON_NUMBER).whenPressed(new DriveDumbToggleCommand());
 
-		new JoystickButton(driveLeft, ENABLE_SCALE_STOPPING_BUTTON_NUMBER)
+		/*new JoystickButton(driveLeft, ENABLE_SCALE_STOPPING_BUTTON_NUMBER)
 				.whenPressed(new EnableFloorSensorCommand(true));
 		new JoystickButton(driveLeft, ENABLE_SCALE_STOPPING_BUTTON_NUMBER)
-				.whenReleased(new EnableFloorSensorCommand(false));
+				.whenReleased(new EnableFloorSensorCommand(false));*/
 
 		// new JoystickButton(driveLeft,
 		// TEST_SEQUENCE_BUTTON_NUMBER).whenPressed(new
 		// SystemTestSequenceCommand());
 
+		new JoystickButton(driveLeft, SNIPER_MODE_BUTTON).whenPressed(new EnableSniperForwardMode(true));
+		new JoystickButton(driveLeft, SNIPER_MODE_BUTTON).whenReleased(new EnableSniperForwardMode(false));		
+		
 		new JoystickButton(driveLeft, CLIMB_COAST_BUTTON_NUMBER).whenPressed(new ClimberCoastCommand(true));
 		
 		new JoystickButton(driveLeft, DRIVE_TO_CUBE_JOYSTICK_BUTTON_NUMBER).whenPressed(new DriveToCubeJoystickCommand());
@@ -163,6 +171,9 @@ public class OI implements SmartDashboardSource {
 
 	public void initDriveRight() {
 
+		new JoystickButton(driveRight, SNIPER_MODE_BUTTON).whenPressed(new EnableSniperTurnMode(true));
+		new JoystickButton(driveRight, SNIPER_MODE_BUTTON).whenReleased(new EnableSniperTurnMode(false));
+		
 		new JoystickButton(driveRight, RESET_GYRO_BUTTON_NUMBER).whenPressed(new ResetGyroCommand());
 
 		new JoystickButton(driveRight, HALF_TURN_BUTTON_NUMBER).whenPressed(new TurnCommand(Drive.getInstance(),
@@ -176,6 +187,8 @@ public class OI implements SmartDashboardSource {
 	
 		new JoystickButton(driveRight, RUN_INTAKE_BUTTON_NUMBER).whenPressed(new IntakeRollersVelocityCommand(IntakeRollers.VEL_PERCENT_HIGH_INTAKE_ROLLERS, IntakeRollers.VEL_PERCENT_LOW_INTAKE_ROLLERS));
 		new JoystickButton(driveRight, RUN_INTAKE_BUTTON_NUMBER).whenReleased(new IntakeRollersStopCommand());
+		
+		new JoystickButton(driveRight, TURN_TO_ANGLE_COMMAND_BUTTON).whenPressed(new TurnToAngleCommand(new Angle(180, Angle.Unit.DEGREE)));
 	}
 
 	public void initOperatorLeft() {
@@ -266,7 +279,7 @@ public class OI implements SmartDashboardSource {
 	}
 
 	public double getArcadeMoveValue() {
-		return -snapDriveJoysticks(driveLeft.getY());
+		return -snapDriveJoysticks(driveLeft.getY()) * Drive.MOVE_JOYSTICK_MULTIPLIER;
 	}
 
 	public double getArcadeTurnValue() {

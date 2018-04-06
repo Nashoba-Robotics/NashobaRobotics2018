@@ -46,6 +46,8 @@ public class IntakeRollers extends NRSubsystem {
 	public static final int PEAK_CURRENT_DURATION_INTAKE_ROLLERS = 1000;	
 	public static final int CONTINUOUS_CURRENT_LIMIT_INTAKE_ROLLERS = 40;
 	
+	public static final int CURRENT_PEAK_INTAKE_ROLLERS = 40;
+	
 	/**
 	 * The 100% voltage that is used as a base calculation for all PercentOutputs
 	 */
