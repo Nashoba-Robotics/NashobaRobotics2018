@@ -25,7 +25,7 @@ public class IntakeElevatorBottomCommand extends NRCommand {
 	
 	@Override
 	protected void onExecute() {
-		if (!hitBottom && IntakeElevator.getInstance().getCurrent() >= IntakeElevator.HIT_BOTTOM_CURRENT_INTAKE_ELEVATOR) {
+		if (IntakeElevator.getInstance().getCurrent() >= IntakeElevator.HIT_BOTTOM_CURRENT_INTAKE_ELEVATOR) {
 			if (!hitBottom) {
 				hitBottom = true;
 				initHitBottomTime = Timer.getFPGATimestamp();
