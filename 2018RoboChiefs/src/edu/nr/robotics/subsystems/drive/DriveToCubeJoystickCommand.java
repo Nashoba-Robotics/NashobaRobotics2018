@@ -20,7 +20,7 @@ public class DriveToCubeJoystickCommand extends NRCommand {
 	@Override
 	protected void onExecute() {
 		
-		double moveValue = OI.getInstance().getArcadeMoveValue();
+		double moveValue = Math.pow(OI.getInstance().getArcadeMoveValue(), 3);
 				
 		double headingAdjustment;
 		
