@@ -9,7 +9,6 @@ import edu.nr.lib.units.Distance;
 import edu.nr.robotics.multicommands.ClimbButtonCommand;
 import edu.nr.robotics.multicommands.ClimbPrepareCommand;
 import edu.nr.robotics.multicommands.ClimberStopButtonCommand;
-import edu.nr.robotics.multicommands.CubeFeedIntakeRollersToElevatorCommand;
 import edu.nr.robotics.multicommands.CubeFeedIntakeRollersToElevatorCommandManual;
 import edu.nr.robotics.multicommands.FoldIntakeMultiCommand;
 import edu.nr.robotics.multicommands.PrepareScoreElevatorBottomCommand;
@@ -20,6 +19,7 @@ import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveDumbToggleCommand;
 import edu.nr.robotics.subsystems.drive.DriveToCubeButtonCommand;
 import edu.nr.robotics.subsystems.drive.DriveToCubeJoystickCommand;
+import edu.nr.robotics.subsystems.drive.DriveTuningCommand;
 import edu.nr.robotics.subsystems.drive.EnableSniperForwardMode;
 import edu.nr.robotics.subsystems.drive.EnableSniperTurnMode;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
@@ -32,14 +32,11 @@ import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeDeployCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevator;
-import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorBottomCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersReverseCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersStopCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocityCommand;
-import edu.nr.robotics.subsystems.sensors.EnableFloorSensorCommand;
-import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.nr.robotics.subsystems.sensors.ToggleLimelightCommand;
 import edu.wpi.first.wpilibj.Joystick;
@@ -99,6 +96,8 @@ public class OI implements SmartDashboardSource {
 	private static final int CLIMB_COAST_BUTTON_NUMBER = 6;
 
 	private static final int ENABLE_LIMELIGHT_BUTTON = 6;
+	
+	private static final int DRIVE_TUNING_BUTTON_NUMBER = 7;
 	
 	private static final int TEST_SEQUENCE_BUTTON_NUMBER = 10;
 
@@ -167,6 +166,10 @@ public class OI implements SmartDashboardSource {
 		
 		new JoystickButton(driveLeft, DRIVE_TO_CUBE_JOYSTICK_BUTTON_NUMBER).whenPressed(new DriveToCubeJoystickCommand());
 		new JoystickButton(driveLeft, DRIVE_TO_CUBE_JOYSTICK_BUTTON_NUMBER).whenReleased(new DoNothingCommand(Drive.getInstance()));
+	
+		DriveTuningCommand tuningCommand = new DriveTuningCommand();
+		new JoystickButton(driveLeft, DRIVE_TUNING_BUTTON_NUMBER).whenPressed(tuningCommand);
+		
 	}
 
 	public void initDriveRight() {
