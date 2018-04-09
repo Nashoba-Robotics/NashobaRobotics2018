@@ -50,8 +50,8 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	/**
 	 * The acutal real min move voltage of the intake elevator
 	 */
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0.05;
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0.05;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_UP = 0.0;
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_INTAKE_ELEVATOR_DOWN = 0.0;
 	public static final double INTAKE_FOLD_HOLD_PERCENT = 0.15;
 	
 	/**
