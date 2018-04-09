@@ -6,7 +6,7 @@ import edu.nr.lib.units.Time;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class TuningCommand extends NRCommand {
+public class DriveTuningCommand extends NRCommand {
 
 	private double counter = -1;
 	
@@ -17,7 +17,7 @@ public class TuningCommand extends NRCommand {
 	private static final Distance FAST_DIST = new Distance(20, Distance.Unit.FOOT);
 	private static final double DIST_CHANGE_THRESHOLD = 0.50;
 	
-	public TuningCommand() {
+	public DriveTuningCommand() {
 		counter = -1;
 	}
 	

@@ -21,7 +21,7 @@ import edu.nr.robotics.subsystems.drive.DriveToCubeButtonCommand;
 import edu.nr.robotics.subsystems.drive.DriveToCubeJoystickCommand;
 import edu.nr.robotics.subsystems.drive.EnableSniperForwardMode;
 import edu.nr.robotics.subsystems.drive.EnableSniperTurnMode;
-import edu.nr.robotics.subsystems.drive.TuningCommand;
+import edu.nr.robotics.subsystems.drive.DriveTuningCommand;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
 import edu.nr.robotics.subsystems.drive.TurnToAngleCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
@@ -169,7 +169,7 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(driveLeft, SNIPER_MODE_BUTTON).whenPressed(new EnableSniperForwardMode(true));
 		new JoystickButton(driveLeft, SNIPER_MODE_BUTTON).whenReleased(new EnableSniperForwardMode(false));
 		
-		TuningCommand tuningCommand = new TuningCommand();
+		DriveTuningCommand tuningCommand = new DriveTuningCommand();
 		new JoystickButton(driveLeft, TUNING_MODE_BUTTON).whenPressed(tuningCommand);
 	}
 
