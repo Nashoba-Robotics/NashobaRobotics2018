@@ -9,10 +9,10 @@ public class RobotMap {
 	public static final int H_DRIVE_FOLLOW = 6;
 	public static final int RIGHT_DRIVE = 2;
 	public static final int LEFT_DRIVE = 8;
-	public static final int H_DRIVE = 3;
+	public static final int H_DRIVE = 1;
 	public static final int ELEVATOR_TALON = 15;
 	public static final int ELEVATOR_TALON_FOLLOW = 14;
-	public static final int INTAKE_ELEVATOR_TALON = 1;
+	public static final int INTAKE_ELEVATOR_TALON = 3;
 	public static final int ELEVATOR_SHOOTER_TALON = 13;
 	public static final int INTAKE_ROLLERS_LEFT = 5;
 	public static final int INTAKE_ROLLERS_RIGHT = 7;

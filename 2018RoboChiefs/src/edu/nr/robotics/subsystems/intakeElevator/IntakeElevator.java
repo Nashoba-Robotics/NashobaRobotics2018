@@ -547,6 +547,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	public void periodic() {
 		if (EnabledSubsystems.INTAKE_ELEVATOR_ENABLED) {
 			if (intakeElevTalon.getSensorCollection().isRevLimitSwitchClosed()) {
+				System.out.println("Intake Elevator Sensor Closed");
 				intakeElevTalon.getSensorCollection().setQuadraturePosition((int) BOTTOM_HEIGHT.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV), DEFAULT_TIMEOUT);
 			}	
 		}

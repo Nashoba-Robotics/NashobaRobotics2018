@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		talon = CTRECreator.createMasterTalon(7);
+		talon = CTRECreator.createMasterTalon(3);
 		carriageTalon = CTRECreator.createMasterTalon(5);
 		intakeRoller1 = CTRECreator.createMasterTalon(2);
 		intakeRoller2 = CTRECreator.createMasterTalon(4);
