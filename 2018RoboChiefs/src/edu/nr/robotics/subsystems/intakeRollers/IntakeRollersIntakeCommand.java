@@ -31,6 +31,7 @@ public class IntakeRollersIntakeCommand extends NRCommand {
 		stuck = false;
 		stuckTooLong = false;
 		hasStopped = false;
+		isSensorBroken = false;
 	}
 	
 	@Override
