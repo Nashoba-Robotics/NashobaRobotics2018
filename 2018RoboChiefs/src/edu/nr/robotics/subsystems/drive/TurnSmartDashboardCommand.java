@@ -11,6 +11,7 @@ public class TurnSmartDashboardCommand extends NRCommand {
 	private TriplePIDOutput out;
 	private Angle initialAngle;
 	private GyroCorrection gyro;
+	private boolean reachedSetVel = false;
 	
 	public TurnSmartDashboardCommand() {
 		super(Drive.getInstance());
@@ -22,6 +23,7 @@ public class TurnSmartDashboardCommand extends NRCommand {
 		gyro = new GyroCorrection(Drive.angleToTurn, Drive.drivePercent);
 		out.pidWrite(0, 0, 0);
 		initialAngle = gyro.getAngleError().sub(Drive.angleToTurn);
+		reachedSetVel = false;
 	}
 	
 	@Override
@@ -34,8 +36,18 @@ public class TurnSmartDashboardCommand extends NRCommand {
 		
 		double outputLeft, outputRight;
 		
-		outputLeft = -headingAdjustment;
-		outputRight = headingAdjustment;
+		if ((Drive.getInstance().getLeftVelocity().abs().div(Drive.MAX_SPEED_DRIVE)) > Math.abs(headingAdjustment) 
+				|| (Drive.getInstance().getRightVelocity().abs().div(Drive.MAX_SPEED_DRIVE)) > Math.abs(headingAdjustment)) {
+			reachedSetVel = true;
+		}
+		
+		if (!reachedSetVel) {
+			outputLeft = -1*Math.signum(headingAdjustment);
+			outputRight = 1*Math.signum(headingAdjustment);
+		} else {
+			outputLeft = -headingAdjustment;
+			outputRight = headingAdjustment;
+		}
 		
 		out.pidWrite(outputLeft, outputRight, 0);
 		
