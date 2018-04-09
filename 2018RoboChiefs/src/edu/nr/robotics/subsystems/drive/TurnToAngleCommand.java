@@ -11,6 +11,7 @@ public class TurnToAngleCommand extends NRCommand {
 	private GyroCorrection gyro;
 	private Angle angleGoal;
 	private Angle angleToTurn;
+	private boolean reachedSetVel = false;
 	
 	public TurnToAngleCommand(Angle angleGoal) {
 		this.angleGoal = angleGoal;
@@ -30,6 +31,8 @@ public class TurnToAngleCommand extends NRCommand {
 		gyro = new GyroCorrection(angleToTurn, Drive.MAX_PROFILE_TURN_PERCENT);
 		Drive.getInstance().pidWrite(0, 0, 0);
 		initialAngle = gyro.getAngleError().sub(angleToTurn);
+		
+		reachedSetVel = false;
 	}
 	
 	@Override
@@ -42,8 +45,18 @@ public class TurnToAngleCommand extends NRCommand {
 		
 		double outputLeft, outputRight;
 		
-		outputLeft = -headingAdjustment;
-		outputRight = headingAdjustment;
+		if ((Drive.getInstance().getLeftVelocity().abs().div(Drive.MAX_SPEED_DRIVE)) > Math.abs(headingAdjustment) 
+				|| (Drive.getInstance().getRightVelocity().abs().div(Drive.MAX_SPEED_DRIVE)) > Math.abs(headingAdjustment)) {
+			reachedSetVel = true;
+		}
+		
+		if (!reachedSetVel) {
+			outputLeft = -1*Math.signum(headingAdjustment);
+			outputRight = 1*Math.signum(headingAdjustment);
+		} else {
+			outputLeft = -headingAdjustment;
+			outputRight = headingAdjustment;
+		}
 		
 		Drive.getInstance().pidWrite(outputLeft, outputRight, 0);
 		

@@ -6,6 +6,8 @@ import edu.nr.lib.units.Angle;
 import edu.nr.robotics.subsystems.sensors.EnableLimelightCommand;
 
 public class TurnToCubeCommand extends NRCommand {
+	
+	private boolean reachedSetVel = false;
 
 	public TurnToCubeCommand() {
 		super(Drive.getInstance());
@@ -14,6 +16,7 @@ public class TurnToCubeCommand extends NRCommand {
 	@Override
 	protected void onStart() {
 		new EnableLimelightCommand(true).start();
+		reachedSetVel = false;
 	}
 	
 	@Override
@@ -28,7 +31,22 @@ public class TurnToCubeCommand extends NRCommand {
 			headingAdjustment = Drive.MIN_PROFILE_TURN_PERCENT * Math.signum(headingAdjustment);
 		}
 		
-		Drive.getInstance().setMotorSpeedInPercent(-headingAdjustment, headingAdjustment, 0);
+		double outputLeft, outputRight;
+		
+		if ((Drive.getInstance().getLeftVelocity().abs().div(Drive.MAX_SPEED_DRIVE)) > Math.abs(headingAdjustment) 
+				|| (Drive.getInstance().getRightVelocity().abs().div(Drive.MAX_SPEED_DRIVE)) > Math.abs(headingAdjustment)) {
+			reachedSetVel = true;
+		}
+		
+		if (!reachedSetVel) {
+			outputLeft = -1*Math.signum(headingAdjustment);
+			outputRight = 1*Math.signum(headingAdjustment);
+		} else {
+			outputLeft = -headingAdjustment;
+			outputRight = headingAdjustment;
+		}
+		
+		Drive.getInstance().setMotorSpeedInPercent(outputLeft, outputRight, 0);
 	}
 	
 	@Override
