@@ -25,8 +25,6 @@ public class TurnToAngleCommand extends NRCommand {
 			angleToTurn = new Angle(angleGoal.get(Angle.Unit.DEGREE) - ((Pigeon.getPigeon(Drive.getInstance().getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE)) % 360), Angle.Unit.DEGREE).negate();
 		}
 		
-		System.out.println(angleToTurn.get(Angle.Unit.DEGREE));
-		
 		gyro = new GyroCorrection(angleToTurn, Drive.MAX_PROFILE_TURN_PERCENT);
 		Drive.getInstance().pidWrite(0, 0, 0);
 		initialAngle = gyro.getAngleError().sub(angleToTurn);
