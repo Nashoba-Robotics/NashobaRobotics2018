@@ -7,13 +7,14 @@ import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.wpi.first.wpilibj.Timer;
 
 public class IntakeRollersIntakeCommand extends NRCommand {
-	
 	private double initStuckTime = 0;
 	private boolean stuck = false;
 	private boolean stuckTooLong = false;
 	
 	private boolean hasStopped = false;
 	private double initStopTime = 0;
+	
+	private boolean isSensorBroken = false;
 	
 	public static final Time TIME_STOPPED_AFTER_STUCK = new Time(0.5, Time.Unit.SECOND);
 	
@@ -29,6 +30,7 @@ public class IntakeRollersIntakeCommand extends NRCommand {
 		stuck = false;
 		stuckTooLong = false;
 		hasStopped = false;
+		isSensorBroken = false;
 	}
 	
 	@Override
@@ -49,7 +51,10 @@ public class IntakeRollersIntakeCommand extends NRCommand {
 		}
 		
 		if (stuckTooLong) {
-			if (!hasStopped) {
+			if(IntakeRollers.getInstance().getCurrentLeft() > IntakeRollers.CURRENT_PEAK_INTAKE_ROLLERS && IntakeRollers.getInstance().getCurrentRight() > IntakeRollers.CURRENT_PEAK_INTAKE_ROLLERS) {
+				isSensorBroken = true;
+			}
+			else if (!hasStopped) {
 				hasStopped = true;
 				IntakeRollers.getInstance().setMotorSpeedPercent(0, 0);
 				initStopTime = Timer.getFPGATimestamp();
@@ -73,7 +78,6 @@ public class IntakeRollersIntakeCommand extends NRCommand {
 	
 	@Override
 	public boolean isFinishedNR() {
-		return (!EnabledSensors.intakeSensorLeft.get() && !EnabledSensors.intakeSensorRight.get()) /*|| IntakeRollers.getInstance().getCurrentLeft() > IntakeRollers.PEAK_CURRENT_INTAKE_ROLLERS || IntakeRollers.getInstance().getCurrentRight() > IntakeRollers.PEAK_CURRENT_INTAKE_ROLLERS*/;
+		return (!EnabledSensors.intakeSensorLeft.get() && !EnabledSensors.intakeSensorRight.get()) || isSensorBroken /*|| IntakeRollers.getInstance().getCurrentLeft() > IntakeRollers.PEAK_CURRENT_INTAKE_ROLLERS || IntakeRollers.getInstance().getCurrentRight() > IntakeRollers.PEAK_CURRENT_INTAKE_ROLLERS*/;
 	}
-
 }

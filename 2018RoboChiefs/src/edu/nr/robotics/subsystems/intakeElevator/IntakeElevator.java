@@ -127,7 +127,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	 * The current values of the intake elevator
 	 */
 	public static final int PEAK_CURRENT_INTAKE_ELEVATOR = 80;
-	public static final int PEAK_CURRENT_DURATION_INTAKE_ELEVATOR = 1000;
+	public static final int PEAK_CURRENT_DURATION_INTAKE_ELEVATOR = 250;
 	public static final int CONTINUOUS_CURRENT_LIMIT_INTAKE_ELEVATOR = 40;
 	
 	/**
@@ -201,6 +201,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	
 	public static final double FOLD_CURRENT_SPIKE = 90;
 	public static final double HANDLER_CURRENT_SPIKE = 25;
+	public static final double HIT_BOTTOM_CURRENT_INTAKE_ELEVATOR = 40;
 	
 	public Speed velSetpoint = Speed.ZERO;
 	public Distance posSetpoint = Distance.ZERO;
