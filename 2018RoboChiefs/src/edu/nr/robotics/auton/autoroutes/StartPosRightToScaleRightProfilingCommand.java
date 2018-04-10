@@ -60,39 +60,6 @@ public class StartPosRightToScaleRightProfilingCommand extends CommandGroup {
 				});
 			}
 		});
-		
-		addSequential(new AnonymousCommandGroup() {
-			
-			@Override
-			public void commands() {
-				
-				//addParallel(new ElevatorBottomCommand());
-				
-				addParallel(new AnonymousCommandGroup() {
-					
-					@Override
-					public void commands() {
-						
-						addSequential(new TurnToCubeCommand());
-						
-						addSequential(new AnonymousCommandGroup() {
-							
-							@Override
-							public void commands() {
-								
-								//addParallel(new IntakeRollersIntakeCommand());
-								
-								addParallel(new EnableMotionProfile(FieldMeasurements.CUBE_1_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
-								
-							}
-							
-						});
-						
-					}
-				});
-				
-			}
-		});
 	}
 
 }
