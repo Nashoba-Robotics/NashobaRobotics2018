@@ -34,8 +34,6 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 					
 					@Override
 					public void commands() {
-
-						addSequential(new PrintCommand("" + FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_1).get(Angle.Unit.DEGREE)));
 						
 						addSequential(new ConditionalCommand(new TurnCommand(Drive.getInstance(),
 								(FieldMeasurements.PIVOT_POINT_TO_SCALE.add(FieldMeasurements.PIVOT_POINT_TO_CUBE_1)),

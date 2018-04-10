@@ -12,13 +12,13 @@ import edu.wpi.first.wpilibj.command.ConditionalCommand;
 
 public class AutoScaleLoopCommand extends CommandGroup {
 
-	public AutoScaleLoopCommand() {
+	public AutoScaleLoopCommand(boolean lateStart) {
 		
 		addSequential(new ConditionalCommand(new ScaleToBlockProfilingCommand(1)) {
 
 			@Override
 			protected boolean condition() {
-				return FieldData.getInstance().scale == Direction.left
+				return !lateStart && FieldData.getInstance().scale == Direction.left
 						&& !(((Robot.getInstance().selectedSwitch == Switch.leftOnly
 								|| Robot.getInstance().selectedSwitch == Switch.both)
 								&& FieldData.getInstance().nearSwitch == Direction.left)

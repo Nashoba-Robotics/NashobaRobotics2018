@@ -1,5 +1,6 @@
 package edu.nr.robotics.auton;
 
+import edu.nr.lib.units.Time;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
 public class AutoChoosers {
@@ -49,5 +50,6 @@ public class AutoChoosers {
 		scaleSwitchYes,
 		scaleSwitchNo;
 	}
+	
 	
 }

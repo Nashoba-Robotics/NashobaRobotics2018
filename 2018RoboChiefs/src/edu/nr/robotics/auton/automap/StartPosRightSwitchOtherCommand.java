@@ -85,7 +85,7 @@ public class StartPosRightSwitchOtherCommand extends CommandGroup {
 
 		});
 		
-		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()) {
+		addSequential(new ConditionalCommand(new AutoScaleLoopCommand(true)) {
 
 			@Override
 			protected boolean condition() {
