@@ -127,7 +127,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 * Max and min speed of turn during
 	 */
 	public static final double MAX_PROFILE_TURN_PERCENT = 1.0;
-	public static final double MIN_PROFILE_TURN_PERCENT = 0.02; 
+	public static final double MIN_PROFILE_TURN_PERCENT = 0.025; 
 	
 	/**
 	 * Percent of the drive while going to intake a cube

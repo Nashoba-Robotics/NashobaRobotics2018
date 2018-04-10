@@ -127,7 +127,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	 * The current values of the intake elevator
 	 */
 	public static final int PEAK_CURRENT_INTAKE_ELEVATOR = 80;
-	public static final int PEAK_CURRENT_DURATION_INTAKE_ELEVATOR = 250;
+	public static final int PEAK_CURRENT_DURATION_INTAKE_ELEVATOR = 50;
 	public static final int CONTINUOUS_CURRENT_LIMIT_INTAKE_ELEVATOR = 40;
 	
 	/**
@@ -191,7 +191,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	 */
 	public static final Distance FOLDED_HEIGHT = new Distance(11.9, Distance.Unit.INCH); // TODO: Find FOLDED_HEIGHT
 	
-	public static final Distance HANDLER_HEIGHT = new Distance(13, Distance.Unit.INCH); // TODO: Find HANDLER_HEIGHT
+	public static final Distance HANDLER_HEIGHT = new Distance(9, Distance.Unit.INCH); // TODO: Find HANDLER_HEIGHT
 	
 	public static final Distance INTAKE_HEIGHT = Distance.ZERO; 
 	
@@ -199,7 +199,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	
 	public static final Distance BOTTOM_HEIGHT = Distance.ZERO;
 	
-	public static final double FOLD_CURRENT_SPIKE = 90;
+	public static final double FOLD_CURRENT_SPIKE = 45;
 	public static final double HANDLER_CURRENT_SPIKE = 25;
 	public static final int HIT_BOTTOM_CURRENT_INTAKE_ELEVATOR = 40;
 	
@@ -547,8 +547,8 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	@Override
 	public void periodic() {
 		if (EnabledSubsystems.INTAKE_ELEVATOR_ENABLED) {
-			if (intakeElevTalon.getSensorCollection().isRevLimitSwitchClosed()) {
-				System.out.println("Intake Elevator Sensor Closed");
+			if (isRevLimitSwitchClosed()) {
+				//System.out.println("Intake Elevator Sensor Closed");
 				intakeElevTalon.getSensorCollection().setQuadraturePosition((int) BOTTOM_HEIGHT.get(Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV), DEFAULT_TIMEOUT);
 			}	
 		}
