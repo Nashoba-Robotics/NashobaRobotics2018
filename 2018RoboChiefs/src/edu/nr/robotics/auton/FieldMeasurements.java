@@ -3,6 +3,7 @@ package edu.nr.robotics.auton;
 import edu.nr.lib.NRMath;
 import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Distance;
+import edu.nr.lib.units.Time;
 
 public class FieldMeasurements {
 
@@ -121,4 +122,11 @@ public class FieldMeasurements {
 	public static final Distance CUBE_1_TO_SWITCH_DIAGONAL = new Distance(16, Distance.Unit.INCH);
 	
 	public static final Angle CUBE_1_TO_CUBE_2 = PIVOT_POINT_TO_CUBE_1.sub(PIVOT_POINT_TO_CUBE_2);
+	public static final Angle CUBE_2_TO_CUBE_3 = PIVOT_POINT_TO_CUBE_2.sub(PIVOT_POINT_TO_CUBE_3);
+	
+	public static final Time AUTO_ELEVATOR_LIFT_WAIT_TIME = new Time(2, Time.Unit.SECOND);
+	
+	public static final Time AUTO_SHOOT_TURNING_FIRST_WAIT_TIME = new Time(0.2, Time.Unit.SECOND);
+	
+	public static final Time AUTO_SHOOT_TURNING_LOOP_WAIT_TIME = new Time(0.5, Time.Unit.SECOND);
 }

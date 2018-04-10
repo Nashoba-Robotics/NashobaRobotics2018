@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class StartPosRightToScaleLeftProfilingCommand extends CommandGroup {
 
-	public StartPosRightToScaleLeftProfilingCommand() {
+public StartPosRightToScaleLeftProfilingCommand() {
 		
 		addSequential(new EnableMotionProfile(FieldMeasurements.BASELINE_TO_PLATFORM_ZONE_X, FieldMeasurements.BASELINE_TO_PLATFORM_ZONE_Y, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 				

@@ -107,15 +107,24 @@ public class StartPosRightSwitchRightCommand extends CommandGroup {
 		});
 
 		
-		addSequential(new ConditionalCommand(new AutoScaleLoopCommand()) {
+		addSequential(new ConditionalCommand(new AutoScaleLoopCommand(false)) {
 
 			@Override
 			protected boolean condition() {
-				return Robot.getInstance().selectedScale == Scale.both
-						|| (Robot.getInstance().selectedScale == Scale.leftonly
-								&& FieldData.getInstance().scale == Direction.left)
-						|| (Robot.getInstance().selectedScale == Scale.rightonly
-								&& FieldData.getInstance().scale == Direction.right);
+				return FieldData.getInstance().scale == Direction.left && 
+						(Robot.getInstance().selectedScale == Scale.both ||
+						Robot.getInstance().selectedScale == Scale.leftonly);
+			}
+
+		});
+		
+		addSequential(new ConditionalCommand(new AutoScaleLoopCommand(true)) {
+
+			@Override
+			protected boolean condition() {
+				return FieldData.getInstance().scale == Direction.right && 
+						(Robot.getInstance().selectedScale == Scale.both ||
+						Robot.getInstance().selectedScale == Scale.rightonly);
 			}
 
 		});
@@ -136,5 +145,6 @@ public class StartPosRightSwitchRightCommand extends CommandGroup {
 
 		});
 	}
+
 
 }
