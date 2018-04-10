@@ -53,7 +53,7 @@ public class StartPosLeftToScaleLeftProfilingCommand extends CommandGroup {
 					@Override
 					public void commands() {
 					
-						addSequential(new WaitCommand(FieldMeasurements.AUTO_SHOOT_TURNING_WAIT_TIME.get(Time.Unit.SECOND)));
+						addSequential(new WaitCommand(FieldMeasurements.AUTO_SHOOT_TURNING_FIRST_WAIT_TIME.get(Time.Unit.SECOND)));
 						//addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_SCALE_AUTO_ELEVATOR_SHOOTER));
 						
 					}

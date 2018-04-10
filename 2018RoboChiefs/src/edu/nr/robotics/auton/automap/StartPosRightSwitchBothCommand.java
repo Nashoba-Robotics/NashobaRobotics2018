@@ -118,11 +118,20 @@ public class StartPosRightSwitchBothCommand extends CommandGroup {
 
 			@Override
 			protected boolean condition() {
-				return Robot.getInstance().selectedScale == Scale.both
-						|| (Robot.getInstance().selectedScale == Scale.leftonly
-								&& FieldData.getInstance().scale == Direction.left)
-						|| (Robot.getInstance().selectedScale == Scale.rightonly
-								&& FieldData.getInstance().scale == Direction.right);
+				return FieldData.getInstance().scale == Direction.left && 
+						(Robot.getInstance().selectedScale == Scale.both ||
+						Robot.getInstance().selectedScale == Scale.leftonly);
+			}
+
+		});
+		
+		addSequential(new ConditionalCommand(new AutoScaleLoopCommand(true)) {
+
+			@Override
+			protected boolean condition() {
+				return FieldData.getInstance().scale == Direction.right && 
+						(Robot.getInstance().selectedScale == Scale.both ||
+						Robot.getInstance().selectedScale == Scale.rightonly);
 			}
 
 		});
