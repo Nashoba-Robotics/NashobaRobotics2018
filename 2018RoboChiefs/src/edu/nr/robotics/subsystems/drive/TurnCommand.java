@@ -11,14 +11,14 @@ import edu.nr.lib.units.Angle;
 
 public class TurnCommand extends NRCommand {
 	
-	private TriplePIDOutput out;
+	private DoublePIDOutput out;
 	private Angle angleToTurn;
 	private Angle initialAngle;
 	private GyroCorrection gyro;
 	private double turnPercent;
 	private boolean reachedSetVel = false;
 	
-	public TurnCommand(TriplePIDOutput out, Angle angleToTurn, double turnPercent) {
+	public TurnCommand(DoublePIDOutput out, Angle angleToTurn, double turnPercent) {
 		super(Drive.getInstance());
 		this.out = out;
 		this.angleToTurn = angleToTurn;
@@ -28,7 +28,7 @@ public class TurnCommand extends NRCommand {
 	@Override
 	public void onStart() {
 		gyro = new GyroCorrection(angleToTurn, turnPercent);
-		out.pidWrite(0, 0, 0);
+		out.pidWrite(0, 0);
 		initialAngle = gyro.getAngleError().sub(angleToTurn);
 		reachedSetVel = false;
 	}
@@ -56,7 +56,7 @@ public class TurnCommand extends NRCommand {
 			outputRight = headingAdjustment;
 		}
 		
-		out.pidWrite(outputLeft, outputRight, 0);
+		out.pidWrite(outputLeft, outputRight);
 		
 	}
 	

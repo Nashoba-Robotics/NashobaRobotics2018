@@ -21,9 +21,7 @@ public class StartPosLeftToSwitchLeftProfilingCommand extends CommandGroup {
 		
 		addSequential(new TurnCommand(Drive.getInstance(), new Angle(90, Angle.Unit.DEGREE), Drive.MAX_PROFILE_TURN_PERCENT));
 		
-		addSequential(new EnableMotionProfile(
-				(FieldMeasurements.SWITCH_EDGE_TO_FIELD_EDGE_Y.sub(FieldMeasurements.PIVOT_POINT_FIELD_EDGE_Y)
-						.sub(FieldMeasurements.ROBOT_LENGTH.mul(0.5))),
+		addSequential(new EnableMotionProfile(new Distance(5, Distance.Unit.INCH),
 				Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 		
 		addSequential(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));

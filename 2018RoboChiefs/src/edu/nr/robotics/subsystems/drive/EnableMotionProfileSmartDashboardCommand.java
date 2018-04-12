@@ -1,7 +1,7 @@
 package edu.nr.robotics.subsystems.drive;
 
 import edu.nr.lib.commandbased.NRCommand;
-import edu.nr.lib.motionprofiling.HDriveDiagonalProfiler;
+import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotor;
 import edu.nr.lib.units.Distance;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -35,38 +35,27 @@ public class EnableMotionProfileSmartDashboardCommand extends NRCommand {
 		if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {
 			Drive.getInstance().setPIDSourceType(PIDSourceType.kRate);
 			SmartDashboard.putString("Motion Profiler V Left",
-					Drive.getInstance().pidGetLeft() + ":" + HDriveDiagonalProfiler.velocityGoal);
+					Drive.getInstance().pidGetLeft() + ":" + OneDimensionalMotionProfilerTwoMotor.velocityGoal);
 			SmartDashboard.putString("Motion Profiler V Right",
-					Drive.getInstance().pidGetRight() + ":" + HDriveDiagonalProfiler.velocityGoal);
-			SmartDashboard.putString("Motion Profiler V H",
-					Drive.getInstance().pidGetH() + ":" + HDriveDiagonalProfiler.velocityGoalH);
+					Drive.getInstance().pidGetRight() + ":" + OneDimensionalMotionProfilerTwoMotor.velocityGoal);
 			Drive.getInstance().setPIDSourceType(PIDSourceType.kDisplacement);
 			SmartDashboard.putString("Motion Profiler X Left",
 					new Distance(Drive.getInstance().pidGetLeft(), Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
 							.get(Distance.Unit.INCH)
 							+ ":"
 							+ new Distance(
-									HDriveDiagonalProfiler.positionGoal + HDriveDiagonalProfiler.initialPositionLeft,
+									OneDimensionalMotionProfilerTwoMotor.positionGoal + OneDimensionalMotionProfilerTwoMotor.initialPositionLeft,
 									Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE).get(Distance.Unit.INCH)
-							+ ":" + new Distance(HDriveDiagonalProfiler.errorLeft, Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
+							+ ":" + new Distance(OneDimensionalMotionProfilerTwoMotor.errorLeft, Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
 									.get(Distance.Unit.INCH));
 			SmartDashboard.putString("Motion Profiler X Right",
 					new Distance(Drive.getInstance().pidGetRight(), Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
 							.get(Distance.Unit.INCH)
 							+ ":"
 							+ new Distance(
-									HDriveDiagonalProfiler.positionGoal + HDriveDiagonalProfiler.initialPositionRight,
+									OneDimensionalMotionProfilerTwoMotor.positionGoal + OneDimensionalMotionProfilerTwoMotor.initialPositionRight,
 									Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE).get(Distance.Unit.INCH)
-							+ ":" + new Distance(HDriveDiagonalProfiler.errorRight, Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
-									.get(Distance.Unit.INCH));
-			SmartDashboard.putString("Motion Profiler X H",
-					new Distance(Drive.getInstance().pidGetH(), Distance.Unit.MAGNETIC_ENCODER_TICK_H)
-							.get(Distance.Unit.INCH)
-							+ ":"
-							+ new Distance(
-									HDriveDiagonalProfiler.positionGoalH + HDriveDiagonalProfiler.initialPositionH,
-									Distance.Unit.MAGNETIC_ENCODER_TICK_H).get(Distance.Unit.INCH)
-							+ ":" + new Distance(HDriveDiagonalProfiler.errorH, Distance.Unit.MAGNETIC_ENCODER_TICK_H)
+							+ ":" + new Distance(OneDimensionalMotionProfilerTwoMotor.errorRight, Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
 									.get(Distance.Unit.INCH));
 
 		}
@@ -86,15 +75,10 @@ public class EnableMotionProfileSmartDashboardCommand extends NRCommand {
 				- initialLeftPosition.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
 				+ Drive.getInstance().getRightPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
 				- initialRightPosition.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE))) / 2)
-				- Math.abs(HDriveDiagonalProfiler.posPoints
-						.get(HDriveDiagonalProfiler.posPoints.size() - 1)))) < Drive.END_THRESHOLD
+				- Math.abs(OneDimensionalMotionProfilerTwoMotor.posPoints
+						.get(OneDimensionalMotionProfilerTwoMotor.posPoints.size() - 1)))) < Drive.END_THRESHOLD
 								.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
-				&& Math.abs(((Math.abs(Drive.getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H)
-						- initialHPosition.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H)))
-						- Math.abs(HDriveDiagonalProfiler.posPointsH
-								.get(HDriveDiagonalProfiler.posPointsH.size() - 1)))) < Drive.END_THRESHOLD
-										.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H)
-				&& Drive.getInstance().getLeftVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD)
+							&& Drive.getInstance().getLeftVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD)
 				&& Drive.getInstance().getRightVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD)
 				&& Drive.getInstance().getHVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD);
 		

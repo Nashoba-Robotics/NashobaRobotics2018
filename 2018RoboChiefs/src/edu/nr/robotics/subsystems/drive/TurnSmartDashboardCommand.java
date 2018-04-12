@@ -1,14 +1,13 @@
 package edu.nr.robotics.subsystems.drive;
 
-import edu.nr.lib.NRMath;
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.gyro.GyroCorrection;
-import edu.nr.lib.interfaces.TriplePIDOutput;
+import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.units.Angle;
 
 public class TurnSmartDashboardCommand extends NRCommand {
 		
-	private TriplePIDOutput out;
+	private DoublePIDOutput out;
 	private Angle initialAngle;
 	private GyroCorrection gyro;
 	private boolean reachedSetVel = false;
@@ -21,7 +20,7 @@ public class TurnSmartDashboardCommand extends NRCommand {
 	@Override
 	public void onStart() {
 		gyro = new GyroCorrection(Drive.angleToTurn, Drive.drivePercent);
-		out.pidWrite(0, 0, 0);
+		out.pidWrite(0, 0);
 		initialAngle = gyro.getAngleError().sub(Drive.angleToTurn);
 		reachedSetVel = false;
 	}
@@ -49,7 +48,7 @@ public class TurnSmartDashboardCommand extends NRCommand {
 			outputRight = headingAdjustment;
 		}
 		
-		out.pidWrite(outputLeft, outputRight, 0);
+		out.pidWrite(outputLeft, outputRight);
 		
 	}
 	

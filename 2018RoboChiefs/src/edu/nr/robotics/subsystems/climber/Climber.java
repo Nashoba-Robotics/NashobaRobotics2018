@@ -26,7 +26,7 @@ public class Climber extends NRSubsystem {
 	
 	public static final Speed MAX_SPEED_CLIMBER = Speed.ZERO;//TODO: Find max speed of the climber
 	
-	public static final double CLIMB_PERCENT = 0.8;
+	public static final double CLIMB_PERCENT = 0.9;
 	
 	public static final double CLIMB_HOLD_PERCENT = 0; //TODO: Find CLIMB_HOLD_PERCENT
 	

@@ -14,12 +14,11 @@ import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.gyro.NavX;
 import edu.nr.lib.gyro.Pigeon;
 import edu.nr.lib.gyro.ResetGyroCommand;
-import edu.nr.lib.interfaces.TriplePIDOutput;
-import edu.nr.lib.interfaces.TriplePIDSource;
-import edu.nr.lib.motionprofiling.HDriveDiagonalProfiler;
+import edu.nr.lib.interfaces.DoublePIDOutput;
+import edu.nr.lib.interfaces.DoublePIDSource;
+import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotor;
 import edu.nr.lib.motionprofiling.RampedDiagonalHTrajectory;
 import edu.nr.lib.network.LimelightNetworkTable;
-import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Acceleration;
 import edu.nr.lib.units.Angle;
@@ -33,7 +32,7 @@ import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSource {
+public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSource {
 
 	private static Drive singleton;
 	
@@ -48,7 +47,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * The maximum speed of the drive base
 	 */
-	public static final Speed MAX_SPEED_DRIVE = new Speed(12.16/*12.864*/, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_DRIVE = new Speed(13.16/*12.864*/, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Speed MAX_SPEED_DRIVE_H = new Speed(10.50, Distance.Unit.FOOT, Time.Unit.SECOND); //TODO: Find real drive max speed h
 
 	/**
@@ -60,16 +59,16 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Voltage percentage at which robot just starts moving
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0930;//0.0571; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0978;//0.0600; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.117;//0.0571; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.112;//0.0600; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_RIGHT = 0.165; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_LEFT = 0.177; //TODO: find this
 	
 	/**
 	 * The drive voltage-velocity curve slopes
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0746;//0.0733; //TODO: Find drive voltage vs velocity curve
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0730;//0.0726;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0619;//0.0733; //TODO: Find drive voltage vs velocity curve
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0675;//0.0726;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_RIGHT = 0.0788;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_LEFT = 0.0784; //TODO: Find this
 	
@@ -107,8 +106,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	 * 1D Profiling kVAPID_theta loop constants
 	 */
 	public static double kVOneD = 1 / MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kAOneD = 0;//0.0002;
-	public static double kPOneD = 0.00002;//0.00002;
+	public static double kAOneD = 0.0;//0.0002;
+	public static double kPOneD = 0.00002;
 	public static double kIOneD = 0;
 	public static double kDOneD = 0;
 	public static double kP_thetaOneD = 0.02;
@@ -128,7 +127,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	/**
 	 * Percent accelerating during profiling
 	 */
-	public static final double ACCEL_PERCENT = 0.9;
+	public static final double ACCEL_PERCENT = 0.8;
 	
 	/**
 	 * Multiplies joystick turn value
@@ -238,7 +237,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public static double accelPercent;
 	public static Angle angleToTurn;
 	
-	private HDriveDiagonalProfiler diagonalProfiler;
+	private OneDimensionalMotionProfilerTwoMotor diagonalProfiler;
 
 	/**
 	 * Possible drive mode selections
@@ -450,12 +449,26 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 		return 0;
 	}
 	
+	public double getRightFollowCurrent() {
+		if (rightDriveFollow != null) {
+			return rightDriveFollow.getOutputCurrent();
+		}
+		return 0;
+	}
+	
 	/**
 	 * @return Current of the left drive talon
 	 */
 	public double getLeftCurrent() {
 		if (leftDrive != null) {
 			return leftDrive.getOutputCurrent();
+		}
+		return 0;
+	}
+	
+	public double getLeftFollowCurrent() {
+		if (leftDriveFollow != null) {
+			return leftDriveFollow.getOutputCurrent();
 		}
 		return 0;
 	}
@@ -590,17 +603,8 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	}
 	
 	@Override
-	public double pidGetH() {
-		if (type == PIDSourceType.kRate) {
-			return getInstance().getHVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND);
-		} else {
-			return getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H);
-		}
-	}
-	
-	@Override
-	public void pidWrite(double outputLeft, double outputRight, double outputH) {
-		setMotorSpeedInPercent(outputLeft, outputRight, outputH);
+	public void pidWrite(double outputLeft, double outputRight) {
+		setMotorSpeedInPercent(outputLeft, outputRight, 0);
 	}
 	
 	public void enableMotionProfiler(Distance distX, Distance distY, double maxVelPercent, double maxAccelPercent) {
@@ -622,7 +626,7 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 			System.out.println("No Distances Set");
 		}
 				
-		diagonalProfiler = new HDriveDiagonalProfiler(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD, kVOneDH, kAOneDH, kPOneDH, kIOneDH, kDOneDH);
+		diagonalProfiler = new OneDimensionalMotionProfilerTwoMotor(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
 		diagonalProfiler.setTrajectory(new RampedDiagonalHTrajectory(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H), minVel, minAccel));
 		diagonalProfiler.enable();
 }
@@ -680,8 +684,12 @@ public class Drive extends NRSubsystem implements TriplePIDOutput, TriplePIDSour
 	public void smartDashboardInfo() {
 		if (leftDrive != null && rightDrive != null) {
 			if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_BASIC_ENABLED) {
+								
+				SmartDashboard.putString("Drive Left Current", getLeftCurrent() + " : " + getLeftFollowCurrent());
 				
-				SmartDashboard.putString("Drive Current", getLeftCurrent() + " : " + getRightCurrent() + " : " + getHCurrent());
+				SmartDashboard.putString("Drive Right Current", getRightCurrent() + " : " + getRightFollowCurrent());
+				
+				SmartDashboard.putNumber("Drive H Current", getHCurrent());
 				
 				if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
 					SmartDashboard.putNumber("Gyro Yaw", (-NavX.getInstance().getYaw().get(Angle.Unit.DEGREE)) % 360);

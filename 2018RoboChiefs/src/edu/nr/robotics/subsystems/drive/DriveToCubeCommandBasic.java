@@ -76,7 +76,7 @@ public class DriveToCubeCommandBasic extends NRCommand {
 			outputRight += Drive.DRIVE_TO_CUBE_PERCENT;
 		}
 		
-		Drive.getInstance().pidWrite(outputLeft, outputRight, 0);
+		Drive.getInstance().pidWrite(outputLeft, outputRight);
 	}
 
 	@Override
