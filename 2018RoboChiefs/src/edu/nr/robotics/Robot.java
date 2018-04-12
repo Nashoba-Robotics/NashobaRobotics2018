@@ -28,6 +28,7 @@ import edu.nr.robotics.auton.automap.StartPosRightScaleSwitchRightCommand;
 import edu.nr.robotics.auton.automap.StartPosRightSwitchOtherCommand;
 import edu.nr.robotics.auton.automap.StartPosRightSwitchRightCommand;
 import edu.nr.robotics.multicommands.ClimbButtonCommand;
+import edu.nr.robotics.multicommands.TestShootingWhileTurningSmartDashboardCommand;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.nr.robotics.subsystems.climber.ClimberCoastCommand;
 import edu.nr.robotics.subsystems.drive.CSVSaverDisable;
@@ -131,6 +132,7 @@ public class Robot extends IterativeRobot {
 	public void smartDashboardInit() {
 		SmartDashboard.putData(new CSVSaverEnable());
 		SmartDashboard.putData(new CSVSaverDisable());
+		SmartDashboard.putData(new TestShootingWhileTurningSmartDashboardCommand());
 		SmartDashboard.putNumber("Auto Wait Time", 0);
 		
 		//Drive
