@@ -47,7 +47,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	/**
 	 * The maximum speed of the drive base
 	 */
-	public static final Speed MAX_SPEED_DRIVE = new Speed(13.16/*12.864*/, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_DRIVE = new Speed(13.63/*12.864*/, Distance.Unit.FOOT, Time.Unit.SECOND);
 	public static final Speed MAX_SPEED_DRIVE_H = new Speed(10.50, Distance.Unit.FOOT, Time.Unit.SECOND); //TODO: Find real drive max speed h
 
 	/**
@@ -59,16 +59,16 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	/**
 	 * Voltage percentage at which robot just starts moving
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.117;//0.0571; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.112;//0.0600; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0921;//0.0571; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0968;//0.0600; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_RIGHT = 0.165; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_LEFT = 0.177; //TODO: find this
 	
 	/**
 	 * The drive voltage-velocity curve slopes
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0619;//0.0733; //TODO: Find drive voltage vs velocity curve
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0675;//0.0726;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0666;//0.0733; //TODO: Find drive voltage vs velocity curve
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0613;//0.0726;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_RIGHT = 0.0788;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_LEFT = 0.0784; //TODO: Find this
 	
@@ -484,10 +484,10 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 	
 	public void setMotorSpeedInPercent(double left, double right, double strafe) {
-		leftDrive.set(ControlMode.PercentOutput, left);
-		rightDrive.set(ControlMode.PercentOutput, right);
+		/*leftDrive.set(ControlMode.PercentOutput, left);
+		rightDrive.set(ControlMode.PercentOutput, right);*/
 		
-		//setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE_H.mul(strafe));
+		setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE_H.mul(strafe));
 	}
 	
 	public void setMotorSpeed(Speed left, Speed right, Speed strafe) {
