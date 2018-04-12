@@ -20,7 +20,7 @@ public class StartPosLeftToScaleLeftProfilingCommand extends CommandGroup {
 
 public StartPosLeftToScaleLeftProfilingCommand() {
 		
-		/*addParallel(new IntakeDeployCommand());
+		addParallel(new IntakeDeployCommand());
 						
 		addSequential(new AnonymousCommandGroup() {
 			
@@ -41,7 +41,7 @@ public StartPosLeftToScaleLeftProfilingCommand() {
 				addParallel(new EnableMotionProfile(FieldMeasurements.BASELINE_TO_SCALE_X, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT));
 												
 			}
-		});*/
+		});
 		
 		addSequential(new AnonymousCommandGroup() {
 			

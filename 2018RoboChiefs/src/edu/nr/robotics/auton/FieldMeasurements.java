@@ -11,7 +11,7 @@ public class FieldMeasurements {
 	
 	public static final Distance ROBOT_WIDTH = new Distance(27, Distance.Unit.INCH); 
 	
-	public static final Distance INTAKE_LENGTH = new Distance(15, Distance.Unit.INCH);
+	public static final Distance INTAKE_LENGTH = new Distance(13, Distance.Unit.INCH);
 
 	public static final Distance BLOCK_WIDTH = new Distance(13, Distance.Unit.INCH);
 	
@@ -126,7 +126,7 @@ public class FieldMeasurements {
 	
 	public static final Time AUTO_ELEVATOR_LIFT_WAIT_TIME = new Time(2, Time.Unit.SECOND);
 	
-	public static final Time AUTO_SHOOT_TURNING_FIRST_WAIT_TIME = new Time(0.2, Time.Unit.SECOND);
+	public static final Time AUTO_SHOOT_TURNING_FIRST_WAIT_TIME = new Time(0, Time.Unit.SECOND);
 	
-	public static final Time AUTO_SHOOT_TURNING_LOOP_WAIT_TIME = new Time(0.5, Time.Unit.SECOND);
+	public static final Time AUTO_SHOOT_TURNING_LOOP_WAIT_TIME = new Time(0.25, Time.Unit.SECOND);
 }
