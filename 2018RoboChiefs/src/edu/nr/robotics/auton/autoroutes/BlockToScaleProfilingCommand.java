@@ -12,6 +12,7 @@ import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
+import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
@@ -187,17 +188,18 @@ public BlockToScaleProfilingCommand(int block) {
 			
 			@Override
 			public void commands() {
+				
 				addParallel(new AnonymousCommandGroup() {
 					
 					@Override
 					public void commands() {
 						addSequential(new WaitCommand(FieldMeasurements.AUTO_SHOOT_TURNING_LOOP_WAIT_TIME.get(Time.Unit.SECOND)));
 						addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_SCALE_AUTO_ELEVATOR_SHOOTER));
-						
+						addSequential(new ElevatorBottomCommand());
 					}
 				});
 				
-				addParallel(new AnonymousCommandGroup() {
+				addSequential(new AnonymousCommandGroup() {
 					
 					@Override
 					public void commands() {

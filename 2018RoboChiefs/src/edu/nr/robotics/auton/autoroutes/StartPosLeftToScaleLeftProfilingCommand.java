@@ -9,6 +9,7 @@ import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfile;
 import edu.nr.robotics.subsystems.drive.TurnCommand;
 import edu.nr.robotics.subsystems.elevator.Elevator;
+import edu.nr.robotics.subsystems.elevator.ElevatorBottomCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterShootCommand;
@@ -48,10 +49,6 @@ public StartPosLeftToScaleLeftProfilingCommand() {
 			@Override
 			public void commands() {
 				
-				addParallel(new TurnCommand(Drive.getInstance(),
-						new Angle(90, Angle.Unit.DEGREE).add(FieldMeasurements.PIVOT_POINT_TO_CUBE_1),
-						Drive.MAX_PROFILE_TURN_PERCENT));
-				
 				addParallel(new AnonymousCommandGroup() {
 					
 					@Override
@@ -59,10 +56,13 @@ public StartPosLeftToScaleLeftProfilingCommand() {
 					
 						addSequential(new WaitCommand(FieldMeasurements.AUTO_SHOOT_TURNING_FIRST_WAIT_TIME.get(Time.Unit.SECOND)));
 						addSequential(new ElevatorShooterShootCommand(ElevatorShooter.VEL_PERCENT_SCALE_AUTO_ELEVATOR_SHOOTER));
-						
+						addSequential(new ElevatorBottomCommand());
 					}
 				});
 				
+				addSequential(new TurnCommand(Drive.getInstance(),
+						new Angle(90, Angle.Unit.DEGREE).add(FieldMeasurements.PIVOT_POINT_TO_CUBE_1),
+						Drive.MAX_PROFILE_TURN_PERCENT));	
 			}
 			
 		});
