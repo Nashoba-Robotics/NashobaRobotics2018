@@ -9,6 +9,8 @@ public class FieldMeasurements {
 
 	public static final Time AUTO_SHOOT_TURNING_FIRST_WAIT_TIME = new Time(0.1, Time.Unit.SECOND);
 	
+	public static final Time AUTO_SHOOT_TURNING_SECOND_WAIT_TIME = new Time(0.25, Time.Unit.SECOND);
+	
 	public static final Distance ROBOT_LENGTH = new Distance(33, Distance.Unit.INCH);
 	
 	public static final Distance ROBOT_WIDTH = new Distance(27, Distance.Unit.INCH); 

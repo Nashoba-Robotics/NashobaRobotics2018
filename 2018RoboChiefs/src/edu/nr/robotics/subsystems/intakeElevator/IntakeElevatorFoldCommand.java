@@ -15,7 +15,7 @@ public class IntakeElevatorFoldCommand extends NRCommand {
 	
 	@Override
 	protected void onStart() {
-		IntakeElevator.getInstance().setMotorSpeedPercent(0.6);
+		IntakeElevator.getInstance().setMotorSpeedPercent(0.4);
 		IntakeElevator.intakeFolded = true;
 		initFoldTime = 0;
 		folding = false;
