@@ -7,7 +7,7 @@ import edu.nr.lib.units.Time;
 
 public class FieldMeasurements {
 
-	public static final Time AUTO_SHOOT_TURNING_FIRST_WAIT_TIME = new Time(0.1, Time.Unit.SECOND);
+	public static final Time AUTO_SHOOT_TURNING_FIRST_WAIT_TIME = new Time(0, Time.Unit.SECOND);
 	
 	public static final Time AUTO_SHOOT_TURNING_SECOND_WAIT_TIME = new Time(0.25, Time.Unit.SECOND);
 	
