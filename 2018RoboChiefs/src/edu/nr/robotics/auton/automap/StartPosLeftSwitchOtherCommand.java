@@ -29,7 +29,7 @@ public class StartPosLeftSwitchOtherCommand extends CommandGroup {
 
 		});
 		
-		addSequential(new ConditionalCommand(new StartPosLeftToScaleRightProfilingCommand()) {
+		/*addSequential(new ConditionalCommand(new StartPosLeftToScaleRightProfilingCommand()) {
 
 			@Override
 			protected boolean condition() {
@@ -104,7 +104,7 @@ public class StartPosLeftSwitchOtherCommand extends CommandGroup {
 						Robot.getInstance().selectedScale == Scale.rightonly);
 			}
 
-		});
+		});*/
 		
 
 	}
