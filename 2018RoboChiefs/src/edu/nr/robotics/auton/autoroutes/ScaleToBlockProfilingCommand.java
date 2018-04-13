@@ -155,7 +155,7 @@ public class ScaleToBlockProfilingCommand extends CommandGroup {
 					@Override
 					public void commands() {
 						
-						addSequential(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_1_TO_PIVOT_POINT_DIAGONAL, Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
+						addSequential(new ConditionalCommand(new EnableMotionProfile(FieldMeasurements.CUBE_1_TO_PIVOT_POINT_DIAGONAL.sub(new Distance(6, Distance.Unit.INCH)), Distance.ZERO, Drive.PROFILE_DRIVE_PERCENT, Drive.ACCEL_PERCENT)) {
 							
 							@Override
 							protected boolean condition() {
