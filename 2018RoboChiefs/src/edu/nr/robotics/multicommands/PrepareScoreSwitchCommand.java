@@ -13,35 +13,12 @@ import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorHandlerCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 
 public class PrepareScoreSwitchCommand extends CommandGroup {
 	
 	public PrepareScoreSwitchCommand() {
-
-		/*addSequential(new AnonymousCommandGroup() {
-			
-			@Override
-			public void commands() {
-				
-				addParallel(new ElevatorBottomDropCommand());
-				
-				addParallel(new IntakeElevatorBottomCommand());
-				
-			}
-		});
-		
-		addSequential(new IntakeRollersIntakeCommand());
-		
-		addSequential(new WaitCommand(0.25));
-		
-		addSequential(new IntakeElevatorProfileCommandGroup(IntakeElevator.HANDLER_HEIGHT, IntakeElevator.PROFILE_VEL_PERCENT_INTAKE_ELEVATOR, IntakeElevator.PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR));
-		
-		addSequential(new CubeFeedIntakeRollersToElevatorCommand());
-		
-		addSequential(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR,
-						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
-		*/
 		
 		addSequential(new AnonymousCommandGroup() {
 			
@@ -50,7 +27,13 @@ public class PrepareScoreSwitchCommand extends CommandGroup {
 				addParallel(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR,
 						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 				
-				addParallel(new IntakeElevatorFoldCommand());
+				addParallel(new ConditionalCommand(new IntakeElevatorFoldCommand()) {
+					
+					@Override
+					protected boolean condition() {
+						return !IntakeElevator.intakeFolded;
+					}
+				});
 			}
 		});
 	
