@@ -12,6 +12,7 @@ import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorFoldCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorHandlerCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileCommandGroup;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersIntakeCommand;
+import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
@@ -20,14 +21,28 @@ public class PrepareScoreSwitchCommand extends CommandGroup {
 	
 	public PrepareScoreSwitchCommand() {
 		
-		addSequential(new AnonymousCommandGroup() {
+		addSequential(new ConditionalCommand(new AnonymousCommandGroup() {
 			
 			@Override
 			public void commands() {
 				addParallel(new ElevatorProfileCommandGroup(Elevator.SWITCH_HEIGHT_ELEVATOR,
 						Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 				
-				addParallel(new FoldIntakeMultiCommand());
+				addParallel(new AnonymousCommandGroup() {
+					
+					@Override
+					public void commands() {
+						addSequential(new WaitCommand(0.5));
+						addSequential(new FoldIntakeMultiCommand());
+					}
+				});
+				
+			}
+		}) {
+			
+			@Override
+			protected boolean condition() {
+				return !EnabledSensors.elevatorSensor.get();
 			}
 		});
 	

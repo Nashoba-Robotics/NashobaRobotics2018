@@ -13,6 +13,7 @@ import edu.nr.robotics.multicommands.CubeFeedIntakeRollersToElevatorCommandManua
 import edu.nr.robotics.multicommands.FoldIntakeMultiCommand;
 import edu.nr.robotics.multicommands.PrepareScoreElevatorBottomCommand;
 import edu.nr.robotics.multicommands.PrepareScorePortalCommand;
+import edu.nr.robotics.multicommands.PrepareScoreScaleCommand;
 import edu.nr.robotics.multicommands.PrepareScoreSwitchCommand;
 import edu.nr.robotics.subsystems.climber.ClimberCoastCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
@@ -215,8 +216,7 @@ public class OI implements SmartDashboardSource {
 		lowGoalButton = new JoystickButton(operatorLeft, LOW_GOAL_BUTTON_NUMBER);
 
 		//Scale
-		scaleButton.whenPressed(new ElevatorProfileCommandGroup(Elevator.SCALE_HEIGHT_ELEVATOR,
-				Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
+		scaleButton.whenPressed(new PrepareScoreScaleCommand());
 		
 		//Switch
 		switchButton.whenPressed(new PrepareScoreSwitchCommand());

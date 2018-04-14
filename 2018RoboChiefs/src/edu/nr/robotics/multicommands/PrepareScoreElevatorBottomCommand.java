@@ -43,7 +43,7 @@ public class PrepareScoreElevatorBottomCommand extends CommandGroup {
 			public void commands() {
 				addParallel(new IntakeElevatorProfileCommandGroup(IntakeElevator.HANDLER_HEIGHT, IntakeElevator.PROFILE_VEL_PERCENT_INTAKE_ELEVATOR, IntakeElevator.PROFILE_ACCEL_PERCENT_INTAKE_ELEVATOR));
 				
-				addParallel(new ElevatorProfileCommandGroup(Elevator.TRANSFER_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
+				//addParallel(new ElevatorProfileCommandGroup(Elevator.TRANSFER_HEIGHT_ELEVATOR, Elevator.PROFILE_VEL_PERCENT_ELEVATOR, Elevator.PROFILE_ACCEL_PERCENT_ELEVATOR));
 			}
 		});
 		
