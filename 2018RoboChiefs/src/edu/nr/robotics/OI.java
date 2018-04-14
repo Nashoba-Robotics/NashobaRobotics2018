@@ -39,6 +39,7 @@ import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersStopCommand;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocityCommand;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.nr.robotics.subsystems.sensors.ToggleLimelightCommand;
+import edu.nr.robotics.testSequence.TestSequence;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -155,10 +156,6 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(driveLeft, ENABLE_SCALE_STOPPING_BUTTON_NUMBER)
 				.whenReleased(new EnableFloorSensorCommand(false));*/
 
-		// new JoystickButton(driveLeft,
-		// TEST_SEQUENCE_BUTTON_NUMBER).whenPressed(new
-		// SystemTestSequenceCommand());
-
 		new JoystickButton(driveLeft, SNIPER_MODE_BUTTON).whenPressed(new EnableSniperForwardMode(true));
 		new JoystickButton(driveLeft, SNIPER_MODE_BUTTON).whenReleased(new EnableSniperForwardMode(false));		
 		
@@ -192,6 +189,9 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(driveRight, RUN_INTAKE_BUTTON_NUMBER).whenReleased(new IntakeRollersStopCommand());
 		
 		new JoystickButton(driveRight, TURN_TO_ANGLE_COMMAND_BUTTON).whenPressed(new TurnToAngleCommand(new Angle(180, Angle.Unit.DEGREE)));
+	
+		 new JoystickButton(driveRight,
+				 TEST_SEQUENCE_BUTTON_NUMBER).whenPressed(new TestSequence());
 	}
 
 	public void initOperatorLeft() {
