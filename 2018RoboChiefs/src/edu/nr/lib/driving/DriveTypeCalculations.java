@@ -2,6 +2,12 @@ package edu.nr.lib.driving;
 
 import edu.nr.lib.NRMath;
 
+/**
+ * 
+ *  A class doing the calculations to turn joystick values into motor input values.
+ *  
+ */
+
 public class DriveTypeCalculations {
 	
 	private static double highNegInertiaThreshold;

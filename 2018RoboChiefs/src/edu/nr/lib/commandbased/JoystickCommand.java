@@ -10,7 +10,6 @@ package edu.nr.lib.commandbased;
  *   causing the joystick command to begin running. If the joystick command was the one running, no command will start.
  *   
  *   
- *
  */
 public abstract class JoystickCommand extends NRCommand {
 

@@ -161,7 +161,7 @@ public class NRCommand extends Command {
 	protected boolean isFinishedNR() {return true;}
 	
 	protected final void makeFinish() {
-		System.out.println(getName() + " was made to finish");
+		System.err.println(getName() + " was made to finish");
 		if(getGroup() == null) 
 			cancel();
 		forceCancel = true;

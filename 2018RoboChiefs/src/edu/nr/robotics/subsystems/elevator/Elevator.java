@@ -12,8 +12,6 @@ import edu.nr.lib.commandbased.CancelCommand;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerBasic;
 import edu.nr.lib.motionprofiling.OneDimensionalTrajectoryRamped;
-import edu.nr.lib.motionprofiling.OneDimensionalTrajectorySimple;
-import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Acceleration;
 import edu.nr.lib.units.Distance;

@@ -3,6 +3,12 @@ package edu.nr.lib.gyro;
 import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Distance;
 
+/**
+ * 
+ *  This is an extendible class that also allows us to choose which gyro we are using
+ *  
+ */
+
 public abstract class Gyro {
 
 	public enum ChosenGyro {
