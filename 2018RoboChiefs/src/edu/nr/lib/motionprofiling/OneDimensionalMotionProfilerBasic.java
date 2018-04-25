@@ -86,7 +86,7 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 			}
 						
 			source.setPIDSourceType(PIDSourceType.kDisplacement);
-			error = positionGoal - Elevator.getInstance().pidGet() + initialPosition;
+			error = positionGoal - source.pidGet() + initialPosition;
 									
 			double errorDeriv = (error - errorLast) / dt;
 			
