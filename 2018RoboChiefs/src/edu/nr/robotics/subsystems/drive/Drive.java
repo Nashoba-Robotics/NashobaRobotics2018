@@ -47,9 +47,12 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	/**
 	 * The maximum speed of the drive base
 	 */
-	public static final Speed MAX_SPEED_DRIVE = new Speed(13.63/*12.864*/, Distance.Unit.FOOT, Time.Unit.SECOND);
+	
+	public static final Speed MAX_SPEED_DRIVE = new Speed(14.515, Distance.Unit.FOOT, Time.Unit.SECOND);
+	/*13.63 on concrete 14.515 on cafeteria floor*/
+	
 	public static final Speed MAX_SPEED_DRIVE_H = new Speed(10.50, Distance.Unit.FOOT, Time.Unit.SECOND); //TODO: Find real drive max speed h
-
+	
 	/**
 	 * The maximum acceleration of the drive base
 	 */
@@ -59,18 +62,22 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	/**
 	 * Voltage percentage at which robot just starts moving
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0921;//0.0571; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0968;//0.0600; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0928; //This is 0 to 1 number
+	/*0.0921 on concrete 0.0928 on cafeteria floor*/
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0964;//This is 0 to 1 number
+	/*0.0968 on concrete 0.0964 on cafeteria floor*/
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_RIGHT = 0.165; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_LEFT = 0.177; //TODO: find this
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_LEFT = 0.177;
 	
 	/**
 	 * The drive voltage-velocity curve slopes
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0666;//0.0733; //TODO: Find drive voltage vs velocity curve
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0613;//0.0726;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0625; //TODO: Find drive voltage vs velocity curve
+	/*0.0666 on concrete 0.0625 on cafeteria floor*/
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0619;
+	/*0.0613 on concrete 0.0619 on cafeteria floor*/
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_RIGHT = 0.0788;
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_LEFT = 0.0784; //TODO: Find this
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_LEFT = 0.0784;
 	
 	/**
 	 * The amount of time drive can go from 0 to 12 volts
@@ -161,9 +168,14 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final Distance END_THRESHOLD = new Distance(3, Distance.Unit.INCH);
 	
 	/**
+	 * The turn speed the profile needs to be under to stop
+	 */
+	public static final Speed PROFILE_END_TURN_SPEED_THRESHOLD = MAX_SPEED_DRIVE.mul(MIN_PROFILE_TURN_PERCENT + 0.01);
+	
+	/**
 	 * The speed the profile needs to be under to stop
 	 */
-	public static final Speed PROFILE_END_SPEED_THRESHOLD = MAX_SPEED_DRIVE.mul(MIN_PROFILE_TURN_PERCENT + 0.01);
+	public static final Speed PROFILE_END_SPEED_THRESHOLD = MAX_SPEED_DRIVE.mul(0.10);
 	
 	/**
 	 * The angle within which the turning stops
