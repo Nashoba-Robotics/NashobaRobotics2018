@@ -7,7 +7,7 @@ import edu.nr.lib.units.Distance;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class EnableMotionProfileSmartDashboardCommand extends NRCommand {
+public class EnableTwoDMotionProfileSmartDashboardCommand extends NRCommand {
 	
 	Distance initialLeftPosition;
 	Distance initialRightPosition;
@@ -16,19 +16,22 @@ public class EnableMotionProfileSmartDashboardCommand extends NRCommand {
 	
 	private final Distance END_THRESHOLD = Drive.END_THRESHOLD;
 	
-	public EnableMotionProfileSmartDashboardCommand() {
+	public EnableTwoDMotionProfileSmartDashboardCommand() {
 		super(Drive.getInstance());
 	}
 	
 	@Override
 	public void onStart() {
+		System.out.println("starts");
 		Drive.getInstance().enableMotionProfiler(Drive.xProfile, Drive.yProfile, Drive.endAngle, Drive.drivePercent, Drive.accelPercent);
 		initialLeftPosition = Drive.getInstance().getLeftPosition();
 		initialRightPosition = Drive.getInstance().getRightPosition();
+		System.out.println("end starts");
 	}
 
 	@Override
 	public void onExecute() {
+		System.out.println("starts execute");
 			Drive.getInstance().setPIDSourceType(PIDSourceType.kRate);
 			SmartDashboard.putString("Motion Profiler V Left",
 					Drive.getInstance().pidGetLeft() + ":" + TwoDimensionalMotionProfilerPathfinder.velocityGoalLeft);
@@ -58,6 +61,7 @@ public class EnableMotionProfileSmartDashboardCommand extends NRCommand {
 	}
 	@Override
 	public void onEnd() {
+		System.out.println("ends");
 		Drive.getInstance().disableProfiler();
 		Drive.getInstance().setMotorSpeedInPercent(0, 0);
 	}
@@ -80,7 +84,7 @@ public class EnableMotionProfileSmartDashboardCommand extends NRCommand {
 
 						&& Drive.getInstance().getLeftVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD)
 						&& Drive.getInstance().getRightVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD);
-
+		
 		return finished;
 	}
 

@@ -10,6 +10,7 @@ import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.driving.DriveTypeCalculations;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
+import edu.nr.lib.motionprofiling.TwoDimensionalMotionProfilerPathfinder;
 import edu.nr.lib.motionprofiling.TwoDimensionalMotionProfilerPathfinderModified;
 import edu.nr.lib.network.LimelightNetworkTable;
 import edu.nr.lib.talons.CTRECreator;
@@ -38,6 +39,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	public static final Distance WHEEL_DIAMETER = new Distance(6, Distance.Unit.INCH);
 	public static final Distance WHEEL_DIAMETER_EFFECTIVE = new Distance(6, Distance.Unit.INCH);
+	
+	public static final Distance WHEEL_BASE = new Distance(24, Distance.Unit.INCH);
 	
 	/**
 	 * The maximum speed of the drive base
@@ -80,13 +83,13 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	/**
 	 * The CANTalon PID values for velocity
 	 */
-	public static double P_LEFT = 0.3;
+	public static double P_LEFT = 0.2;
 	public static double I_LEFT = 0;
-	public static double D_LEFT = 3.0;
+	public static double D_LEFT = 2.0;
 		
-	public static double P_RIGHT = 0.3;
+	public static double P_RIGHT = 0.2;
 	public static double I_RIGHT = 0;
-	public static double D_RIGHT = 3.0;
+	public static double D_RIGHT = 2.0;
 	
 	/**
 	 * 1D Profiling kVAPID_theta loop constants
@@ -216,7 +219,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static double accelPercent;
 	public static Angle angleToTurn;
 	
-	private TwoDimensionalMotionProfilerPathfinderModified twoDProfiler;
+	private TwoDimensionalMotionProfilerPathfinder twoDProfiler;
 	private Waypoint[] points;
 
 	/**
@@ -512,17 +515,18 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 
 	public void enableMotionProfiler(Distance distX, Distance distY, Angle endAngle, double maxVelPercent, double maxAccelPercent) {
-		twoDProfiler = new TwoDimensionalMotionProfilerPathfinderModified(this, this, kVTwoD, kATwoD, kPTwoD, kITwoD,
-				kDTwoD, kP_thetaTwoD, MAX_SPEED_DRIVE.get(Distance.Unit.METER, Time.Unit.SECOND),
-				MAX_ACCEL_DRIVE.get(Distance.Unit.METER, Time.Unit.SECOND, Time.Unit.SECOND),
-				MAX_JERK_DRIVE.get(Distance.Unit.METER, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND),
+		twoDProfiler = new TwoDimensionalMotionProfilerPathfinder(this, this, kVTwoD, kATwoD, kPTwoD, kITwoD,
+				kDTwoD, kP_thetaTwoD, MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND),
+				MAX_ACCEL_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
+				MAX_JERK_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 				(int) (Math.PI * WHEEL_DIAMETER_EFFECTIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)),
-				WHEEL_DIAMETER.get(Distance.Unit.METER));
+				WHEEL_DIAMETER.get(Distance.Unit.METER), WHEEL_BASE.get(Distance.Unit.INCH), false);
 		this.endAngle = endAngle;
 		points = new Waypoint[] {
 			new Waypoint(distX.get(Distance.Unit.METER), distY.get(Distance.Unit.METER), endAngle.get(Angle.Unit.RADIAN))
 		};
 		twoDProfiler.setTrajectory(points);
+		twoDProfiler.enable();
 	}
 	
 	public void disableProfiler() {

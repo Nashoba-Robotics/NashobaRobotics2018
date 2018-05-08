@@ -14,6 +14,7 @@ public class EnableTwoDMotionProfile extends NRCommand {
 	
 	@Override
 	public void onStart() {
+		System.out.println("Here");
 		Drive.getInstance().enableTwoDProfiler(Drive.xProfile, Drive.yProfile, Drive.endAngle);
 	}
 	

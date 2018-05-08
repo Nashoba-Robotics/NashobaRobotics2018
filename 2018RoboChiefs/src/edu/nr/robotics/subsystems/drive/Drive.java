@@ -48,7 +48,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	 * The maximum speed of the drive base
 	 */
 	
-	public static final Speed MAX_SPEED_DRIVE = new Speed(14.515, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_DRIVE = new Speed(13.343, Distance.Unit.FOOT, Time.Unit.SECOND);
 	/*13.63 on concrete 14.515 on cafeteria floor*/
 	
 	public static final Speed MAX_SPEED_DRIVE_H = new Speed(10.50, Distance.Unit.FOOT, Time.Unit.SECOND); //TODO: Find real drive max speed h
@@ -62,9 +62,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	/**
 	 * Voltage percentage at which robot just starts moving
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0928; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.118; //This is 0 to 1 number
 	/*0.0921 on concrete 0.0928 on cafeteria floor*/
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0964;//This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.123;//This is 0 to 1 number
 	/*0.0968 on concrete 0.0964 on cafeteria floor*/
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_RIGHT = 0.165; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_LEFT = 0.177;
@@ -72,9 +72,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	/**
 	 * The drive voltage-velocity curve slopes
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0625; //TODO: Find drive voltage vs velocity curve
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0661; //TODO: Find drive voltage vs velocity curve
 	/*0.0666 on concrete 0.0625 on cafeteria floor*/
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0619;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0650;
 	/*0.0613 on concrete 0.0619 on cafeteria floor*/
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_RIGHT = 0.0788;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_LEFT = 0.0784;
@@ -93,13 +93,13 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	/**
 	 * The CANTalon PID values for velocity
 	 */
-	public static double P_LEFT = 0.3;
+	public static double P_LEFT = 0.2;
 	public static double I_LEFT = 0;
-	public static double D_LEFT = 3.0;
+	public static double D_LEFT = 2.0;
 		
-	public static double P_RIGHT = 0.3;
+	public static double P_RIGHT = 0.2;
 	public static double I_RIGHT = 0;
-	public static double D_RIGHT = 3.0;
+	public static double D_RIGHT = 2.0;
 	
 	public static double P_H_RIGHT = 0.2;
 	public static double I_H_RIGHT = 0;
@@ -496,11 +496,11 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 	
 	public void setMotorSpeedInPercent(double left, double right, double strafe) {
-		leftDrive.set(ControlMode.PercentOutput, left);
+		/*leftDrive.set(ControlMode.PercentOutput, left);
 		rightDrive.set(ControlMode.PercentOutput, right);
-		hDrive.set(ControlMode.PercentOutput, strafe);
+		hDrive.set(ControlMode.PercentOutput, strafe);*/
 		
-		//setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE_H.mul(strafe));
+		setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE_H.mul(strafe));
 	}
 	
 	public void setMotorSpeed(Speed left, Speed right, Speed strafe) {

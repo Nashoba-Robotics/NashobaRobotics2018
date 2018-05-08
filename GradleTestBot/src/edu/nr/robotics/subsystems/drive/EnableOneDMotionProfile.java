@@ -47,17 +47,7 @@ public class EnableOneDMotionProfile extends NRCommand {
 	@Override
 	public boolean isFinishedNR() {
 				
-		boolean finished = (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getLeftDistance())).abs()
-			.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-			&& (Drive.getInstance().getHistoricalLeftPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getLeftDistance())).abs()
-			.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-			&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD).sub(Drive.getInstance().getRightDistance())).abs()
-			.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-			&& (Drive.getInstance().getHistoricalRightPosition(Drive.PROFILE_TIME_THRESHOLD.mul(2)).sub(Drive.getInstance().getRightDistance())).abs()
-			.lessThan(Drive.PROFILE_POSITION_THRESHOLD)
-			&& Math.abs(((Math.abs(Drive.getInstance().getLeftDistance().get(Distance.Unit.MAGNETIC_ENCODER_TICK) - OneDimensionalMotionProfilerTwoMotor.initialPositionLeft)) - Math.abs(OneDimensionalMotionProfilerTwoMotor.posPoints.get(OneDimensionalMotionProfilerTwoMotor.posPoints.size() - 1)))) < END_THRESHOLD.get(Distance.Unit.MAGNETIC_ENCODER_TICK);
-			
-		return finished;
+		return true;
 	}
 
 }
