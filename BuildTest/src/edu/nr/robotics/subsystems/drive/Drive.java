@@ -512,7 +512,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 
 	public void enableMotionProfiler(Distance distX, Distance distY, Angle endAngle, double maxVelPercent, double maxAccelPercent) {
-		/*twoDProfiler = new TwoDimensionalMotionProfilerPathfinderModified(this, this, kVTwoD, kATwoD, kPTwoD, kITwoD,
+		twoDProfiler = new TwoDimensionalMotionProfilerPathfinderModified(this, this, kVTwoD, kATwoD, kPTwoD, kITwoD,
 				kDTwoD, kP_thetaTwoD, MAX_SPEED_DRIVE.get(Distance.Unit.METER, Time.Unit.SECOND),
 				MAX_ACCEL_DRIVE.get(Distance.Unit.METER, Time.Unit.SECOND, Time.Unit.SECOND),
 				MAX_JERK_DRIVE.get(Distance.Unit.METER, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND),
@@ -522,7 +522,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		points = new Waypoint[] {
 			new Waypoint(distX.get(Distance.Unit.METER), distY.get(Distance.Unit.METER), endAngle.get(Angle.Unit.RADIAN))
 		};
-		twoDProfiler.setTrajectory(points);*/
+		twoDProfiler.setTrajectory(points);
 	}
 	
 	public void disableProfiler() {

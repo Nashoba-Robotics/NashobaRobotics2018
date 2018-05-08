@@ -5,16 +5,17 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import edu.nr.lib.gyro.Gyro;
+import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.gyro.NavX;
 import edu.nr.lib.gyro.Pigeon;
-import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.units.Angle;
+import edu.nr.lib.units.Distance;
+import edu.nr.lib.units.Time;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.wpi.first.wpilibj.PIDSourceType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
@@ -60,6 +61,14 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 	
 	public static double outputLeft = 0;
 	public static double outputRight = 0;
+	
+	public static double positionGoalLeft = 0;
+	public static double velocityGoalLeft = 0;
+	public static double accelGoalLeft = 0;
+	
+	public static double positionGoalRight = 0;
+	public static double velocityGoalRight = 0;
+	public static double accelGoalRight = 0;
 	
 	public static int index = 0;
 	public static double currentHeading = 0;
@@ -126,6 +135,9 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 					prelimOutputRight = -left.calculate(-(source.pidGetLeft() - initialPositionLeft));
 					prelimOutputLeft = -right.calculate(-(source.pidGetRight() - initialPositionRight));
 				}
+				
+				velocityGoalLeft = Drive.getInstance().MAX_SPEED_DRIVE.get(Distance.Unit.FOOT, Time.Unit.SECOND)*(prelimOutputLeft);
+				velocityGoalRight = Drive.getInstance().MAX_SPEED_DRIVE.get(Distance.Unit.FOOT, Time.Unit.SECOND)*(prelimOutputRight);
 				
 				if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
 					currentHeading = -NavX.getInstance().getYaw().get(Angle.Unit.DEGREE);

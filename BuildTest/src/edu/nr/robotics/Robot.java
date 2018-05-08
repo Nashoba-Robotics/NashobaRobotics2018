@@ -42,14 +42,14 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		/*singleton = this;
+		singleton = this;
 		
 		smartDashboardInit();
 		autoChooserInit();
 		OI.init();
 		
 		// chooser.addObject("My Auto", new MyAutoCommand());
-		// SmartDashboard.putData("Auto mode", m_chooser);*/
+		// SmartDashboard.putData("Auto mode", m_chooser);
 	}
 	
 	public void autoChooserInit() {

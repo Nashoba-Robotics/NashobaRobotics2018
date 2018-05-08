@@ -35,8 +35,8 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		talon = CTRECreator.createMasterTalon(7);
-		carriageTalon = CTRECreator.createMasterTalon(5);
+		talon = CTRECreator.createMasterTalon(1);
+		carriageTalon = CTRECreator.createMasterTalon(0);
 		intakeRoller1 = CTRECreator.createMasterTalon(2);
 		intakeRoller2 = CTRECreator.createMasterTalon(4);
 		talon.configContinuousCurrentLimit(40, 0);
@@ -110,12 +110,12 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		talon.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
-		//carriageTalon.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
+		carriageTalon.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
 		//intakeRoller1.set(ControlMode.PercentOutput, -SmartDashboard.getNumber("Motor Percent 2: ", 0));
 		//intakeRoller2.set(ControlMode.PercentOutput, SmartDashboard.getNumber("Motor Percent: ", 0));
 	
 		SmartDashboard.putNumber("Talon 1 Current: ", talon.getOutputCurrent());
-		SmartDashboard.putNumber("Talon 2 Current: ", intakeRoller1.getOutputCurrent());
+		SmartDashboard.putNumber("Talon 2 Current: ", carriageTalon.getOutputCurrent());
 	}
 
 	/**
