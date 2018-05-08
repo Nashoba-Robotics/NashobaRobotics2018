@@ -484,10 +484,10 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 	
 	public void setMotorSpeedInPercent(double left, double right, double strafe) {
-		/*leftDrive.set(ControlMode.PercentOutput, left);
-		rightDrive.set(ControlMode.PercentOutput, right);*/
+		leftDrive.set(ControlMode.PercentOutput, left);
+		rightDrive.set(ControlMode.PercentOutput, right);
 		
-		setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE_H.mul(strafe));
+		//setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE_H.mul(strafe));
 	}
 	
 	public void setMotorSpeed(Speed left, Speed right, Speed strafe) {
