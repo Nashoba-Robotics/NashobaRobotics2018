@@ -17,21 +17,17 @@ import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotor;
 import edu.nr.lib.motionprofiling.OneDimensionalTrajectoryRamped;
 import edu.nr.lib.motionprofiling.TwoDimensionalMotionProfilerPathfinder;
-import edu.nr.lib.sensorhistory.TalonEncoder;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Acceleration;
 import edu.nr.lib.units.Angle;
-import edu.nr.lib.units.AngularSpeed;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Distance.Unit;
 import edu.nr.lib.units.Jerk;
 import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
-import edu.nr.robotics.OI;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.wpi.first.wpilibj.PIDSourceType;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import jaci.pathfinder.Waypoint;
@@ -61,7 +57,6 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0739;
 	
 	private TalonSRX leftDrive, rightDrive, rightDriveFollow, leftDriveFollow, pigeonTalon;
-	private TalonEncoder leftEncoder, rightEncoder;
 	
 	//The speed in RPM that the motors are supposed to be running at... they get set later
 	public Speed leftMotorSetpoint = Speed.ZERO;
@@ -173,9 +168,6 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 
 			rightDrive.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, NO_TIMEOUT);
 			rightDrive.configVelocityMeasurementWindow(32, NO_TIMEOUT);
-			
-			rightEncoder = new TalonEncoder(rightDrive);
-			leftEncoder = new TalonEncoder(leftDrive);
 
 			leftDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
@@ -317,32 +309,6 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK, Time.Unit.HUNDRED_MILLISECOND));
 			}
 		}
-	}
-	
-	/**
-	 * Gets the historical position of the left talon
-	 * 
-	 * @param deltaTime
-	 *            How long ago to look
-	 * @return current position of talon
-	 */
-	public Distance getHistoricalLeftPosition(Time deltaTime) {
-		if (leftEncoder != null)
-			return leftEncoder.getPosition(deltaTime);
-		return Distance.ZERO;
-	}
-
-	/**
-	 * Gets the historical position of the right talon
-	 * 
-	 * @param deltaTime
-	 *            How long ago to look
-	 * @return current position of the talon
-	 */
-	public Distance getHistoricalRightPosition(Time deltaTime) {
-		if (rightEncoder != null)
-			return rightEncoder.getPosition(deltaTime);
-		return Distance.ZERO;
 	}
 	
 	public double getRightCurrent() {
