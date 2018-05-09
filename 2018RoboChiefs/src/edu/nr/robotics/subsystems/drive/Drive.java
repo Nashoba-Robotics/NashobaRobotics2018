@@ -48,8 +48,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	 * The maximum speed of the drive base
 	 */
 	
-	public static final Speed MAX_SPEED_DRIVE = new Speed(14.515, Distance.Unit.FOOT, Time.Unit.SECOND);
-	/*13.63 on concrete 14.515 on cafeteria floor*/
+	public static final Speed MAX_SPEED_DRIVE = new Speed(12.824, Distance.Unit.FOOT, Time.Unit.SECOND);
+	/*13.63 on concrete 12.824 on cafeteria floor*/
 	
 	public static final Speed MAX_SPEED_DRIVE_H = new Speed(10.50, Distance.Unit.FOOT, Time.Unit.SECOND); //TODO: Find real drive max speed h
 	
@@ -62,20 +62,20 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	/**
 	 * Voltage percentage at which robot just starts moving
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0928; //This is 0 to 1 number
-	/*0.0921 on concrete 0.0928 on cafeteria floor*/
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0964;//This is 0 to 1 number
-	/*0.0968 on concrete 0.0964 on cafeteria floor*/
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.069; //This is 0 to 1 number
+	/*0.0921 on concrete 0.069 on cafeteria floor*/
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0782;//This is 0 to 1 number
+	/*0.0968 on concrete 0.0782 on cafeteria floor*/
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_RIGHT = 0.165; //This is 0 to 1 number
 	public static final double MIN_MOVE_VOLTAGE_PERCENT_H_LEFT = 0.177;
 	
 	/**
 	 * The drive voltage-velocity curve slopes
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0625; //TODO: Find drive voltage vs velocity curve
-	/*0.0666 on concrete 0.0625 on cafeteria floor*/
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0619;
-	/*0.0613 on concrete 0.0619 on cafeteria floor*/
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0726;
+	/*0.0666 on concrete 0.0726 on cafeteria floor*/
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0691;
+	/*0.0613 on concrete 0.0691 on cafeteria floor*/
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_RIGHT = 0.0788;
 	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_H_LEFT = 0.0784;
 	
@@ -268,7 +268,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			leftDriveFollow = CTRECreator.createFollowerTalon(RobotMap.LEFT_DRIVE_FOLLOW, leftDrive.getDeviceID());
 			rightDriveFollow = CTRECreator.createFollowerTalon(RobotMap.RIGHT_DRIVE_FOLLOW, rightDrive.getDeviceID());
 			hDriveFollow = CTRECreator.createFollowerTalon(RobotMap.H_DRIVE_FOLLOW, hDrive.getDeviceID());
-			pigeonTalon = CTRECreator.createMasterTalon(RobotMap.INTAKE_ROLLERS_RIGHT); //6 intake
+			pigeonTalon = CTRECreator.createMasterTalon(RobotMap.INTAKE_ROLLERS_RIGHT);
 			
 			if (EnabledSubsystems.DRIVE_DUMB_ENABLED) {
 				leftDrive.set(ControlMode.PercentOutput, 0);
