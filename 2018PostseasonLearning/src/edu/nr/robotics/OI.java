@@ -8,7 +8,6 @@
 package edu.nr.robotics;
 
 import edu.nr.lib.interfaces.SmartDashboardSource;
-import edu.nr.robotics.subsystems.drive.Drive;
 import edu.wpi.first.wpilibj.Joystick;
 
 /**
@@ -24,7 +23,6 @@ public class OI implements SmartDashboardSource{
 
 	private final Joystick operatorLeft;
 	private final Joystick operatorRight;
-
 
 	private static final int JOYSTICK_DRIVE_LEFT_PORT = 0;
 	private static final int JOYSTICK_DRIVE_RIGHT_PORT = 1;
