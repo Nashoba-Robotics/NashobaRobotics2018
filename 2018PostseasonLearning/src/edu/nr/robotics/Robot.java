@@ -47,8 +47,8 @@ public class Robot extends IterativeRobot {
 		singleton = this;
 		OI.init();
 		
-		AutoChooserInit();
-		SmartDashboardInit();
+		autoChooserInit();
+		smartDashboardInit();
 		
 		Drive.getInstance();
 	}

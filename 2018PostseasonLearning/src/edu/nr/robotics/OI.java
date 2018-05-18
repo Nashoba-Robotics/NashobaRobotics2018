@@ -8,6 +8,7 @@
 package edu.nr.robotics;
 
 import edu.nr.lib.interfaces.SmartDashboardSource;
+import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -15,39 +16,87 @@ import edu.nr.lib.interfaces.SmartDashboardSource;
  */
 public class OI implements SmartDashboardSource{
 
+	private static OI singleton;
+	
+	private final Joystick driverLeft;
+	private final Joystick driverRight;
+
+	private final Joystick operatorLeft;
+	private final Joystick operatorRight;
+
+	private static final int JOYSTICK_DRIVE_LEFT_PORT = 0;
+	private static final int JOYSTICK_DRIVE_RIGHT_PORT = 1;
+	private static final int JOYSTICK_OPERATE_LEFT_PORT = 2;
+	private static final int JOYSTICK_OPERATE_RIGHT_PORT = 3;
+	
+	private static final double JOYSTICK_DEAD_ZONE = 0.15;
+	
+	
+	private OI() {
+		driverLeft = new Joystick(JOYSTICK_DRIVE_LEFT_PORT);
+		driverRight = new Joystick(JOYSTICK_DRIVE_RIGHT_PORT);
+		operatorLeft = new Joystick(JOYSTICK_OPERATE_LEFT_PORT);
+		operatorRight = new Joystick(JOYSTICK_OPERATE_RIGHT_PORT);
+		
+		initLeftDriverButton();
+		initRightDriverButton();
+		initLeftOperatorButton();
+		initRightOperatorButton();
+		
+	}
+	
+	private static double snapDriveJoysticks(double value) {
+		if (Math.abs(value) < JOYSTICK_DEAD_ZONE) {
+			value = 0;
+		} else if (value > 0) {
+			value -= JOYSTICK_DEAD_ZONE;
+		} else {
+			value += JOYSTICK_DEAD_ZONE;
+		}
+		value /= 1 - JOYSTICK_DEAD_ZONE;
+		return value;
+	}
+	
+	private void initLeftDriverButton() {
+			
+	}
+	
+	private void initRightDriverButton() {
+		
+	}
+	
+	private void initLeftOperatorButton() {
+		
+	}
+	
+	private void initRightOperatorButton() {
+		
+	}
+	
+	public double getArcadeMoveValue() {
+		return -snapDriveJoysticks(driverLeft.getY()) ;
+	}
+
+	public double getArcadeTurnValue() {
+		return -snapDriveJoysticks(driverRight.getX()) ;
+	}
+	
+	public static OI getInstance() {
+		init();
+		return singleton;
+	}
+
+	public static void init() {
+		if (singleton == null) {
+			singleton = new OI();
+		}
+	}
+	
 	@Override
 	public void smartDashboardInfo() {
 		// TODO Auto-generated method stub
 		
 	}
-	//// CREATING BUTTONS
-	// One type of button is a joystick button which is any button on a
-	//// joystick.
-	// You create one by telling it which joystick it's on and which button
-	// number it is.
-	// Joystick stick = new Joystick(port);
-	// Button button = new JoystickButton(stick, buttonNumber);
-
-	// There are a few additional built in buttons you can use. Additionally,
-	// by subclassing Button you can create custom triggers and bind those to
-	// commands the same as any other Button.
-
-	//// TRIGGERING COMMANDS WITH BUTTONS
-	// Once you have a button, it's trivial to bind it to a button in one of
-	// three ways:
-
-	// Start the command when the button is pressed and let it run the command
-	// until it is finished as determined by it's isFinished method.
-	// button.whenPressed(new ExampleCommand());
-
-	// Run the command while the button is being held down and interrupt it once
-	// the button is released.
-	// button.whileHeld(new ExampleCommand());
-
-	// Start the command when the button is released and let it run the command
-	// until it is finished as determined by it's isFinished method.
-	// button.whenReleased(new ExampleCommand());
-	
 	
 	
 }

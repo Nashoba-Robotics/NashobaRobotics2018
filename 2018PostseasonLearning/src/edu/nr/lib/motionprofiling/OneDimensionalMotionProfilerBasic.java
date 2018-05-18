@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import edu.nr.lib.units.Distance;
-import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneDimensionalMotionProfiler  {
 
@@ -86,7 +83,7 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 			}
 						
 			source.setPIDSourceType(PIDSourceType.kDisplacement);
-			error = positionGoal - Elevator.getInstance().pidGet() + initialPosition;
+			error = positionGoal - source.pidGet() + initialPosition;
 									
 			double errorDeriv = (error - errorLast) / dt;
 			
