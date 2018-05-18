@@ -13,6 +13,7 @@ import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Distance;
+import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -28,7 +29,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 	
 	//In milliseconds
 	private final long period;
-	private static final long defaultPeriod = 20; //50 Hz 
+	public static final long defaultPeriod = 20; //50 Hz 
 		
 	private boolean enabled = true;
 	private DoublePIDOutput out;
@@ -59,6 +60,8 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 	double timeSinceStart = 0;
 	double lastTime = 0;
 	
+	public static boolean twoDEnabled = false;
+	
 	public static double outputLeft = 0;
 	public static double outputRight = 0;
 	
@@ -78,12 +81,13 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 		this.out = out;
 		this.source = source;
 		this.period = period;
-		this.trajectoryConfig = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, this.period/1000.0, max_velocity, max_acceleration, max_jerk);
+		this.trajectoryConfig = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, this.period / 100.0, max_velocity, max_acceleration, max_jerk);
         this.points = new Waypoint[] {
 				new Waypoint(0,0,0),
 				new Waypoint(1,0,0)
         };
 		this.trajectory = Pathfinder.generate(points, trajectoryConfig);
+		this.wheelBase = wheelBase;
 		this.modifier = new TankModifier(trajectory).modify(wheelBase);
 		this.left = new DistanceFollower(modifier.getLeftTrajectory());
 		this.right = new DistanceFollower(modifier.getRightTrajectory());
@@ -126,7 +130,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 				double deltaT = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - lastTime;
 				
 				lastTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-				System.out.println(deltaT*1000);
+				
 			
 				if (!this.negate) {
 					prelimOutputLeft = left.calculate((source.pidGetLeft() - initialPositionLeft));
@@ -136,8 +140,8 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 					prelimOutputLeft = -right.calculate(-(source.pidGetRight() - initialPositionRight));
 				}
 				
-				velocityGoalLeft = Drive.getInstance().MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND)*(prelimOutputLeft);
-				velocityGoalRight = Drive.getInstance().MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND)*(prelimOutputRight);
+				velocityGoalLeft = Drive.MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND)*(prelimOutputLeft);
+				velocityGoalRight = Drive.MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND)*(prelimOutputRight);
 				
 				if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
 					currentHeading = -NavX.getInstance().getYaw().get(Angle.Unit.DEGREE);
@@ -151,7 +155,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 				
 				double headingAdjustment = -kp_theta * angleDifference;
 				
-				outputLeft = prelimOutputLeft + headingAdjustment;
+				outputLeft = prelimOutputLeft - headingAdjustment;
 				outputRight = prelimOutputRight + headingAdjustment;
 								
 				out.pidWrite(outputLeft, outputRight);
@@ -167,6 +171,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 	 */
 	public void disable() {
 		enabled = false;
+		twoDEnabled = false;
 		reset();
 	}
 	
@@ -175,6 +180,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 	 */
 	public void enable() {
 		enabled = true;
+		twoDEnabled = true;
 		reset();
 	}
 	
@@ -194,6 +200,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 		}
 		left.reset();
 		right.reset();
+		System.out.println("ka: " + ka);
 		left.configurePIDVA(kp, ki, kd, kv, ka);
 		right.configurePIDVA(kp, ki, kd, kv, ka);
 		source.setPIDSourceType(type);
@@ -213,19 +220,27 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 	 */
 	public void setTrajectory(Waypoint[] points) {
 		this.points = points;
+		
 		this.trajectory = Pathfinder.generate(points, trajectoryConfig);
-		this.modifier = new TankModifier(trajectory).modify(wheelBase);
+		//System.out.println("trajectory: " + trajectory.get(1).velocity);
+		TwoDimensionalMotionProfilerPathfinder.modifier = new TankModifier(trajectory).modify(wheelBase);
+		
+		//System.out.println(new Speed(modifier.getRightTrajectory().get(1).velocity, Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND).get(Distance.Unit.FOOT, Time.Unit.SECOND));
+		//System.out.println(new Speed(modifier.getLeftTrajectory().get(1).velocity, Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND).get(Distance.Unit.FOOT, Time.Unit.SECOND));
+		
+		
 		this.left = new DistanceFollower(modifier.getLeftTrajectory());
 		this.right = new DistanceFollower(modifier.getRightTrajectory());
-		System.out.println(modifier.getLeftTrajectory().segments.length);
+		//System.out.println(modifier.getLeftTrajectory().segments.length);
 		
-		for(int i = 0; i < modifier.getLeftTrajectory().segments.length; i += 25) {
+		for(int i = 0; i < modifier.getLeftTrajectory().segments.length; i++) {
 			DecimalFormat df = new DecimalFormat("#.#");
 			df.setMinimumFractionDigits(1);
 			df.setMinimumIntegerDigits(3);
 			
-			System.out.println("left:\t" + i*period + "ms:\t" + df.format(39.37*modifier.getLeftTrajectory().get(i).x)    + ", \t" + df.format(39.37*modifier.getLeftTrajectory().get(i).y) + ", \t" + df.format(Math.toDegrees(modifier.getLeftTrajectory().get(i).heading)));
-			System.out.println("right:\t" + i*period + "ms:\t" + df.format(39.37*modifier.getRightTrajectory().get(i).x)    + ", \t" + df.format(39.37*modifier.getRightTrajectory().get(i).y) + ", \t" + df.format(Math.toDegrees(modifier.getRightTrajectory().get(i).heading)));
+		//	System.out.println(new Speed(modifier.getRightTrajectory().get(i).velocity, Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND).get(Distance.Unit.FOOT, Time.Unit.SECOND));
+		//	System.out.println(new Speed(modifier.getLeftTrajectory().get(i).velocity, Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND).get(Distance.Unit.FOOT, Time.Unit.SECOND));
+			
 		}	
 	}
 

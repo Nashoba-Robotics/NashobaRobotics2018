@@ -40,8 +40,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final Distance WHEEL_DIAMETER = new Distance(6, Distance.Unit.INCH);
 	public static final Distance WHEEL_DIAMETER_EFFECTIVE = new Distance(6, Distance.Unit.INCH);
 	
-	public static final Distance WHEEL_BASE = new Distance(24, Distance.Unit.INCH);
-	
+	public static final Distance WHEEL_BASE = new Distance(24, Distance.Unit.INCH).mul(1.36);	
 	/**
 	 * The maximum speed of the drive base
 	 */
@@ -55,7 +54,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	/**
 	 * 
 	 */
-	public static final Jerk MAX_JERK_DRIVE = new Jerk(800, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND);
+	public static final Jerk MAX_JERK_DRIVE = new Jerk(100, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND, Time.Unit.SECOND);
 	
 	/**
 	 * Voltage percentage at which robot just starts moving
@@ -102,10 +101,10 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static double kP_thetaOneD = 0.02;
 	
 	public static double kVTwoD = 1 / MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kATwoD = 0.0;
-	public static double kPTwoD = 0.0;
+	public static double kATwoD = 0.00015;
+	public static double kPTwoD = 0.000015;
 	public static double kITwoD = 0.0;
-	public static double kDTwoD = 0.0;
+	public static double kDTwoD = 0.0000015;
 	public static double kP_thetaTwoD = 0.0;
 	
 	/**
@@ -212,11 +211,11 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final Distance ROBOT_WIDTH = new Distance(27, Distance.Unit.INCH); 
 	public static final Distance ROBOT_WIDTH_FUNCTIONAL = new Distance(27, Distance.Unit.INCH);
 	
-	public static Distance xProfile;
-	public static Distance yProfile;
-	public static Angle endAngle;
-	public static double drivePercent;
-	public static double accelPercent;
+	public static Distance xProfile = new Distance(11.67, Distance.Unit.FOOT);
+	public static Distance yProfile = new Distance(5.38, Distance.Unit.FOOT);
+	public static Angle endAngle = new Angle(90, Angle.Unit.DEGREE);
+	public static double drivePercent = 0.4;
+	public static double accelPercent = 0.6;
 	public static Angle angleToTurn;
 	
 	private TwoDimensionalMotionProfilerPathfinder twoDProfiler;
@@ -515,15 +514,20 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 
 	public void enableMotionProfiler(Distance distX, Distance distY, Angle endAngle, double maxVelPercent, double maxAccelPercent) {
+		System.out.println("ka in drive: " + kATwoD);
 		twoDProfiler = new TwoDimensionalMotionProfilerPathfinder(this, this, kVTwoD, kATwoD, kPTwoD, kITwoD,
 				kDTwoD, kP_thetaTwoD, MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND),
 				MAX_ACCEL_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 				MAX_JERK_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 				(int) (Math.PI * WHEEL_DIAMETER_EFFECTIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)),
-				WHEEL_DIAMETER.get(Distance.Unit.METER), WHEEL_BASE.get(Distance.Unit.INCH), false);
+				WHEEL_DIAMETER.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), WHEEL_BASE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), false);
 		this.endAngle = endAngle;
+		System.out.println("distX: " + distX.get(Distance.Unit.FOOT) + "	distY: " + distY.get(Distance.Unit.FOOT) + "	end Angle: " + endAngle.get(Angle.Unit.DEGREE));
+		
 		points = new Waypoint[] {
-			new Waypoint(distX.get(Distance.Unit.METER), distY.get(Distance.Unit.METER), endAngle.get(Angle.Unit.RADIAN))
+			new Waypoint(0, 0, 0),
+			new Waypoint(1, 0, 0),
+			new Waypoint(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), endAngle.get(Angle.Unit.RADIAN))
 		};
 		twoDProfiler.setTrajectory(points);
 		twoDProfiler.enable();
@@ -534,11 +538,18 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 	
 	public void smartDashboardInit() {
-		SmartDashboard.putNumber("X Profile Feet: ", 0);
-		SmartDashboard.putNumber("Y Profile Feet: ", 0);
-		SmartDashboard.putNumber("Profile End Angle: ", 0);
+		SmartDashboard.putNumber("X Profile Feet: ", xProfile.get(Distance.Unit.FOOT));
+		SmartDashboard.putNumber("Y Profile Feet: ", yProfile.get(Distance.Unit.FOOT));
+		SmartDashboard.putNumber("Profile End Angle: ", endAngle.get(Angle.Unit.DEGREE));
 		SmartDashboard.putNumber("Drive Percent: ", PROFILE_DRIVE_PERCENT);
 		SmartDashboard.putNumber("Drive Accel Percent: ", ACCEL_PERCENT);
+		
+		SmartDashboard.putNumber("ka: ", kATwoD);
+		SmartDashboard.putNumber("kp: ", kPTwoD);
+		SmartDashboard.putNumber("ki: ", kITwoD);
+		SmartDashboard.putNumber("kd: ", kDTwoD);
+		SmartDashboard.putNumber("kp theta: ", kP_thetaTwoD);
+
 	}
 	
 	@Override
@@ -563,6 +574,12 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		endAngle = new Angle(SmartDashboard.getNumber("Profile End Angle: ", 0), Angle.Unit.DEGREE);
 		drivePercent = SmartDashboard.getNumber("Drive Percent: ", 0);
 		accelPercent = SmartDashboard.getNumber("Drive Accel Percent: ", 0);
+		
+		kATwoD = SmartDashboard.getNumber("ka: ", kATwoD);
+		kPTwoD = SmartDashboard.getNumber("kp: ", kPTwoD);
+		kITwoD = SmartDashboard.getNumber("ki: ", kITwoD);
+		kDTwoD = SmartDashboard.getNumber("kd: ", kDTwoD);
+		kP_thetaTwoD = SmartDashboard.getNumber("kp theta: ", kP_thetaTwoD);
 	}
 
 	@Override
