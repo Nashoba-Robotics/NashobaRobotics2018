@@ -14,7 +14,8 @@ public class PrepareScoreScaleCommand extends CommandGroup {
 			
 			@Override
 			protected boolean condition() {
-				return !EnabledSensors.elevatorSensor.get();
+				//return !EnabledSensors.elevatorSensor.get();
+				return true;
 			}
 		});
 		
