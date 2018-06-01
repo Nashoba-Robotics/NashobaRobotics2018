@@ -8,9 +8,9 @@ package edu.nr.robotics;
  */
 public class RobotMap {
 	
-	public static final int DRIVE_LEFT = 12;
-	public static final int DRIVE_RIGHT = 3;
-	public static final int DRIVE_RIGHT_FOLLOW = 2;
-	public static final int DRIVE_LEFT_FOLLOW = 13;
-	public static final int PIGEON_TALON = 6;
+	public static final int DRIVE_LEFT = 9;
+	public static final int DRIVE_RIGHT = 6;
+	public static final int DRIVE_RIGHT_FOLLOW = 1;
+	public static final int DRIVE_LEFT_FOLLOW = 7;
+	public static final int PIGEON_TALON = 1;
 }

@@ -116,6 +116,7 @@ public class Robot extends TimedRobot {
 	
 		SmartDashboard.putNumber("Talon 1 Current: ", talon.getOutputCurrent());
 		SmartDashboard.putNumber("Talon 2 Current: ", carriageTalon.getOutputCurrent());
+		SmartDashboard.putNumber("Speed", talon.getSelectedSensorVelocity(0)/1365.33);
 	}
 
 	/**

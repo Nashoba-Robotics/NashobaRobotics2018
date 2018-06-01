@@ -9,10 +9,9 @@ package edu.nr.robotics;
 
 import edu.nr.lib.commandbased.CancelAllCommand;
 import edu.nr.lib.commandbased.NRSubsystem;
-import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.nr.robotics.subsystems.drive.Drive;
+import edu.nr.robotics.subsystems.drive.DriveForwardBasicSmartDashboardCommand;
 import edu.nr.robotics.subsystems.drive.EnableTwoDMotionProfileSmartDashboardCommand;
-import edu.nr.robotics.subsystems.drive.TurnSmartDashboardCommand;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -52,6 +51,7 @@ public class Robot extends IterativeRobot {
 		
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		// SmartDashboard.putData("Auto mode", m_chooser);
+		
 	}
 	
 	public void autoChooserInit() {
@@ -60,6 +60,7 @@ public class Robot extends IterativeRobot {
 	
 	public void smartDashboardInit() {
 		SmartDashboard.putData(new EnableTwoDMotionProfileSmartDashboardCommand());
+		SmartDashboard.putData(new DriveForwardBasicSmartDashboardCommand());
 	}
 
 	/**

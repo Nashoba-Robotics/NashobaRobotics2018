@@ -58,6 +58,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Drive Forward", new DriveForwardCommand());
 		SmartDashboard.putData("OneD Motion Profile", new EnableOneDMotionProfile());
 		SmartDashboard.putData("TwoD Motion Profile", new EnableTwoDMotionProfile());
+		//SmartDashboard.putData(new DriveForwardBasicSmartDashboardCommand());
 	}
 
 	public void AutoChooserInit() {
