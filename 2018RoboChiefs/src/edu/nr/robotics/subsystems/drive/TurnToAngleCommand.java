@@ -27,7 +27,7 @@ public class TurnToAngleCommand extends NRCommand {
 		}
 		
 		gyro = new GyroCorrection(angleToTurn, Drive.MAX_PROFILE_TURN_PERCENT);
-		Drive.getInstance().pidWrite(0, 0, 0);
+		Drive.getInstance().pidWrite(0, 0);
 		initialAngle = gyro.getAngleError().sub(angleToTurn);
 		
 		reachedSetVel = false;
@@ -56,7 +56,7 @@ public class TurnToAngleCommand extends NRCommand {
 			outputRight = headingAdjustment;
 		}
 		
-		Drive.getInstance().pidWrite(outputLeft, outputRight, 0);
+		Drive.getInstance().pidWrite(outputLeft, outputRight);
 		
 	}
 	
@@ -68,8 +68,8 @@ public class TurnToAngleCommand extends NRCommand {
 	@Override
 	public boolean isFinishedNR() {
 		
-		boolean finished = Drive.getInstance().getLeftVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD)
-				&& Drive.getInstance().getRightVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD) && 
+		boolean finished = Drive.getInstance().getLeftVelocity().lessThan(Drive.PROFILE_END_TURN_SPEED_THRESHOLD)
+				&& Drive.getInstance().getRightVelocity().lessThan(Drive.PROFILE_END_TURN_SPEED_THRESHOLD) && 
 				(initialAngle.sub(gyro.getAngleError())).abs().lessThan(Drive.DRIVE_ANGLE_THRESHOLD);
 		return finished;
 	}
