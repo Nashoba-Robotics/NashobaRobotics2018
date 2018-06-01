@@ -42,7 +42,7 @@ public class ElevatorShooter extends NRSubsystem {
 	public static final int PEAK_CURRENT_ELEVATOR_SHOOTER = 80;
 	public static final int PEAK_CURRENT_DURATION_ELEVATOR_SHOOTER = 250;
 	public static final int CONTINUOUS_CURRENT_LIMIT_ELEVATOR_SHOOTER = 40;
-	public static final int SENSOR_BROKEN_CURRENT = 30;
+	public static final int SENSOR_BROKEN_CURRENT = 10;
 
 	/**
 	 * The 100% voltage that is used as a base calculation for all PercentOutputs
