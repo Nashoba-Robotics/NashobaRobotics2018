@@ -178,7 +178,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	/**
 	 * The speed the profile needs to be under to stop
 	 */
-	public static final Speed PROFILE_END_SPEED_THRESHOLD = MAX_SPEED_DRIVE.mul(0.05);
+	public static final Speed PROFILE_END_SPEED_THRESHOLD = MAX_SPEED_DRIVE.mul(0.10);
 	
 	/**
 	 * The angle within which the turning stops
