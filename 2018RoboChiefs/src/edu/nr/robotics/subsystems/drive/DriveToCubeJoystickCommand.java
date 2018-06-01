@@ -28,6 +28,7 @@ public class DriveToCubeJoystickCommand extends NRCommand {
 				/ ((Drive.DRIVE_STOP_ANGLE.get(Angle.Unit.DEGREE) / 90) * 3)) 
 				* (1 - Drive.MIN_PROFILE_TURN_PERCENT)) + 1 + Drive.MIN_PROFILE_TURN_PERCENT) 
 				* -LimelightNetworkTable.getInstance().getHorizOffset().signum();
+		System.out.println(headingAdjustment);
 		if (Math.abs(headingAdjustment) < Drive.MIN_PROFILE_TURN_PERCENT) {
 			headingAdjustment = Drive.MIN_PROFILE_TURN_PERCENT * Math.signum(headingAdjustment);
 		}

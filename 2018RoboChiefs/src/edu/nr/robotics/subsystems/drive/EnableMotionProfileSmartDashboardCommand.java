@@ -2,6 +2,7 @@ package edu.nr.robotics.subsystems.drive;
 
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.motionprofiling.HDriveDiagonalProfiler;
+import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotor;
 import edu.nr.lib.units.Distance;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -71,19 +72,15 @@ public class EnableMotionProfileSmartDashboardCommand extends NRCommand {
 		
 		boolean finished;
 		
-		finished = Math.abs((((Math.abs(Drive.getInstance().getLeftPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
-				- initialLeftPosition.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
-				+ Drive.getInstance().getRightPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
-				- initialRightPosition.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE))) / 2)
-				- Math.abs(HDriveDiagonalProfiler.posPoints
-						.get(HDriveDiagonalProfiler.posPoints.size() - 1)))) < Drive.END_THRESHOLD
-								.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
-				&& Math.abs(((Math.abs(Drive.getInstance().getHPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_H)
-						- initialHPosition.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H)))
-						- Math.abs(HDriveDiagonalProfiler.posPointsH
-								.get(HDriveDiagonalProfiler.posPointsH.size() - 1)))) < Drive.END_THRESHOLD
-										.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H)
-				&& Drive.getInstance().getLeftVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD)
+		finished = Math.abs(Drive.getInstance().getLeftPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
+				- initialLeftPosition.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE) - Math.abs(OneDimensionalMotionProfilerTwoMotor.posPoints
+						.get(OneDimensionalMotionProfilerTwoMotor.posPoints.size() - 1))) < Drive.END_THRESHOLD
+				.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE) && 
+				Math.abs(Drive.getInstance().getRightPosition().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
+				- initialRightPosition.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE) - Math.abs(OneDimensionalMotionProfilerTwoMotor.posPoints
+						.get(OneDimensionalMotionProfilerTwoMotor.posPoints.size() - 1))) < Drive.END_THRESHOLD
+				.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)
+								&& Drive.getInstance().getLeftVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD)
 				&& Drive.getInstance().getRightVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD)
 				&& Drive.getInstance().getHVelocity().lessThan(Drive.PROFILE_END_SPEED_THRESHOLD);
 		
