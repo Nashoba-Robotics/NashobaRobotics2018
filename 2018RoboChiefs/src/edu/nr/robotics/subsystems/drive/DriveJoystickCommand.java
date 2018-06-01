@@ -82,17 +82,11 @@ public class DriveJoystickCommand extends JoystickCommand {
 			cheesyRotateValue = NRMath.powWithSign(cheesyRotateValue, 3);
 			cheesyHValue = NRMath.powWithSign(cheesyHValue, 3);
 			
-			if (Math.abs(cheesyRotateValue) < 0.05 && (Math.abs(cheesyMoveValue) > 0.05 || Math.abs(cheesyHValue) > 0.05)) {
+			/*if (Math.abs(cheesyRotateValue) < 0.05 && (Math.abs(cheesyMoveValue) > 0.05 || Math.abs(cheesyHValue) > 0.05)) {
 				cheesyRotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD, false);
 			} else {
 				gyroCorrection.clearInitialValue();
-			}
-			
-			if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
-				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
-			} else {
-				Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue, cheesyHValue);
-			}
+			}*/
 			
 			Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue, cheesyHValue);
 			

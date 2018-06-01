@@ -168,7 +168,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	/**
 	 * The position from the end at which profile position threshold takes effect
 	 */
-	public static final Distance END_THRESHOLD = new Distance(5, Distance.Unit.INCH);
+	public static final Distance END_THRESHOLD = new Distance(3, Distance.Unit.INCH);
 	
 	/**
 	 * The turn speed the profile needs to be under to stop
