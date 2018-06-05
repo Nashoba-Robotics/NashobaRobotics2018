@@ -121,7 +121,6 @@ public class CTRECreator {
         talon.configReverseSoftLimitEnable(config.ENABLE_SOFT_LIMIT, config.TIMEOUT);
         talon.setInverted(config.INVERTED);
         talon.setSensorPhase(false);
-        talon.getSelectedSensorPosition(0);
         talon.configPeakCurrentLimit(config.CURRENT_LIMIT, config.TIMEOUT);
         talon.configContinuousCurrentLimit(config.CURRENT_LIMIT, config.TIMEOUT);
         talon.configForwardSoftLimitThreshold(config.FORWARD_SOFT_LIMIT, config.TIMEOUT);

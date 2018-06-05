@@ -82,9 +82,11 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 		this.source = source;
 		this.period = period;
 		this.trajectoryConfig = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_HIGH, this.period / 100.0, max_velocity, max_acceleration, max_jerk);
+		System.out.println("period: " + period + ",   max Vel: " + max_velocity + ",   max Accel: " + max_acceleration + ",   max Jerk: " + max_jerk);
         this.points = new Waypoint[] {
 				new Waypoint(0,0,0),
-				new Waypoint(1,0,0)
+				new Waypoint(1,0,0),
+				new Waypoint(2,0,0)
         };
 		this.trajectory = Pathfinder.generate(points, trajectoryConfig);
 		this.wheelBase = wheelBase;
