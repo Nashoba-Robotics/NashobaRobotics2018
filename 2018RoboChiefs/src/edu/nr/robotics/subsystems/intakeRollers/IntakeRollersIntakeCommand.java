@@ -78,6 +78,6 @@ public class IntakeRollersIntakeCommand extends NRCommand {
 	
 	@Override
 	public boolean isFinishedNR() {
-		return (!EnabledSensors.intakeSensorLeft.get() || !EnabledSensors.intakeSensorRight.get()) || isSensorBroken /*|| IntakeRollers.getInstance().getCurrentLeft() > IntakeRollers.PEAK_CURRENT_INTAKE_ROLLERS || IntakeRollers.getInstance().getCurrentRight() > IntakeRollers.PEAK_CURRENT_INTAKE_ROLLERS*/;
+		return (!EnabledSensors.intakeSensorLeft.get() && !EnabledSensors.intakeSensorRight.get()) || isSensorBroken /*|| IntakeRollers.getInstance().getCurrentLeft() > IntakeRollers.PEAK_CURRENT_INTAKE_ROLLERS || IntakeRollers.getInstance().getCurrentRight() > IntakeRollers.PEAK_CURRENT_INTAKE_ROLLERS*/;
 	}
 }
