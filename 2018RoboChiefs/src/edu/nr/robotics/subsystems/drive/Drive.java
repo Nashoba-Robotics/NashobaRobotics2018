@@ -153,7 +153,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	 * Max and min speed of turn during
 	 */
 	public static final double MAX_PROFILE_TURN_PERCENT = 1.0;
-	public static final double MIN_PROFILE_TURN_PERCENT = 0.02; 
+	public static final double MIN_PROFILE_TURN_PERCENT = 0.03; 
 	
 	/**
 	 * Percent of the drive while going to intake a cube
@@ -235,6 +235,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	 * No timeout for talon configuration functions
 	 */
 	public static final int DEFAULT_TIMEOUT = 0;
+	
+	public static boolean sniperModeEnabled = false;
 	
 	/**
 	 * Tracking of the drive motor setpoints
@@ -786,7 +788,17 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 
 	public void periodic() {
-		
+		if (OI.getInstance().isKidModeOn()) {
+			MOVE_JOYSTICK_MULTIPLIER = 0.5;
+			if (!sniperModeEnabled) {
+				TURN_JOYSTICK_MULTIPLIER = 0.5;	
+			}
+		} else {
+			MOVE_JOYSTICK_MULTIPLIER = 1;
+			if (!sniperModeEnabled) {
+				TURN_JOYSTICK_MULTIPLIER = 1;	
+			}		
+		}
 	}
 	
 	@Override

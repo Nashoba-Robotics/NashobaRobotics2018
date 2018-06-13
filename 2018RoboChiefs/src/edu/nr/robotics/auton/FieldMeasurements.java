@@ -54,7 +54,7 @@ public class FieldMeasurements {
 	public static final Distance CUBE_1_TO_PIVOT_POINT_DIAGONAL = NRMath
 			.hypot(SWITCH_EDGE_TO_FIELD_EDGE_Y.sub(PIVOT_POINT_FIELD_EDGE_Y).add(BLOCK_WIDTH.mul(0.5)),
 					new Distance(61, Distance.Unit.INCH).add(BLOCK_WIDTH.mul(0.5)))
-			.sub(ROBOT_LENGTH.mul(0.5)).sub(INTAKE_LENGTH).add(new Distance(0, Distance.Unit.INCH));
+			.sub(ROBOT_LENGTH.mul(0.5)).sub(INTAKE_LENGTH).add(new Distance(10, Distance.Unit.INCH));
 
 	public static final Distance CUBE_2_TO_PIVOT_POINT_DIAGONAL = NRMath
 			.hypot(FIELD_EDGE_TO_CUBE_2_Y.sub(PIVOT_POINT_FIELD_EDGE_Y).add(BLOCK_WIDTH.mul(0.5)),
@@ -102,7 +102,7 @@ public class FieldMeasurements {
 	public static final Angle PIVOT_POINT_TO_CUBE_1 = new Angle(
 			Math.atan((new Distance(61, Distance.Unit.INCH).add(BLOCK_WIDTH.mul(0.5)))
 					.div((SWITCH_EDGE_TO_FIELD_EDGE_Y.sub(PIVOT_POINT_FIELD_EDGE_Y).add(BLOCK_WIDTH.mul(0.5))))),
-			Angle.Unit.RADIAN);
+			Angle.Unit.RADIAN).add(new Angle(10, Angle.Unit.DEGREE));
 	public static final Angle PIVOT_POINT_TO_CUBE_2 = new Angle(
 			Math.atan((new Distance(61, Distance.Unit.INCH).add(BLOCK_WIDTH.mul(0.5)))
 					.div((FIELD_EDGE_TO_CUBE_2_Y.sub(PIVOT_POINT_FIELD_EDGE_Y).add(BLOCK_WIDTH.mul(0.5))))),
