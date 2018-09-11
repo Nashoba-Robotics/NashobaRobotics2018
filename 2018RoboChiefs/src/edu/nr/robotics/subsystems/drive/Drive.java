@@ -789,9 +789,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 
 	public void periodic() {
 		if (OI.getInstance().isKidModeOn()) {
-			MOVE_JOYSTICK_MULTIPLIER = 0.5;
+			MOVE_JOYSTICK_MULTIPLIER = 0.6;
 			if (!sniperModeEnabled) {
-				TURN_JOYSTICK_MULTIPLIER = 0.5;	
+				TURN_JOYSTICK_MULTIPLIER = 0.6;	
 			}
 		} else {
 			MOVE_JOYSTICK_MULTIPLIER = 1;

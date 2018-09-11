@@ -104,7 +104,7 @@ public class OI implements SmartDashboardSource {
 	
 	private static final int TEST_SEQUENCE_BUTTON_NUMBER = 14;
 	
-	private static final int KID_MODE_SWITCH = 0;
+	private static final int KID_MODE_SWITCH = 2;
 
 	private double driveSpeedMultiplier = 1;
 
@@ -296,7 +296,7 @@ public class OI implements SmartDashboardSource {
 	}
 
 	public double getArcadeHValue() {
-		return snapDriveJoysticks(driveLeft.getX()) * SPEED_MULTIPLIER;
+		return snapDriveJoysticks(driveLeft.getX()) * Drive.MOVE_JOYSTICK_MULTIPLIER * SPEED_MULTIPLIER;
 	}
 
 	public double getTankLeftValue() {
