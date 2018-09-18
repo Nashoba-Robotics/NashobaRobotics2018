@@ -14,8 +14,8 @@ package edu.nr.robotics;
  * floating around.
  */
 public class RobotMap {
-	public static final int LEFT_DRIVE = 0;
-	public static final int RIGHT_DRIVE = 0;
-	public static final int LEFT_DRIVE_FOLLOW = 0;
-	public static final int RIGHT_DRIVE_FOLLOW = 0;
+	public static final int LEFT_DRIVE_MASTER_TALON = 0;
+	public static final int RIGHT_DRIVE_MASTER_TALON = 0;
+	public static final int LEFT_DRIVE_FOLLOWER_TALON = 0;
+	public static final int RIGHT_DRIVE_FOLLOWER_TALON = 0;
 }
