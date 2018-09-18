@@ -103,6 +103,8 @@ public class OI implements SmartDashboardSource {
 	private static final int DRIVE_TUNING_BUTTON_NUMBER = 8;
 	
 	private static final int TEST_SEQUENCE_BUTTON_NUMBER = 14;
+	
+	private static final int KID_MODE_SWITCH = 2;
 
 	private double driveSpeedMultiplier = 1;
 
@@ -117,6 +119,7 @@ public class OI implements SmartDashboardSource {
 	private final Joystick elevatorStick;
 	private final Joystick intakeElevatorStick;
 
+	private JoystickButton kidModeSwitch;
 	private JoystickButton scaleButton;
 	private JoystickButton switchButton;
 	private JoystickButton bottomButton;
@@ -211,7 +214,8 @@ public class OI implements SmartDashboardSource {
 
 		new JoystickButton(operatorLeft, CLIMB_BUTTON_NUMBER).whenPressed(new ClimbButtonCommand());
 		new JoystickButton(operatorLeft, CLIMB_BUTTON_NUMBER).whenReleased(new ClimberStopButtonCommand());
-
+		
+		kidModeSwitch = new JoystickButton(operatorLeft, KID_MODE_SWITCH);
 		scaleButton = new JoystickButton(operatorLeft, SCALE_BUTTON_NUMBER);
 		switchButton = new JoystickButton(operatorLeft, SWITCH_BUTTON_NUMBER);
 		bottomButton = new JoystickButton(operatorLeft, BOTTOM_BUTTON_NUMBER);
@@ -292,7 +296,7 @@ public class OI implements SmartDashboardSource {
 	}
 
 	public double getArcadeHValue() {
-		return snapDriveJoysticks(driveLeft.getX()) * SPEED_MULTIPLIER;
+		return snapDriveJoysticks(driveLeft.getX()) * Drive.MOVE_JOYSTICK_MULTIPLIER * SPEED_MULTIPLIER;
 	}
 
 	public double getTankLeftValue() {
@@ -389,5 +393,9 @@ public class OI implements SmartDashboardSource {
 
 	public boolean isHDriveZero() {
 		return snapDriveJoysticks(driveLeft.getX()) == 0;
+	}
+	
+	public boolean isKidModeOn() {
+		return kidModeSwitch.get();
 	}
 }

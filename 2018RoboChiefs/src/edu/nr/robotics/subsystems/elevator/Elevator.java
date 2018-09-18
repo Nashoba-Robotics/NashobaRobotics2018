@@ -17,6 +17,7 @@ import edu.nr.lib.units.Acceleration;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
+import edu.nr.robotics.OI;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.wpi.first.wpilibj.PIDOutput;
@@ -423,7 +424,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 			}
 		}
 	}
-
+	
 	/**
 	 * Sets the time limit going from 0V to 12V in seconds
 	 * 
@@ -600,6 +601,11 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	@Override
 	public void periodic() {
 		if (EnabledSubsystems.ELEVATOR_ENABLED) {
+			if (OI.getInstance().isKidModeOn()) {
+				PROFILE_VEL_PERCENT_ELEVATOR = 0.6;
+			} else {
+				PROFILE_VEL_PERCENT_ELEVATOR = 0.8;
+			}
 			if (elevTalon.getSensorCollection().isFwdLimitSwitchClosed()) {
 				//elevTalon.getSensorCollection().setQuadraturePosition((int) TOP_HEIGHT_ELEVATOR.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV), DEFAULT_TIMEOUT);
 				new CancelCommand(Elevator.getInstance());
