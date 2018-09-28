@@ -11,6 +11,11 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.NRMath;
 import edu.nr.lib.driving.DriveTypeCalculations;
+import edu.nr.lib.gyro.Gyro;
+import edu.nr.lib.gyro.NavX;
+import edu.nr.lib.gyro.Pigeon;
+import edu.nr.lib.gyro.ResetGyroCommand;
+import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.interfaces.TriplePIDOutput;
 import edu.nr.lib.interfaces.TriplePIDSource;
 import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotor;
@@ -27,6 +32,7 @@ import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource {
 
@@ -191,7 +197,47 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 						
 			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
-			smartDashboardInit();
+			private void smartDashboardInit(){
+				if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_BASIC_ENABLED) {
+					SmartDashboard.putData(new ResetGyroCommand());
+				}
+				if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {
+					
+					SmartDashboard.putNumber("Left P Value: ", P_LEFT);
+					SmartDashboard.putNumber("Left I Value: ", I_LEFT);
+					SmartDashboard.putNumber("Left D Value: ", D_LEFT);
+					
+					SmartDashboard.putNumber("Right P Value: ", P_RIGHT);
+					SmartDashboard.putNumber("Right I Value: ", I_RIGHT);
+					SmartDashboard.putNumber("Right D Value: ", D_RIGHT);
+					
+					SmartDashboard.putNumber("H P Value: ", P_H_RIGHT);
+					SmartDashboard.putNumber("H I Value: ", I_H_RIGHT);
+					SmartDashboard.putNumber("H D Value: ", D_H_RIGHT);
+					
+					SmartDashboard.putNumber("kVOneD Value: ", kVOneD);
+					SmartDashboard.putNumber("kAOneD Value: ", kAOneD);
+					SmartDashboard.putNumber("kPOneD Value: ", kPOneD);
+					SmartDashboard.putNumber("kIOneD Value: ", kIOneD);
+					SmartDashboard.putNumber("kDOneD Value: ", kDOneD);
+					SmartDashboard.putNumber("kP_thetaOneD Value: ", kP_thetaOneD);
+					
+					SmartDashboard.putNumber("kVOneDH Value: ", kVOneDH);
+					SmartDashboard.putNumber("kAOneDH Value: ", kAOneDH);
+					SmartDashboard.putNumber("kPOneDH Value: ", kPOneDH);
+					SmartDashboard.putNumber("kIOneDH Value: ", kIOneDH);
+					SmartDashboard.putNumber("kDOneDH Value: ", kDOneDH);
+					
+					SmartDashboard.putNumber("Drive Ramp Rate: ", DRIVE_RAMP_RATE.get(Time.Unit.SECOND));
+					SmartDashboard.putNumber("H Drive Ramp Rate: ", H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND));
+					
+					SmartDashboard.putNumber("X Profile Feet: ", 0);
+					SmartDashboard.putNumber("Y Profile Feet: ", 0);
+					SmartDashboard.putNumber("Drive Percent: ", PROFILE_DRIVE_PERCENT);
+					SmartDashboard.putNumber("Drive Accel Percent: ", ACCEL_PERCENT);
+					SmartDashboard.putNumber("Angle To Turn: ", 0);
+				}
+			}
 			
 			CheesyDriveCalculationConstants.createDriveTypeCalculations();
 			
@@ -200,6 +246,79 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 		
 		
 		
+	}
+	
+	public void smartDashboardInfo() {
+		if (leftDrive != null && rightDrive != null) {
+			if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_BASIC_ENABLED) {
+								
+				SmartDashboard.putString("Drive Left Current", getLeftCurrent() + " : " + getLeftFollowCurrent());
+				
+				SmartDashboard.putString("Drive Right Current", getRightCurrent() + " : " + getRightFollowCurrent());
+				
+				SmartDashboard.putNumber("Drive H Current", getHCurrent());
+				
+				if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
+					SmartDashboard.putNumber("Gyro Yaw", (-NavX.getInstance().getYaw().get(Angle.Unit.DEGREE)) % 360);
+				} else {
+					SmartDashboard.putNumber("Gyro Yaw", (-Pigeon.getPigeon(getInstance().getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE)) % 360);
+				}
+				
+				SmartDashboard.putString("Drive Left Velocity: ", getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+				SmartDashboard.putString("Drive Right Velocity: ", getRightVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+				SmartDashboard.putString("Drive H Velocity: ", getHVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + hMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+			
+				
+			}
+			if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {
+				
+				SmartDashboard.putNumber("Drive Left Percent", leftMotorSetpoint.div(MAX_SPEED_DRIVE));
+				SmartDashboard.putNumber("Drive Right Percent", rightMotorSetpoint.div(MAX_SPEED_DRIVE));
+				
+				SmartDashboard.putData(this);
+				SmartDashboard.putString("Drive Voltage",
+						leftDrive.getMotorOutputVoltage() + " : " + rightDrive.getMotorOutputVoltage() + " : " + hDrive.getMotorOutputVoltage());
+				SmartDashboard.putNumber("Drive Left Position", getLeftPosition().get(Distance.Unit.INCH));
+				SmartDashboard.putNumber("Drive Right Position", getRightPosition().get(Distance.Unit.INCH));
+				
+				SmartDashboard.putNumber("Drive Left Encoder Position", leftDrive.getSelectedSensorPosition(PID_TYPE));
+				SmartDashboard.putNumber("Drive Right Encoder Position", rightDrive.getSelectedSensorPosition(PID_TYPE));
+				
+				leftDrive.config_kP(VEL_SLOT, SmartDashboard.getNumber("Left P Value: ", P_LEFT), DEFAULT_TIMEOUT);
+				leftDrive.config_kI(VEL_SLOT, SmartDashboard.getNumber("Left I Value: ", I_LEFT), DEFAULT_TIMEOUT);
+				leftDrive.config_kD(VEL_SLOT, SmartDashboard.getNumber("Left D Value: ", D_LEFT), DEFAULT_TIMEOUT);
+				
+				rightDrive.config_kP(VEL_SLOT, SmartDashboard.getNumber("Right P Value: ", P_RIGHT), DEFAULT_TIMEOUT);
+				rightDrive.config_kI(VEL_SLOT, SmartDashboard.getNumber("Right I Value: ", I_RIGHT), DEFAULT_TIMEOUT);
+				rightDrive.config_kD(VEL_SLOT, SmartDashboard.getNumber("Right D Value: ", D_RIGHT), DEFAULT_TIMEOUT);
+				
+	
+				P_LEFT = SmartDashboard.getNumber("Left P Value: ", P_LEFT);
+				I_LEFT = SmartDashboard.getNumber("Left I Value: ", I_LEFT);
+				D_LEFT = SmartDashboard.getNumber("Left D Value: ", D_LEFT);
+				
+				P_RIGHT = SmartDashboard.getNumber("Right P Value: ", P_RIGHT);
+				I_RIGHT = SmartDashboard.getNumber("Right I Value: ", I_RIGHT);
+				D_RIGHT = SmartDashboard.getNumber("Right D Value: ", D_RIGHT);
+				
+				
+				kVOneD = SmartDashboard.getNumber("kVOneD Value: ", kVOneD);
+				kAOneD = SmartDashboard.getNumber("kAOneD Value: ", kAOneD);
+				kPOneD = SmartDashboard.getNumber("kPOneD Value: ", kPOneD);
+				kIOneD = SmartDashboard.getNumber("kIOneD Value: ", kIOneD);
+				kDOneD = SmartDashboard.getNumber("kDOneD Value: ", kDOneD);
+				kP_thetaOneD = SmartDashboard.getNumber("kP_thetaOneD Value: ", kP_thetaOneD);
+				
+				
+				DRIVE_RAMP_RATE = new Time(SmartDashboard.getNumber("Drive Ramp Rate: ", DRIVE_RAMP_RATE.get(Time.Unit.SECOND)), Time.Unit.SECOND);
+
+				xProfile = new Distance(SmartDashboard.getNumber("X Profile Feet: ", 0), Distance.Unit.FOOT);
+				yProfile = new Distance(SmartDashboard.getNumber("Y Profile Feet: ", 0), Distance.Unit.FOOT);
+				drivePercent = SmartDashboard.getNumber("Drive Percent: ", 0);
+				accelPercent = SmartDashboard.getNumber("Drive Accel Percent: ", 0);
+				angleToTurn = new Angle(SmartDashboard.getNumber("Angle To Turn: ", 0), Angle.Unit.DEGREE);
+			}
+		}
 	}
 	
 	public static Drive getInstance() {
@@ -282,6 +401,11 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 	
 	}
 	
+	@Override
+	public void disable() {
+		setMotorSpeedInPercent(0, 0);
+	}
+	
 	public void setMotorSpeed(Speed left, Speed right) {
 		if (leftDrive != null && rightDrive != null) {
 			
@@ -355,6 +479,48 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 		setMotorSpeedInPercent(outputLeft, outputRight);
 	}
 	
+	public void pidWrite(double outputLeft, double outputRight) {
+		setMotorSpeedInPercent(outputLeft, outputRight, 0);
+	}
+	
+	public void enableMotionProfiler(Distance distX, Distance distY, double maxVelPercent, double maxAccelPercent) {
+		double minVel;
+		double minAccel;
+		
+		if (distX.equals(Distance.ZERO) && !distY.equals(Distance.ZERO)) {
+			
+		} else if (distY.equals(Distance.ZERO) && !distX.equals(Distance.ZERO)) {
+			minVel = MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
+			minAccel = MAX_ACCEL_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
+		} else if (!distX.equals(Distance.ZERO) && !distY.equals(Distance.ZERO)) {
+			minVel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_SPEED_DRIVE_H.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
+			minAccel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACCEL_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_ACCEL_DRIVE_H.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND));
+		} else {
+			minVel = 0;
+			minAccel = 0;
+			System.out.println("No Distances Set");
+		}
+				
+		diagonalProfiler = new OneDimensionalMotionProfilerTwoMotor(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
+		diagonalProfiler.setTrajectory(new RampedDiagonalTrajectory(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H), minVel, minAccel));
+		diagonalProfiler.enable();
+}
+	
+	public void Profiler() {
+		diagonalProfiler.disable();
+	}
+
+	public void startDumbDrive() {
+		if (leftDrive != null && rightDrive != null) {
+			EnabledSubsystems.DRIVE_DUMB_ENABLED = true;
+		}
+	}
+	
+	public void endDumbDrive() {
+		if (leftDrive != null && rightDrive != null) {
+			EnabledSubsystems.DRIVE_DUMB_ENABLED = false;
+		}
+	}
 	
 	
 	
