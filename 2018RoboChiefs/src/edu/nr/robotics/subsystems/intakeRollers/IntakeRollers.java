@@ -160,8 +160,9 @@ public class IntakeRollers extends NRSubsystem {
 	@Override
 	public void smartDashboardInfo() {
 		if (EnabledSubsystems.INTAKE_ROLLERS_SMARTDASHBOARD_BASIC_ENABLED) {
-			SmartDashboard.putNumber("Intake Rollers Current Left: ", getCurrentLeft());
-			SmartDashboard.putNumber("Intake Rollers Current Right: ", getCurrentRight());
+			SmartDashboard.putNumberArray("Intake Rollers Current", new double[] {getCurrentLeft(), getCurrentRight()});
+			//SmartDashboard.putNumber("Intake Rollers Current Left: ", getCurrentLeft());
+			//SmartDashboard.putNumber("Intake Rollers Current Right: ", getCurrentRight());
 		}
 		if (EnabledSubsystems.INTAKE_ROLLERS_SMARTDASHBOARD_DEBUG_ENABLED) {
 			VEL_PERCENT_HIGH_INTAKE_ROLLERS = SmartDashboard.getNumber("Intake Rollers Vel Percent High: ", VEL_PERCENT_HIGH_INTAKE_ROLLERS);

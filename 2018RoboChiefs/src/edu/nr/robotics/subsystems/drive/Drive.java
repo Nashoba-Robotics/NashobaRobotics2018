@@ -702,10 +702,12 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public void smartDashboardInfo() {
 		if (leftDrive != null && rightDrive != null) {
 			if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_BASIC_ENABLED) {
-								
-				SmartDashboard.putString("Drive Left Current", getLeftCurrent() + " : " + getLeftFollowCurrent());
+					
+				SmartDashboard.putNumberArray("Drive Left Current", new double[] {getLeftCurrent(), getLeftFollowCurrent()});
+				//SmartDashboard.putString("Drive Left Current", getLeftCurrent() + " : " + getLeftFollowCurrent());
 				
-				SmartDashboard.putString("Drive Right Current", getRightCurrent() + " : " + getRightFollowCurrent());
+				SmartDashboard.putNumberArray("Drive Right Current", new double[] {getRightCurrent(), getRightFollowCurrent()});
+				//SmartDashboard.putString("Drive Right Current", getRightCurrent() + " : " + getRightFollowCurrent());
 				
 				SmartDashboard.putNumber("Drive H Current", getHCurrent());
 				
@@ -715,9 +717,13 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 					SmartDashboard.putNumber("Gyro Yaw", (-Pigeon.getPigeon(getInstance().getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE)) % 360);
 				}
 				
-				SmartDashboard.putString("Drive Left Velocity: ", getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
-				SmartDashboard.putString("Drive Right Velocity: ", getRightVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
-				SmartDashboard.putString("Drive H Velocity: ", getHVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + hMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+				SmartDashboard.putNumberArray("Drive Left Velocity", new double[] {getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND), leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND)});
+				SmartDashboard.putNumberArray("Drive Right Velocity", new double[] {getRightVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND), rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND)});
+				SmartDashboard.putNumberArray("Drive H Velocity", new double[] {getHVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND), hMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND)});
+				
+				//SmartDashboard.putString("Drive Left Velocity: ", getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+				//SmartDashboard.putString("Drive Right Velocity: ", getRightVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+				//SmartDashboard.putString("Drive H Velocity: ", getHVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + hMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 			
 				
 			}
@@ -728,8 +734,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 				SmartDashboard.putNumber("Drive H Percent", hMotorSetpoint.div(MAX_SPEED_DRIVE_H));
 				
 				SmartDashboard.putData(this);
-				SmartDashboard.putString("Drive Voltage",
-						leftDrive.getMotorOutputVoltage() + " : " + rightDrive.getMotorOutputVoltage() + " : " + hDrive.getMotorOutputVoltage());
+				SmartDashboard.putNumberArray("Drive Voltage", new double[] {leftDrive.getMotorOutputVoltage(), rightDrive.getMotorOutputVoltage(), hDrive.getMotorOutputVoltage()});
+				//SmartDashboard.putString("Drive Voltage",
+				//		leftDrive.getMotorOutputVoltage() + " : " + rightDrive.getMotorOutputVoltage() + " : " + hDrive.getMotorOutputVoltage());
 				SmartDashboard.putNumber("Drive Left Position", getLeftPosition().get(Distance.Unit.INCH));
 				SmartDashboard.putNumber("Drive Right Position", getRightPosition().get(Distance.Unit.INCH));
 				SmartDashboard.putNumber("Drive H Position", getHPosition().get(Distance.Unit.INCH));

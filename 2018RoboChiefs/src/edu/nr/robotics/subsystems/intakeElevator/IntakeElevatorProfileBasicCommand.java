@@ -36,8 +36,10 @@ public class IntakeElevatorProfileBasicCommand extends NRCommand {
 	public void onExecute() {
 		if (EnabledSubsystems.INTAKE_ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {	
 			IntakeElevator.getInstance().setPIDSourceType(PIDSourceType.kRate);
-			SmartDashboard.putString("Intake Elevator Motion Profiler V", IntakeElevator.getInstance().pidGet() + ":" + IntakeElevator.getInstance().basicProfiler.velocityGoal);
+			//SmartDashboard.putString("Intake Elevator Motion Profiler V", IntakeElevator.getInstance().pidGet() + ":" + IntakeElevator.getInstance().basicProfiler.velocityGoal);
+			SmartDashboard.putNumberArray("Intake Elevator Motion Profiler V", new double[] {IntakeElevator.getInstance().pidGet(), IntakeElevator.getInstance().basicProfiler.velocityGoal});
 			IntakeElevator.getInstance().setPIDSourceType(PIDSourceType.kDisplacement);
+			SmartDashboard.putNumberArray("Intake Elevator Motion Profiler X", new double[] {new Distance(IntakeElevator.getInstance().pidGet(),Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV).get(Distance.Unit.INCH), new Distance(OneDimensionalMotionProfilerBasic.positionGoal + OneDimensionalMotionProfilerBasic.initialPosition, Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV).get(Distance.Unit.INCH), new Distance(OneDimensionalMotionProfilerBasic.error,  Distance.Unit.MAGNETIC_ENCODER_TICK_INTAKE_ELEV).get(Distance.Unit.INCH)});
 			//SmartDashboard.putString("Elevator Motion Profiler X", new Distance(Elevator.getInstance().pidGet(), Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerBasic.positionGoal + OneDimensionalMotionProfilerBasic.initialPosition, Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV).get(Distance.Unit.INCH) + ":" + new Distance(OneDimensionalMotionProfilerBasic.error, Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV).get(Distance.Unit.INCH));	
 		}
 	}

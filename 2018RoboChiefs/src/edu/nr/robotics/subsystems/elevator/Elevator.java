@@ -49,7 +49,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	public static final Acceleration MAX_ACCEL_ELEVATOR_DOWN = Acceleration.ZERO; //TODO: Find MAX_ACCEL_ELEVATOR_DOWN
 
 	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0.25;
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0.15;//0.20
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0.2;//0.20
 	
 	/**
 	 * The minimum voltage needed to move the elevator
@@ -537,12 +537,16 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	@Override
 	public void smartDashboardInfo() {
 		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_BASIC_ENABLED) {
-			SmartDashboard.putString("Elevator Current: ", getMasterCurrent() + " : " + getFollowerCurrent());
+			SmartDashboard.putNumberArray("ElevatorCurrent: ", new double[] {getMasterCurrent(), getFollowerCurrent()});
+			SmartDashboard.putNumberArray("Elevator Velocity vs. Set Velocity: ", new double[] {getVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND), velSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND)});
+			SmartDashboard.putNumberArray("Elevator Position vs. Set Position: ", new double[] {getPosition().get(Distance.Unit.INCH), posSetpoint.get(Distance.Unit.INCH)});
+			
+			/*SmartDashboard.putString("Elevator Current: ", getMasterCurrent() + " : " + getFollowerCurrent());
 			SmartDashboard.putString("Elevator Velocity vs. Set Velocity: ",
 					getVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : "
 							+ velSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 			SmartDashboard.putString("Elevator Position vs. Set Position: ",
-					getPosition().get(Distance.Unit.INCH) + " : " + posSetpoint.get(Distance.Unit.INCH));
+					getPosition().get(Distance.Unit.INCH) + " : " + posSetpoint.get(Distance.Unit.INCH));*/
 		}
 		if (EnabledSubsystems.ELEVATOR_SMARTDASHBOARD_DEBUG_ENABLED) {
 			profilePos = new Distance(SmartDashboard.getNumber("Elevator Profile Delta Inches: ", 0), Distance.Unit.INCH);

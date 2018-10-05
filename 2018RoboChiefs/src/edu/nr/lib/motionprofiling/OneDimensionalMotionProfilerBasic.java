@@ -22,7 +22,7 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 	private double prevTime;
 	private double startTime;
 	
-	public double positionGoal;
+	public static double positionGoal;
 	public double velocityGoal;
 	public double accelGoal;
 	
@@ -32,9 +32,9 @@ public class OneDimensionalMotionProfilerBasic extends TimerTask implements OneD
 	
 	private double ka, kp, kd, kv;
 	public double errorLast;
-	public double error;
+	public static double error;
 	
-	public double initialPosition;
+	public static double initialPosition;
 	
 	public ArrayList<Double> posPoints;
 	public ArrayList<Double> velPoints;
