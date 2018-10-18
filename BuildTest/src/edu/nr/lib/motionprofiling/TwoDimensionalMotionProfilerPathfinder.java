@@ -127,7 +127,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 				double deltaT = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - lastTime;
 				
 				lastTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-				System.out.println(deltaT*1000);
+				//System.out.println(deltaT*1000);
 			
 				if (!this.negate) {
 					prelimOutputLeft = left.calculate((source.pidGetLeft() - initialPositionLeft));
@@ -220,14 +220,14 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 		this.right = new DistanceFollower(modifier.getRightTrajectory());
 		System.out.println(modifier.getLeftTrajectory().segments.length);
 		
-		for(int i = 0; i < modifier.getLeftTrajectory().segments.length; i += 25) {
+		/*for(int i = 0; i < modifier.getLeftTrajectory().segments.length; i += 25) {
 			DecimalFormat df = new DecimalFormat("#.#");
 			df.setMinimumFractionDigits(1);
 			df.setMinimumIntegerDigits(3);
 			
 			System.out.println("left:\t" + i*period + "ms:\t" + df.format(39.37*modifier.getLeftTrajectory().get(i).x)    + ", \t" + df.format(39.37*modifier.getLeftTrajectory().get(i).y) + ", \t" + df.format(Math.toDegrees(modifier.getLeftTrajectory().get(i).heading)));
 			System.out.println("right:\t" + i*period + "ms:\t" + df.format(39.37*modifier.getRightTrajectory().get(i).x)    + ", \t" + df.format(39.37*modifier.getRightTrajectory().get(i).y) + ", \t" + df.format(Math.toDegrees(modifier.getRightTrajectory().get(i).heading)));
-		}	
+		}	*/
 	}
 
 	public boolean isEnabled() {

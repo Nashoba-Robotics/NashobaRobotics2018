@@ -77,6 +77,8 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 	
 	double timeOfVChange = 0;
 	double prevV;
+	double integralErrorLeft = 0;
+	double integralErrorRight = 0;
 	
 	@Override
 	public void run() {
@@ -99,8 +101,8 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 			
 			errorLeft = positionGoal - source.pidGetLeft() + initialPositionLeft;
 			double errorDerivLeft = (errorLeft - errorLastLeft) / dt;
-			double errorIntegralLeft = (errorLeft - errorLastLeft) * dt / 2;
-			double prelimOutputLeft = velocityGoal * kv + accelGoal * ka + errorLeft * kp + errorIntegralLeft * ki + errorDerivLeft * kd;
+			integralErrorLeft += (errorLeft + errorLastLeft) * dt / 2;
+			double prelimOutputLeft = (velocityGoal * kv) + (accelGoal * ka) + (errorLeft * kp) + (integralErrorLeft * ki) + (errorDerivLeft * kd);
 			errorLastLeft = errorLeft;
 			
 			double outputLeft = 0;
@@ -121,7 +123,8 @@ public class OneDimensionalMotionProfilerTwoMotor extends TimerTask implements O
 			
 			errorRight = positionGoal - source.pidGetRight() + initialPositionRight;			
 			double errorDerivRight = (errorRight - errorLastRight) / dt;
-			double prelimOutputRight = velocityGoal * kv + accelGoal * ka + errorRight * kp + errorDerivRight * kd;
+			integralErrorRight += (errorRight + errorLastRight) * dt / 2;
+			double prelimOutputRight = (velocityGoal * kv) + (accelGoal * ka) + (errorRight * kp) + (integralErrorRight * ki) + (errorDerivRight * kd);
 			errorLastRight = errorRight;
 			
 			double outputRight = 0;
