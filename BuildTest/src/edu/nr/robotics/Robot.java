@@ -13,6 +13,7 @@ import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.EnableTwoDMotionProfileSmartDashboardCommand;
 import edu.nr.robotics.subsystems.drive.TurnSmartDashboardCommand;
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -50,11 +51,19 @@ public class Robot extends IterativeRobot {
 		autoChooserInit();
 		OI.init();
 		Drive.getInstance();
-		
-		CameraServer.getInstance().startAutomaticCapture();
+		CameraInit();
 		
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		// SmartDashboard.putData("Auto mode", m_chooser);
+	}
+	
+	public void CameraInit() {
+		new Thread(() -> {
+			UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+			camera.setResolution(720, 1080);
+			
+		}).start();
+		
 	}
 	
 	public void autoChooserInit() {
