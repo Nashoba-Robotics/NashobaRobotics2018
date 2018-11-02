@@ -40,11 +40,11 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static final Distance WHEEL_DIAMETER = new Distance(6, Distance.Unit.INCH);
 	public static final Distance WHEEL_DIAMETER_EFFECTIVE = new Distance(6, Distance.Unit.INCH);
 
-	public static final Distance WHEEL_BASE = new Distance(24, Distance.Unit.INCH).mul(1.36);
+	public static final Distance WHEEL_BASE = new Distance(24, Distance.Unit.INCH);//.mul(1.36);
 	/**
 	 * The maximum speed of the drive base
 	 */
-	public static final Speed MAX_SPEED_DRIVE = new Speed(13.63/* 12.864 */, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_DRIVE = new Speed(12.864, Distance.Unit.FOOT, Time.Unit.SECOND);
 
 	/**
 	 * The maximum acceleration of the drive base
@@ -61,15 +61,15 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	/**
 	 * Voltage percentage at which robot just starts moving
 	 */
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0921;// 0.0571; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0968;// 0.0600; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0726;// 0.0571; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0691;// 0.0600; //This is 0 to 1 number
 
 	/**
 	 * The drive voltage-velocity curve slopes
 	 */
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0666;// 0.0733; //TODO: Find drive voltage vs
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0788;// 0.0733; //TODO: Find drive voltage vs
 																			// velocity curve
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0613;// 0.0726;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0784;// 0.0726;
 
 	/**
 	 * The amount of time drive can go from 0 to 12 volts
@@ -105,10 +105,10 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 
 	public static double kVTwoD = 1
 			/ MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kATwoD = 0.00015;
-	public static double kPTwoD = 0.000015;
+	public static double kATwoD = 0.000;
+	public static double kPTwoD = 0.0000;
 	public static double kITwoD = 0.0;
-	public static double kDTwoD = 0.0000015;
+	public static double kDTwoD = 0.00000;
 	public static double kP_thetaTwoD = 0.0;
 
 	/**
@@ -541,7 +541,10 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 
 	public void enableMotionProfiler(Distance distX, Distance distY, Angle endAngle, double maxVelPercent,
 			double maxAccelPercent) {
-		System.out.println("ka in drive: " + kATwoD);
+		System.out.println("1");
+		for (int i = 0; i<1000000; i++) {
+			double foobar = 4.0 * 8.0;
+		}
 		twoDProfiler = new TwoDimensionalMotionProfilerPathfinder(this, this, kVTwoD, kATwoD, kPTwoD, kITwoD, kDTwoD,
 				kP_thetaTwoD,
 				MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE,
@@ -553,15 +556,16 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 				(int) (Math.PI * WHEEL_DIAMETER_EFFECTIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)),
 				WHEEL_DIAMETER.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE),
 				WHEEL_BASE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), false);
-		this.endAngle = endAngle;
-		System.out.println("distX: " + distX.get(Distance.Unit.FOOT) + "	distY: " + distY.get(Distance.Unit.FOOT)
-				+ "	end Angle: " + endAngle.get(Angle.Unit.DEGREE));
 
+		System.out.println("foobar distX: " + distX.get(Distance.Unit.FOOT) + "	distY: " + distY.get(Distance.Unit.FOOT)
+				+ "	end Angle: " + endAngle.get(Angle.Unit.DEGREE));
 		points = new Waypoint[] { new Waypoint(0, 0, 0), new Waypoint(1, 0, 0),
 				new Waypoint(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE),
-						distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), endAngle.get(Angle.Unit.RADIAN)) };
+						distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), endAngle.get(Angle.Unit.RADIAN))};
 		twoDProfiler.setTrajectory(points);
+		
 		twoDProfiler.enable();
+		
 	}
 
 	public void disableProfiler() {

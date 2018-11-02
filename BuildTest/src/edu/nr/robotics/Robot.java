@@ -51,7 +51,7 @@ public class Robot extends IterativeRobot {
 		autoChooserInit();
 		OI.init();
 		Drive.getInstance();
-		CameraInit();
+		//CameraInit();
 		
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		// SmartDashboard.putData("Auto mode", m_chooser);
