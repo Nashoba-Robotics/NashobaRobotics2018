@@ -29,6 +29,7 @@ import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
 public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSource {
 
 	private static Drive singleton;
@@ -37,7 +38,11 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	public static final double ENC_TO_WHEEL_GEARING = 1.0;
 	
-	public static final double EFFECTIVE_WHEEL_DIAMETER_INCHES = 0.0 * 0.95833333333333333333333333333333333333333333333333333333333333333333;
+	public static final double EFFECTIVE_WHEEL_DIAMETER_INCHES = 0.0 * 0.95833333333333333333333333333333333333333333333333333333333333333333;//TODO find
+	
+	public static final int ENC_TICK_PER_REVOLUTION = 256;
+	
+	public static final double EFFECTIVE_ENC_TICK_PER_INCH_DRIVE = ENC_TICK_PER_REVOLUTION / (Math.PI * EFFECTIVE_WHEEL_DIAMETER_INCHES);
 	
 	public static final Distance REAL_WHEEL_DIAMETER = new Distance(EFFECTIVE_WHEEL_DIAMETER_INCHES, Distance.Unit.INCH);
 	
