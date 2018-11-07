@@ -5,7 +5,6 @@ import edu.nr.lib.commandbased.JoystickCommand;
 import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.robotics.OI;
 import edu.nr.robotics.Robot;
-import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 
 public class DriveJoystickCommand extends JoystickCommand {
 
@@ -16,6 +15,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 	public DriveJoystickCommand() {
 		super(Drive.getInstance());
 	}
+	
 	
 	@Override
 	public void onStart() {
@@ -32,13 +32,11 @@ public class DriveJoystickCommand extends JoystickCommand {
 		case arcadeDrive:
 			double moveValue = OI.getInstance().getArcadeMoveValue();
 			double rotateValue = OI.getInstance().getArcadeTurnValue();
-			double hValue = OI.getInstance().getArcadeHValue();
 						
 			moveValue = NRMath.powWithSign(moveValue, 3);
 			rotateValue = NRMath.powWithSign(rotateValue, 3);
-			hValue = NRMath.powWithSign(hValue, 3);
 			
-			if (Math.abs(rotateValue) < 0.05 && (Math.abs(moveValue) > 0.05 || Math.abs(hValue) > 0.05)) {
+			if (Math.abs(rotateValue) < 0.05 && (Math.abs(moveValue) > 0.05)) {
 				rotateValue = -gyroCorrection.getTurnValue(Drive.kP_thetaOneD, false);
 			} else {
 				gyroCorrection.clearInitialValue();
@@ -49,7 +47,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 			} else {
 				Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier(), hValue * OI.getInstance().getDriveSpeedMultiplier());
 			}*/
-			Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier(), hValue * OI.getInstance().getDriveSpeedMultiplier());
+			Drive.getInstance().arcadeDrive(moveValue * OI.getInstance().getDriveSpeedMultiplier(), rotateValue * OI.getInstance().getDriveSpeedMultiplier());
 
 									
 			break;
@@ -57,14 +55,12 @@ public class DriveJoystickCommand extends JoystickCommand {
 		case tankDrive:
 			double left = OI.getInstance().getTankLeftValue();
 			double right = OI.getInstance().getTankRightValue();
-			double hDrive = OI.getInstance().getTankHValue();
 			
 			left = (Math.abs(left) + Math.abs(right)) / 2 * Math.signum(left);
 			right = (Math.abs(left) + Math.abs(right)) / 2 * Math.signum(right);
 			
 			right = NRMath.powWithSign(right, 3);
 			left = NRMath.powWithSign(left, 3);
-			hDrive = NRMath.powWithSign(hDrive, 3);
 			
 			/*if (EnabledSensors.floorSensorEnabled && EnabledSensors.floorCounter.get() > 0) {
 				Drive.getInstance().setMotorSpeedInPercent(0, 0, 0);
@@ -76,11 +72,9 @@ public class DriveJoystickCommand extends JoystickCommand {
 		case cheesyDrive:
 			double cheesyMoveValue = OI.getInstance().getArcadeMoveValue();
 			double cheesyRotateValue = OI.getInstance().getArcadeTurnValue();
-			double cheesyHValue = OI.getInstance().getArcadeHValue();
 			
 			cheesyMoveValue = NRMath.powWithSign(cheesyMoveValue, 3);
 			cheesyRotateValue = NRMath.powWithSign(cheesyRotateValue, 3);
-			cheesyHValue = NRMath.powWithSign(cheesyHValue, 3);
 			
 			/*if (Math.abs(cheesyRotateValue) < 0.05 && (Math.abs(cheesyMoveValue) > 0.05 || Math.abs(cheesyHValue) > 0.05)) {
 				cheesyRotateValue = gyroCorrection.getTurnValue(Drive.kP_thetaOneD, false);
@@ -94,7 +88,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 				Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue, cheesyHValue);
 			}*/
 			
-			Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue, cheesyHValue);
+			Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue);
 			
 			break;
 		}
@@ -103,7 +97,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 
 	@Override
 	public boolean shouldSwitchToJoystick() {
-		if (!(Drive.getInstance().getCurrentCommand() instanceof DriveToCubeJoystickCommand) && !Robot.getInstance().isAutonomous()) {
+		if (!Robot.getInstance().isAutonomous()) {
 		
 			if((OI.driveMode == Drive.DriveMode.arcadeDrive) || (OI.driveMode == Drive.DriveMode.cheesyDrive)) {
 				return OI.getInstance().isArcadeNonZero();

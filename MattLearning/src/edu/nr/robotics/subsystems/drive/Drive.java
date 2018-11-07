@@ -1,8 +1,5 @@
 package edu.nr.robotics.subsystems.drive;
 
-import java.time.zone.ZoneOffsetTransitionRule.TimeDefinition;
-import java.util.concurrent.TimeUnit;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -10,31 +7,29 @@ import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.nr.lib.NRMath;
+import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.driving.DriveTypeCalculations;
 import edu.nr.lib.gyro.Gyro;
+import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.gyro.NavX;
 import edu.nr.lib.gyro.Pigeon;
 import edu.nr.lib.gyro.ResetGyroCommand;
-import edu.nr.lib.gyro.Gyro.ChosenGyro;
-import edu.nr.lib.interfaces.TriplePIDOutput;
-import edu.nr.lib.interfaces.TriplePIDSource;
+import edu.nr.lib.interfaces.DoublePIDOutput;
+import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.motionprofiling.OneDimensionalMotionProfilerTwoMotor;
-import edu.nr.lib.motionprofiling.RampedDiagonalHTrajectory;
 import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Acceleration;
 import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Distance;
+import edu.nr.lib.units.Distance.Unit;
 import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
-import edu.nr.lib.units.Distance.Unit;
-import edu.nr.robotics.OI;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
 import edu.wpi.first.wpilibj.PIDSourceType;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource {
+public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSource {
 
 	private static Drive singleton;
 	
@@ -120,6 +115,7 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 	
 	public static Distance xProfile;
 	public static Distance yProfile;
+	public static double accelPercent;
 	public static double drivePercent;
 	public static Angle angleToTurn; 
 	public static boolean exact;
@@ -127,6 +123,8 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 	public static enum DriveMode {
 		arcadeDrive, tankDrive, cheesyDrive
 	}
+	
+	private OneDimensionalMotionProfilerTwoMotor Profiler;
 	
 	private Drive() {
 		
@@ -140,7 +138,7 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 			
 
 			leftDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, PID_TYPE, DEFAULT_TIMEOUT);
-			leftDrive.configkF(VEL_SLOT, 0, DEFAULT_TIMEOUT);
+			leftDrive.config_kF(VEL_SLOT, 0, DEFAULT_TIMEOUT);
 			leftDrive.config_kP(VEL_SLOT, P_LEFT, DEFAULT_TIMEOUT);
 			leftDrive.config_kI(VEL_SLOT, I_LEFT, DEFAULT_TIMEOUT);
 			leftDrive.config_kD(VEL_SLOT, D_LEFT, DEFAULT_TIMEOUT);
@@ -197,7 +195,11 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 						
 			rightDriveFollow.setNeutralMode(NEUTRAL_MODE);
 			
-			private void smartDashboardInit(){
+			CheesyDriveCalculationConstants.createDriveTypeCalculations();
+			
+		}
+	}
+			public void smartDashboardInit(){
 				if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_BASIC_ENABLED) {
 					SmartDashboard.putData(new ResetGyroCommand());
 				}
@@ -211,9 +213,6 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 					SmartDashboard.putNumber("Right I Value: ", I_RIGHT);
 					SmartDashboard.putNumber("Right D Value: ", D_RIGHT);
 					
-					SmartDashboard.putNumber("H P Value: ", P_H_RIGHT);
-					SmartDashboard.putNumber("H I Value: ", I_H_RIGHT);
-					SmartDashboard.putNumber("H D Value: ", D_H_RIGHT);
 					
 					SmartDashboard.putNumber("kVOneD Value: ", kVOneD);
 					SmartDashboard.putNumber("kAOneD Value: ", kAOneD);
@@ -222,14 +221,7 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 					SmartDashboard.putNumber("kDOneD Value: ", kDOneD);
 					SmartDashboard.putNumber("kP_thetaOneD Value: ", kP_thetaOneD);
 					
-					SmartDashboard.putNumber("kVOneDH Value: ", kVOneDH);
-					SmartDashboard.putNumber("kAOneDH Value: ", kAOneDH);
-					SmartDashboard.putNumber("kPOneDH Value: ", kPOneDH);
-					SmartDashboard.putNumber("kIOneDH Value: ", kIOneDH);
-					SmartDashboard.putNumber("kDOneDH Value: ", kDOneDH);
-					
 					SmartDashboard.putNumber("Drive Ramp Rate: ", DRIVE_RAMP_RATE.get(Time.Unit.SECOND));
-					SmartDashboard.putNumber("H Drive Ramp Rate: ", H_DRIVE_RAMP_RATE.get(Time.Unit.SECOND));
 					
 					SmartDashboard.putNumber("X Profile Feet: ", 0);
 					SmartDashboard.putNumber("Y Profile Feet: ", 0);
@@ -239,14 +231,14 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 				}
 			}
 			
-			CheesyDriveCalculationConstants.createDriveTypeCalculations();
 			
 			
-		}
+			
 		
 		
 		
-	}
+		
+	
 	
 	public void smartDashboardInfo() {
 		if (leftDrive != null && rightDrive != null) {
@@ -256,7 +248,7 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 				
 				SmartDashboard.putString("Drive Right Current", getRightCurrent() + " : " + getRightFollowCurrent());
 				
-				SmartDashboard.putNumber("Drive H Current", getHCurrent());
+				
 				
 				if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
 					SmartDashboard.putNumber("Gyro Yaw", (-NavX.getInstance().getYaw().get(Angle.Unit.DEGREE)) % 360);
@@ -266,7 +258,7 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 				
 				SmartDashboard.putString("Drive Left Velocity: ", getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 				SmartDashboard.putString("Drive Right Velocity: ", getRightVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
-				SmartDashboard.putString("Drive H Velocity: ", getHVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND) + " : " + hMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+				
 			
 				
 			}
@@ -277,7 +269,7 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 				
 				SmartDashboard.putData(this);
 				SmartDashboard.putString("Drive Voltage",
-						leftDrive.getMotorOutputVoltage() + " : " + rightDrive.getMotorOutputVoltage() + " : " + hDrive.getMotorOutputVoltage());
+						leftDrive.getMotorOutputVoltage() + " : " + rightDrive.getMotorOutputVoltage());
 				SmartDashboard.putNumber("Drive Left Position", getLeftPosition().get(Distance.Unit.INCH));
 				SmartDashboard.putNumber("Drive Right Position", getRightPosition().get(Distance.Unit.INCH));
 				
@@ -326,6 +318,7 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 			init();
 		return singleton;
 	}
+	
 	
 	public synchronized static void init() {
 		if (singleton == null) {
@@ -401,7 +394,7 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 	
 	}
 	
-	@Override
+	//@Override
 	public void disable() {
 		setMotorSpeedInPercent(0, 0);
 	}
@@ -438,6 +431,15 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 		setMotorSpeedInPercent(left, right);
 	}
 	
+	public void cheesyDrive(double move, double turn) {
+		double[] cheesyMotorPercents = new double[2];
+		cheesyMotorPercents = DriveTypeCalculations.cheesyDrive(move, turn, oldTurn, false);
+		
+		oldTurn = turn;
+		
+		tankDrive(cheesyMotorPercents[0], cheesyMotorPercents[1]);		
+	}
+	
 	public void arcadeDrive(double move, double turn) {
 		
 		double[] motorPercents = new double[2];
@@ -452,12 +454,12 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 		type = pidSource;
 	}
 	
-	@Override
+	//@Override
 	public PIDSourceType getPIDSourceType() {
 		return type;
 	}
 
-	@Override
+	//@Override
 	public double pidGetLeft() {
 		if (type == PIDSourceType.kRate) {
 			return getInstance().getLeftVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
@@ -466,7 +468,7 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 		}
 	}
 	
-	@Override
+	//@Override
 	public double pidGetRight() {
 		if (type == PIDSourceType.kRate) {
 			return getInstance().getRightVelocity().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
@@ -479,13 +481,9 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 		setMotorSpeedInPercent(outputLeft, outputRight);
 	}
 	
-	public void pidWrite(double outputLeft, double outputRight) {
-		setMotorSpeedInPercent(outputLeft, outputRight, 0);
-	}
-	
 	public void enableMotionProfiler(Distance distX, Distance distY, double maxVelPercent, double maxAccelPercent) {
-		double minVel;
-		double minAccel;
+		double minVel = 0;//TODO find
+		double minAccel = 0;//TODO find
 		
 		if (distX.equals(Distance.ZERO) && !distY.equals(Distance.ZERO)) {
 			
@@ -493,21 +491,21 @@ public class Drive extends Subsystem implements TriplePIDOutput, TriplePIDSource
 			minVel = MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
 			minAccel = MAX_ACCEL_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND);
 		} else if (!distX.equals(Distance.ZERO) && !distY.equals(Distance.ZERO)) {
-			minVel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_SPEED_DRIVE_H.mul(drivePercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
-			minAccel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACCEL_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)) * MAX_ACCEL_DRIVE_H.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND));
+			minVel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)));
+			minAccel = Math.min((NRMath.hypot(distX, distY).div(distX)) * MAX_ACCEL_DRIVE.mul(maxAccelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND), (NRMath.hypot(distX, distY).div(distY)));
 		} else {
 			minVel = 0;
 			minAccel = 0;
 			System.out.println("No Distances Set");
 		}
 				
-		diagonalProfiler = new OneDimensionalMotionProfilerTwoMotor(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
-		diagonalProfiler.setTrajectory(new RampedDiagonalTrajectory(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H), minVel, minAccel));
-		diagonalProfiler.enable();
+		Profiler = new OneDimensionalMotionProfilerTwoMotor(this, this, kVOneD, kAOneD, kPOneD, kIOneD, kDOneD, kP_thetaOneD);
+		Profiler.setTrajectory(new OneDimensionalTrajectoryRamped(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), minVel, minAccel, 1)); //TODO find the thing that is one. timeMult
+		Profiler.enable();
 }
 	
-	public void Profiler() {
-		diagonalProfiler.disable();
+	public void disableProfiler() {
+		Profiler.disable();
 	}
 
 	public void startDumbDrive() {
