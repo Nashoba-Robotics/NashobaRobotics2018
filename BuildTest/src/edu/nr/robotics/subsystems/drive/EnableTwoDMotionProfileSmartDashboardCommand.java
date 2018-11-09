@@ -30,7 +30,7 @@ public class EnableTwoDMotionProfileSmartDashboardCommand extends NRCommand {
 	@Override
 	public void onStart() {
 		Drive.getInstance().enableMotionProfiler(Drive.xProfile, Drive.yProfile, Drive.endAngle, Drive.drivePercent,
-				Drive.accelPercent);
+				Drive.accelPercent, Drive.profileName);
 		initialLeftPosition = Drive.getInstance().getLeftPosition();
 		initialRightPosition = Drive.getInstance().getRightPosition();
 		profileStartTime = 0;

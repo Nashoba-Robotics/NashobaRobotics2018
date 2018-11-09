@@ -1,5 +1,7 @@
 package edu.nr.robotics.subsystems.drive;
 
+import java.io.File;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -224,6 +226,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static Distance xProfile = new Distance(11.67, Distance.Unit.FOOT);
 	public static Distance yProfile = new Distance(5.38, Distance.Unit.FOOT);
 	public static Angle endAngle = new Angle(0, Angle.Unit.DEGREE);
+	public static String profileName = "ProfileName";
 	public static double drivePercent = 0.4;
 	public static double accelPercent = 0.6;
 	public static Angle angleToTurn;
@@ -540,11 +543,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 
 	public void enableMotionProfiler(Distance distX, Distance distY, Angle endAngle, double maxVelPercent,
-			double maxAccelPercent) {
-		System.out.println("1");
-		for (int i = 0; i<1000000; i++) {
-			double foobar = 4.0 * 8.0;
-		}
+			double maxAccelPercent, String profileName) {
+		File profileFile = new File(profileName + ".traj");
+		
 		twoDProfiler = new TwoDimensionalMotionProfilerPathfinder(this, this, kVTwoD, kATwoD, kPTwoD, kITwoD, kDTwoD,
 				kP_thetaTwoD,
 				MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE,
@@ -555,14 +556,18 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 						Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 				(int) (Math.PI * WHEEL_DIAMETER_EFFECTIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)),
 				WHEEL_DIAMETER.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE),
-				WHEEL_BASE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), false);
+				WHEEL_BASE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), false, profileFile);
 
-		System.out.println("foobar distX: " + distX.get(Distance.Unit.FOOT) + "	distY: " + distY.get(Distance.Unit.FOOT)
-				+ "	end Angle: " + endAngle.get(Angle.Unit.DEGREE));
-		points = new Waypoint[] { new Waypoint(0, 0, 0), new Waypoint(1, 0, 0),
-				new Waypoint(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE),
-						distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), endAngle.get(Angle.Unit.RADIAN))};
-		twoDProfiler.setTrajectory(points);
+		System.out.println(profileFile.getName());
+		
+		if (!profileFile.exists()) {
+			System.out.println("foobar distX: " + distX.get(Distance.Unit.FOOT) + "	distY: "
+					+ distY.get(Distance.Unit.FOOT) + "	end Angle: " + endAngle.get(Angle.Unit.DEGREE));
+			points = new Waypoint[] { new Waypoint(0, 0, 0), new Waypoint(1, 0, 0),
+					new Waypoint(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE),
+							distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), endAngle.get(Angle.Unit.RADIAN)) };
+			twoDProfiler.setTrajectory(points);
+		}
 		
 		twoDProfiler.enable();
 		
