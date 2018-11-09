@@ -561,12 +561,19 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		System.out.println(profileFile.getName());
 		
 		if (!profileFile.exists()) {
-			System.out.println("foobar distX: " + distX.get(Distance.Unit.FOOT) + "	distY: "
+			System.out.println("distX: " + distX.get(Distance.Unit.FOOT) + "	distY: "
 					+ distY.get(Distance.Unit.FOOT) + "	end Angle: " + endAngle.get(Angle.Unit.DEGREE));
 			points = new Waypoint[] { new Waypoint(0, 0, 0), new Waypoint(1, 0, 0),
 					new Waypoint(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE),
 							distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), endAngle.get(Angle.Unit.RADIAN)) };
+		}
 			twoDProfiler.setTrajectory(points);
+		
+		for (int i = 0; i < TwoDimensionalMotionProfilerPathfinder.modifier.getLeftTrajectory().length(); i++) {
+		System.out.println(
+				new Speed(TwoDimensionalMotionProfilerPathfinder.modifier.getLeftTrajectory().get(i).velocity,
+						Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND)
+								.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 		}
 		
 		twoDProfiler.enable();
@@ -581,6 +588,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		SmartDashboard.putNumber("X Profile Feet: ", xProfile.get(Distance.Unit.FOOT));
 		SmartDashboard.putNumber("Y Profile Feet: ", yProfile.get(Distance.Unit.FOOT));
 		SmartDashboard.putNumber("Profile End Angle: ", endAngle.get(Angle.Unit.DEGREE));
+		SmartDashboard.putString("Profile Name: ", profileName);
 		SmartDashboard.putNumber("Drive Percent: ", PROFILE_DRIVE_PERCENT);
 		SmartDashboard.putNumber("Drive Accel Percent: ", ACCEL_PERCENT);
 
@@ -614,6 +622,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		xProfile = new Distance(SmartDashboard.getNumber("X Profile Feet: ", 0), Distance.Unit.FOOT);
 		yProfile = new Distance(SmartDashboard.getNumber("Y Profile Feet: ", 0), Distance.Unit.FOOT);
 		endAngle = new Angle(SmartDashboard.getNumber("Profile End Angle: ", 0), Angle.Unit.DEGREE);
+		profileName = SmartDashboard.getString("Profile Name: ", profileName);
 		drivePercent = SmartDashboard.getNumber("Drive Percent: ", 0);
 		accelPercent = SmartDashboard.getNumber("Drive Accel Percent: ", 0);
 

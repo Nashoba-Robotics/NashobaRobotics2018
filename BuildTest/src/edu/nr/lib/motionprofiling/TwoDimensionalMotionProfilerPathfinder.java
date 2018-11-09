@@ -89,13 +89,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 				new Waypoint(0,0,0),
 				new Waypoint(1,0,0)
         };
-        
-        if (profileFile.exists()) {
-        	trajectory = Pathfinder.readFromFile(profileFile);
-        } else {
-        	this.trajectory = Pathfinder.generate(points, trajectoryConfig);	
-        }
-		
+        this.trajectory = Pathfinder.generate(points, trajectoryConfig);
 		this.wheelBase = wheelBase;
 		this.modifier = new TankModifier(trajectory).modify(wheelBase);
 		this.left = new DistanceFollower(modifier.getLeftTrajectory());
@@ -227,13 +221,21 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 	 * @param trajectory
 	 */
 	public void setTrajectory(Waypoint[] points) {
-		this.points = points;
-		this.trajectory = Pathfinder.generate(points, trajectoryConfig);
+        if (profileFile.exists()) {
+        	trajectory = Pathfinder.readFromFile(profileFile);
+        } else {
+        	this.points = points;
+    		this.trajectory = Pathfinder.generate(points, trajectoryConfig);
+        }
+		
 		this.modifier = new TankModifier(trajectory).modify(wheelBase);
 		this.left = new DistanceFollower(modifier.getLeftTrajectory());
 		this.right = new DistanceFollower(modifier.getRightTrajectory());
 		
-		Pathfinder.writeToFile(profileFile, trajectory);
+		if (!profileFile.exists()) {
+			System.out.println("end of set trajectory");
+			Pathfinder.writeToFile(profileFile, trajectory);	
+		}
 		
 		/*for(int i = 0; i < modifier.getLeftTrajectory().segments.length; i += 25) {
 			DecimalFormat df = new DecimalFormat("#.#");
