@@ -107,7 +107,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 
 	public static double kVTwoD = 1
 			/ MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kATwoD = 0.000;
+	public static double kATwoD = 0.0002;
 	public static double kPTwoD = 0.0000;
 	public static double kITwoD = 0.0;
 	public static double kDTwoD = 0.00000;
