@@ -1,6 +1,13 @@
 package edu.nr.lib.motionprofiling;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -222,7 +229,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 	 */
 	public void setTrajectory(Waypoint[] points) {
         if (profileFile.exists()) {
-        	trajectory = Pathfinder.readFromFile(profileFile);
+        	trajectory = Pathfinder.readFromCSV(profileFile);
         } else {
         	this.points = points;
     		this.trajectory = Pathfinder.generate(points, trajectoryConfig);
@@ -233,8 +240,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 		this.right = new DistanceFollower(modifier.getRightTrajectory());
 		
 		if (!profileFile.exists()) {
-			System.out.println("end of set trajectory");
-			Pathfinder.writeToFile(profileFile, trajectory);	
+			Pathfinder.writeToCSV(profileFile, trajectory);	
 		}
 		
 		/*for(int i = 0; i < modifier.getLeftTrajectory().segments.length; i += 25) {
