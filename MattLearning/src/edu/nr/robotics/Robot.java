@@ -11,6 +11,10 @@ import edu.nr.lib.commandbased.CancelAllCommand;
 import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.interfaces.Periodic;
 import edu.nr.lib.interfaces.SmartDashboardSource;
+import edu.nr.robotics.subsystems.EnabledSubsystems;
+import edu.nr.robotics.subsystems.drive.Drive;
+import edu.nr.robotics.subsystems.drive.DriveForwardBasicSmartDashboardCommand;
+import edu.nr.robotics.subsystems.drive.EnableMotionProfileSmartDashboardCommand;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -46,13 +50,18 @@ public class Robot extends IterativeRobot {
 		//SmartDashboard.putData("Auto mode", m_chooser);
 		
 		singleton = this;
-		
+		System.out.println("This had better work");
+		int foo = 9 / 0;
 		smartDashboardInit();
 		OI.init();
+		Drive.getInstance();
 	}
 
 	public void smartDashboardInit() {
-		
+		if(EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {
+			SmartDashboard.putData(new DriveForwardBasicSmartDashboardCommand());
+			SmartDashboard.putData(new EnableMotionProfileSmartDashboardCommand());
+		}
 	}
 	
 	/**

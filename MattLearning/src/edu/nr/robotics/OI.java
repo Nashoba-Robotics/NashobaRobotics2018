@@ -27,7 +27,7 @@ public class OI implements SmartDashboardSource{
 	
 	private static OI singleton;
 	
-	public static final Drive.DriveMode driveMode = Drive.DriveMode.arcadeDrive;
+	public static final Drive.DriveMode driveMode = Drive.DriveMode.cheesyDrive;
 	
 	private final Joystick driveLeft;
 	private final Joystick driveRight;
