@@ -19,19 +19,21 @@ public class EnableMotionProfile extends NRCommand {
 	Angle endAngle;
 	double maxVelPercent;
 	double maxAccelPercent;
+	String profileName;
 		
-	public EnableMotionProfile(Distance distX, Distance distY, Angle endAngle, double maxVelPercent, double maxAccelPercent) {
+	public EnableMotionProfile(Distance distX, Distance distY, Angle endAngle, double maxVelPercent, double maxAccelPercent, String profileName) {
 		super(Drive.getInstance());
 		this.distX = distX;
 		this.distY = distY;
 		this.endAngle = endAngle;
 		this.maxVelPercent = maxVelPercent;
 		this.maxAccelPercent = maxAccelPercent;
+		this.profileName = profileName;
 	}
 	
 	@Override
 	public void onStart() {
-		Drive.getInstance().enableMotionProfiler(distX, distY, endAngle, maxVelPercent, maxAccelPercent);
+		Drive.getInstance().enableMotionProfiler(distX, distY, endAngle, maxVelPercent, maxAccelPercent, profileName);
 		initialLeftPosition = Drive.getInstance().getLeftPosition();
 		initialRightPosition = Drive.getInstance().getRightPosition();
 	}

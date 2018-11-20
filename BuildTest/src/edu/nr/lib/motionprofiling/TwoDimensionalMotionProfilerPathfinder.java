@@ -1,6 +1,13 @@
 package edu.nr.lib.motionprofiling;
 
-import java.text.DecimalFormat;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,7 +20,6 @@ import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
 import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Distance;
-import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -53,6 +59,8 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 	
 	Waypoint[] points;
 	
+	File profileFile = new File("profileName");
+	
 	int encoderTicksPerRevolution;
 	double wheelDiameter;
 	double wheelBase;
@@ -77,7 +85,9 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 	public static double currentHeading = 0;
 	public static double desiredHeading = 0;
 		
-	public TwoDimensionalMotionProfilerPathfinder(DoublePIDOutput out, DoublePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, double max_velocity, double max_acceleration, double max_jerk, int encoderTicksPerRevolution, double wheelDiameter, double wheelBase, long period, boolean negate) {
+	public TwoDimensionalMotionProfilerPathfinder(DoublePIDOutput out, DoublePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, double max_velocity, double max_acceleration, double max_jerk, int encoderTicksPerRevolution, double wheelDiameter, double wheelBase, long period, boolean negate, File profileFile) {
+		this.profileFile = profileFile;
+		
 		this.out = out;
 		this.source = source;
 		this.period = period;
@@ -86,7 +96,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 				new Waypoint(0,0,0),
 				new Waypoint(1,0,0)
         };
-		this.trajectory = Pathfinder.generate(points, trajectoryConfig);
+        this.trajectory = Pathfinder.generate(points, trajectoryConfig);
 		this.wheelBase = wheelBase;
 		this.modifier = new TankModifier(trajectory).modify(wheelBase);
 		this.left = new DistanceFollower(modifier.getLeftTrajectory());
@@ -112,8 +122,8 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 		//new Thread(this).start();
 	}
 	
-	public TwoDimensionalMotionProfilerPathfinder(DoublePIDOutput out, DoublePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, double max_velocity, double max_acceleration, double max_jerk, int encoderTicksPerRevolution, double wheelDiameter, double wheelBase, boolean negate) {
-		this(out, source, kv, ka, kp, ki, kd, kp_theta, max_velocity, max_acceleration, max_jerk, encoderTicksPerRevolution, wheelDiameter, wheelBase, defaultPeriod, negate);
+	public TwoDimensionalMotionProfilerPathfinder(DoublePIDOutput out, DoublePIDSource source, double kv, double ka, double kp, double ki, double kd, double kp_theta, double max_velocity, double max_acceleration, double max_jerk, int encoderTicksPerRevolution, double wheelDiameter, double wheelBase, boolean negate, File profileFile) {
+		this(out, source, kv, ka, kp, ki, kd, kp_theta, max_velocity, max_acceleration, max_jerk, encoderTicksPerRevolution, wheelDiameter, wheelBase, defaultPeriod, negate, profileFile);
 	}
 	
 	double timeOfVChange = 0;
@@ -127,10 +137,10 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 			double prelimOutputLeft;
 			
 			if(enabled) {
-				double deltaT = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - lastTime;
+				/*double deltaT = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - lastTime;
 				
 				lastTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-				//System.out.println(deltaT*1000);
+				System.out.println(deltaT*1000);*/
 			
 				if (!this.negate) {
 					prelimOutputLeft = left.calculate((source.pidGetLeft() - initialPositionLeft));
@@ -218,11 +228,20 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 	 * @param trajectory
 	 */
 	public void setTrajectory(Waypoint[] points) {
-		this.points = points;
-		this.trajectory = Pathfinder.generate(points, trajectoryConfig);
+        if (profileFile.exists()) {
+        	trajectory = Pathfinder.readFromCSV(profileFile);
+        } else {
+        	this.points = points;
+    		this.trajectory = Pathfinder.generate(points, trajectoryConfig);
+        }
+		
 		this.modifier = new TankModifier(trajectory).modify(wheelBase);
 		this.left = new DistanceFollower(modifier.getLeftTrajectory());
 		this.right = new DistanceFollower(modifier.getRightTrajectory());
+		
+		if (!profileFile.exists()) {
+			Pathfinder.writeToCSV(profileFile, trajectory);	
+		}
 		
 		/*for(int i = 0; i < modifier.getLeftTrajectory().segments.length; i += 25) {
 			DecimalFormat df = new DecimalFormat("#.#");

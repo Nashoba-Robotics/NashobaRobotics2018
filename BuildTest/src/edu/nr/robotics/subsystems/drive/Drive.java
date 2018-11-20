@@ -1,5 +1,7 @@
 package edu.nr.robotics.subsystems.drive;
 
+import java.io.File;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -105,7 +107,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 
 	public static double kVTwoD = 1
 			/ MAX_SPEED_DRIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND);
-	public static double kATwoD = 0.000;
+	public static double kATwoD = 0.0002;
 	public static double kPTwoD = 0.0000;
 	public static double kITwoD = 0.0;
 	public static double kDTwoD = 0.00000;
@@ -224,6 +226,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	public static Distance xProfile = new Distance(11.67, Distance.Unit.FOOT);
 	public static Distance yProfile = new Distance(5.38, Distance.Unit.FOOT);
 	public static Angle endAngle = new Angle(0, Angle.Unit.DEGREE);
+	public static String profileName = "ProfileName";
 	public static double drivePercent = 0.4;
 	public static double accelPercent = 0.6;
 	public static Angle angleToTurn;
@@ -540,11 +543,9 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 
 	public void enableMotionProfiler(Distance distX, Distance distY, Angle endAngle, double maxVelPercent,
-			double maxAccelPercent) {
-		System.out.println("1");
-		for (int i = 0; i<1000000; i++) {
-			double foobar = 4.0 * 8.0;
-		}
+			double maxAccelPercent, String profileName) {
+		File profileFile = new File("home/lvuser/" + profileName + ".csv");
+		
 		twoDProfiler = new TwoDimensionalMotionProfilerPathfinder(this, this, kVTwoD, kATwoD, kPTwoD, kITwoD, kDTwoD,
 				kP_thetaTwoD,
 				MAX_SPEED_DRIVE.mul(maxVelPercent).get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE,
@@ -555,14 +556,18 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 						Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 				(int) (Math.PI * WHEEL_DIAMETER_EFFECTIVE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE)),
 				WHEEL_DIAMETER.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE),
-				WHEEL_BASE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), false);
+				WHEEL_BASE.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), false, profileFile);
 
-		System.out.println("foobar distX: " + distX.get(Distance.Unit.FOOT) + "	distY: " + distY.get(Distance.Unit.FOOT)
-				+ "	end Angle: " + endAngle.get(Angle.Unit.DEGREE));
-		points = new Waypoint[] { new Waypoint(0, 0, 0), new Waypoint(1, 0, 0),
-				new Waypoint(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE),
-						distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), endAngle.get(Angle.Unit.RADIAN))};
-		twoDProfiler.setTrajectory(points);
+		System.out.println(profileFile.getName());
+		
+		if (!profileFile.exists()) {
+			System.out.println("distX: " + distX.get(Distance.Unit.FOOT) + "	distY: "
+					+ distY.get(Distance.Unit.FOOT) + "	end Angle: " + endAngle.get(Angle.Unit.DEGREE));
+			points = new Waypoint[] { new Waypoint(0, 0, 0), new Waypoint(1, 0, 0),
+					new Waypoint(distX.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE),
+							distY.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE), endAngle.get(Angle.Unit.RADIAN)) };
+		}
+			twoDProfiler.setTrajectory(points);
 		
 		twoDProfiler.enable();
 		
@@ -576,6 +581,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		SmartDashboard.putNumber("X Profile Feet: ", xProfile.get(Distance.Unit.FOOT));
 		SmartDashboard.putNumber("Y Profile Feet: ", yProfile.get(Distance.Unit.FOOT));
 		SmartDashboard.putNumber("Profile End Angle: ", endAngle.get(Angle.Unit.DEGREE));
+		SmartDashboard.putString("Profile Name: ", profileName);
 		SmartDashboard.putNumber("Drive Percent: ", PROFILE_DRIVE_PERCENT);
 		SmartDashboard.putNumber("Drive Accel Percent: ", ACCEL_PERCENT);
 
@@ -589,6 +595,39 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 
 	@Override
 	public void smartDashboardInfo() {
+		/*SmartDashboard.putString("Drive Left Current", getLeftCurrent() + " : " + getLeftFollowCurrent());
+		SmartDashboard.putString("Drive Right Current", getRightCurrent() + " : " + getRightFollowCurrent());
+
+		SmartDashboard.putString("Drive Left Velocity: ", getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND)
+				+ " : " + leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+		SmartDashboard.putString("Drive Right Velocity: ", getRightVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND)
+				+ " : " + rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
+
+		SmartDashboard.putNumber("Drive Left Percent", leftMotorSetpoint.div(MAX_SPEED_DRIVE));
+		SmartDashboard.putNumber("Drive Right Percent", rightMotorSetpoint.div(MAX_SPEED_DRIVE));
+
+		SmartDashboard.putNumber("Drive Left Position", getLeftPosition().get(Distance.Unit.INCH));
+		SmartDashboard.putNumber("Drive Right Position", getRightPosition().get(Distance.Unit.INCH));
+
+		SmartDashboard.putNumber("Drive Left Encoder Position", leftDrive.getSelectedSensorPosition(PID_TYPE));
+		SmartDashboard.putNumber("Drive Right Encoder Position", rightDrive.getSelectedSensorPosition(PID_TYPE));
+
+		xProfile = new Distance(SmartDashboard.getNumber("X Profile Feet: ", 0), Distance.Unit.FOOT);
+		yProfile = new Distance(SmartDashboard.getNumber("Y Profile Feet: ", 0), Distance.Unit.FOOT);
+		endAngle = new Angle(SmartDashboard.getNumber("Profile End Angle: ", 0), Angle.Unit.DEGREE);
+		profileName = SmartDashboard.getString("Profile Name: ", profileName);
+		drivePercent = SmartDashboard.getNumber("Drive Percent: ", 0);
+		accelPercent = SmartDashboard.getNumber("Drive Accel Percent: ", 0);
+		System.out.println("Reaches SmartDashboardInfo");
+
+		kATwoD = SmartDashboard.getNumber("ka: ", kATwoD);
+		kPTwoD = SmartDashboard.getNumber("kp: ", kPTwoD);
+		kITwoD = SmartDashboard.getNumber("ki: ", kITwoD);
+		kDTwoD = SmartDashboard.getNumber("kd: ", kDTwoD);
+		kP_thetaTwoD = SmartDashboard.getNumber("kp theta: ", kP_thetaTwoD);*/
+	}
+	
+	public void periodic() {
 		SmartDashboard.putString("Drive Left Current", getLeftCurrent() + " : " + getLeftFollowCurrent());
 		SmartDashboard.putString("Drive Right Current", getRightCurrent() + " : " + getRightFollowCurrent());
 
@@ -609,6 +648,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		xProfile = new Distance(SmartDashboard.getNumber("X Profile Feet: ", 0), Distance.Unit.FOOT);
 		yProfile = new Distance(SmartDashboard.getNumber("Y Profile Feet: ", 0), Distance.Unit.FOOT);
 		endAngle = new Angle(SmartDashboard.getNumber("Profile End Angle: ", 0), Angle.Unit.DEGREE);
+		profileName = SmartDashboard.getString("Profile Name: ", profileName);
 		drivePercent = SmartDashboard.getNumber("Drive Percent: ", 0);
 		accelPercent = SmartDashboard.getNumber("Drive Accel Percent: ", 0);
 
