@@ -203,9 +203,12 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			
 			CheesyDriveCalculationConstants.createDriveTypeCalculations();
 			
+			smartDashboardInit();
 		}
 	}
 			public void smartDashboardInit(){
+				
+				System.out.println("sd init");
 				if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_BASIC_ENABLED) {
 					SmartDashboard.putData(new ResetGyroCommand());
 				}
@@ -231,14 +234,16 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 					
 					SmartDashboard.putNumber("X Profile Feet: ", 0);
 					SmartDashboard.putNumber("Y Profile Feet: ", 0);
+					System.out.println("is this being called");
 					SmartDashboard.putNumber("Drive Percent: ", PROFILE_DRIVE_PERCENT);
 					SmartDashboard.putNumber("Drive Accel Percent: ", ACCEL_PERCENT);
 					SmartDashboard.putNumber("Angle To Turn: ", 0);
+					
 				}
 			}
 			
 			
-		public void periodic() {
+		/*public void periodic() {
 			System.out.println("Tyler said to do this7");
 			if (leftDrive != null && rightDrive != null) {
 				System.out.println("Tyler said to do this8");
@@ -316,19 +321,19 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			}
 		}
 			
-		
+		*/
 		
 		
 		
 	
 	
 	public void smartDashboardInfo() {
-		/*
-		System.out.println("Tyler said to do this7");
+		
+	//	System.out.println("Tyler said to do this7");
 		if (leftDrive != null && rightDrive != null) {
-			System.out.println("Tyler said to do this8");
+	//		System.out.println("Tyler said to do this8");
 			if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_BASIC_ENABLED) {
-				System.out.println("Tyler said to do this9");
+	//			System.out.println("Tyler said to do this9");
 								
 				SmartDashboard.putString("Drive Left Current", getLeftCurrent() + " : " + getLeftFollowCurrent());
 				
@@ -347,26 +352,26 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			
 				
 			}
-			System.out.println("Tyler said to do this6");
+			//System.out.println("Tyler said to do this6");
 			if (EnabledSubsystems.DRIVE_SMARTDASHBOARD_DEBUG_ENABLED) {
-				System.out.println("Tyler said to do this5");
+			//	System.out.println("Tyler said to do this5");
 				SmartDashboard.putNumber("Drive Left Percent", leftMotorSetpoint.div(MAX_SPEED_DRIVE));
 				SmartDashboard.putNumber("Drive Right Percent", rightMotorSetpoint.div(MAX_SPEED_DRIVE));
 				
-				System.out.println("Tyler said to do this4");
+			//	System.out.println("Tyler said to do this4");
 				SmartDashboard.putData(this);
 				SmartDashboard.putString("Drive Voltage",
 						leftDrive.getMotorOutputVoltage() + " : " + rightDrive.getMotorOutputVoltage());
 				SmartDashboard.putNumber("Drive Left Position", getLeftPosition().get(Distance.Unit.INCH));
 				SmartDashboard.putNumber("Drive Right Position", getRightPosition().get(Distance.Unit.INCH));
-				System.out.println("Tyler said to do this3");
+			//	System.out.println("Tyler said to do this3");
 				SmartDashboard.putNumber("Drive Left Encoder Position", leftDrive.getSelectedSensorPosition(PID_TYPE));
 				SmartDashboard.putNumber("Drive Right Encoder Position", rightDrive.getSelectedSensorPosition(PID_TYPE));
-				System.out.println("Tyler said to do this2");
+			//	System.out.println("Tyler said to do this2");
 				leftDrive.config_kP(VEL_SLOT, SmartDashboard.getNumber("Left P Value: ", P_LEFT), DEFAULT_TIMEOUT);
 				leftDrive.config_kI(VEL_SLOT, SmartDashboard.getNumber("Left I Value: ", I_LEFT), DEFAULT_TIMEOUT);
 				leftDrive.config_kD(VEL_SLOT, SmartDashboard.getNumber("Left D Value: ", D_LEFT), DEFAULT_TIMEOUT);
-				System.out.println("Tyler said to do this1");
+			//	System.out.println("Tyler said to do this1");
 				rightDrive.config_kP(VEL_SLOT, SmartDashboard.getNumber("Right P Value: ", P_RIGHT), DEFAULT_TIMEOUT);
 				rightDrive.config_kI(VEL_SLOT, SmartDashboard.getNumber("Right I Value: ", I_RIGHT), DEFAULT_TIMEOUT);
 				rightDrive.config_kD(VEL_SLOT, SmartDashboard.getNumber("Right D Value: ", D_RIGHT), DEFAULT_TIMEOUT);
@@ -396,9 +401,11 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 				drivePercent = SmartDashboard.getNumber("Drive Percent: ", 0);
 				accelPercent = SmartDashboard.getNumber("Drive Accel Percent: ", 0);
 				angleToTurn = new Angle(SmartDashboard.getNumber("Angle To Turn: ", 0), Angle.Unit.DEGREE);
-			
+				
+				
+				
 			}
-		}*/
+		}
 	}
 	
 	public static Drive getInstance() {

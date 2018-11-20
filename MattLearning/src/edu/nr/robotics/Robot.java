@@ -51,7 +51,7 @@ public class Robot extends IterativeRobot {
 		
 		singleton = this;
 		System.out.println("This had better work");
-		int foo = 9 / 0;
+		//int a = 9 / 0;
 		smartDashboardInit();
 		OI.init();
 		Drive.getInstance();
