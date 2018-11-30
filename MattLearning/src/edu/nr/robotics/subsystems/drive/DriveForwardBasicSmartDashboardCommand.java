@@ -3,6 +3,7 @@ package edu.nr.robotics.subsystems.drive;
 import edu.nr.lib.commandbased.NRCommand;
 import edu.nr.lib.gyro.GyroCorrection;
 import edu.nr.lib.units.Distance;
+import edu.nr.lib.units.Time;
 
 public class DriveForwardBasicSmartDashboardCommand extends NRCommand {
 
@@ -24,6 +25,7 @@ public class DriveForwardBasicSmartDashboardCommand extends NRCommand {
 		double turnValue = gyro.getTurnValue(Drive.kP_thetaOneD, false);
 		Drive.getInstance().setMotorSpeedInPercent(Drive.drivePercent * Drive.xProfile.signum() - turnValue, 
 				Drive.drivePercent * Drive.xProfile.signum() + turnValue);
+		System.out.println(Drive.getInstance().getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND));
 	}
 	
 	public void onEnd() {

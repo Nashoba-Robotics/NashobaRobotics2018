@@ -50,7 +50,7 @@ public class Robot extends IterativeRobot {
 		//SmartDashboard.putData("Auto mode", m_chooser);
 		
 		singleton = this;
-		System.out.println("This had better work");
+		//System.out.println("This had better work");
 		//int a = 9 / 0;
 		smartDashboardInit();
 		OI.init();
