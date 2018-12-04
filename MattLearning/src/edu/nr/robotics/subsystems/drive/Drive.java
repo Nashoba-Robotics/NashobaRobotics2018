@@ -50,15 +50,15 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	
 	public static final Distance EFFECTIVE_WHEEL_DIAMETER = new Distance(EFFECTIVE_WHEEL_DIAMETER_INCHES / ENC_TO_WHEEL_GEARING, Distance.Unit.INCH);
 	
-	public static final Speed MAX_SPEED_DRIVE = new Speed(20.0, Distance.Unit.FOOT, Time.Unit.SECOND);
+	public static final Speed MAX_SPEED_DRIVE = new Speed(12.3, Distance.Unit.FOOT, Time.Unit.SECOND);
 	
 	public static final Acceleration MAX_ACCEL_DRIVE = new Acceleration(0.0, Distance.Unit.FOOT, Time.Unit.SECOND, Time.Unit.SECOND);
 	
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0; //This is 0 to 1 number
-	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.0; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_LEFT = 0.0982; //This is 0 to 1 number
+	public static final double MIN_MOVE_VOLTAGE_PERCENT_RIGHT = 0.107; //This is 0 to 1 number
 	
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0;
-	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT = 0.0733;
+	public static final double VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT = 0.0707;
 	
 	public static Time DRIVE_RAMP_RATE = new Time(0.0, Time.Unit.SECOND);
 	
@@ -418,6 +418,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 	
 	public void setMotorSpeed(Speed left, Speed right) {
+		System.out.println(left.get(Distance.Unit.FOOT, Time.Unit.SECOND) + "    Left");
+		
 		if (leftDrive != null && rightDrive != null) {
 			
 			leftMotorSetpoint = left;
