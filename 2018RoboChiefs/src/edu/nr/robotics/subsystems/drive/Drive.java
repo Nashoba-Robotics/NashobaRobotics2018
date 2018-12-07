@@ -260,7 +260,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	 * Possible drive mode selections
 	 */
 	public static enum DriveMode {
-		arcadeDrive, tankDrive, cheesyDrive
+		arcadeDrive, tankDrive, cheesyDrive, fieldCentricDrive
 	}
 	
 	private Drive() {
@@ -505,7 +505,12 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 		rightDrive.set(ControlMode.PercentOutput, right);
 		hDrive.set(ControlMode.PercentOutput, strafe);*/
 		
-		setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE_H.mul(strafe));
+		if (OI.driveMode == DriveMode.fieldCentricDrive) {
+			setMotorSpeed(MAX_SPEED_DRIVE_H.mul(left), MAX_SPEED_DRIVE_H.mul(right), MAX_SPEED_DRIVE_H.mul(strafe));
+		} else {
+			setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right), MAX_SPEED_DRIVE_H.mul(strafe));	
+		}
+		
 	}
 	
 	public void setMotorSpeed(Speed left, Speed right, Speed strafe) {
@@ -514,6 +519,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			leftMotorSetpoint = left;
 			rightMotorSetpoint = right;
 			hMotorSetpoint = strafe;
+			
+			System.out.println(hMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND));
 			
 			leftDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_LEFT * leftMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_LEFT) * 1023.0) / leftMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
 			rightDrive.config_kF(VEL_SLOT, ((VOLTAGE_PERCENT_VELOCITY_SLOPE_RIGHT * rightMotorSetpoint.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND) + MIN_MOVE_VOLTAGE_PERCENT_RIGHT) * 1023.0) / rightMotorSetpoint.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND), DEFAULT_TIMEOUT);
@@ -526,7 +533,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			} else {
 				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
 				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_DRIVE, Time.Unit.HUNDRED_MILLISECOND));
-				if (OI.getInstance().isHDriveZero())
+				if (Math.abs(hMotorSetpoint.div(MAX_SPEED_DRIVE_H)) < 0.05)//if (OI.getInstance().isHDriveZero())
 					hDrive.set(ControlMode.PercentOutput, 0);
 				else
 					hDrive.set(ControlMode.Velocity, hMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));

@@ -3,8 +3,11 @@ package edu.nr.robotics.subsystems.drive;
 import edu.nr.lib.NRMath;
 import edu.nr.lib.commandbased.JoystickCommand;
 import edu.nr.lib.gyro.GyroCorrection;
+import edu.nr.lib.gyro.Pigeon;
+import edu.nr.lib.units.Angle;
 import edu.nr.robotics.OI;
 import edu.nr.robotics.Robot;
+import edu.nr.robotics.subsystems.drive.Drive.DriveMode;
 import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 
 public class DriveJoystickCommand extends JoystickCommand {
@@ -97,6 +100,24 @@ public class DriveJoystickCommand extends JoystickCommand {
 			Drive.getInstance().cheesyDrive(cheesyMoveValue, cheesyRotateValue, cheesyHValue);
 			
 			break;
+			
+		case fieldCentricDrive:
+			Angle robotAngle = Pigeon.getPigeon(Drive.getInstance().getPigeonTalon()).getYaw().sub(new Angle(90, Angle.Unit.DEGREE));
+			
+			double inputForward = OI.getInstance().getArcadeMoveValue();
+			double inputSide = OI.getInstance().getArcadeHValue();
+			double fieldCentricRotate = OI.getInstance().getArcadeTurnValue();
+			
+			double inputMoveMagnitude = Math.sqrt(Math.pow(inputForward, 2) + Math.pow(inputSide, 2));
+			Angle inputAngle = new Angle(Math.atan2(inputForward, inputSide),Angle.Unit.RADIAN);
+			
+			double fieldCentricMoveValue = -inputMoveMagnitude * Math.cos(inputAngle.sub(robotAngle).get(Angle.Unit.RADIAN));
+			double fieldCentricHValue = inputMoveMagnitude * Math.cos(inputAngle.sub(robotAngle).sub(new Angle(90,Angle.Unit.DEGREE)).get(Angle.Unit.RADIAN));
+			
+			Drive.getInstance().cheesyDrive(fieldCentricMoveValue, fieldCentricRotate, fieldCentricHValue);
+			
+			break;
+		
 		}
 		
 	}
@@ -105,7 +126,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 	public boolean shouldSwitchToJoystick() {
 		if (!(Drive.getInstance().getCurrentCommand() instanceof DriveToCubeJoystickCommand) && !Robot.getInstance().isAutonomous()) {
 		
-			if((OI.driveMode == Drive.DriveMode.arcadeDrive) || (OI.driveMode == Drive.DriveMode.cheesyDrive)) {
+			if((OI.driveMode == Drive.DriveMode.arcadeDrive) || (OI.driveMode == Drive.DriveMode.cheesyDrive || OI.driveMode == Drive.DriveMode.fieldCentricDrive)) {
 				return OI.getInstance().isArcadeNonZero();
 			} else {
 				return OI.getInstance().getTankLeftValue() != 0 || OI.getInstance().getTankRightValue() != 0;
