@@ -31,6 +31,7 @@ public class DriveJoystickCommand extends JoystickCommand {
 		switch (OI.driveMode) {
 		case arcadeDrive:
 			double moveValue = OI.getInstance().getArcadeMoveValue();
+			System.out.println("Movevalue  " + OI.getInstance().getArcadeMoveValue() );
 			double rotateValue = OI.getInstance().getArcadeTurnValue();
 						
 			moveValue = NRMath.powWithSign(moveValue, 3);
