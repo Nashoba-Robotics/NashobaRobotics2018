@@ -15,11 +15,7 @@ public class GyroCorrection
 	Gyro gyro;
 	
 	public GyroCorrection(Angle angle) {
-		if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
-			this.gyro = NavX.getInstance();
-		} else {
-			this.gyro = Pigeon.getPigeon(Drive.getInstance().getPigeonTalon());
-		}
+		this.gyro = Pigeon.getPigeon(Drive.getInstance().getPigeonTalon());
 		goalAngle = angle;
 		initialAngle = gyro.getYaw();
 	}

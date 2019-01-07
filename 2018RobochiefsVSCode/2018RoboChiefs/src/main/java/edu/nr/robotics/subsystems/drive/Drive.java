@@ -11,7 +11,6 @@ import edu.nr.lib.commandbased.NRSubsystem;
 import edu.nr.lib.driving.DriveTypeCalculations;
 import edu.nr.lib.gyro.Gyro;
 import edu.nr.lib.gyro.Gyro.ChosenGyro;
-import edu.nr.lib.gyro.NavX;
 import edu.nr.lib.gyro.Pigeon;
 import edu.nr.lib.gyro.ResetGyroCommand;
 import edu.nr.lib.interfaces.DoublePIDOutput;
@@ -718,12 +717,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 				
 				SmartDashboard.putNumber("Drive H Current", getHCurrent());
 				
-				if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
-					SmartDashboard.putNumber("Gyro Yaw", (-NavX.getInstance().getYaw().get(Angle.Unit.DEGREE)) % 360);
-				} else {
-					SmartDashboard.putNumber("Gyro Yaw", (-Pigeon.getPigeon(getInstance().getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE)) % 360);
-				}
-				
+				SmartDashboard.putNumber("Gyro Yaw", (-Pigeon.getPigeon(getInstance().getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE)) % 360);
+								
 				SmartDashboard.putNumberArray("Drive Left Velocity", new double[] {getLeftVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND), leftMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND)});
 				SmartDashboard.putNumberArray("Drive Right Velocity", new double[] {getRightVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND), rightMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND)});
 				SmartDashboard.putNumberArray("Drive H Velocity", new double[] {getHVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND), hMotorSetpoint.get(Distance.Unit.FOOT, Time.Unit.SECOND)});

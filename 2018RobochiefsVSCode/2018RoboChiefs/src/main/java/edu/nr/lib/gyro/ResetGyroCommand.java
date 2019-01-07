@@ -12,11 +12,8 @@ public class ResetGyroCommand extends NRCommand {
 
 	@Override
 	protected void onStart() {
-		if (Gyro.chosenGyro == ChosenGyro.NavX) {
-			NavX.getInstance().reset();
-		} else {
-			Pigeon.getPigeon(Drive.getInstance().getPigeonTalon()).reset();
-		}
+		Pigeon.getPigeon(Drive.getInstance().getPigeonTalon()).reset();
+		
 	}
 	
 	@Override

@@ -1,6 +1,5 @@
 package edu.nr.lib.gyro;
 
-import com.kauailabs.sf2.orientation.OrientationHistory;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
@@ -20,8 +19,6 @@ public class Pigeon extends Gyro implements Periodic {
 	
 	private double[] yawPitchRoll;
 	private short[] XYZError;
-	
-	OrientationHistory orientationHistory;
 	
 	double lastWriteTimestamp = 0;
 	

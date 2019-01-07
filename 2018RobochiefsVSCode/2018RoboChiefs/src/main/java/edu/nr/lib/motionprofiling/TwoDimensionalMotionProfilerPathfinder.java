@@ -7,7 +7,6 @@ import java.util.TimerTask;
 import edu.nr.lib.gyro.Gyro;
 import edu.nr.lib.gyro.Gyro.ChosenGyro;
 import edu.nr.lib.gyro.GyroCorrection;
-import edu.nr.lib.gyro.NavX;
 import edu.nr.lib.gyro.Pigeon;
 import edu.nr.lib.interfaces.DoublePIDOutput;
 import edu.nr.lib.interfaces.DoublePIDSource;
@@ -139,11 +138,8 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 				velocityGoalLeft = Drive.getInstance().MAX_SPEED_DRIVE.get(Distance.Unit.FOOT, Time.Unit.SECOND)*(prelimOutputLeft);
 				velocityGoalRight = Drive.getInstance().MAX_SPEED_DRIVE.get(Distance.Unit.FOOT, Time.Unit.SECOND)*(prelimOutputRight);
 				
-				if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
-					currentHeading = -NavX.getInstance().getYaw().get(Angle.Unit.DEGREE);
-				} else {
-					currentHeading = -Pigeon.getPigeon(Drive.getInstance().getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE);
-				}
+				currentHeading = -Pigeon.getPigeon(Drive.getInstance().getPigeonTalon()).getYaw().get(Angle.Unit.DEGREE);
+				
 				//double currentHeading = -gyroCorrection.getAngleErrorDegrees();
 				desiredHeading = Pathfinder.r2d(left.getHeading());
 				
@@ -200,11 +196,7 @@ public class TwoDimensionalMotionProfilerPathfinder extends TimerTask  {
 		gyroCorrection.clearInitialValue();
 		timeSinceStart = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 		lastTime = timeSinceStart;
-		if (Gyro.chosenGyro.equals(ChosenGyro.NavX)) {
-			NavX.getInstance().reset();
-		} else {
-			Pigeon.getPigeon(Drive.getInstance().getPigeonTalon()).reset();
-		}
+		Pigeon.getPigeon(Drive.getInstance().getPigeonTalon()).reset();
 	}
 	
 	/**
