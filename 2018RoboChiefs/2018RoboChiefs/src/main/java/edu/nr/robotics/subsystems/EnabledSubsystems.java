@@ -10,7 +10,7 @@ public class EnabledSubsystems {
 	public static final boolean CLIMBER_ENABLED									= true;
 	
 	public static boolean DRIVE_DUMB_ENABLED	 								= false;
-	public static final boolean ELEVATOR_DUMB_ENABLED							= false;
+	public static final boolean ELEVATOR_DUMB_ENABLED							= true;
 	public static final boolean INTAKE_ELEVATOR_DUMB_ENABLED					= false;
 	public static final boolean ELEVATOR_SHOOTER_DUMB_ENABLED					= true;
 	public static final boolean CLIMBER_DUMB_ENABLED							= true;

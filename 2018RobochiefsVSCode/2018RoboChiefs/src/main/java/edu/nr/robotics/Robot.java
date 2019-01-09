@@ -45,7 +45,7 @@ import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorDeltaPositionSmar
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorMoveBasicSmartDashboardCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileSmartDashboardCommandGroup;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocitySmartDashboardCommand;
-import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -57,9 +57,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-public class Robot extends IterativeRobot {
+public class Robot extends TimedRobot {
 	
 	private double prevTime = 0;
+	private double dt = 0;
+	private double dtAv = 0;
+	private int count = 0;
 	
 	private static Robot singleton;
 	
@@ -82,6 +85,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		singleton = this;
+
+		m_period = 0.010;
 		
 		smartDashboardInit();
 		autoChooserInit();
@@ -284,9 +289,15 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		double dt = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - prevTime;
+		count++;
+		dt = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - prevTime;
 		prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-		//System.out.println(dt);
+		dtAv += dt;
+
+		if (count % 100 == 0) {
+			System.out.println(dtAv / 100.0);
+			dtAv = 0;
+		}
 	}
 
 	/**
