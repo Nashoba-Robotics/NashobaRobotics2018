@@ -45,6 +45,8 @@ import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorDeltaPositionSmar
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorMoveBasicSmartDashboardCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileSmartDashboardCommandGroup;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocitySmartDashboardCommand;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -94,10 +96,21 @@ public class Robot extends TimedRobot {
 		LimelightNetworkTable.getInstance().lightLED(true);
 		LimelightNetworkTable.getInstance().lightLED(false);
 		
+		//CameraInit();
+
 		for (int i = 0; i < 10; i++) {
 			System.out.println("Name Geoff");
 		}
 		System.out.println("-Erik");
+	}
+
+	public void CameraInit() {
+		new Thread(() -> {
+			UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+			camera.setResolution(720, 1080);
+			
+		}).start();
+		
 	}
 
 	public void autoChooserInit() {
@@ -295,8 +308,9 @@ public class Robot extends TimedRobot {
 		dtAv += dt;
 
 		if (count % 100 == 0) {
-			System.out.println(dtAv / 100.0);
+			//System.out.println(dtAv / 100.0);
 			dtAv = 0;
+			count = 0;
 		}
 	}
 

@@ -5,17 +5,16 @@ import java.util.TimerTask;
 
 import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Time;
+import edu.nr.lib.units.Angle.Unit;
 import edu.wpi.first.networktables.*;
 
 /**
  * Class to get limelight values. Enable and disable to keep code running quickly
  * 
- * @author Nashoba1768
+ * @author Nashoba1768 (Ben)
  *
  */
 public class LimelightNetworkTable extends TimerTask {
-	
-	NetworkTableInstance limelightInstance;
 	
 	private static final Time DEFAULT_PERIOD = new Time(10, Time.Unit.MILLISECOND);
 	private static final boolean DEFAULT_LED_LIGHT = false;
@@ -52,7 +51,6 @@ public class LimelightNetworkTable extends TimerTask {
 	}
 	
 	private LimelightNetworkTable() {
-		limelightInstance = NetworkTableInstance.create();
 		timer = new Timer();
 		timer.schedule(this, 0, (long) DEFAULT_PERIOD.get(Time.Unit.MILLISECOND));
 		limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
@@ -63,9 +61,10 @@ public class LimelightNetworkTable extends TimerTask {
 	@Override
 	public void run() {
 		if (enabled) {
-			horizOffsetAngle = new Angle(limelightTable.getEntry("ty").getDouble(0), Angle.Unit.DEGREE);
-			vertOffsetAngle = new Angle(-limelightTable.getEntry("tx").getDouble(0), Angle.Unit.DEGREE);
+			vertOffsetAngle = new Angle(limelightTable.getEntry("ty").getDouble(0), Angle.Unit.DEGREE);
+			horizOffsetAngle = new Angle(limelightTable.getEntry("tx").getDouble(0), Angle.Unit.DEGREE);
 			pipelineLatency = new Time(limelightTable.getEntry("tl").getDouble(0), Time.Unit.MILLISECOND);
+			System.out.println("vert: " + vertOffsetAngle.get(Angle.Unit.DEGREE) + '\n' + "horiz: " + horizOffsetAngle.get(Unit.DEGREE) + '\n' + "latency: " + pipelineLatency.get(Time.Unit.SECOND));
 		}
 	}
 	
@@ -109,7 +108,7 @@ public class LimelightNetworkTable extends TimerTask {
 
 	public void lightLED(boolean bool) {
 		if (bool) {
-			limelightTable.getEntry("ledMode").setDouble(0);
+			limelightTable.getEntry("ledMode").setDouble(3);
 		} else {
 			limelightTable.getEntry("ledMode").setDouble(1);
 		}
