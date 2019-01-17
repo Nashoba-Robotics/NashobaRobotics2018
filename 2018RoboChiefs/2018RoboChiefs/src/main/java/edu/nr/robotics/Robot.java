@@ -286,7 +286,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		double dt = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - prevTime;
 		prevTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-		//System.out.println(dt);
+		System.out.println(dt);
 	}
 
 	/**
