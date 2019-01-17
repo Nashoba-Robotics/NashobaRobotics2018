@@ -87,7 +87,10 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * MotionMagic PID values for the elevator
 	 */
-	public static double F_POS_ELEVATOR_UP = 0;
+	public static double F_POS_ELEVATOR_UP = ((VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP * MAX_SPEED_ELEVATOR_UP.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
+	+ MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP) * 1023.0)
+	/ MAX_SPEED_ELEVATOR_UP.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
+			Time.Unit.HUNDRED_MILLISECOND);
 	
 	public static double P_POS_ELEVATOR_UP = 0; // TODO: Find elevator MagicMotion PID values
 	public static double I_POS_ELEVATOR_UP = 0;
@@ -340,6 +343,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 				elevTalon.configMotionAcceleration((int) MAX_ACCEL_ELEVATOR_UP.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
 						Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 						DEFAULT_TIMEOUT);
+				System.out.println("Going up");
 				
 			elevTalon.set(ControlMode.MotionMagic, position.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV));
 			} else {

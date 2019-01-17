@@ -14,6 +14,7 @@ public class ElevatorPositionSmartDashboardCommand extends NRCommand {
 	@Override
 	protected void onStart() {
 		this.height = Elevator.profilePos;
+		System.out.println("set height elev: " + height.get(Distance.Unit.INCH));
 		Elevator.getInstance().setPosition(height);
 	}
 	
