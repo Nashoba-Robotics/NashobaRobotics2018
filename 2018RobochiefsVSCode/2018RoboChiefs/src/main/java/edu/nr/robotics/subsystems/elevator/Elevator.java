@@ -87,14 +87,14 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * MotionMagic PID values for the elevator
 	 */
-	public static double F_POS_ELEVATOR_UP = ((VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP * MAX_SPEED_ELEVATOR_UP.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
+	public static double F_POS_ELEVATOR_UP = 0.4;/*0.147;((VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP * MAX_SPEED_ELEVATOR_UP.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
 	+ MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP) * 1023.0)
 	/ MAX_SPEED_ELEVATOR_UP.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
-			Time.Unit.HUNDRED_MILLISECOND);
+			Time.Unit.HUNDRED_MILLISECOND);*/
 	
-	public static double P_POS_ELEVATOR_UP = 0; // TODO: Find elevator MagicMotion PID values
+	public static double P_POS_ELEVATOR_UP = 0.05; // TODO: Find elevator MagicMotion PID values
 	public static double I_POS_ELEVATOR_UP = 0;
-	public static double D_POS_ELEVATOR_UP = 0;
+	public static double D_POS_ELEVATOR_UP = 0.5;
 	
 	public static double F_POS_ELEVATOR_DOWN = ((VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_DOWN * MAX_SPEED_ELEVATOR_DOWN.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
 			+ MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN) * 1023.0)
@@ -252,13 +252,14 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 			elevTalon.configClosedloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 			elevTalon.configOpenloopRamp(VOLTAGE_RAMP_RATE_ELEVATOR.get(Time.Unit.SECOND), DEFAULT_TIMEOUT);
 	
-			elevTalon.configMotionCruiseVelocity((int) MAX_SPEED_ELEVATOR_UP.mul(PROFILE_VEL_PERCENT_ELEVATOR).get(
+			elevTalon.configMotionCruiseVelocity(1*(int) MAX_SPEED_ELEVATOR_UP.mul(PROFILE_VEL_PERCENT_ELEVATOR).get(
 					Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND),
 							DEFAULT_TIMEOUT);
-			elevTalon.configMotionAcceleration((int) MAX_ACCEL_ELEVATOR_UP.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
+			
+			elevTalon.configMotionAcceleration(2*(int) MAX_ACCEL_ELEVATOR_UP.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
 					Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 					DEFAULT_TIMEOUT);
-			
+
 			elevTalon.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, DEFAULT_TIMEOUT);
 			elevTalon.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, DEFAULT_TIMEOUT);
 		
@@ -609,7 +610,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	}
 
 	@Override
-	public void periodic() {
+	public void periodic() {		
 		if (EnabledSubsystems.ELEVATOR_ENABLED) {
 			if (OI.getInstance().isKidModeOn()) {
 				PROFILE_VEL_PERCENT_ELEVATOR = 0.6;
