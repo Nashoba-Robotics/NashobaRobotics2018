@@ -50,7 +50,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	public static final Acceleration MAX_ACCEL_ELEVATOR_DOWN = Acceleration.ZERO; //TODO: Find MAX_ACCEL_ELEVATOR_DOWN
 
 	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP = 0.25;
-	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0.2;//0.20
+	public static final double REAL_MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_DOWN = 0.25;//0.20
 	
 	/**
 	 * The minimum voltage needed to move the elevator
@@ -88,7 +88,10 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	/**
 	 * MotionMagic PID values for the elevator
 	 */
-	public static double F_POS_ELEVATOR_UP = 0;
+	public static double F_POS_ELEVATOR_UP = ((VOLTAGE_PERCENT_VELOCITY_SLOPE_ELEVATOR_UP * MAX_SPEED_ELEVATOR_UP.abs().get(Distance.Unit.FOOT, Time.Unit.SECOND)
+	+ MIN_MOVE_VOLTAGE_PERCENT_ELEVATOR_UP) * 1023.0)
+	/ MAX_SPEED_ELEVATOR_UP.abs().get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV,
+			Time.Unit.HUNDRED_MILLISECOND);
 	
 	public static double P_POS_ELEVATOR_UP = 0; // TODO: Find elevator MagicMotion PID values
 	public static double I_POS_ELEVATOR_UP = 0;
@@ -234,8 +237,10 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 			elevTalon.config_kD(MOTION_MAGIC_DOWN_SLOT, D_POS_ELEVATOR_DOWN, DEFAULT_TIMEOUT);
 			
 			elevTalon.setNeutralMode(NEUTRAL_MODE_ELEVATOR);
-			elevTalon.setInverted(false);
-			elevTalon.setSensorPhase(true);
+			elevTalon.setInverted(true);
+			elevTalon.setSensorPhase(false);
+
+			elevTalonFollow.setInverted(true);
 	
 			elevTalon.enableVoltageCompensation(true);
 			elevTalon.configVoltageCompSaturation(VOLTAGE_COMPENSATION_LEVEL_ELEVATOR, DEFAULT_TIMEOUT);
@@ -344,6 +349,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 				elevTalon.configMotionAcceleration((int) MAX_ACCEL_ELEVATOR_UP.mul(PROFILE_ACCEL_PERCENT_ELEVATOR).get(
 						Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV, Time.Unit.HUNDRED_MILLISECOND, Time.Unit.HUNDRED_MILLISECOND),
 						DEFAULT_TIMEOUT);
+				System.out.println("Going up");
 				
 			elevTalon.set(ControlMode.MotionMagic, position.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV));
 			} else {

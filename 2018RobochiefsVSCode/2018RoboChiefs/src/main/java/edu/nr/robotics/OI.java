@@ -131,7 +131,7 @@ public class OI implements SmartDashboardSource {
 	private static final int STICK_OPERATOR_RIGHT = 3;
 
 	public static final Distance ELEVATOR_BUTTON_HEIGHT = new Distance(13, Distance.Unit.INCH);
-	public static final Drive.DriveMode driveMode = Drive.DriveMode.fieldCentricDrive;
+	public static final Drive.DriveMode driveMode = Drive.DriveMode.cheesyDrive;
 
 	private OI() {
 		driveLeft = new Joystick(STICK_LEFT);

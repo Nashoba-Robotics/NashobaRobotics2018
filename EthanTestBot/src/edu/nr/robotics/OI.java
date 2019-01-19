@@ -1,11 +1,13 @@
 package edu.nr.robotics;
 
+
 import edu.nr.lib.commandbased.CancelAllCommand;
 import edu.nr.lib.commandbased.DoNothingCommand;
 import edu.nr.lib.gyro.ResetGyroCommand;
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.lib.units.Angle;
 import edu.nr.lib.units.Distance;
+import edu.nr.robotics.OI;
 import edu.nr.robotics.multicommands.ClimbButtonCommand;
 import edu.nr.robotics.multicommands.ClimbPrepareCommand;
 import edu.nr.robotics.multicommands.ClimberStopButtonCommand;
@@ -44,20 +46,16 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * This class is the glue that binds the controls on the physical operator
- * interface to the commands and command groups that allow control of the robot.
- */
-public class OI implements SmartDashboardSource {
 
-	public static final double JOYSTICK_DEAD_ZONE = 0.2;
+public class OI implements SmartDashboardSource  {
+public static final double JOYSTICK_DEAD_ZONE = 0.2;
 	
 	public static final double SPEED_MULTIPLIER = 1.0;
 
 	// TODO: Find button numbers
 	private static final int CANCEL_ALL_BUTTON_NUMBER = 1; // Right!
 	private static final int FOLD_INTAKE_BUTTON_NUMBER = 11; // Right
-	private static final int INTAKE_TRANSFER_HEIGHT_BUTTON_NUMBER = 10; // Right
+	private static final int INTAKE_TRANSFER_HEIGHT_BUTTON_NUMBER = 10; 9// Right
 	private static final int INTAKE_BOTTOM_HEIGHT_BUTTON_NUMBER = 9; // Right
 
 	private static final int TRANSFER_CUBE_BUTTON_NUMBER = 4; //Right
@@ -131,7 +129,7 @@ public class OI implements SmartDashboardSource {
 	private static final int STICK_OPERATOR_RIGHT = 3;
 
 	public static final Distance ELEVATOR_BUTTON_HEIGHT = new Distance(13, Distance.Unit.INCH);
-	public static final Drive.DriveMode driveMode = Drive.DriveMode.cheesyDrive;
+	public static final Drive.DriveMode driveMode = Drive.DriveMode.tankDrive;
 
 	private OI() {
 		driveLeft = new Joystick(STICK_LEFT);
@@ -173,7 +171,6 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(driveLeft, DRIVE_TUNING_BUTTON_NUMBER).whenPressed(tuningCommand);
 		
 		new JoystickButton(driveLeft, TURN_TO_ANGLE_COMMAND_BUTTON).whenPressed(new TurnToAngleCommand(new Angle(180, Angle.Unit.DEGREE)));
-
 		
 	}
 
@@ -199,7 +196,6 @@ public class OI implements SmartDashboardSource {
 		new JoystickButton(driveRight,
 				 TEST_SEQUENCE_BUTTON_NUMBER).whenPressed(new TestSequence());
 	}
-
 	public void initOperatorLeft() {
 
 		new JoystickButton(operatorLeft, INTAKE_ROLLERS_FAST_BUTTON_NUMBER)
@@ -398,4 +394,6 @@ public class OI implements SmartDashboardSource {
 	public boolean isKidModeOn() {
 		return kidModeSwitch.get();
 	}
+	
+	
 }
