@@ -17,6 +17,7 @@ import edu.nr.lib.units.Acceleration;
 import edu.nr.lib.units.Distance;
 import edu.nr.lib.units.Speed;
 import edu.nr.lib.units.Time;
+import edu.nr.lib.units.Distance.Unit;
 import edu.nr.robotics.OI;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
@@ -331,8 +332,11 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 	 *            BOTTOM_HEIGHT up)
 	 */
 	public void setPosition(Distance position) {
+	//	System.out.println(position.get(Unit.INCH));
+
 		if (elevTalon != null) {
-			
+		//	System.out.println("YUP");
+
 			posSetpoint = position;
 			velSetpoint = Speed.ZERO;
 			

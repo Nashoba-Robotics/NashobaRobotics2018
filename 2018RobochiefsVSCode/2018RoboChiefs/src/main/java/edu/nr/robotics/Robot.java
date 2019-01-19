@@ -7,6 +7,9 @@ import edu.nr.lib.gyro.ResetGyroCommand;
 import edu.nr.lib.interfaces.Periodic;
 import edu.nr.lib.interfaces.SmartDashboardSource;
 import edu.nr.lib.network.LimelightNetworkTable;
+import edu.nr.lib.units.Distance;
+import edu.nr.lib.units.Time;
+import edu.nr.lib.units.Speed;
 import edu.nr.robotics.FieldData.Direction;
 import edu.nr.robotics.auton.AutoChoosers;
 import edu.nr.robotics.auton.AutoChoosers.AllianceBlocks;
@@ -37,15 +40,21 @@ import edu.nr.robotics.subsystems.drive.DriveForwardBasicSmartDashboardCommand;
 import edu.nr.robotics.subsystems.drive.DriveForwardSmartDashboardCommandH;
 import edu.nr.robotics.subsystems.drive.EnableMotionProfileSmartDashboardCommand;
 import edu.nr.robotics.subsystems.drive.TurnSmartDashboardCommand;
+import edu.nr.robotics.subsystems.drive.Drive;
+import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
+import edu.nr.robotics.subsystems.elevator.Elevator;
 import edu.nr.robotics.subsystems.elevator.ElevatorDeltaPositionSmartDashboardCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorMoveBasicSmartDashboardCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorPositionSmartDashboardCommand;
 import edu.nr.robotics.subsystems.elevator.ElevatorProfileSmartDashboardCommandGroup;
+import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooter;
 import edu.nr.robotics.subsystems.elevatorShooter.ElevatorShooterVelocitySmartDashboardCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorDeltaPositionSmartDashboardCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorMoveBasicSmartDashboardCommand;
 import edu.nr.robotics.subsystems.intakeElevator.IntakeElevatorProfileSmartDashboardCommandGroup;
 import edu.nr.robotics.subsystems.intakeRollers.IntakeRollersVelocitySmartDashboardCommand;
+
+import edu.nr.robotics.subsystems.intakeRollers.IntakeRollers;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -144,7 +153,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putData("Partner Blocks", AutoChoosers.allianceBlockChooser);
 		SmartDashboard.putData("Auto ScaleSwitch", AutoChoosers.autoScaleSwitchChooser);
 	}
-
+	//a
 	/**
 	 * What SmartDashboard puts on initialization (usually commands)
 	 */
@@ -208,6 +217,42 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testInit() {
 		
+		if(EnabledSubsystems.DRIVE_ENABLED ){
+			SmartDashboard.putNumber("Left Drive Percent: ", 0);
+			SmartDashboard.putNumber("Right Drive Percent: ", 0);
+			SmartDashboard.putNumber("H Drive Percent: ", 0);
+
+			SmartDashboard.putNumber("Right Drive Current: ", Drive.getInstance().getRightCurrent());
+			SmartDashboard.putNumber("Left Drive Current: ", Drive.getInstance().getLeftCurrent());
+			SmartDashboard.putNumber("H Drive Current: ", Drive.getInstance().getHCurrent());
+		}
+
+		if(EnabledSubsystems.ELEVATOR_ENABLED) {
+			SmartDashboard.putNumber("Elevator Percent: ", 0);
+			SmartDashboard.putNumber("Elevator Current: ", Elevator.getInstance().getMasterCurrent());
+			SmartDashboard.putNumber("Elevator Follow Current; ", Elevator.getInstance().getFollowerCurrent());
+
+			SmartDashboard.putNumber("Elevator Position: ", 0);
+			SmartDashboard.putNumber("Elevator Velocity: ", Elevator.getInstance().getVelocity().get(Distance.Unit.FOOT, Time.Unit.SECOND));
+		}
+
+		if(EnabledSubsystems.INTAKE_ROLLERS_ENABLED) {
+			SmartDashboard.putNumber("Right Intake Current: ", IntakeRollers.getInstance().getCurrentRight());
+			SmartDashboard.putNumber("Left Intake Current: ", IntakeRollers.getInstance().getCurrentLeft());
+
+			SmartDashboard.putNumber("Left Intake Percent: ", 0); // should get actual percent, this is a test.
+			SmartDashboard.putNumber("Right Intake Percent: ", 0);
+
+		}
+
+		if(EnabledSubsystems.ELEVATOR_SHOOTER_ENABLED) {
+			SmartDashboard.putNumber("Elevator Shooter Percent: ", 0);
+			SmartDashboard.putNumber("Elevator Shooter Current: ", 0);
+		}
+	
+	//	SmartDashboard.putNumber("Intake Elevator Position: ", 0);
+	//	SmartDashboard.putNumber("Intake Elevator Current: ", 0);
+
 	}
 
 	@Override
@@ -321,6 +366,20 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void testPeriodic() {
+// TEST MODE IS GOOD, not elevator though
+		Drive.getInstance().setMotorSpeedRaw(SmartDashboard.getNumber("Left Drive Percent: ", 0),SmartDashboard.getNumber("Right Drive Percent: ", 0),SmartDashboard.getNumber("H Drive Percent: ", 0));
+	
+	//	System.out.println(SmartDashboard.getNumber("Elevator Position: ", 0));
+
+		Elevator.getInstance().setPosition(new Distance(SmartDashboard.getNumber("Elevator Position: ", 0), Distance.Unit.FOOT));
+
+		
+		ElevatorShooter.getInstance().setMotorSpeedPercent(SmartDashboard.getNumber("Elevator Shooter Percent: ", 0));
+
+		IntakeRollers.getInstance().setMotorSpeedPercent(SmartDashboard.getNumber("Left Intake Percent: ", 0), SmartDashboard.getNumber("Right Intake Percent: ", 0));
+	//	IntakeElevator.getInstance().setPosition(SmartDashboard.getNumber("Intake Elevator Position: ", IntakeElevator.getInstance().))
+
+
 	}
 	
 	@Override
