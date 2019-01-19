@@ -353,7 +353,7 @@ public class Elevator extends NRSubsystem implements PIDOutput, PIDSource {
 				System.out.println("Going up");
 				
 			elevTalon.set(ControlMode.MotionMagic, position.get(Distance.Unit.MAGNETIC_ENCODER_TICK_ELEV));
-			} else {
+			} else { // change away from motion magic going down - it makes elevator go crazy... Have fun Nathaniel
 				
 				elevTalon.selectProfileSlot(MOTION_MAGIC_DOWN_SLOT, DEFAULT_TIMEOUT);
 				
