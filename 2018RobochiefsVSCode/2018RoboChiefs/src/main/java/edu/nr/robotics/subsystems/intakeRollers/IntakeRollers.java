@@ -136,14 +136,12 @@ public class IntakeRollers extends NRSubsystem {
 	/**
 	 * @param percent velocity
 	 */
-	public void setMotorSpeedPercent(double percentHigh, double percentLow) {
+	public void setMotorSpeedPercent(double percentLeft, double percentRight) {
 		if (intakeRollersLeft != null && intakeRollersRight != null) {
-			
-			percentHighSetpoint = percentHigh;
-			percentLowSetpoint = percentLow;
-			
-			intakeRollersLeft.set(ControlMode.PercentOutput, percentHigh);
-			intakeRollersRight.set(ControlMode.PercentOutput, percentLow);
+
+			intakeRollersLeft.set(ControlMode.PercentOutput, percentLeft);
+			intakeRollersRight.set(ControlMode.PercentOutput, percentRight);
+		
 		}
 	}
 	

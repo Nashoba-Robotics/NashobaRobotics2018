@@ -402,11 +402,6 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 	
 	public void setMotorSpeedInPercent(double left, double right) {
-		
-		
-		
-		leftDrive.set(ControlMode.PercentOutput, left);
-		rightDrive.set(ControlMode.PercentOutput, right);
 
 		setMotorSpeed(MAX_SPEED_DRIVE.mul(left), MAX_SPEED_DRIVE.mul(right));
 	
@@ -418,7 +413,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 	
 	public void setMotorSpeed(Speed left, Speed right) {
-		System.out.println(left.get(Distance.Unit.FOOT, Time.Unit.SECOND) + "    Left");
+		//System.out.println(left.get(Distance.Unit.FOOT, Time.Unit.SECOND) + "    Left");
 		
 		if (leftDrive != null && rightDrive != null) {
 			
@@ -431,6 +426,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 			
 			
 			if (EnabledSubsystems.DRIVE_DUMB_ENABLED) {
+				//PROBLEM IS HERE
 				leftDrive.set(leftDrive.getControlMode(), leftMotorSetpoint.div(MAX_SPEED_DRIVE));
 				rightDrive.set(rightDrive.getControlMode(), rightMotorSetpoint.div(MAX_SPEED_DRIVE));
 			} else {

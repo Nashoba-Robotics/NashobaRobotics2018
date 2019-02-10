@@ -325,6 +325,7 @@ public class IntakeElevator extends NRSubsystem implements PIDSource, PIDOutput 
 	 * @param position the absolute position the elevator talon should go to (0+
 	 *                 from BOTTOM_HEIGHT up)
 	 */
+	
 	public void setPosition(Distance position) {
 		if (intakeElevTalon != null) {
 			posSetpoint = position;

@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.nr.lib.NRMath;
 import edu.nr.lib.commandbased.NRSubsystem;
@@ -538,6 +539,14 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 					hDrive.set(ControlMode.Velocity, hMotorSetpoint.get(Distance.Unit.MAGNETIC_ENCODER_TICK_H, Time.Unit.HUNDRED_MILLISECOND));
 			}
 		}
+	}
+
+	public void setMotorSpeedRaw(double leftPercent, double rightPercent, double hPercent){
+
+		rightDrive.set(ControlMode.PercentOutput, rightPercent);
+		leftDrive.set(ControlMode.PercentOutput, leftPercent);
+		hDrive.set(ControlMode.PercentOutput, hPercent);
+
 	}
 	
 	public void setVoltageRamp(Time time) {
