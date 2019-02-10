@@ -18,6 +18,7 @@ public class Pigeon extends Gyro implements Periodic {
 	private static int talonID = 6; //intake rollers
 	
 	private double[] yawPitchRoll;
+	private double[] XYZ;
 	private short[] XYZError;
 	
 	double lastWriteTimestamp = 0;
@@ -60,12 +61,36 @@ public class Pigeon extends Gyro implements Periodic {
 		return Angle.ZERO;
 	}
 	
-	@Override
 	public Angle getYaw() {
 		pigeon.getYawPitchRoll(yawPitchRoll);
 		return new Angle(yawPitchRoll[0], Angle.Unit.DEGREE);
 	}
 	
+	public Angle getPitch() {
+		pigeon.getYawPitchRoll(yawPitchRoll);
+		return new Angle(yawPitchRoll[1], Angle.Unit.DEGREE);
+	}
+
+	public Angle getRoll() {
+		pigeon.getYawPitchRoll(yawPitchRoll);
+		return new Angle(yawPitchRoll[2], Angle.Unit.DEGREE);
+	}
+
+	public Angle getX() {
+		pigeon.getAccumGyro(XYZ);
+		return new Angle(XYZ[0], Angle.Unit.DEGREE);
+	}
+
+	public Angle getY() {
+		pigeon.getAccumGyro(XYZ);
+		return new Angle(XYZ[1], Angle.Unit.DEGREE);
+	}
+
+	public Angle getZ() {
+		pigeon.getAccumGyro(XYZ);
+		return new Angle(XYZ[2], Angle.Unit.DEGREE);
+	}
+
 	@Override
 	public void periodic() {
 	}

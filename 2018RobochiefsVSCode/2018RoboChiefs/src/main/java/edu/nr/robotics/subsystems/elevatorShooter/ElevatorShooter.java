@@ -9,7 +9,9 @@ import edu.nr.lib.talons.CTRECreator;
 import edu.nr.lib.units.Time;
 import edu.nr.robotics.RobotMap;
 import edu.nr.robotics.subsystems.EnabledSubsystems;
+import edu.nr.robotics.subsystems.sensors.EnabledSensors;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import jdk.jfr.Enabled;
 
 public class ElevatorShooter extends NRSubsystem {
 
@@ -142,6 +144,9 @@ public class ElevatorShooter extends NRSubsystem {
 
 	@Override
 	public void periodic() {
+		if(!EnabledSensors.forceSensor1.get() && !EnabledSensors.forceSensor2.get() && (getCurrent() < 0.2)) {
+			setMotorSpeedPercent(VEL_PERCENT_LOW_ELEVATOR_SHOOTER);
+		}
 		
 	}
 	

@@ -152,7 +152,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	 * Max and min speed of turn during
 	 */
 	public static final double MAX_PROFILE_TURN_PERCENT = 1.0;
-	public static final double MIN_PROFILE_TURN_PERCENT = 0.03; 
+	public static final double MIN_PROFILE_TURN_PERCENT = 0.015; 
 	
 	/**
 	 * Percent of the drive while going to intake a cube
@@ -797,6 +797,8 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 	}
 
 	public void periodic() {
+		//System.out.println("box height: " + LimelightNetworkTable.getInstance().getBoxHeight());
+
 		if (OI.getInstance().isKidModeOn()) {
 			MOVE_JOYSTICK_MULTIPLIER = 0.6;
 			if (!sniperModeEnabled) {
@@ -808,6 +810,7 @@ public class Drive extends NRSubsystem implements DoublePIDOutput, DoublePIDSour
 				TURN_JOYSTICK_MULTIPLIER = 1;	
 			}		
 		}
+
 	}
 	
 	@Override

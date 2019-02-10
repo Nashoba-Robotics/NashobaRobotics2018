@@ -5,7 +5,7 @@ public abstract class Equation {
 	
 	public abstract double getValue(double x);
 	
-	public double defferentiate(double x) {
+	public double differentiate(double x) {
 		double slope;
 		
 		slope = (getValue(x + 0.00000001) - getValue(x - 0.00000001)) / 0.00000002;

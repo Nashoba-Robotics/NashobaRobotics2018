@@ -18,8 +18,10 @@ import edu.nr.robotics.multicommands.PrepareScoreSwitchCommand;
 import edu.nr.robotics.subsystems.climber.ClimberCoastCommand;
 import edu.nr.robotics.subsystems.drive.Drive;
 import edu.nr.robotics.subsystems.drive.DriveDumbToggleCommand;
+import edu.nr.robotics.subsystems.drive.DriveToBallCommand;
 import edu.nr.robotics.subsystems.drive.DriveToCubeButtonCommand;
 import edu.nr.robotics.subsystems.drive.DriveToCubeJoystickCommand;
+import edu.nr.robotics.subsystems.drive.DriveToTargetRampedCommand;
 import edu.nr.robotics.subsystems.drive.DriveTuningCommand;
 import edu.nr.robotics.subsystems.drive.EnableSniperForwardMode;
 import edu.nr.robotics.subsystems.drive.EnableSniperTurnMode;
@@ -94,6 +96,7 @@ public class OI implements SmartDashboardSource {
 
 	//private static final int ENABLE_SCALE_STOPPING_BUTTON_NUMBER = 1;
 	private static final int DRIVE_TO_CUBE_JOYSTICK_BUTTON_NUMBER = 4;
+
 	
 	private static final int RESET_GYRO_BUTTON_NUMBER = 10;
 	private static final int CLIMB_COAST_BUTTON_NUMBER = 10;
@@ -246,7 +249,8 @@ public class OI implements SmartDashboardSource {
 
 		new JoystickButton(operatorRight, CANCEL_ALL_BUTTON_NUMBER).whenPressed(new CancelAllCommand());
 
-		new JoystickButton(operatorRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenPressed(new DriveToCubeButtonCommand(true));
+		new JoystickButton(operatorRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenPressed(new DriveToBallCommand());
+		new JoystickButton(operatorRight, ACQUIRE_CUBE_BUTTON_NUMBER).whenReleased(new DoNothingCommand(Drive.getInstance()));
 		
 		new JoystickButton(operatorRight, INTAKE_ROLLERS_STOP_BUTTON_NUMBER)
 				.whenPressed(new IntakeRollersStopCommand());

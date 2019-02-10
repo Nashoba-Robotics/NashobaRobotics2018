@@ -22,6 +22,7 @@ public class LimelightNetworkTable extends TimerTask {
 	
 	private static final Time IMAGE_CAPTURE_LATENCY = new Time(11, Time.Unit.MILLISECOND);
 	
+	private double boxHeight = 0;
 	private Angle horizOffsetAngle = Angle.ZERO;
 	private Angle vertOffsetAngle = Angle.ZERO;
 	private Time pipelineLatency = Time.ZERO;
@@ -60,12 +61,11 @@ public class LimelightNetworkTable extends TimerTask {
 	
 	@Override
 	public void run() {
-		if (enabled) {
+			boxHeight = limelightTable.getEntry("tvert").getDouble(0);
 			vertOffsetAngle = new Angle(limelightTable.getEntry("ty").getDouble(0), Angle.Unit.DEGREE);
 			horizOffsetAngle = new Angle(limelightTable.getEntry("tx").getDouble(0), Angle.Unit.DEGREE);
 			pipelineLatency = new Time(limelightTable.getEntry("tl").getDouble(0), Time.Unit.MILLISECOND);
-			System.out.println("vert: " + vertOffsetAngle.get(Angle.Unit.DEGREE) + '\n' + "horiz: " + horizOffsetAngle.get(Unit.DEGREE) + '\n' + "latency: " + pipelineLatency.get(Time.Unit.SECOND));
-		}
+			//System.out.println("vert: " + vertOffsetAngle.get(Angle.Unit.DEGREE) + '\n' + "horiz: " + horizOffsetAngle.get(Unit.DEGREE) + '\n' + "latency: " + pipelineLatency.get(Time.Unit.SECOND));
 	}
 	
 	/**
@@ -80,6 +80,14 @@ public class LimelightNetworkTable extends TimerTask {
 	 */
 	public void disable() {
 		enabled = false;
+	}
+
+	/**
+	 * 
+	 * @return Limelight target box height
+	 */
+	public double getBoxHeight() {
+		return boxHeight;
 	}
 	
 	/**

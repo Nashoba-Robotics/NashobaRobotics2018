@@ -10,6 +10,9 @@ public class EnabledSensors {
 	public static DigitalInput intakeSensorRight = new DigitalInput(RobotMap.INTAKE_SENSOR_PORT_RIGHT);
 	public static DigitalInput elevatorSensor = new DigitalInput(RobotMap.ELEVATOR_SENSOR_PORT);
 	public static DigitalInput floorSensor = new DigitalInput(RobotMap.FLOOR_SENSOR_PORT);
+
+	public static DigitalInput forceSensor1 = new DigitalInput(RobotMap.FORCE_SENSOR_ONE_PORT);
+	public static DigitalInput forceSensor2 = new DigitalInput(RobotMap.FORCE_SENSOR_TWO_PORT);
 	
 	public static boolean limelightEnabled = false;
 	public static boolean portalSensorEnabled = false;
